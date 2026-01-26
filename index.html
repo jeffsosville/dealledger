@@ -1,857 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DealLedger — Public Record of Businesses for Sale</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #fafaf9;
-            --bg-alt: #f5f5f4;
-            --border: #d4d4d4;
-            --text: #1c1917;
-            --text-muted: #78716c;
-            --link: #0c4a6e;
-            --mono: 'IBM Plex Mono', monospace;
-            --sans: 'IBM Plex Sans', sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
-            background: var(--bg);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .logo {
-            font-family: var(--mono);
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .tagline {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        nav {
-            display: flex;
-            gap: 24px;
-        }
-
-        nav a {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        nav a:hover {
-            color: var(--text);
-        }
-
-        /* Stats bar */
-        .stats-bar {
-            border-bottom: 1px solid var(--border);
-            padding: 16px 0;
-            background: var(--bg-alt);
-        }
-
-        .stats-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .stats {
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            font-family: var(--mono);
-            font-size: 13px;
-        }
-
-        .stat-value {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            margin-left: 4px;
-        }
-
-        .downloads {
-            display: flex;
-            gap: 12px;
-        }
-
-        .download-btn {
-            font-family: var(--mono);
-            font-size: 11px;
-            padding: 6px 12px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .download-btn:hover {
-            background: var(--text);
-            color: var(--bg);
-            border-color: var(--text);
-        }
-
-        /* Filters */
-        .filters {
-            border-bottom: 1px solid var(--border);
-            padding: 12px 0;
-        }
-
-        .filters-content {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-label {
-            font-family: var(--mono);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-        }
-
-        .filter-select {
-            font-family: var(--mono);
-            font-size: 12px;
-            padding: 6px 28px 6px 10px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2378716c' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-        }
-
-        .filter-select:focus {
-            outline: 2px solid var(--text);
-            outline-offset: 1px;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .results-count {
-            margin-left: auto;
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            text-align: left;
-            padding: 12px 16px;
-            border-bottom: 2px solid var(--border);
-            background: var(--bg-alt);
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        tr:hover td {
-            background: var(--bg-alt);
-        }
-
-        .col-date {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        .col-title {
-            max-width: 320px;
-        }
-
-        .col-title a {
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .col-title a:hover {
-            text-decoration: underline;
-        }
-
-        .col-type {
-            font-family: var(--mono);
-            font-size: 12px;
-            text-transform: lowercase;
-        }
-
-        .col-state {
-            font-family: var(--mono);
-            font-size: 12px;
-        }
-
-        .col-price {
-            font-family: var(--mono);
-            font-size: 12px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .col-source {
-            text-align: center;
-        }
-
-        .source-link {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--link);
-            text-decoration: none;
-        }
-
-        .source-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Pagination */
-        .pagination {
-            padding: 20px 0;
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .page-btn {
-            font-family: var(--mono);
-            font-size: 12px;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .page-btn:hover {
-            background: var(--bg-alt);
-        }
-
-        .page-btn.active {
-            background: var(--text);
-            color: var(--bg);
-            border-color: var(--text);
-        }
-
-        .page-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 24px 0;
-            margin-top: 40px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .footer-text {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--text-muted);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-links a:hover {
-            color: var(--text);
-        }
-
-        /* Notice */
-        .notice {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--text-muted);
-            padding: 12px 16px;
-            background: var(--bg-alt);
-            border: 1px solid var(--border);
-            margin: 20px 0;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-            font-family: var(--mono);
-            font-size: 13px;
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        /* About section */
-        .about-section {
-            border-top: 1px solid var(--border);
-            padding: 48px 0;
-            margin-top: 48px;
-            background: var(--bg-alt);
-        }
-
-        .about-content {
-            max-width: 680px;
-        }
-
-        .about-title {
-            font-family: var(--mono);
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 24px;
-            color: var(--text);
-        }
-
-        .about-text {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--text);
-        }
-
-        .about-text p {
-            margin-bottom: 16px;
-        }
-
-        .about-text strong {
-            font-weight: 600;
-        }
-
-        .about-links {
-            margin-top: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .about-link {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--link);
-            text-decoration: none;
-        }
-
-        .about-link:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .stats {
-                gap: 16px;
-            }
-
-            .stat {
-                font-size: 12px;
-            }
-
-            .downloads {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .filters-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .results-count {
-                margin-left: 0;
-            }
-
-            th, td {
-                padding: 8px 10px;
-            }
-
-            .col-title {
-                max-width: 200px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div>
-                    <a href="/" class="logo">DealLedger</a>
-                    <span class="tagline">— Public record of businesses for sale</span>
-                </div>
-                <nav>
-                    <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
-                    <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Methodology</a>
-                    <a href="#about">About</a>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <div class="stats-bar">
-        <div class="container">
-            <div class="stats-content">
-                <div class="stats">
-                    <div class="stat">
-                        <span class="stat-value" id="total-count">—</span>
-                        <span class="stat-label">listings observed</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="broker-count">—</span>
-                        <span class="stat-label">brokers tracked</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="state-count">—</span>
-                        <span class="stat-label">states</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value" id="last-updated">—</span>
-                        <span class="stat-label">last updated</span>
-                    </div>
-                </div>
-                <div class="downloads">
-                    <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.csv" class="download-btn" download>↓ CSV</a>
-                    <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json" class="download-btn" download>↓ JSON</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="filters">
-        <div class="container">
-            <div class="filters-content">
-                <span class="filter-label">Filter:</span>
-                <div class="filter-group">
-                    <select id="filter-state" class="filter-select">
-                        <option value="">All States</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <select id="filter-type" class="filter-select">
-                        <option value="">All Types</option>
-                    </select>
-                </div>
-                <span class="results-count"><span id="filtered-count">—</span> results</span>
-            </div>
-        </div>
-    </div>
-
-    <main class="container">
-        <div class="notice">
-            This is a public record, not a discovery engine. Data is scraped from broker websites and published without modification. 
-            <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a>
-        </div>
-
-        <div class="table-container">
-            <table id="listings-table">
-                <thead>
-                    <tr>
-                        <th>First Seen</th>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>State</th>
-                        <th style="text-align: right">Price</th>
-                        <th style="text-align: center">Source</th>
-                    </tr>
-                </thead>
-                <tbody id="listings-body">
-                    <tr>
-                        <td colspan="6" class="loading">Loading listings...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination" id="pagination"></div>
-    </main>
-
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <h2 class="about-title">About DealLedger</h2>
-                
-                <div class="about-text">
-                    <p><strong>The problem:</strong> There is no MLS for business sales. Brokers can list fake businesses. Marketplaces inflate their counts. Listings disappear with no record. Prices change with no history. No one knows what's real.</p>
-                    
-                    <p><strong>What this is:</strong> DealLedger is a public deed registry for businesses for sale. We scrape broker websites daily, timestamp everything, and publish the raw data. Every listing is traceable to its source.</p>
-                    
-                    <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
-                    
-                    <p><strong>How it works:</strong> Automated scrapers pull listings from 1,600+ broker websites. Data is normalized, deduplicated, and published as flat files. The code is open source. The methodology is documented. Anyone can verify.</p>
-                </div>
-
-                <div class="about-links">
-                    <a href="https://github.com/jeffsosville/dealledger" target="_blank" class="about-link">→ View source on GitHub</a>
-                    <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank" class="about-link">→ Read the methodology</a>
-                    <a href="https://github.com/jeffsosville/dealledger/blob/main/data/brokers.csv" target="_blank" class="about-link">→ See all tracked brokers</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-text">
-                    DealLedger observes and publishes. We don't rank, recommend, or broker.<br>
-                    Code: MIT License. Data: CC-BY 4.0.
-                </div>
-                <div class="footer-links">
-                    <a href="https://github.com/jeffsosville/dealledger" target="_blank">Source</a>
-                    <a href="https://github.com/jeffsosville/dealledger/issues" target="_blank">Report Issue</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Configuration
-        const DATA_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json';
-        const BROKERS_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/brokers.csv';
-        const PER_PAGE = 50;
-
-        // State
-        let allListings = [];
-        let filteredListings = [];
-        let currentPage = 1;
-        let brokerCount = 0;
-
-        // Elements
-        const totalCountEl = document.getElementById('total-count');
-        const brokerCountEl = document.getElementById('broker-count');
-        const stateCountEl = document.getElementById('state-count');
-        const lastUpdatedEl = document.getElementById('last-updated');
-        const filteredCountEl = document.getElementById('filtered-count');
-        const filterStateEl = document.getElementById('filter-state');
-        const filterTypeEl = document.getElementById('filter-type');
-        const listingsBody = document.getElementById('listings-body');
-        const paginationEl = document.getElementById('pagination');
-
-        // Format price
-        function formatPrice(price) {
-            if (!price) return '—';
-            if (price >= 1000000) {
-                return '$' + (price / 1000000).toFixed(1) + 'M';
-            }
-            if (price >= 1000) {
-                return '$' + Math.round(price / 1000) + 'K';
-            }
-            return '$' + price.toLocaleString();
-        }
-
-        // Format date
-        function formatDate(dateStr) {
-            if (!dateStr) return '—';
-            const date = new Date(dateStr);
-            return date.toISOString().split('T')[0];
-        }
-
-        // Truncate text
-        function truncate(text, len) {
-            if (!text) return '—';
-            if (text.length <= len) return text;
-            return text.slice(0, len) + '…';
-        }
-
-        // Render listings
-        function renderListings() {
-            const start = (currentPage - 1) * PER_PAGE;
-            const end = start + PER_PAGE;
-            const pageListings = filteredListings.slice(start, end);
-
-            if (pageListings.length === 0) {
-                listingsBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="empty-state">No listings match the current filters.</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            listingsBody.innerHTML = pageListings.map(listing => `
-                <tr>
-                    <td class="col-date">${formatDate(listing.scraped_at)}</td>
-                    <td class="col-title">
-                        <a href="${listing.listing_url || '#'}" target="_blank" rel="noopener">
-                            ${truncate(listing.title || 'Untitled', 60)}
-                        </a>
-                    </td>
-                    <td class="col-type">${listing.business_type || '—'}</td>
-                    <td class="col-state">${listing.state || '—'}</td>
-                    <td class="col-price">${formatPrice(listing.price)}</td>
-                    <td class="col-source">
-                        <a href="${listing.listing_url || '#'}" target="_blank" rel="noopener" class="source-link">→</a>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Render pagination
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredListings.length / PER_PAGE);
-            if (totalPages <= 1) {
-                paginationEl.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            
-            html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">← Prev</button>`;
-            
-            // Show page numbers
-            const maxPages = 7;
-            let startPage = Math.max(1, currentPage - 3);
-            let endPage = Math.min(totalPages, startPage + maxPages - 1);
-            
-            if (endPage - startPage < maxPages - 1) {
-                startPage = Math.max(1, endPage - maxPages + 1);
-            }
-
-            if (startPage > 1) {
-                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
-                if (startPage > 2) html += `<span class="page-btn" style="border:none;cursor:default">…</span>`;
-            }
-
-            for (let i = startPage; i <= endPage; i++) {
-                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-            }
-
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) html += `<span class="page-btn" style="border:none;cursor:default">…</span>`;
-                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
-            }
-
-            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next →</button>`;
-
-            paginationEl.innerHTML = html;
-        }
-
-        // Go to page
-        function goToPage(page) {
-            currentPage = page;
-            renderListings();
-            renderPagination();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Apply filters
-        function applyFilters() {
-            const stateFilter = filterStateEl.value;
-            const typeFilter = filterTypeEl.value;
-
-            filteredListings = allListings.filter(listing => {
-                if (stateFilter && listing.state !== stateFilter) return false;
-                if (typeFilter && listing.business_type !== typeFilter) return false;
-                return true;
-            });
-
-            // Sort by scraped_at oldest first (the anti-shopping default)
-            filteredListings.sort((a, b) => {
-                const dateA = new Date(a.scraped_at || 0);
-                const dateB = new Date(b.scraped_at || 0);
-                return dateA - dateB;
-            });
-
-            currentPage = 1;
-            filteredCountEl.textContent = filteredListings.length.toLocaleString();
-            renderListings();
-            renderPagination();
-        }
-
-        // Populate filter dropdowns
-        function populateFilters() {
-            // States
-            const states = [...new Set(allListings.map(l => l.state).filter(Boolean))].sort();
-            filterStateEl.innerHTML = '<option value="">All States</option>' + 
-                states.map(s => `<option value="${s}">${s}</option>`).join('');
-
-            // Types
-            const types = [...new Set(allListings.map(l => l.business_type).filter(Boolean))].sort();
-            filterTypeEl.innerHTML = '<option value="">All Types</option>' + 
-                types.map(t => `<option value="${t}">${t}</option>`).join('');
-        }
-
-        // Update stats
-        function updateStats() {
-            totalCountEl.textContent = allListings.length.toLocaleString();
-            brokerCountEl.textContent = brokerCount.toLocaleString();
-            
-            const states = new Set(allListings.map(l => l.state).filter(Boolean));
-            stateCountEl.textContent = states.size;
-
-            // Find most recent scraped_at
-            const dates = allListings.map(l => new Date(l.scraped_at)).filter(d => !isNaN(d));
-            if (dates.length > 0) {
-                const latest = new Date(Math.max(...dates));
-                lastUpdatedEl.textContent = latest.toISOString().split('T')[0];
-            }
-        }
-
-        // Count brokers from CSV
-        async function loadBrokerCount() {
-            try {
-                const response = await fetch(BROKERS_URL);
-                const text = await response.text();
-                // Count non-empty lines minus header
-                const lines = text.trim().split('\n').filter(l => l.trim());
-                brokerCount = Math.max(0, lines.length - 1);
-            } catch (e) {
-                console.error('Failed to load broker count:', e);
-                brokerCount = 0;
-            }
-        }
-
-        // Load data
-        async function loadData() {
-            try {
-                // Load broker count first
-                await loadBrokerCount();
-
-                // Load listings
-                const response = await fetch(DATA_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                allListings = await response.json();
-                
-                if (!Array.isArray(allListings)) {
-                    allListings = [];
-                }
-
-                updateStats();
-                populateFilters();
-                applyFilters();
-
-            } catch (error) {
-                console.error('Failed to load data:', error);
-                listingsBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="empty-state">
-                            No data available yet. 
-                            <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a>
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        // Event listeners
-        filterStateEl.addEventListener('change', applyFilters);
-        filterTypeEl.addEventListener('change', applyFilters);
-
-        // Make goToPage global for onclick handlers
-        window.goToPage = goToPage;
-
-        // Initialize
-        loadData();
-    </script>
-</body>
-</html>
+This is **very close** to the right “EDGAR / public record” vibe. The structure and restraint are good.
+
+But there are **4 credibility bugs** (not style opinions) that hostile engineers will catch, plus **3 copy/UX tweaks** that make the “not a marketplace” stance feel inevitable.
+
+---
+
+## 4 credibility bugs to fix now
+
+### 1) “First Seen” is currently **scraped_at** (wrong concept)
+
+Your table header says **First Seen**, but you render:
+
+```js
+formatDate(listing.scraped_at)
+```
+
+That’s not “first seen,” that’s “observed on this scrape.” If you re-export daily, “First Seen” will change every day and you’ll look dishonest.
+
+**Fix options:**
+
+* If you *have* `first_seen` in the data: display that.
+* If you don’t: rename the column header to **Observed** (or **Observed At**) and keep using `scraped_at`.
+
+**Minimal safe change:** rename the header to **Observed**.
+
+---
+
+### 2) Title links and Source links both point to `listing_url`
+
+Right now:
+
+* Title anchor → `listing.listing_url`
+* Source arrow → `listing.listing_url`
+
+So “Source” is redundant. Also: your “public record” posture wants **source_url** (where you observed it) distinct from a canonical target.
+
+**Fix:**
+
+* Title should link to a **stable source** URL (`source_url`), not an internal or derived URL.
+* Arrow should link to the **same source_url** (or to a second field `broker_url` if you want both).
+
+If you only have one URL, keep *one* link, not two.
+
+---
+
+### 3) The “anti-shopping default” sorting is by `scraped_at` — that’s not “oldest first”
+
+You sort by:
+
+```js
+new Date(a.scraped_at) - new Date(b.scraped_at)
+```
+
+That’s “oldest scrape,” not “oldest listing.” If you overwrite latest.json daily, everything has roughly the same scraped_at anyway.
+
+**Fix:**
+
+* Sort by `first_seen` if available.
+* If not, sort by a stable listing identifier or remove the claim from the UI (“Sorted by oldest first”) until you have first_seen in the dataset.
+
+---
+
+### 4) The About section makes a high-risk claim you can’t prove: “Brokers can list fake businesses”
+
+This line:
+
+> “Brokers can list fake businesses.”
+
+That’s an assertion about intent and fraud. You don’t need it — and it invites the wrong fight.
+
+Replace accusation with observables you *do* measure:
+
+* duplicates
+* relists
+* zombies
+* missing broker-direct sources
+* no audit trail
+
+**Replace the whole first paragraph with something like:**
+
+> **The problem:** There is no public registry for business listings. The same listing can appear multiple times across sites, disappear without notice, and persist after removal. Inventory is not auditable.
+
+This keeps the edge, but makes it falsifiable.
+
+---
+
+## 3 tweaks that make the stance bulletproof
+
+### A) Add “Tier” column (even if it’s only “Broker-direct” for now)
+
+Right now your UI claims “public record” but the table doesn’t show classification. That’s your differentiator.
+
+Add a column: **Tier** (or **Class**)
+
+* Verified
+* Marketplace-only
+* Relist
+* Zombie
+* Non-canonical
+
+If you aren’t computing tiers yet, show:
+
+* `Broker-direct observed` (temporary)
+  and explicitly note “tiers coming as marketplace ingestion begins.”
+
+This prevents overclaiming.
+
+---
+
+### B) Make the notice stricter and more “ledger-y”
+
+Current notice:
+
+> “Data is scraped from broker websites and published without modification.”
+
+That’s strong, but “without modification” is technically false if you normalize/dedupe.
+
+Change to:
+
+> **Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.**
+
+Truthful and aligned.
+
+---
+
+### C) Fix the “How it works” claim: “1,600+ broker websites daily”
+
+Your current run log shows 50 brokers. The site claims:
+
+> “Automated scrapers pull listings from 1,600+ broker websites.”
+
+If that’s aspirational, it must be stated as such. Otherwise critics will call it bullshit.
+
+Change to:
+
+> “Automated scrapers pull listings from broker websites. Coverage expands over time.”
+
+And optionally show the real number:
+
+* “Brokers tracked: X” (you already do!)
+
+Let the number speak.
+
+---
+
+## Minimal edit pack (copy/paste changes)
+
+### 1) Rename header “First Seen” → “Observed”
+
+In `<th>`:
+
+```html
+<th>Observed</th>
+```
+
+### 2) Use a distinct `source_url` if available
+
+In render:
+
+```js
+const href = listing.source_url || listing.listing_url || '#';
+```
+
+Use `href` for both title and arrow (or remove arrow).
+
+### 3) Tone down About’s first paragraph
+
+Replace:
+
+> “Brokers can list fake businesses. Marketplaces inflate their counts…”
+
+with:
+
+> “There is no public registry for business listings. The same listing can appear multiple times across sites, disappear without notice, and persist after removal. Inventory is not auditable.”
+
+### 4) Remove “1,600+ daily” unless it’s true today
+
+Replace with coverage-expands language.
+
+---
+
+## One optional improvement that’s very “truth system”
+
+Add a tiny footer line:
+
+> **Snapshot:** `data/latest.json` • **SHA-256:** (from manifest)
+
+If you don’t have a manifest yet, skip the hash for now — but that’s the direction.
+
+---
+
+If you tell me what fields actually exist in `data/latest.json` (paste one sample object), I’ll give you the exact final version of the render logic so it correctly shows **Observed/First Seen**, uses the right URL fields, and doesn’t overclaim.
