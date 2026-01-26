@@ -1,18 +1,26 @@
 # DealLedger Dependencies
 
-# Scraping
-requests>=2.28.0
-beautifulsoup4>=4.11.0
-lxml>=4.9.0
+# Web scraping - ML-based unified scraper
+playwright>=1.40.0
+beautifulsoup4>=4.12.0
+aiohttp>=3.9.0
+
+# Web scraping - Specialized scrapers
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+curl_cffi>=0.5.0  # Anti-bot bypass for Transworld, Sunbelt, etc.
 
 # Data processing
-python-dateutil>=2.8.0
+pandas>=2.0.0
+openpyxl>=3.1.0  # Excel support
 
-# Testing
-pytest>=7.0.0
-pytest-cov>=4.0.0
+# Database
+supabase>=2.0.0
 
-# Development
-black>=23.0.0
-flake8>=6.0.0
-mypy>=1.0.0
+# Environment
+python-dotenv>=1.0.0
+
+# Optional: for development
+# pytest>=7.0.0
+# black>=23.0.0
+# ruff>=0.1.0
