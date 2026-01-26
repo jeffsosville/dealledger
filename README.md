@@ -32,7 +32,7 @@ If a listing can't be traced to a verifiable source, it doesn't exist in the led
 
 ```bash
 # Clone the repo
-git clone https://github.com/dealledger/dealledger
+git clone https://github.com/jeffsosville/dealledger
 cd dealledger
 
 # Install dependencies
