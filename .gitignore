@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data (keep snapshots, ignore raw/intermediate)
+data/raw/
+data/normalized/
+!data/snapshots/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (never commit)
+*.env
+.env.*
+secrets.json
+credentials.json

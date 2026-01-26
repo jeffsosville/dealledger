@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  dealledger:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./scrapers:/app/scrapers
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python -m scrapers.run_all --output /app/data/raw/latest.json
+
+  # Optional: Run on a schedule
+  dealledger-cron:
+    build: .
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    entrypoint: /bin/sh
+    command: >
+      -c "while true; do
+        echo 'Starting scrape run...';
+        python -m scrapers.run_all --output /app/data/raw/$$(date +%Y-%m-%d).json;
+        python -m ingestion.normalize /app/data/raw/$$(date +%Y-%m-%d).json -o /app/data/normalized/$$(date +%Y-%m-%d).json;
+        python -m ledger.snapshot /app/data/normalized/$$(date +%Y-%m-%d).json -o data/snapshots;
+        echo 'Scrape complete. Sleeping 24h...';
+        sleep 86400;
+      done"
