@@ -386,6 +386,60 @@
             color: var(--text-muted);
         }
 
+        /* About section */
+        .about-section {
+            border-top: 1px solid var(--border);
+            padding: 48px 0;
+            margin-top: 48px;
+            background: var(--bg-alt);
+        }
+
+        .about-content {
+            max-width: 680px;
+        }
+
+        .about-title {
+            font-family: var(--mono);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+
+        .about-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .about-text p {
+            margin-bottom: 16px;
+        }
+
+        .about-text strong {
+            font-weight: 600;
+        }
+
+        .about-links {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .about-link {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--link);
+            text-decoration: none;
+        }
+
+        .about-link:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -518,7 +572,31 @@
         <div class="pagination" id="pagination"></div>
     </main>
 
-    <footer id="about">
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="about-title">About DealLedger</h2>
+                
+                <div class="about-text">
+                    <p><strong>The problem:</strong> There is no MLS for business sales. Brokers can list fake businesses. Marketplaces inflate their counts. Listings disappear with no record. Prices change with no history. No one knows what's real.</p>
+                    
+                    <p><strong>What this is:</strong> DealLedger is a public deed registry for businesses for sale. We scrape broker websites daily, timestamp everything, and publish the raw data. Every listing is traceable to its source.</p>
+                    
+                    <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
+                    
+                    <p><strong>How it works:</strong> Automated scrapers pull listings from 1,600+ broker websites. Data is normalized, deduplicated, and published as flat files. The code is open source. The methodology is documented. Anyone can verify.</p>
+                </div>
+
+                <div class="about-links">
+                    <a href="https://github.com/jeffsosville/dealledger" target="_blank" class="about-link">→ View source on GitHub</a>
+                    <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank" class="about-link">→ Read the methodology</a>
+                    <a href="https://github.com/jeffsosville/dealledger/blob/main/data/brokers.csv" target="_blank" class="about-link">→ See all tracked brokers</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-text">
