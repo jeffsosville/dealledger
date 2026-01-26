@@ -29,6 +29,26 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
+# Try to import specialized scrapers
+try:
+    from scrapers.specialized import (
+        scrape_specialized_broker, 
+        is_specialized_broker,
+        get_specialized_broker_names
+    )
+    SPECIALIZED_AVAILABLE = True
+except ImportError:
+    try:
+        from specialized import (
+            scrape_specialized_broker, 
+            is_specialized_broker,
+            get_specialized_broker_names
+        )
+        SPECIALIZED_AVAILABLE = True
+    except ImportError:
+        SPECIALIZED_AVAILABLE = False
+        print("Note: Specialized scrapers not available. Using pattern detection only.")
+
 
 # ============================================================================
 # FINANCIAL EXTRACTION PATTERNS
@@ -643,33 +663,107 @@ class StandaloneScraper:
         print(f"{'='*60}")
         print(f"Brokers to scrape: {len(brokers)}")
         print(f"Output directory:  {self.output_dir}")
+        if SPECIALIZED_AVAILABLE:
+            print(f"Specialized scrapers: {', '.join(get_specialized_broker_names())}")
         print(f"{'='*60}\n")
 
-        # Start browser
-        print("Starting browser...")
-        self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(
-            headless=True,
-            args=['--disable-blink-features=AutomationControlled']
-        )
-        self.context = await self.browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
-            viewport={'width': 1920, 'height': 1080}
-        )
-        print("Ready\n")
+        # Separate specialized vs regular brokers
+        specialized_brokers = []
+        regular_brokers = []
+        
+        if SPECIALIZED_AVAILABLE:
+            for broker in brokers:
+                if is_specialized_broker(broker):
+                    specialized_brokers.append(broker)
+                else:
+                    regular_brokers.append(broker)
+            print(f"Specialized brokers: {len(specialized_brokers)}")
+            print(f"Regular brokers: {len(regular_brokers)}\n")
+        else:
+            regular_brokers = brokers
 
-        # Scrape each broker
-        total = len(brokers)
-        for i, broker in enumerate(brokers, 1):
-            listings = await self.scrape_broker(broker, i, total)
-            self.all_listings.extend(listings)
+        # Phase 1: Specialized scrapers (run synchronously, they have their own async handling)
+        if specialized_brokers:
+            print("="*60)
+            print("PHASE 1: SPECIALIZED SCRAPERS")
+            print("="*60 + "\n")
             
-            if i < total:
-                await asyncio.sleep(random.uniform(2, 4))
+            for i, broker in enumerate(specialized_brokers, 1):
+                self.stats['brokers_attempted'] += 1
+                print(f"[{i}/{len(specialized_brokers)}] {broker.get('name', 'Unknown')}")
+                
+                try:
+                    listings = scrape_specialized_broker(broker, verbose=True)
+                    
+                    if listings:
+                        # Dedupe
+                        for listing in listings:
+                            lid = listing.get('id', '')
+                            if lid not in self.seen_ids:
+                                self.seen_ids.add(lid)
+                                self.all_listings.append(listing)
+                                
+                                if listing.get('asking_price'):
+                                    self.stats['with_price'] += 1
+                                if listing.get('revenue'):
+                                    self.stats['with_revenue'] += 1
+                                if listing.get('cash_flow'):
+                                    self.stats['with_cashflow'] += 1
+                                self.stats['by_vertical'][listing.get('vertical', 'other')] += 1
+                        
+                        self.stats['brokers_success'] += 1
+                        self.stats['listings_total'] += len(listings)
+                    else:
+                        self.stats['brokers_failed'] += 1
+                        self.stats['failures'].append({
+                            'broker_id': broker.get('id'),
+                            'broker_name': broker.get('name'),
+                            'url': broker.get('url'),
+                            'error': 'No listings returned'
+                        })
+                except Exception as e:
+                    self.stats['brokers_failed'] += 1
+                    self.stats['failures'].append({
+                        'broker_id': broker.get('id'),
+                        'broker_name': broker.get('name'),
+                        'url': broker.get('url'),
+                        'error': str(e)[:200]
+                    })
+                    print(f"  ✗ Error: {str(e)[:50]}")
+                
+                time.sleep(2)
 
-        # Cleanup
-        await self.browser.close()
-        await self.playwright.stop()
+        # Phase 2: Regular brokers with pattern detection
+        if regular_brokers:
+            print("\n" + "="*60)
+            print("PHASE 2: PATTERN DETECTION SCRAPERS")
+            print("="*60 + "\n")
+
+            # Start browser
+            print("Starting browser...")
+            self.playwright = await async_playwright().start()
+            self.browser = await self.playwright.chromium.launch(
+                headless=True,
+                args=['--disable-blink-features=AutomationControlled']
+            )
+            self.context = await self.browser.new_context(
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+                viewport={'width': 1920, 'height': 1080}
+            )
+            print("Ready\n")
+
+            # Scrape each broker
+            total = len(regular_brokers)
+            for i, broker in enumerate(regular_brokers, 1):
+                listings = await self.scrape_broker(broker, i, total)
+                self.all_listings.extend(listings)
+                
+                if i < total:
+                    await asyncio.sleep(random.uniform(2, 4))
+
+            # Cleanup
+            await self.browser.close()
+            await self.playwright.stop()
 
         # Save and report
         self.save_results()
