@@ -1,0 +1,82 @@
+[
+  {
+    "broker": "Murphy Business",
+    "url": "https://murphybusiness.com/business-brokerage/view-our-listings/",
+    "status": "success",
+    "listings": 10,
+    "duration": 18,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "Transworld Business Advisors",
+    "url": "https://www.tworld.com/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "VR Business Brokers",
+    "url": "https://www.vrbusinessbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "Sunbelt Business Brokers",
+    "url": "https://www.sunbeltnetwork.com/business-search/business-results/",
+    "status": "success",
+    "listings": 3,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "FCBB",
+    "url": "https://fcbb.com/",
+    "status": "success",
+    "listings": 4,
+    "duration": 43,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "vested business brokers, ltd",
+    "url": "https://www.vestedbb.com/advancesearch/index.html",
+    "status": "success",
+    "listings": 1185,
+    "duration": 1787,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "hedgestone advisors",
+    "url": "https://www.hedgestone.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "ubi business brokers",
+    "url": "https://www.ubibusinessbrokersarizona.com/all-listings",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "jeff linda nyman",
+    "url": "https://fcbb.com/businesses-for-sale?page=1",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 24
+  },
+  {
+    "broker": "larry bodner",
+    "url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 10
+  }
+]
