@@ -1,0 +1,21 @@
+{
+  "run_at": "2026-02-18T18:14:26.139035+00:00",
+  "vertical_filter": null,
+  "stats": {
+    "brokers_attempted": 10,
+    "brokers_success": 5,
+    "brokers_failed": 5,
+    "success_rate": "50.0%",
+    "listings_total": 1204,
+    "with_price": 1193,
+    "with_revenue": 0,
+    "with_cashflow": 1098,
+    "patterns_learned": 5,
+    "ml_predictions_used": 1
+  },
+  "failures_by_type": {
+    "NO_PATTERN": 3,
+    "HTTP_403": 1,
+    "HTTP_404": 1
+  }
+}
