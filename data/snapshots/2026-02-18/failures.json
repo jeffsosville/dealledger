@@ -1,0 +1,47 @@
+[
+  {
+    "broker_id": "999995.0",
+    "broker_name": "VR Business Brokers",
+    "broker_url": "https://www.vrbusinessbrokers.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-18T12:42:41.436878"
+  },
+  {
+    "broker_id": "28149.0",
+    "broker_name": "hedgestone advisors",
+    "broker_url": "https://www.hedgestone.com/businesses-for-sale/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-18T13:13:41.661423"
+  },
+  {
+    "broker_id": "1153.0",
+    "broker_name": "ubi business brokers",
+    "broker_url": "https://www.ubibusinessbrokersarizona.com/all-listings",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-18T13:13:45.313724"
+  },
+  {
+    "broker_id": "2408.0",
+    "broker_name": "jeff linda nyman",
+    "broker_url": "https://fcbb.com/businesses-for-sale?page=1",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-18T13:14:12.498547"
+  },
+  {
+    "broker_id": "388.0",
+    "broker_name": "larry bodner",
+    "broker_url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-18T13:14:25.888487"
+  }
+]
