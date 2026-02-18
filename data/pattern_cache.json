@@ -1,0 +1,37 @@
+{
+  "murphybusiness.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 10,
+    "first_seen": "2026-02-18T12:42:03.372921",
+    "last_used": "2026-02-18T12:42:03.372932"
+  },
+  "tworld.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-18T12:42:22.674844",
+    "last_used": "2026-02-18T12:42:22.674853"
+  },
+  "sunbeltnetwork.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-18T12:43:00.777449",
+    "last_used": "2026-02-18T12:43:00.777459"
+  },
+  "fcbb.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 4,
+    "first_seen": "2026-02-18T12:43:47.887438",
+    "last_used": "2026-02-18T12:43:47.887447"
+  },
+  "vestedbb.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 1185,
+    "first_seen": "2026-02-18T13:13:38.451179",
+    "last_used": "2026-02-18T13:13:38.451204"
+  }
+}
