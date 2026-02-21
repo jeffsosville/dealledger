@@ -1,177 +1,639 @@
 {
   "murphybusiness.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
-    "success_count": 2,
-    "total_listings": 20,
+    "success_count": 3,
+    "total_listings": 30,
     "first_seen": "2026-02-18T12:42:03.372921",
-    "last_used": "2026-02-18T13:28:20.226113"
+    "last_used": "2026-02-19T18:44:10.128460"
   },
   "tworld.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 2,
-    "total_listings": 4,
+    "success_count": 3,
+    "total_listings": 6,
     "first_seen": "2026-02-18T12:42:22.674844",
-    "last_used": "2026-02-18T13:28:40.380604"
+    "last_used": "2026-02-19T18:44:30.231941"
   },
   "sunbeltnetwork.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 6,
+    "success_count": 3,
+    "total_listings": 9,
     "first_seen": "2026-02-18T12:43:00.777449",
-    "last_used": "2026-02-18T13:29:14.622206"
+    "last_used": "2026-02-19T18:45:06.028744"
   },
   "fcbb.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 2,
-    "total_listings": 7,
+    "success_count": 3,
+    "total_listings": 10,
     "first_seen": "2026-02-18T12:43:47.887438",
-    "last_used": "2026-02-18T13:30:00.849127"
+    "last_used": "2026-02-19T18:45:52.481607"
   },
   "vestedbb.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
-    "success_count": 2,
-    "total_listings": 2383,
+    "success_count": 3,
+    "total_listings": 3582,
     "first_seen": "2026-02-18T13:13:38.451179",
-    "last_used": "2026-02-18T13:59:29.162664"
+    "last_used": "2026-02-19T19:09:30.984627"
   },
   "synergybb.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 10,
     "first_seen": "2026-02-18T14:00:41.379782",
-    "last_used": "2026-02-18T14:00:41.379795"
+    "last_used": "2026-02-19T19:10:59.768583"
   },
   "eastcoastbusinessbrokers.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
-    "success_count": 1,
-    "total_listings": 157,
+    "success_count": 2,
+    "total_listings": 310,
     "first_seen": "2026-02-18T14:01:50.703064",
-    "last_used": "2026-02-18T14:01:50.703074"
+    "last_used": "2026-02-19T19:12:08.195773"
   },
   "calhouncompanies.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T14:04:12.013162",
-    "last_used": "2026-02-18T14:04:12.013180"
+    "last_used": "2026-02-19T19:14:30.111641"
   },
   "goldstarbbaz.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 5,
+    "success_count": 2,
+    "total_listings": 10,
     "first_seen": "2026-02-18T14:04:28.731892",
-    "last_used": "2026-02-18T14:04:28.731900"
+    "last_used": "2026-02-19T19:14:46.903508"
   },
   "salehgroup.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 1,
+    "success_count": 2,
+    "total_listings": 2,
     "first_seen": "2026-02-18T14:04:43.900138",
-    "last_used": "2026-02-18T14:04:43.900145"
+    "last_used": "2026-02-19T19:15:03.062698"
   },
   "kensingtoncompany.com": {
     "pattern": "div|children:div|has_link|text:medium|has_price",
-    "success_count": 1,
-    "total_listings": 110,
+    "success_count": 2,
+    "total_listings": 208,
     "first_seen": "2026-02-18T14:07:11.193288",
-    "last_used": "2026-02-18T14:07:11.193296"
+    "last_used": "2026-02-19T19:17:13.458359"
   },
   "lbaweb.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
-    "success_count": 1,
-    "total_listings": 472,
+    "success_count": 3,
+    "total_listings": 1025,
     "first_seen": "2026-02-18T14:31:31.020142",
-    "last_used": "2026-02-18T14:31:31.020154"
+    "last_used": "2026-02-20T18:40:13.658529"
   },
   "prime100businessbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T14:32:13.896660",
-    "last_used": "2026-02-18T14:32:13.896667"
+    "last_used": "2026-02-19T20:59:44.189432"
   },
   "saintlouisgroup.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 6,
+    "success_count": 2,
+    "total_listings": 10,
     "first_seen": "2026-02-18T15:46:18.021947",
-    "last_used": "2026-02-18T15:46:18.021957"
+    "last_used": "2026-02-19T23:09:33.975194"
   },
   "sofrankoadvisors.com": {
     "pattern": "div|children:div|has_link|text:long",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T15:46:38.180855",
-    "last_used": "2026-02-18T15:46:38.180908"
+    "last_used": "2026-02-19T23:09:50.909845"
   },
   "thefirmadv.com": {
     "pattern": "li|children:div,h4,p|has_link|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 42,
+    "success_count": 2,
+    "total_listings": 84,
     "first_seen": "2026-02-18T15:47:12.148219",
-    "last_used": "2026-02-18T15:47:12.148226"
+    "last_used": "2026-02-19T23:10:22.091880"
   },
   "fusionadvantage.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 22,
+    "success_count": 2,
+    "total_listings": 23,
     "first_seen": "2026-02-18T16:06:45.823347",
-    "last_used": "2026-02-18T16:06:45.823355"
+    "last_used": "2026-02-19T23:28:15.014052"
   },
   "cibb.com": {
     "pattern": "div|children:div|has_link|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T16:07:09.887949",
-    "last_used": "2026-02-18T16:07:09.887957"
+    "last_used": "2026-02-19T23:28:33.683252"
   },
   "azbusinessbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 5,
+    "success_count": 2,
+    "total_listings": 10,
     "first_seen": "2026-02-18T16:07:33.571568",
-    "last_used": "2026-02-18T16:07:33.571576"
+    "last_used": "2026-02-19T23:28:57.801098"
   },
   "pk-property.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 5,
+    "success_count": 2,
+    "total_listings": 10,
     "first_seen": "2026-02-18T16:07:49.462161",
-    "last_used": "2026-02-18T16:07:49.462172"
+    "last_used": "2026-02-19T23:29:12.231703"
   },
   "baltimorebusinessbrokers.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 4,
+    "success_count": 2,
+    "total_listings": 8,
     "first_seen": "2026-02-18T16:08:47.655808",
-    "last_used": "2026-02-18T16:08:47.655815"
+    "last_used": "2026-02-19T23:30:13.628523"
   },
   "pacificcommercialbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T16:09:41.630274",
-    "last_used": "2026-02-18T16:09:41.630291"
+    "last_used": "2026-02-19T23:30:59.397897"
   },
   "coastalbizbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 3,
+    "success_count": 2,
+    "total_listings": 6,
     "first_seen": "2026-02-18T16:09:56.139296",
-    "last_used": "2026-02-18T16:09:56.139304"
+    "last_used": "2026-02-19T23:31:14.800289"
   },
   "alpinebusinessbrokers.com": {
     "pattern": "div|children:div|has_link|text:long",
-    "success_count": 1,
-    "total_listings": 2,
+    "success_count": 2,
+    "total_listings": 4,
     "first_seen": "2026-02-18T16:10:19.695032",
-    "last_used": "2026-02-18T16:10:19.695039"
+    "last_used": "2026-02-19T23:31:33.938854"
   },
   "ibexbeyond.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
-    "success_count": 1,
-    "total_listings": 63,
+    "success_count": 2,
+    "total_listings": 126,
     "first_seen": "2026-02-18T16:10:43.429709",
-    "last_used": "2026-02-18T16:10:43.429716"
+    "last_used": "2026-02-19T23:31:50.768514"
+  },
+  "business-team.com": {
+    "pattern": "li|children:a,input,label,ul|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-19T21:01:13.556192",
+    "last_used": "2026-02-19T21:01:13.556204"
+  },
+  "clandbiz.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-19T21:01:34.763563",
+    "last_used": "2026-02-19T21:01:34.763570"
+  },
+  "moxiebrokeragegroup.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-19T21:01:50.036353",
+    "last_used": "2026-02-19T21:01:50.036360"
+  },
+  "v-aidgroup.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-19T21:04:07.669954",
+    "last_used": "2026-02-19T21:04:07.669961"
+  },
+  "armennazarian.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 70,
+    "first_seen": "2026-02-19T22:49:37.031255",
+    "last_used": "2026-02-19T22:49:37.031266"
+  },
+  "prolevelbusiness.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-19T23:32:12.826384",
+    "last_used": "2026-02-19T23:32:12.826391"
+  },
+  "zoombusinessbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 5,
+    "first_seen": "2026-02-19T23:49:21.181471",
+    "last_used": "2026-02-19T23:49:21.181523"
+  },
+  "excellencebusinessbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-19T23:50:05.764368",
+    "last_used": "2026-02-19T23:50:05.764375"
+  },
+  "thecanvasapts.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 5,
+    "first_seen": "2026-02-19T23:50:30.919953",
+    "last_used": "2026-02-19T23:50:30.919960"
+  },
+  "bizbrokeragehub.com": {
+    "pattern": "article|children:a,div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 12,
+    "first_seen": "2026-02-19T23:50:46.794213",
+    "last_used": "2026-02-19T23:50:46.794220"
+  },
+  "vikingmergers.com": {
+    "pattern": "div|children:div,style|has_link|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 61,
+    "first_seen": "2026-02-19T23:51:08.095030",
+    "last_used": "2026-02-19T23:51:08.095037"
+  },
+  "powerrealty1.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-19T23:51:27.419712",
+    "last_used": "2026-02-19T23:51:27.419719"
+  },
+  "michiganbusinessbroker.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 6,
+    "first_seen": "2026-02-19T23:52:07.481374",
+    "last_used": "2026-02-19T23:52:07.481387"
+  },
+  "fih.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 20,
+    "first_seen": "2026-02-19T23:52:23.385947",
+    "last_used": "2026-02-19T23:52:23.385954"
+  },
+  "sdbiz.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T00:28:02.716018",
+    "last_used": "2026-02-20T00:28:02.716026"
+  },
+  "latonas.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 13,
+    "first_seen": "2026-02-20T00:28:20.613680",
+    "last_used": "2026-02-20T00:28:20.613692"
+  },
+  "linkbusiness.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 450,
+    "first_seen": "2026-02-20T00:33:59.398858",
+    "last_used": "2026-02-20T00:33:59.398870"
+  },
+  "businessfinderscanada.com": {
+    "pattern": "li|children:a,ul|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 28,
+    "first_seen": "2026-02-20T04:44:09.326873",
+    "last_used": "2026-02-20T04:44:09.326889"
+  },
+  "caldergr.com": {
+    "pattern": "div|children:div|has_link|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T04:44:34.320069",
+    "last_used": "2026-02-20T04:44:34.320076"
+  },
+  "pittsburgh.fcbb.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T04:44:52.540257",
+    "last_used": "2026-02-20T04:44:52.540270"
+  },
+  "choijina.com": {
+    "pattern": "li|children:div,figure|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 26,
+    "first_seen": "2026-02-20T04:45:09.036701",
+    "last_used": "2026-02-20T04:45:09.036709"
+  },
+  "businessmodificationgroup.com": {
+    "pattern": "li|children:a,ul|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T04:45:28.086907",
+    "last_used": "2026-02-20T04:45:28.086914"
+  },
+  "denverbbs.com": {
+    "pattern": "div|children:div|has_link|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T04:45:55.861080",
+    "last_used": "2026-02-20T04:45:55.861091"
+  },
+  "naz-business.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T04:46:19.485770",
+    "last_used": "2026-02-20T04:46:19.485778"
+  },
+  "practicetransitionsgroup.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T05:17:41.473625",
+    "last_used": "2026-02-20T05:17:41.473632"
+  },
+  "murraybizbuy.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 42,
+    "first_seen": "2026-02-20T06:10:56.716723",
+    "last_used": "2026-02-20T06:10:56.716730"
+  },
+  "poegroupadvisors.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium",
+    "success_count": 1,
+    "total_listings": 74,
+    "first_seen": "2026-02-20T07:43:06.029537",
+    "last_used": "2026-02-20T07:43:06.029553"
+  },
+  "missionpeakbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 6,
+    "first_seen": "2026-02-20T07:43:23.945907",
+    "last_used": "2026-02-20T07:43:23.945961"
+  },
+  "enlign.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 26,
+    "first_seen": "2026-02-20T07:44:33.507022",
+    "last_used": "2026-02-20T07:44:33.507029"
+  },
+  "regalconsultants.com": {
+    "pattern": "div|children:div|has_link|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 58,
+    "first_seen": "2026-02-20T07:44:46.928706",
+    "last_used": "2026-02-20T07:44:46.928713"
+  },
+  "agencyforsale.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 94,
+    "first_seen": "2026-02-20T07:46:29.323248",
+    "last_used": "2026-02-20T07:46:29.323255"
+  },
+  "foxandroach.com": {
+    "pattern": "div|children:div|has_link|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T08:02:33.262187",
+    "last_used": "2026-02-20T08:02:33.262198"
+  },
+  "cotwrealestate.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T08:03:11.014843",
+    "last_used": "2026-02-20T08:03:11.014851"
+  },
+  "mainstreetmain.com": {
+    "pattern": "div|children:div|has_link|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 5,
+    "first_seen": "2026-02-20T08:03:37.509539",
+    "last_used": "2026-02-20T08:03:37.509592"
+  },
+  "tangentbrokerage.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 7,
+    "first_seen": "2026-02-20T08:03:52.895335",
+    "last_used": "2026-02-20T08:03:52.895343"
+  },
+  "manhattan.biz": {
+    "pattern": "div|children:div|has_link|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T08:04:17.461636",
+    "last_used": "2026-02-20T08:04:17.461642"
+  },
+  "peakbusinessbrokersllc.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T08:19:19.821477",
+    "last_used": "2026-02-20T08:19:19.821488"
+  },
+  "excelbusinessbrokersusa.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T08:19:44.775702",
+    "last_used": "2026-02-20T08:19:44.775712"
+  },
+  "appbusinessbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T08:29:33.646120",
+    "last_used": "2026-02-20T08:29:33.646132"
+  },
+  "strategicdc.com": {
+    "pattern": "div|children:a|has_link|has_img|text:medium|has_price",
+    "success_count": 1,
+    "total_listings": 17,
+    "first_seen": "2026-02-20T08:30:00.170100",
+    "last_used": "2026-02-20T08:30:00.170111"
+  },
+  "ctbusinessforsale.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T08:30:21.116734",
+    "last_used": "2026-02-20T08:30:21.116741"
+  },
+  "bizbuyandsellga.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T09:34:31.897587",
+    "last_used": "2026-02-20T09:34:31.897598"
+  },
+  "crexi.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T09:41:47.635766",
+    "last_used": "2026-02-20T09:41:47.635777"
+  },
+  "arthurberry.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T09:42:04.360046",
+    "last_used": "2026-02-20T09:42:04.360054"
+  },
+  "bayareabizbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T09:59:11.879481",
+    "last_used": "2026-02-20T09:59:11.879488"
+  },
+  "qbusinessadvisors.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T09:59:34.214346",
+    "last_used": "2026-02-20T09:59:34.214354"
+  },
+  "recckio.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T09:59:53.684201",
+    "last_used": "2026-02-20T09:59:53.684208"
+  },
+  "indianabusinessadvisors.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 10,
+    "first_seen": "2026-02-20T10:02:08.526140",
+    "last_used": "2026-02-20T10:02:08.526149"
+  },
+  "reputedbrokerage.com": {
+    "pattern": "div|children:div|has_link|has_img|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T10:39:53.914253",
+    "last_used": "2026-02-20T10:39:53.914264"
+  },
+  "flbusinesses.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T13:30:49.913396",
+    "last_used": "2026-02-20T13:30:49.913449"
+  },
+  "capstarco.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T13:31:09.515634",
+    "last_used": "2026-02-20T13:31:09.515640"
+  },
+  "1800bizbroker.com": {
+    "pattern": "li|children:a|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 6,
+    "first_seen": "2026-02-20T13:31:52.774209",
+    "last_used": "2026-02-20T13:31:52.774220"
+  },
+  "truviewbusiness.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T13:43:49.737587",
+    "last_used": "2026-02-20T13:43:49.737597"
+  },
+  "progressivepracticesales.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 110,
+    "first_seen": "2026-02-20T14:07:02.561934",
+    "last_used": "2026-02-20T14:07:02.561941"
+  },
+  "pronovapartners.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 3,
+    "first_seen": "2026-02-20T14:34:29.675849",
+    "last_used": "2026-02-20T14:34:29.675885"
+  },
+  "buffalobusinessbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T15:05:50.630140",
+    "last_used": "2026-02-20T15:05:50.630147"
+  },
+  "dealforce.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 1,
+    "first_seen": "2026-02-20T15:06:18.022301",
+    "last_used": "2026-02-20T15:06:18.022313"
+  },
+  "businessesforsale.com": {
+    "pattern": "div|children:div|has_link|text:long",
+    "success_count": 1,
+    "total_listings": 16,
+    "first_seen": "2026-02-20T18:39:30.146945",
+    "last_used": "2026-02-20T18:39:30.146957"
+  },
+  "gutierbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T18:41:05.202744",
+    "last_used": "2026-02-20T18:41:05.202751"
+  },
+  "xerare.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 4,
+    "first_seen": "2026-02-20T18:42:15.707187",
+    "last_used": "2026-02-20T18:42:15.707195"
+  },
+  "leebrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 4,
+    "first_seen": "2026-02-20T18:43:30.927940",
+    "last_used": "2026-02-20T18:43:30.927964"
+  },
+  "fnbcusa.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T18:44:05.517767",
+    "last_used": "2026-02-20T18:44:05.517774"
+  },
+  "benchmarkbusinessbrokers.com": {
+    "pattern": "div|children:div|has_link|text:medium",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T18:44:22.235791",
+    "last_used": "2026-02-20T18:44:22.235798"
+  },
+  "gilezanglobal.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T18:44:38.516582",
+    "last_used": "2026-02-20T18:44:38.516593"
+  },
+  "number1businessbroker.com": {
+    "pattern": "div|children:a,div|has_link|text:long|has_price",
+    "success_count": 1,
+    "total_listings": 33,
+    "first_seen": "2026-02-20T18:45:02.186853",
+    "last_used": "2026-02-20T18:45:02.186861"
+  },
+  "buybizusa.com": {
+    "pattern": "div|children:div|has_link|has_img|text:long",
+    "success_count": 1,
+    "total_listings": 2,
+    "first_seen": "2026-02-20T18:45:35.986192",
+    "last_used": "2026-02-20T18:45:35.986208"
   }
 }
