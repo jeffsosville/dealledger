@@ -1,0 +1,947 @@
+[
+  {
+    "broker_id": "999995.0",
+    "broker_name": "VR Business Brokers",
+    "broker_url": "https://www.vrbusinessbrokers.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T18:44:46.784692"
+  },
+  {
+    "broker_id": "28149.0",
+    "broker_name": "hedgestone advisors",
+    "broker_url": "https://www.hedgestone.com/businesses-for-sale/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T19:09:35.389232"
+  },
+  {
+    "broker_id": "1153.0",
+    "broker_name": "ubi business brokers",
+    "broker_url": "https://www.ubibusinessbrokersarizona.com/all-listings",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-19T19:09:39.059969"
+  },
+  {
+    "broker_id": "2408.0",
+    "broker_name": "jeff linda nyman",
+    "broker_url": "https://fcbb.com/businesses-for-sale?page=1",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T19:10:05.455016"
+  },
+  {
+    "broker_id": "388.0",
+    "broker_name": "larry bodner",
+    "broker_url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T19:10:29.084805"
+  },
+  {
+    "broker_id": "44749.0",
+    "broker_name": "jim boyd",
+    "broker_url": "https://ninbb.com/business-listing/",
+    "failure_type": "HTTP_503",
+    "error_detail": "HTTP 503",
+    "http_status": 503,
+    "failed_at": "2026-02-19T19:10:33.067224"
+  },
+  {
+    "broker_id": "3477.0",
+    "broker_name": "tom traina",
+    "broker_url": "https://eatz-associates.com/listings/?fwp_status=for-sale%2Cnew-listing%2Cunder-contract%2Cfor-lease",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T19:10:36.502880"
+  },
+  {
+    "broker_id": "6340.0",
+    "broker_name": "jason hullender",
+    "broker_url": "https://www.bizbuysell.com/business-broker/jason-hullender/iag/2171/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T19:11:03.599058"
+  },
+  {
+    "broker_id": "37947.0",
+    "broker_name": "eric espinoza",
+    "broker_url": "https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T19:11:08.090729"
+  },
+  {
+    "broker_id": "12296.0",
+    "broker_name": "kavita purohit",
+    "broker_url": "https://riverbrokers.com/commercial-listings/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T19:19:11.403023"
+  },
+  {
+    "broker_id": "889.0",
+    "broker_name": "a. bert risdon, b.c.i.",
+    "broker_url": "https://fbxbrokers.com/fbx-listings/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T20:59:21.191979"
+  },
+  {
+    "broker_id": "2977.0",
+    "broker_name": "rich gruber",
+    "broker_url": "https://www.bizbuysell.com/business-broker/rich-gruber/realtec-business-brokers/1025/?cb_ifcb=1&j=aq",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T20:59:24.812279"
+  },
+  {
+    "broker_id": "26992.0",
+    "broker_name": "mike darmo",
+    "broker_url": "https://www.bizbuysell.com/business-broker/mike-darmo/american-realty-brokers/20105/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T21:01:53.355898"
+  },
+  {
+    "broker_id": "1083.0",
+    "broker_name": "jay m. inbar, certified mergers&acquisition pro",
+    "broker_url": "https://inbargroup.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T22:50:00.359423"
+  },
+  {
+    "broker_id": "22641.0",
+    "broker_name": "ben strake",
+    "broker_url": "https://premierbb.com/listings/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T22:50:03.331162"
+  },
+  {
+    "broker_id": "26144.0",
+    "broker_name": "aldrin raphael fernandes",
+    "broker_url": "https://www.aldrin.ca/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:10:47.505831"
+  },
+  {
+    "broker_id": "47713.0",
+    "broker_name": "russell cohen",
+    "broker_url": "https://bizmls.com/listings/bbf-1287002/bus-chg7day.asp",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:11:02.957223"
+  },
+  {
+    "broker_id": "2515.0",
+    "broker_name": "robert hughes",
+    "broker_url": "https://hughesproperties.com/#",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T23:29:17.099592"
+  },
+  {
+    "broker_id": "4806.0",
+    "broker_name": "trevin rasmussen",
+    "broker_url": "https://bristolgrouponline.com/buy-a-business/#search",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T23:29:21.262332"
+  },
+  {
+    "broker_id": "41598.0",
+    "broker_name": "gene townley",
+    "broker_url": "https://dynamitebrokers.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:30:29.164965"
+  },
+  {
+    "broker_id": "21450.0",
+    "broker_name": "julie sandoval",
+    "broker_url": "https://www.dealforce.com/buying-a-business/ -- Limited list. Wants a sign in to view all listings",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-19T23:31:55.845058"
+  },
+  {
+    "broker_id": "42136.0",
+    "broker_name": "sinclair kim",
+    "broker_url": "https://www.givingtreerealty.com/listings/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:32:31.694579"
+  },
+  {
+    "broker_id": "1271.0",
+    "broker_name": "mac thelen",
+    "broker_url": "https://oibmn.com/listing_status/current/",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-19T23:32:36.018734"
+  },
+  {
+    "broker_id": "3339.0",
+    "broker_name": "troy frank",
+    "broker_url": "https://indianaequitybrokers.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:49:39.221981"
+  },
+  {
+    "broker_id": "22925.0",
+    "broker_name": "carter asefi",
+    "broker_url": "https://www.franbiznetwork.com/listings/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T23:51:30.523254"
+  },
+  {
+    "broker_id": "2456.0",
+    "broker_name": "michael wildeveld, cbb, cbi, cm&ap, m&ami, cepa",
+    "broker_url": "https://theveldgroup.com/main-street-businesses-for-sale/#\nhttps://veldma.com/listing/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-19T23:52:26.333110"
+  },
+  {
+    "broker_id": "25956.0",
+    "broker_name": "thomas zengen",
+    "broker_url": "https://northeastbusinessbrokers.com/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:52:41.575648"
+  },
+  {
+    "broker_id": "44262.0",
+    "broker_name": "john martinez",
+    "broker_url": "https://fcbb.com/businesses-for-sale?page=1",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:53:06.695977"
+  },
+  {
+    "broker_id": "47690.0",
+    "broker_name": "daniel hauer",
+    "broker_url": "https://link.flexmls.com/x2oeawuasrr,5",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-19T23:53:26.988713"
+  },
+  {
+    "broker_id": "10506.0",
+    "broker_name": "bill vanden eynden",
+    "broker_url": "https://bcvcommercialrealty.com/businesses-for-sale/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T04:45:11.603291"
+  },
+  {
+    "broker_id": "28003.0",
+    "broker_name": "randy bernard",
+    "broker_url": "https://proformapartners.com/current-listings/\n** full list needs log in",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T04:45:31.908606"
+  },
+  {
+    "broker_id": "45015.0",
+    "broker_name": "joe tinpan",
+    "broker_url": "https://newmichiganrealty.com/search-result/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T04:56:29.712020"
+  },
+  {
+    "broker_id": "6451.0",
+    "broker_name": "company sellers",
+    "broker_url": "https://www.companysellers.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T04:56:54.956686"
+  },
+  {
+    "broker_id": "30234.0",
+    "broker_name": "shane torres",
+    "broker_url": "https://krbb.com/listings/",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T05:17:44.892788"
+  },
+  {
+    "broker_id": "8407.0",
+    "broker_name": "liliane tietjen",
+    "broker_url": "https://www.patriotbusinessadvisors.com/Listings.html",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T05:17:59.093679"
+  },
+  {
+    "broker_id": "4051.0",
+    "broker_name": "best biz to buy llc texas",
+    "broker_url": "https://www.bestbiztobuy.com/listings",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T05:18:14.349317"
+  },
+  {
+    "broker_id": "1371.0",
+    "broker_name": "mike nova",
+    "broker_url": "https://santarosabusinessandcommercial.com/active-new-listings/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T06:11:30.396859"
+  },
+  {
+    "broker_id": "24767.0",
+    "broker_name": "rob anderson",
+    "broker_url": "https://equitygroupmi.com/real-estate-listings/\n\nhttps://equitygroupmi.com/businesses-for-sale-by-egm/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T07:43:27.742033"
+  },
+  {
+    "broker_id": "40190.0",
+    "broker_name": "raj golee",
+    "broker_url": "https://biz-depot.co/properties-standard-list/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T07:46:33.738989"
+  },
+  {
+    "broker_id": "3191.0",
+    "broker_name": "sarah grossman",
+    "broker_url": "https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T07:46:36.891678"
+  },
+  {
+    "broker_id": "27401.0",
+    "broker_name": "miriam liang, cbi",
+    "broker_url": "https://www.routeadvisors.com/available-routes/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T08:02:36.364458"
+  },
+  {
+    "broker_id": "46305.0",
+    "broker_name": "chris pramber",
+    "broker_url": "https://businessesforsale.nuwireinvestor.com/business-broker/chris-pramber/prambernow/38206/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T08:02:39.914260"
+  },
+  {
+    "broker_id": "38216.0",
+    "broker_name": "alfredo gonzalez",
+    "broker_url": "https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/",
+    "failure_type": "UNKNOWN",
+    "error_detail": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/\nCall log:\n  - navigating to \"https://en.negociosenflorida.com/compre-un-negocio/negoc",
+    "http_status": null,
+    "failed_at": "2026-02-20T08:04:20.382230"
+  },
+  {
+    "broker_id": "39844.0",
+    "broker_name": "ps broker",
+    "broker_url": "https://www.psbroker.com/property-category/all-veterinary-practices-for-sale/",
+    "failure_type": "UNKNOWN",
+    "error_detail": "Unknown: Page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.psbroker.com/property-category/all-veterinary-practices-for-sale/\nCall log:\n  - navigating to \"https://www.psbroker.com/property-category/al",
+    "http_status": null,
+    "failed_at": "2026-02-20T08:19:25.512596"
+  },
+  {
+    "broker_id": "9576.0",
+    "broker_name": "affordable business concepts, llc",
+    "broker_url": "https://www.affordablebusinessconcepts.com/featured-list/ \n\nhttps://www.affordablebusinessconcepts.com/new-listing/",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T08:29:39.173597"
+  },
+  {
+    "broker_id": "8677.0",
+    "broker_name": "tim bullard",
+    "broker_url": "https://lakecountryadvisors.com/businesses-for-sale/main-street/\n\nhttps://lakecountryadvisors.com/businesses-for-sale/ma/\n",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T08:30:03.253254"
+  },
+  {
+    "broker_id": "5515.0",
+    "broker_name": "vantage partners",
+    "broker_url": "https://www.commercialmls.com/People/AgentListings/19393\n\nhttps://www.commercialmls.com/People/AgentBusOps/19393",
+    "failure_type": "HTTP_400",
+    "error_detail": "HTTP 400",
+    "http_status": 400,
+    "failed_at": "2026-02-20T09:34:36.767083"
+  },
+  {
+    "broker_id": "40900.0",
+    "broker_name": "steve tsoris",
+    "broker_url": "https://newleafbrokerage.com/bb/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T09:34:52.300510"
+  },
+  {
+    "broker_id": "22210.0",
+    "broker_name": "bill boyd",
+    "broker_url": "https://www.bizbuysell.com/business-broker/bill-boyd/boyd-brokerage-associates-llc/15534/\n\nhttps://www.loopnet.com/commercial-real-estate-brokers/profile/bill-boyd/g68e2bwb#listings-section",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T09:34:54.662832"
+  },
+  {
+    "broker_id": "31650.0",
+    "broker_name": "tom brubaker",
+    "broker_url": "https://www.tambaymergers.com/ - under buying a business tab",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T09:41:14.755524"
+  },
+  {
+    "broker_id": "34116.0",
+    "broker_name": "matthew baas",
+    "broker_url": "https://www.smallbusinessdeal.com/current-listings/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T09:58:54.348109"
+  },
+  {
+    "broker_id": "46471.0",
+    "broker_name": "sanjay wadhwani",
+    "broker_url": "https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T09:59:15.315979"
+  },
+  {
+    "broker_id": "17880.0",
+    "broker_name": "jason barnes",
+    "broker_url": "https://www.bizbuysell.com/business-broker/jason-barnes/priority-business-brokers/11455/?bp_sreg=56&bp_scounty=2556&bp_cpg=",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T09:59:57.218799"
+  },
+  {
+    "broker_id": "25739.0",
+    "broker_name": "sunny gandhi",
+    "broker_url": "https://kwcommercial.com/properties/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:40:56.797873"
+  },
+  {
+    "broker_id": "9466.0",
+    "broker_name": "sherman hillelson",
+    "broker_url": "https://shermangroup.net/listings/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:41:59.974985"
+  },
+  {
+    "broker_id": "45825.0",
+    "broker_name": "james felthammer",
+    "broker_url": "https://www.loopnet.com/biz/business-opportunity/profitable-home-based-real-estate-firm-in-hunstville/2285686/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:43:03.620673"
+  },
+  {
+    "broker_id": "22928.0",
+    "broker_name": "prashant parmar",
+    "broker_url": "https://www.aspectbrokers.biz/BusinessForSale/BusinessForSale",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:44:06.213280"
+  },
+  {
+    "broker_id": "34365.0",
+    "broker_name": "brian zoberg",
+    "broker_url": "https://suncoastbiz.net/search-businesses/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:45:09.741725"
+  },
+  {
+    "broker_id": "40427.0",
+    "broker_name": "lou sabbagh, cbi, cm&ap",
+    "broker_url": "https://budgetbusinessbrokers.com/Listings-For-Sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:46:13.076393"
+  },
+  {
+    "broker_id": "14674.0",
+    "broker_name": "robert clements",
+    "broker_url": "https://www.benchmarkbusinessgroup.com/business-for-sale",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:47:15.520617"
+  },
+  {
+    "broker_id": "46607.0",
+    "broker_name": "tarry ennab",
+    "broker_url": "https://www.7cint.com/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T10:48:19.572385"
+  },
+  {
+    "broker_id": "17065.0",
+    "broker_name": "brett post",
+    "broker_url": "https://3cre.com/property-listings/\n\nhttps://3cre.com/business-listings-columbus/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:08:34.363034"
+  },
+  {
+    "broker_id": "11797.0",
+    "broker_name": "the pacific group las vegas nv",
+    "broker_url": "https://us.businessesforsale.com/us/agents/the-pacific-group",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:09:37.421439"
+  },
+  {
+    "broker_id": "49543.0",
+    "broker_name": "tom cerniello",
+    "broker_url": "https://totalbusinessbrokers.com/businesses-for-sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:10:40.331598"
+  },
+  {
+    "broker_id": "28885.0",
+    "broker_name": "jerry hasanovic, cpa, mst",
+    "broker_url": "https://www.dhbrokerage.com/listings.php",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:11:43.118378"
+  },
+  {
+    "broker_id": "34608.0",
+    "broker_name": "tim johnson",
+    "broker_url": "https://businessesforsalehamptonroads.com/businesses-for-sale",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:27:52.600110"
+  },
+  {
+    "broker_id": "31769.0",
+    "broker_name": "haroon bhatti",
+    "broker_url": "https://capitalbusinessbrokerage.biz/business/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:28:56.522403"
+  },
+  {
+    "broker_id": "352.0",
+    "broker_name": "rob amerine",
+    "broker_url": "https://www.fbb.com/businesses-for-sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:29:59.772634"
+  },
+  {
+    "broker_id": "46324.0",
+    "broker_name": "jeff sullivan",
+    "broker_url": "https://sullivanbusinessbrokers.com/category/uncategorized/ - Appears all SOLD",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:31:02.322062"
+  },
+  {
+    "broker_id": "1120.0",
+    "broker_name": "kevin nery",
+    "broker_url": "https://coastalbizbrokers.com/all-listings/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T11:32:05.778324"
+  },
+  {
+    "broker_id": "43564.0",
+    "broker_name": "wayne mcfarland",
+    "broker_url": "https://pronovapartners.com/engagements/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T12:29:18.858839"
+  },
+  {
+    "broker_id": "39754.0",
+    "broker_name": "bilal khaliq,cbb.",
+    "broker_url": "https://www.bizbuysell.com/business-broker/bilal-khaliq-cbb/empire-global-business-brokers/32137/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T12:30:22.611804"
+  },
+  {
+    "broker_id": "28006.0",
+    "broker_name": "paranee judd",
+    "broker_url": "https://paraneejudd.com/basic-search/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T12:31:25.978805"
+  },
+  {
+    "broker_id": "34182.0",
+    "broker_name": "rocky didonna",
+    "broker_url": "https://www.bizmls.com/business-search.asp -- Need to choose State",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T12:32:28.829328"
+  },
+  {
+    "broker_id": "24545.0",
+    "broker_name": "jay armour",
+    "broker_url": "https://therouteexchange.com/new-route-mailing-list/ - Needs to fill out a form",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T13:05:39.737801"
+  },
+  {
+    "broker_id": "2171.0",
+    "broker_name": "monika page",
+    "broker_url": "https://www.biz-match.com/listings",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T13:30:33.050053"
+  },
+  {
+    "broker_id": "926.0",
+    "broker_name": "frank rubin",
+    "broker_url": "https://bbms.biz/listings/bbf-134/bus-own.asp",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T13:31:24.843349"
+  },
+  {
+    "broker_id": "49207.0",
+    "broker_name": "gregory barnes",
+    "broker_url": "https://thedynastyba.com/listings/ - Needs location",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T13:31:35.409444"
+  },
+  {
+    "broker_id": "35477.0",
+    "broker_name": "raj sathyaseelan",
+    "broker_url": "https://www.link-siliconvalley.com/businesses-for-sale/",
+    "failure_type": "UNKNOWN",
+    "error_detail": "Unknown: Page.goto: net::ERR_NETWORK_IO_SUSPENDED at https://www.link-siliconvalley.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://www.link-siliconvalley.com/businesses-for-sale/\", waiting until",
+    "http_status": null,
+    "failed_at": "2026-02-20T13:32:00.586110"
+  },
+  {
+    "broker_id": "20993.0",
+    "broker_name": "abdul jobah, ccim designee",
+    "broker_url": "https://www.jobahcri.com/listings?sale=2",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T13:44:52.228447"
+  },
+  {
+    "broker_id": "34668.0",
+    "broker_name": "malone brokers inc",
+    "broker_url": "https://www.malonecb.com/search-listings#/search/grid/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:00:48.599708"
+  },
+  {
+    "broker_id": "2825.0",
+    "broker_name": "bill oates",
+    "broker_url": "https://alliantbrokers.com/businesses-for-sale-4/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:01:51.259281"
+  },
+  {
+    "broker_id": "35082.0",
+    "broker_name": "toby barker",
+    "broker_url": "https://www.bizbrokersuccess.com/current-listings",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:02:54.076322"
+  },
+  {
+    "broker_id": "17722.0",
+    "broker_name": "mark johns",
+    "broker_url": "https://kelleher-sadowsky.com/listings/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:03:57.251039"
+  },
+  {
+    "broker_id": "44968.0",
+    "broker_name": "andy rumph",
+    "broker_url": "https://thedecaingroup.com/businesses-for-sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:04:59.796029"
+  },
+  {
+    "broker_id": "16388.0",
+    "broker_name": "brian do",
+    "broker_url": "https://realtyall.com/business-for-sale-%ec%82%ac%ec%97%85%ec%b2%b4-%eb%a7%a4%eb%a7%a4/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T14:06:02.977433"
+  },
+  {
+    "broker_id": "3176.0",
+    "broker_name": "nai excel",
+    "broker_url": "https://excelcres.com/properties/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:05:13.408306"
+  },
+  {
+    "broker_id": "14260.0",
+    "broker_name": "richard kim",
+    "broker_url": "https://www.usarealty-mn.com/listings - Need to choose location",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T15:05:18.901568"
+  },
+  {
+    "broker_id": "10634.0",
+    "broker_name": "emmet apolinario, cepa, cvb",
+    "broker_url": "https://www.bizbuysell.com/business-broker/emmet-apolinario-cepa-cvb/ohio-business-advisors-an-international-resource-group-company/5022/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T15:05:53.778943"
+  },
+  {
+    "broker_id": "36229.0",
+    "broker_name": "jaret grossman",
+    "broker_url": "https://www.bizbuysell.com/business-broker/jaret-grossman/jarbly-llc/28847/",
+    "failure_type": "UNKNOWN",
+    "error_detail": "Unknown: Page.goto: net::ERR_ADDRESS_UNREACHABLE at https://www.bizbuysell.com/business-broker/jaret-grossman/jarbly-llc/28847/\nCall log:\n  - navigating to \"https://www.bizbuysell.com/business-broker/jaret-gro",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:06:42.008640"
+  },
+  {
+    "broker_id": "3636.0",
+    "broker_name": "randi edwards, cbb, cbis",
+    "broker_url": "https://www.krbrokers.com/kr-business-broker-listings",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:07:44.783727"
+  },
+  {
+    "broker_id": "42190.0",
+    "broker_name": "jeremiah baron",
+    "broker_url": "https://treasurecoastcommercialrealestate.com/listings/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:08:47.346894"
+  },
+  {
+    "broker_id": "812.0",
+    "broker_name": "jon barger, cbb, sba",
+    "broker_url": "https://www.tucsonbusiness.com/listings.html",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:09:49.838793"
+  },
+  {
+    "broker_id": "809.0",
+    "broker_name": "bill corley - bottomline business brokers",
+    "broker_url": "https://www.blbrokers.com/businesses-for-sale",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:10:52.579614"
+  },
+  {
+    "broker_id": "9046.0",
+    "broker_name": "joseph latina",
+    "broker_url": "https://lmtcre.com/businesses-for-sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:11:56.327786"
+  },
+  {
+    "broker_id": "40556.0",
+    "broker_name": "alan mehrez",
+    "broker_url": "https://businessteamusa.com/businesses-for-sale/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:12:58.759140"
+  },
+  {
+    "broker_id": "17500.0",
+    "broker_name": "alexis roberts",
+    "broker_url": "https://svnchicago.com/properties/",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:14:01.158798"
+  },
+  {
+    "broker_id": "6530.0",
+    "broker_name": "ned malley",
+    "broker_url": "https://www.rentalbeast.com/infinitipropertiesil/apartments/for_rent/Chicago-Illinois#!/search/general",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:15:05.263824"
+  },
+  {
+    "broker_id": "24603.0",
+    "broker_name": "michael dukhovny",
+    "broker_url": "https://search.unitednationalrealty.com/idx/results/listings?ccz=city&city%5B0%5D=",
+    "failure_type": "TIMEOUT",
+    "error_detail": "Connection timeout",
+    "http_status": null,
+    "failed_at": "2026-02-20T15:34:34.115723"
+  },
+  {
+    "broker_id": "38727.0",
+    "broker_name": "sandra boucher",
+    "broker_url": "https://sebusinessalliance.com/buy-a-business/ -- Needs to fill out NDA",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T18:40:17.380028"
+  },
+  {
+    "broker_id": "40194.0",
+    "broker_name": "take iga cbi, cbb",
+    "broker_url": "https://jrc-advisors.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T18:40:47.426183"
+  },
+  {
+    "broker_id": "15708.0",
+    "broker_name": "james sullivan foster",
+    "broker_url": "https://businessbrokersoforegon.com/listings/",
+    "failure_type": "HTTP_404",
+    "error_detail": "HTTP 404",
+    "http_status": 404,
+    "failed_at": "2026-02-20T18:41:57.197109"
+  },
+  {
+    "broker_id": "33528.0",
+    "broker_name": "richard green",
+    "broker_url": "https://greenandco.biz/featured-for-sale/",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T18:43:33.711353"
+  },
+  {
+    "broker_id": "10428.0",
+    "broker_name": "adam bauer, cbi",
+    "broker_url": "https://tbxllc.com/businesses-for-sale/",
+    "failure_type": "NO_PATTERN",
+    "error_detail": "No business listings detected",
+    "http_status": null,
+    "failed_at": "2026-02-20T18:43:47.708080"
+  },
+  {
+    "broker_id": "14964.0",
+    "broker_name": "mr. tracy a. burnidge",
+    "broker_url": "https://www.bizbuysell.com/business-broker/mr-tracy-a-burnidge/buy-sell-business-brokers-inc/8827/?ui=true&bwp_url=BuySellBrokers&is_pseo=1",
+    "failure_type": "HTTP_403",
+    "error_detail": "HTTP 403",
+    "http_status": 403,
+    "failed_at": "2026-02-20T18:45:38.851613"
+  }
+]
