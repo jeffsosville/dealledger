@@ -1,0 +1,25 @@
+{
+  "run_at": "2026-02-20T23:45:39.341903+00:00",
+  "vertical_filter": null,
+  "stats": {
+    "brokers_attempted": 200,
+    "brokers_success": 95,
+    "brokers_failed": 105,
+    "success_rate": "47.5%",
+    "listings_total": 3543,
+    "with_price": 2824,
+    "with_revenue": 459,
+    "with_cashflow": 1334,
+    "patterns_learned": 92,
+    "ml_predictions_used": 23
+  },
+  "failures_by_type": {
+    "NO_PATTERN": 23,
+    "HTTP_403": 24,
+    "HTTP_404": 11,
+    "HTTP_503": 1,
+    "UNKNOWN": 4,
+    "HTTP_400": 1,
+    "TIMEOUT": 41
+  }
+}
