@@ -105,7 +105,15 @@ class PatternCache:
             json.dump(self.patterns, f, indent=2)
     
     def get(self, domain):
-        return self.patterns.get(domain)
+        entry = self.patterns.get(domain)
+        if not entry:
+            return None
+        # Handle V4 cache format
+        if "pattern" in entry and isinstance(entry["pattern"], dict):
+            return entry["pattern"]
+        if "container_selector" in entry:
+            return entry
+        return None
     
     def store(self, domain, pattern):
         self.patterns[domain] = pattern
