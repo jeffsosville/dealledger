@@ -1,0 +1,32 @@
+name: Daily Scrape
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+    inputs:
+      broker_count:
+        description: Number of brokers to scrape
+        required: false
+        default: '100'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pandas beautifulsoup4 playwright requests && playwright install chromium && playwright install-deps
+      - name: Run scraper
+        run: python scrapers/dealledger_scraper_v5.py --brokers data/brokers.csv --top-n 100 --output data/snapshots
+      - name: Commit results
+        run: |
+          git config user.name "DealLedger Bot"
+          git config user.email "bot@dealledger.org"
+          git add data/snapshots/ data/pattern_cache.json
+          git commit -m "Daily scrape" || echo "No changes"
+          git push || echo "Nothing to push"
