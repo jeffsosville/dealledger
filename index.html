@@ -758,7 +758,7 @@
                 const href = listing.source_url || listing.listing_url || '#';
                 return `
                 <tr>
-                    <td class="col-date">${formatDate(listing.scraped_at || listing.first_seen)}</td>
+                    <td class="col-date">${formatDate(listing.first_seen || listing.scraped_at)}</td>
                     <td class="col-title">
                         <a href="${href}" target="_blank" rel="noopener">
                             ${truncate(listing.title || 'Untitled', 60)}
