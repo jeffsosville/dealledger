@@ -484,12 +484,14 @@
             <div class="header-content">
                 <div>
                     <a href="/" class="logo">DealLedger</a>
-                    <span class="tagline">— Public record of businesses for sale</span>
+                    <span class="tagline">— An open ledger of every business for sale in America</span>
                 </div>
                 <nav>
                     <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
                     <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Methodology</a>
-                    <a href="https://github.com/jeffsosville/dealledger/tree/main/data/daily" target="_blank">Archive</a>
+                    <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank">Snapshots</a>
+                    <a href="#submit">Submit</a>
+                    <a href="#submit">Submit</a>
                     <a href="#about">About</a>
                 </nav>
             </div>
@@ -577,6 +579,77 @@
         <div class="pagination" id="pagination"></div>
     </main>
 
+    
+    <!-- SUBMIT BROKER -->
+    <section id="submit" style="border-top:1px solid #d4d4d4;padding:48px 0;background:#fff7ed;">
+        <div class="container">
+            <div style="max-width:680px;">
+                <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Submit a Broker</h2>
+                <p style="font-size:14px;color:#78716c;margin-bottom:20px;line-height:1.6;">Know a business broker with listings online? Submit their URL. Our AI agent analyzes the page, generates a scraper, and adds them to the ledger.</p>
+                <form id="brokerForm" style="display:flex;gap:10px;margin-bottom:10px;">
+                    <input type="url" id="brokerUrl" placeholder="https://broker-website.com/listings" required style="flex:1;padding:10px 14px;font-family:var(--mono);font-size:13px;border:1px solid #d4d4d4;background:#fafaf9;color:#1c1917;">
+                    <button type="submit" style="padding:10px 20px;font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;white-space:nowrap;">Submit URL</button>
+                </form>
+                <div style="font-family:var(--mono);font-size:11px;color:#78716c;">Opens a GitHub issue for review. Scraper is auto-generated and added to the next cycle.</div>
+                <div id="submitStatus" style="font-family:var(--mono);font-size:12px;margin-top:10px;display:none;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section style="border-top:1px solid #d4d4d4;padding:48px 0;">
+        <div class="container">
+            <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:24px;">How It Works</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 &#8212; OBSERVE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Scrape broker sites</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Automated scrapers visit 1,687 broker websites daily. Specialized parsers for major franchises. ML pattern detection for the long tail.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 &#8212; RECORD</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Hash and timestamp</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Every listing gets a hash, a timestamp, and a source link. If it can not be traced to its original broker, it does not exist in the ledger.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 &#8212; PUBLISH</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Commit to GitHub</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Snapshots are committed daily. Diffs show what is new, removed, and relisted. The full history is public and reproducible from code.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 &#8212; VERIFY</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Do not trust &#8212; verify</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Every snapshot includes SHA-256 hashes. Anyone can rerun the scrapers and compare. The code and methodology are open.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRINCIPLES -->
+    <section style="border-top:1px solid #d4d4d4;padding:48px 0;background:#f5f5f4;">
+        <div class="container"><div style="max-width:680px;">
+            <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">Principles</h2>
+            <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">&#8594;</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record traces back to its original broker page.</span></p>
+            <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">&#8594;</span> <strong>Timestamped.</strong> <span style="color:#78716c;">First seen, last seen, and every change in between.</span></p>
+            <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">&#8594;</span> <strong>Reproducible.</strong> <span style="color:#78716c;">The code is open. The methodology is documented. Run it yourself.</span></p>
+            <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">&#8594;</span> <strong>Append-only.</strong> <span style="color:#78716c;">We do not edit history. Removals are recorded, not deleted.</span></p>
+            <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">&#8594;</span> <strong>No opinions.</strong> <span style="color:#78716c;">We do not rank brokers. We publish what we observe.</span></p>
+        </div></div>
+    </section>
+
+    <!-- WHAT THIS IS -->
+    <section style="border-top:1px solid #d4d4d4;padding:48px 0;">
+        <div class="container">
+            <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">What This Is &#8212; and Is Not</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#d4d4d4;border:1px solid #d4d4d4;max-width:500px;">
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A marketplace</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">&#10003; A public record</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">Lead generation</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">&#10003; Market intelligence</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">BizBuySell competitor</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">&#10003; EDGAR for Main Street</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A product</div>
+                <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">&#10003; Infrastructure</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="border-top:1px solid #d4d4d4;padding:48px 0;text-align:center;">
+        <div class="container">
+            <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;">Build on the Ledger</h2>
+            <p style="font-size:14px;color:#78716c;margin-bottom:24px;">DealLedger is open source. Fork it. Extend it. Add a vertical. Challenge the methodology.</p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="https://github.com/jeffsosville/dealledger" target="_blank" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;">View on GitHub</a>
+                <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#fafaf9;color:#1c1917;border:1px solid #d4d4d4;">Browse Snapshots</a>
+            </div>
+        </div>
+    </section>
+
     <section id="about" class="about-section">
         <div class="container">
             <div class="about-content">
@@ -596,7 +669,7 @@
                     <a href="https://github.com/jeffsosville/dealledger" target="_blank" class="about-link">→ View source on GitHub</a>
                     <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank" class="about-link">→ Read the methodology</a>
                     <a href="https://github.com/jeffsosville/dealledger/blob/main/data/brokers.csv" target="_blank" class="about-link">→ See all tracked brokers</a>
-                    <a href="https://github.com/jeffsosville/dealledger/tree/main/data/daily" target="_blank" class="about-link">→ Archive (daily snapshots)</a>
+                    <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank" class="about-link">→ Archive (daily snapshots)</a>
                 </div>
             </div>
         </div>
@@ -864,6 +937,22 @@
 
         // Initialize
         loadData();
+    
+        // Broker submission
+        document.getElementById('brokerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var url = document.getElementById('brokerUrl').value;
+            if (!url) return;
+            var host = new URL(url).hostname;
+            var title = encodeURIComponent('New broker submission: ' + host);
+            var body = encodeURIComponent('## Broker URL\n' + url + '\n\nSubmitted via dealledger.org.');
+            window.open('https://github.com/jeffsosville/dealledger/issues/new?title=' + title + '&body=' + body + '&labels=broker-submission', '_blank');
+            var s = document.getElementById('submitStatus');
+            s.style.display = 'block';
+            s.textContent = 'Opening GitHub to create the submission.';
+            document.getElementById('brokerUrl').value = '';
+        });
+
     </script>
 </body>
 </html>
