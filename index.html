@@ -766,7 +766,7 @@
                     </td>
                     <td class="col-type">${listing.business_type || '—'}</td>
                     <td class="col-state">${listing.state || '—'}</td>
-                    <td class="col-price">${formatPrice(listing.price)}</td>
+                    <td class="col-price">${formatPrice(listing.price || listing.asking_price)}</td>
                     <td class="col-source">
                         <a href="${href}" target="_blank" rel="noopener" class="source-link">→</a>
                     </td>
