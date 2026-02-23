@@ -758,7 +758,7 @@
                 const href = listing.source_url || listing.listing_url || '#';
                 return `
                 <tr>
-                    <td class="col-date">${formatDate(listing.scraped_at)}</td>
+                    <td class="col-date">${formatDate(listing.scraped_at || listing.first_seen)}</td>
                     <td class="col-title">
                         <a href="${href}" target="_blank" rel="noopener">
                             ${truncate(listing.title || 'Untitled', 60)}
@@ -871,7 +871,7 @@
             stateCountEl.textContent = states.size;
 
             // Find most recent scraped_at
-            const dates = allListings.map(l => new Date(l.scraped_at)).filter(d => !isNaN(d));
+            const dates = allListings.map(l => new Date(l.scraped_at || l.first_seen)).filter(d => !isNaN(d));
             if (dates.length > 0) {
                 const latest = new Date(Math.max(...dates));
                 lastUpdatedEl.textContent = latest.toISOString().split('T')[0];
