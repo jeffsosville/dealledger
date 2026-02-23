@@ -1,0 +1,16 @@
+{
+  "started": "2026-02-23T14:11:30.938600+00:00",
+  "brokers_attempted": 5,
+  "brokers_success": 3,
+  "brokers_failed": 2,
+  "total_listings": 41,
+  "listings_with_price": 0,
+  "listings_with_cashflow": 0,
+  "patterns_cached": 92,
+  "patterns_learned": 1,
+  "verticals": {
+    "automotive": 7,
+    "other": 34
+  },
+  "completed": "2026-02-23T14:12:33.406530+00:00"
+}
