@@ -21,11 +21,10 @@
     "last_used": "2026-02-19T18:45:06.028744"
   },
   "fcbb.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 3,
-    "total_listings": 10,
-    "first_seen": "2026-02-18T12:43:47.887438",
-    "last_used": "2026-02-19T18:45:52.481607"
+    "container_selector": "div.dmRespColsWrapper",
+    "count": 24,
+    "score": 5,
+    "sample_text": ""
   },
   "vestedbb.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
@@ -635,5 +634,11 @@
     "total_listings": 2,
     "first_seen": "2026-02-20T18:45:35.986192",
     "last_used": "2026-02-20T18:45:35.986208"
+  },
+  "www.vestedbb.com": {
+    "container_selector": "div.col-md-4.col-sm-4",
+    "count": 7,
+    "score": 4,
+    "sample_text": "Business Type Any Business Types Owner financing available (392) Bank financeable (2) Absentee business (78) Accounting/payroll/tax  (5) Adult homecare assisted living (33) Advertising/ printing (23) "
   }
 }
