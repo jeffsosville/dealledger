@@ -1,0 +1,4002 @@
+[
+  {
+    "broker": "Murphy Business",
+    "url": "https://murphybusiness.com/business-brokerage/view-our-listings/",
+    "status": "success",
+    "listings": 10,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "Transworld Business Advisors",
+    "url": "https://www.tworld.com/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "VR Business Brokers",
+    "url": "https://www.vrbusinessbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "Sunbelt Business Brokers",
+    "url": "https://www.sunbeltnetwork.com/business-search/business-results/",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "FCBB",
+    "url": "https://fcbb.com/",
+    "status": "success",
+    "listings": 3,
+    "duration": 43,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "vested business brokers, ltd",
+    "url": "https://www.vestedbb.com/advancesearch/index.html",
+    "status": "success",
+    "listings": 1196,
+    "duration": 1363,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "hedgestone advisors",
+    "url": "https://www.hedgestone.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "ubi business brokers",
+    "url": "https://www.ubibusinessbrokersarizona.com/all-listings",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "jeff linda nyman",
+    "url": "https://fcbb.com/businesses-for-sale?page=1",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 23
+  },
+  {
+    "broker": "larry bodner",
+    "url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "jim boyd",
+    "url": "https://ninbb.com/business-listing/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "tom traina",
+    "url": "https://eatz-associates.com/listings/?fwp_status=for-sale%2Cnew-listing%2Cunder-contract%2Cfor-lease",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "blake taylor",
+    "url": "https://synergybb.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jason hullender",
+    "url": "https://www.bizbuysell.com/business-broker/jason-hullender/iag/2171/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "eric espinoza",
+    "url": "https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "henry galasso",
+    "url": "https://www.eastcoastbusinessbrokers.com/index.php?p=search-result",
+    "status": "success",
+    "listings": 152,
+    "duration": 57,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "calhoun companies",
+    "url": "https://www.calhouncompanies.com/find-a-business",
+    "status": "success",
+    "listings": 2,
+    "duration": 142,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "goldstar business brokers",
+    "url": "https://goldstarbbaz.com/CurrentListings.aspx",
+    "status": "success",
+    "listings": 5,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nidal saleh",
+    "url": "https://salehgroup.com/business-directory/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ken stein",
+    "url": "https://kensingtoncompany.com/business-listings/",
+    "status": "success",
+    "listings": 98,
+    "duration": 128,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "kavita purohit",
+    "url": "https://riverbrokers.com/commercial-listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 16
+  },
+  {
+    "broker": "matt sadati",
+    "url": "https://www.lbaweb.com/search-result/?business_type=0&business_type_sub=Business+Listing&max_price=Price&agent=Agent&listing_number=&status=Status&submit1=",
+    "status": "success",
+    "listings": 470,
+    "duration": 1297,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "a. bert risdon, b.c.i.",
+    "url": "https://fbxbrokers.com/fbx-listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 13
+  },
+  {
+    "broker": "rich gruber",
+    "url": "https://www.bizbuysell.com/business-broker/rich-gruber/realtec-business-brokers/1025/?cb_ifcb=1&j=aq",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "rich deluca",
+    "url": "https://prime100businessbrokers.com/search/",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ian maclachlan",
+    "url": "https://www.business-team.com/buy-a-business/search-Results.aspx",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "cbcg( c land business consulting group) director shawn kim",
+    "url": "https://www.clandbiz.com/search-listing/",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "darlene ragone",
+    "url": "https://www.moxiebrokeragegroup.com/listings",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike darmo",
+    "url": "https://www.bizbuysell.com/business-broker/mike-darmo/american-realty-brokers/20105/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "v-aid business investment",
+    "url": "https://v-aidgroup.com/business-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "armen nazarian",
+    "url": "https://www.armennazarian.com/buy/",
+    "status": "success",
+    "listings": 52,
+    "duration": 1332,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jay m. inbar, certified mergers&acquisition pro",
+    "url": "https://inbargroup.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 21
+  },
+  {
+    "broker": "ben strake",
+    "url": "https://premierbb.com/listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "saint louis group business brokers",
+    "url": "https://saintlouisgroup.com/listings/",
+    "status": "success",
+    "listings": 4,
+    "duration": 158,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "troy duffan, ceo",
+    "url": "https://sofrankoadvisors.com/for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "cortney sells",
+    "url": "https://thefirmadv.com/business-buyer/opportunities/",
+    "status": "success",
+    "listings": 42,
+    "duration": 32,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "aldrin raphael fernandes",
+    "url": "https://www.aldrin.ca/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 18
+  },
+  {
+    "broker": "russell cohen",
+    "url": "https://bizmls.com/listings/bbf-1287002/bus-chg7day.asp",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "jeff bach",
+    "url": "https://fusionadvantage.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 11,
+    "duration": 403,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "cibb, corporate investment business brokers",
+    "url": "https://www.cibb.com/cibb-exclusive-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chuck wimmer",
+    "url": "https://www.azbusinessbrokers.com/search-listings",
+    "status": "success",
+    "listings": 5,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "peter (kun) han",
+    "url": "https://pk-property.com/business-listing/",
+    "status": "success",
+    "listings": 5,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "robert hughes",
+    "url": "https://hughesproperties.com/#",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "trevin rasmussen",
+    "url": "https://bristolgrouponline.com/buy-a-business/#search",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "nick adhikari",
+    "url": "https://baltimorebusinessbrokers.com/business?",
+    "status": "success",
+    "listings": 4,
+    "duration": 48,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "gene townley",
+    "url": "https://dynamitebrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "tom o'brien",
+    "url": "https://pacificcommercialbrokers.com/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 26,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "coastal business brokers",
+    "url": "https://coastalbizbrokers.com/all-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "alpine business brokers",
+    "url": "https://www.alpinebusinessbrokers.com/utah-businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chuck harvey",
+    "url": "https://www.ibexbeyond.com/buy-a-business/",
+    "status": "success",
+    "listings": 63,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "julie sandoval",
+    "url": "https://www.dealforce.com/buying-a-business/ -- Limited list. Wants a sign in to view all listings",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "erten musa",
+    "url": "https://www.prolevelbusiness.com/business-for-sale",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sinclair kim",
+    "url": "https://www.givingtreerealty.com/listings/",
+    "status": "success",
+    "listings": 8,
+    "duration": 36,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mac thelen",
+    "url": "https://oibmn.com/listing_status/current/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "zoom business brokers",
+    "url": "https://zoombusinessbrokers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 5,
+    "duration": 48,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "troy frank",
+    "url": "https://indianaequitybrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "felizardo gaxiola",
+    "url": "https://www.excellencebusinessbrokers.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shawn baek",
+    "url": "https://www.thecanvasapts.com/?rcstdid=MQ%3d%3d-WOzw8Oa5P2c%3d&gad_source=5&gad_campaignid=22511196942&gclid=EAIaIQobChMI6oyw0pO1jQMVktI8Ah0PiyvWEAAYASAAEgLWKfD_BwE",
+    "status": "success",
+    "listings": 5,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ziggy marszalek",
+    "url": "https://www.bizbrokeragehub.com/listings",
+    "status": "success",
+    "listings": 12,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jay offerdahl",
+    "url": "https://www.vikingmergers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 61,
+    "duration": 18,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jack oh",
+    "url": "https://www.powerrealty1.com/",
+    "status": "success",
+    "listings": 3,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carter asefi",
+    "url": "https://www.franbiznetwork.com/listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "nadir jiddou",
+    "url": "https://michiganbusinessbroker.com/listings/",
+    "status": "success",
+    "listings": 4,
+    "duration": 31,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "neil bostick",
+    "url": "https://fih.com/marketplace",
+    "status": "success",
+    "listings": 20,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael wildeveld, cbb, cbi, cm&ap, m&ami, cepa",
+    "url": "https://theveldgroup.com/main-street-businesses-for-sale/#\nhttps://veldma.com/listing/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "thomas zengen",
+    "url": "https://northeastbusinessbrokers.com/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "john martinez",
+    "url": "https://fcbb.com/businesses-for-sale?page=1",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 22
+  },
+  {
+    "broker": "daniel hauer",
+    "url": "https://link.flexmls.com/x2oeawuasrr,5",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 16
+  },
+  {
+    "broker": "dustin sigall",
+    "url": "https://www.sdbiz.com/businessesforsale",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "latona's brokerage",
+    "url": "https://latonas.com/",
+    "status": "success",
+    "listings": 13,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "fernando saldivia",
+    "url": "https://linkbusiness.com/businesses-for-sale",
+    "status": "success",
+    "listings": 450,
+    "duration": 364,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "steve harvey",
+    "url": "https://businessfinderscanada.com/listings-business",
+    "status": "success",
+    "listings": 4,
+    "duration": 1383,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "calder capital - mergers & acquisitions",
+    "url": "https://www.caldergr.com/businesses-for-sale/?_sfm_revenue=0+100000000&_sfm_cash_flow=-1000000+2000000",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "samuel meister, mba, cbi",
+    "url": "https://pittsburgh.fcbb.com/businesses-for-sale?sort=PriceHighToLow&page=1",
+    "status": "success",
+    "listings": 1,
+    "duration": 22,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jina \"sachiko\" o'brien",
+    "url": "https://choijina.com/index.php/our-properties/",
+    "status": "success",
+    "listings": 26,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bill vanden eynden",
+    "url": "https://bcvcommercialrealty.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "patrick lange",
+    "url": "https://businessmodificationgroup.com/listings/?statuses=ACTIVE",
+    "status": "success",
+    "listings": 1,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "randy bernard",
+    "url": "https://proformapartners.com/current-listings/\n** full list needs log in",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "michael nuanes",
+    "url": "https://denverbbs.com/buy-a-business/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "imran maqbool",
+    "url": "https://naz-business.com/listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "joe tinpan",
+    "url": "https://newmichiganrealty.com/search-result/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "company sellers",
+    "url": "https://www.companysellers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 13
+  },
+  {
+    "broker": "practice transitions group",
+    "url": "https://practicetransitionsgroup.com/practices-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shane torres",
+    "url": "https://krbb.com/listings/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "liliane tietjen",
+    "url": "https://www.patriotbusinessadvisors.com/Listings.html",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 10
+  },
+  {
+    "broker": "best biz to buy llc texas",
+    "url": "https://www.bestbiztobuy.com/listings",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "eleanor murray",
+    "url": "https://murraybizbuy.com/businesses-for-sale-2/",
+    "status": "success",
+    "listings": 43,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike nova",
+    "url": "https://santarosabusinessandcommercial.com/active-new-listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "carol poe",
+    "url": "https://poegroupadvisors.com/buying/practice-search/",
+    "status": "success",
+    "listings": 125,
+    "duration": 1583,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "harry sidhu",
+    "url": "https://missionpeakbrokers.com/current-listings/",
+    "status": "success",
+    "listings": 6,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rob anderson",
+    "url": "https://equitygroupmi.com/real-estate-listings/\n\nhttps://equitygroupmi.com/businesses-for-sale-by-egm/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "eric gall, mba, cm&ap, cbi, m&ami",
+    "url": "https://www.edisonba.com/pages/active-listings",
+    "status": "success",
+    "listings": 30,
+    "duration": 38,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeff snell, cm&ap, m&ami, lmcbi, abi",
+    "url": "https://enlign.com/listings",
+    "status": "success",
+    "listings": 26,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ron cervelli",
+    "url": "https://regalconsultants.com/businesses-for-sale-2/",
+    "status": "success",
+    "listings": 58,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "justin slocum",
+    "url": "https://agencyforsale.com/listings?search%5Bbroker_listings%5D=0&search%5Bstatus%5D=&search%5Bfranchise_id%5D=&search%5Bstate%5D=&search%5Bmin_price%5D=&search%5Bmax_price%5D=&search%5Bmin_premium%5D=&search%5Bmax_premium%5D=&button=",
+    "status": "success",
+    "listings": 94,
+    "duration": 102,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "raj golee",
+    "url": "https://biz-depot.co/properties-standard-list/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "sarah grossman",
+    "url": "https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jim peang",
+    "url": "https://www.foxandroach.com/index.php?showagency=1#rslt",
+    "status": "success",
+    "listings": 2,
+    "duration": 18,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "miriam liang, cbi",
+    "url": "https://www.routeadvisors.com/available-routes/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "chris pramber",
+    "url": "https://businessesforsale.nuwireinvestor.com/business-broker/chris-pramber/prambernow/38206/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "arica andreatta",
+    "url": "https://cotwrealestate.com/properties/",
+    "status": "success",
+    "listings": 4,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chris dineno",
+    "url": "https://mainstreetmain.com/our-listings",
+    "status": "success",
+    "listings": 5,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "charles howard",
+    "url": "https://tangentbrokerage.com/search/",
+    "status": "success",
+    "listings": 7,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sasa milosevic",
+    "url": "https://www.manhattan.biz/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "alfredo gonzalez",
+    "url": "https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/\nCall log:\n  - navigating to \"https://en.negociosenflorida.com/compre-un-negocio/negoc",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "lori feingold",
+    "url": "https://peakbusinessbrokersllc.com/business-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ps broker",
+    "url": "https://www.psbroker.com/property-category/all-veterinary-practices-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.psbroker.com/property-category/all-veterinary-practices-for-sale/\nCall log:\n  - navigating to \"https://www.psbroker.com/property-category/al",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "ronald b. gould",
+    "url": "https://www.excelbusinessbrokersusa.com/business-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "eric owens",
+    "url": "https://www.appbusinessbrokers.com/buy/",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "affordable business concepts, llc",
+    "url": "https://www.affordablebusinessconcepts.com/featured-list/ \n\nhttps://www.affordablebusinessconcepts.com/new-listing/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "dr. tom necela",
+    "url": "https://strategicdc.com/chiropractic-practices-for-sale/",
+    "status": "success",
+    "listings": 17,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "tim bullard",
+    "url": "https://lakecountryadvisors.com/businesses-for-sale/main-street/\n\nhttps://lakecountryadvisors.com/businesses-for-sale/ma/\n",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "robert marcarelli",
+    "url": "https://ctbusinessforsale.com/our-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "amy ayeley",
+    "url": "https://bizbuyandsellga.com/our-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 5031,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "vantage partners",
+    "url": "https://www.commercialmls.com/People/AgentListings/19393\n\nhttps://www.commercialmls.com/People/AgentBusOps/19393",
+    "status": "failed",
+    "error": "HTTP 400",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "steve tsoris",
+    "url": "https://newleafbrokerage.com/bb/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "bill boyd",
+    "url": "https://www.bizbuysell.com/business-broker/bill-boyd/boyd-brokerage-associates-llc/15534/\n\nhttps://www.loopnet.com/commercial-real-estate-brokers/profile/bill-boyd/g68e2bwb#listings-section",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tom brubaker",
+    "url": "https://www.tambaymergers.com/ - under buying a business tab",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "ravi jagtiani",
+    "url": "https://www.crexi.com/profile/ravi-jagtiani-ravijag\n\nhttps://www.bizbuysell.com/business-broker/ravi-jagtiani/ravi-jagtiani-jagtiani-group-with-intero-commercial/32607/?bp_sreg=18&bp_cpg=2",
+    "status": "success",
+    "listings": 3,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brent bungard, broker",
+    "url": "https://arthurberry.com/new-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "matthew baas",
+    "url": "https://www.smallbusinessdeal.com/current-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bay area business brokers",
+    "url": "https://bayareabizbrokers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sanjay wadhwani",
+    "url": "https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "anthony rigney",
+    "url": "https://qbusinessadvisors.com/new-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rick recckio",
+    "url": "https://recckio.com/commercial-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jason barnes",
+    "url": "https://www.bizbuysell.com/business-broker/jason-barnes/priority-business-brokers/11455/?bp_sreg=56&bp_scounty=2556&bp_cpg=",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "indiana business advisors",
+    "url": "https://indianabusinessadvisors.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 11,
+    "duration": 128,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rajesh bhatia",
+    "url": "https://www.reputedbrokerage.com/advanced-search/?status=for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 15013,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sunny gandhi",
+    "url": "https://kwcommercial.com/properties/",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sherman hillelson",
+    "url": "https://shermangroup.net/listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "james felthammer",
+    "url": "https://www.loopnet.com/biz/business-opportunity/profitable-home-based-real-estate-firm-in-hunstville/2285686/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "prashant parmar",
+    "url": "https://www.aspectbrokers.biz/BusinessForSale/BusinessForSale",
+    "status": "success",
+    "listings": 23,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brian zoberg",
+    "url": "https://suncoastbiz.net/search-businesses/",
+    "status": "success",
+    "listings": 3,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "lou sabbagh, cbi, cm&ap",
+    "url": "https://budgetbusinessbrokers.com/Listings-For-Sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "robert clements",
+    "url": "https://www.benchmarkbusinessgroup.com/business-for-sale",
+    "status": "success",
+    "listings": 19,
+    "duration": 12583,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "tarry ennab",
+    "url": "https://www.7cint.com/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.7cint.com/\nCall log:\n  - navigating to \"https://www.7cint.com/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "brett post",
+    "url": "https://3cre.com/property-listings/\n\nhttps://3cre.com/business-listings-columbus/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://3cre.com/property-listings/https://3cre.com/business-listings-columbus/\nCall log:\n  - navigating to \"https://3cre.com/property-listings/https://3cr",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "the pacific group las vegas nv",
+    "url": "https://us.businessesforsale.com/us/agents/the-pacific-group",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://us.businessesforsale.com/us/agents/the-pacific-group\nCall log:\n  - navigating to \"https://us.businessesforsale.com/us/agents/the-pacific-group\", wa",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tom cerniello",
+    "url": "https://totalbusinessbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://totalbusinessbrokers.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://totalbusinessbrokers.com/businesses-for-sale/\", waiting until \"d",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jerry hasanovic, cpa, mst",
+    "url": "https://www.dhbrokerage.com/listings.php",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.dhbrokerage.com/listings.php\nCall log:\n  - navigating to \"https://www.dhbrokerage.com/listings.php\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tim johnson",
+    "url": "https://businessesforsalehamptonroads.com/businesses-for-sale",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://businessesforsalehamptonroads.com/businesses-for-sale\nCall log:\n  - navigating to \"https://businessesforsalehamptonroads.com/businesses-for-sale\", ",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "haroon bhatti",
+    "url": "https://capitalbusinessbrokerage.biz/business/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://capitalbusinessbrokerage.biz/business/\nCall log:\n  - navigating to \"https://capitalbusinessbrokerage.biz/business/\", waiting until \"domcontentloade",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "rob amerine",
+    "url": "https://www.fbb.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.fbb.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://www.fbb.com/businesses-for-sale/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jeff sullivan",
+    "url": "https://sullivanbusinessbrokers.com/category/uncategorized/ - Appears all SOLD",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://sullivanbusinessbrokers.com/category/uncategorized/%20-%20Appears%20all%20SOLD\nCall log:\n  - navigating to \"https://sullivanbusinessbrokers.com/cat",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "kevin nery",
+    "url": "https://coastalbizbrokers.com/all-listings/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://coastalbizbrokers.com/all-listings/\nCall log:\n  - navigating to \"https://coastalbizbrokers.com/all-listings/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "wayne mcfarland",
+    "url": "https://pronovapartners.com/engagements/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://pronovapartners.com/engagements/\nCall log:\n  - navigating to \"https://pronovapartners.com/engagements/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "bilal khaliq,cbb.",
+    "url": "https://www.bizbuysell.com/business-broker/bilal-khaliq-cbb/empire-global-business-brokers/32137/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.bizbuysell.com/business-broker/bilal-khaliq-cbb/empire-global-business-brokers/32137/\nCall log:\n  - navigating to \"https://www.bizbuysell.com/b",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "paranee judd",
+    "url": "https://paraneejudd.com/basic-search/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://paraneejudd.com/basic-search/\nCall log:\n  - navigating to \"https://paraneejudd.com/basic-search/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "rocky didonna",
+    "url": "https://www.bizmls.com/business-search.asp -- Need to choose State",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.bizmls.com/business-search.asp%20--%20Need%20to%20choose%20State\nCall log:\n  - navigating to \"https://www.bizmls.com/business-search.asp%20--%2",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jay armour",
+    "url": "https://therouteexchange.com/new-route-mailing-list/ - Needs to fill out a form",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://therouteexchange.com/new-route-mailing-list/%20-%20Needs%20to%20fill%20out%20a%20form\nCall log:\n  - navigating to \"https://therouteexchange.com/new",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "monika page",
+    "url": "https://www.biz-match.com/listings",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.biz-match.com/listings\nCall log:\n  - navigating to \"https://www.biz-match.com/listings\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "susan m barnes",
+    "url": "https://www.flbusinesses.com/all-listings",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.flbusinesses.com/all-listings\nCall log:\n  - navigating to \"https://www.flbusinesses.com/all-listings\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "john lin",
+    "url": "https://www.capstarco.com/search-business",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.capstarco.com/search-business\nCall log:\n  - navigating to \"https://www.capstarco.com/search-business\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "frank rubin",
+    "url": "https://bbms.biz/listings/bbf-134/bus-own.asp",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://bbms.biz/listings/bbf-134/bus-own.asp\nCall log:\n  - navigating to \"https://bbms.biz/listings/bbf-134/bus-own.asp\", waiting until \"domcontentloaded\"",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "gregory barnes",
+    "url": "https://thedynastyba.com/listings/ - Needs location",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://thedynastyba.com/listings/%20-%20Needs%20location\nCall log:\n  - navigating to \"https://thedynastyba.com/listings/%20-%20Needs%20location\", waiting ",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "pablo fonseca, mba",
+    "url": "https://1800bizbroker.com/business-for-sale/?statuses=ACTIVE",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://1800bizbroker.com/business-for-sale/?statuses=ACTIVE\nCall log:\n  - navigating to \"https://1800bizbroker.com/business-for-sale/?statuses=ACTIVE\", wa",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "raj sathyaseelan",
+    "url": "https://www.link-siliconvalley.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.link-siliconvalley.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://www.link-siliconvalley.com/businesses-for-sale/\", waiting unti",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jason ward",
+    "url": "https://www.truviewbusiness.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.truviewbusiness.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://www.truviewbusiness.com/businesses-for-sale/\", waiting until \"dom",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "abdul jobah, ccim designee",
+    "url": "https://www.jobahcri.com/listings?sale=2",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.jobahcri.com/listings?sale=2\nCall log:\n  - navigating to \"https://www.jobahcri.com/listings?sale=2\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "malone brokers inc",
+    "url": "https://www.malonecb.com/search-listings#/search/grid/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.malonecb.com/search-listings#/search/grid/\nCall log:\n  - navigating to \"https://www.malonecb.com/search-listings#/search/grid/\", waiting until ",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "bill oates",
+    "url": "https://alliantbrokers.com/businesses-for-sale-4/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://alliantbrokers.com/businesses-for-sale-4/\nCall log:\n  - navigating to \"https://alliantbrokers.com/businesses-for-sale-4/\", waiting until \"domconten",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "toby barker",
+    "url": "https://www.bizbrokersuccess.com/current-listings",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.bizbrokersuccess.com/current-listings\nCall log:\n  - navigating to \"https://www.bizbrokersuccess.com/current-listings\", waiting until \"domconten",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "mark johns",
+    "url": "https://kelleher-sadowsky.com/listings/",
+    "status": "failed",
+    "error": "Connection timeout",
+    "listings": 0,
+    "duration": 26205
+  },
+  {
+    "broker": "andy rumph",
+    "url": "https://thedecaingroup.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://thedecaingroup.com/businesses-for-sale/\nCall log:\n  - navigating to \"https://thedecaingroup.com/businesses-for-sale/\", waiting until \"domcontentloa",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "brian do",
+    "url": "https://realtyall.com/business-for-sale-%ec%82%ac%ec%97%85%ec%b2%b4-%eb%a7%a4%eb%a7%a4/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://realtyall.com/business-for-sale-%ec%82%ac%ec%97%85%ec%b2%b4-%eb%a7%a4%eb%a7%a4/\nCall log:\n  - navigating to \"https://realtyall.com/business-for-sal",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "crystal misenheimer",
+    "url": "https://progressivepracticesales.com/practices-for-sale/",
+    "status": "success",
+    "listings": 111,
+    "duration": 39,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rick carlson",
+    "url": "https://pronovapartners.com/search-results/?keyword=&location=",
+    "status": "success",
+    "listings": 162,
+    "duration": 1490,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nai excel",
+    "url": "https://excelcres.com/properties/",
+    "status": "success",
+    "listings": 9,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "richard kim",
+    "url": "https://www.usarealty-mn.com/listings - Need to choose location",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "frank abraszek",
+    "url": "https://www.buffalobusinessbrokers.com/current-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "emmet apolinario, cepa, cvb",
+    "url": "https://www.bizbuysell.com/business-broker/emmet-apolinario-cepa-cvb/ohio-business-advisors-an-international-resource-group-company/5022/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "milt flinn",
+    "url": "https://www.dealforce.com/opportunities/",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jaret grossman",
+    "url": "https://www.bizbuysell.com/business-broker/jaret-grossman/jarbly-llc/28847/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "randi edwards, cbb, cbis",
+    "url": "https://www.krbrokers.com/kr-business-broker-listings",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.krbrokers.com/kr-business-broker-listings\nCall log:\n  - navigating to \"https://www.krbrokers.com/kr-business-broker-listings\", waiting until \"domco",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "jeremiah baron",
+    "url": "https://treasurecoastcommercialrealestate.com/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 22,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jon barger, cbb, sba",
+    "url": "https://www.tucsonbusiness.com/listings.html",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bill corley - bottomline business brokers",
+    "url": "https://www.blbrokers.com/businesses-for-sale",
+    "status": "success",
+    "listings": 3,
+    "duration": 35,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "joseph latina",
+    "url": "https://lmtcre.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "alan mehrez",
+    "url": "https://businessteamusa.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 4,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "alexis roberts",
+    "url": "https://svnchicago.com/properties/",
+    "status": "success",
+    "listings": 3,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ned malley",
+    "url": "https://www.rentalbeast.com/infinitipropertiesil/apartments/for_rent/Chicago-Illinois#!/search/general",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael dukhovny",
+    "url": "https://search.unitednationalrealty.com/idx/results/listings?ccz=city&city%5B0%5D=",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://search.unitednationalrealty.com/idx/results/listings?ccz=city&city%5B0%5D=\nCall log:\n  - navigating to \"https://search.unitednationalrealty.com/idx/res",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tommy farmer",
+    "url": "https://www.businessesforsale.com/search?formName=searchForm&keywords=",
+    "status": "success",
+    "listings": 1083,
+    "duration": 1120,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "houmehr \"mike\" panoussi",
+    "url": "https://www.lbaweb.com/listings/",
+    "status": "success",
+    "listings": 85,
+    "duration": 25,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sandra boucher",
+    "url": "https://sebusinessalliance.com/buy-a-business/ -- Needs to fill out NDA",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "take iga cbi, cbb",
+    "url": "https://jrc-advisors.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 20
+  },
+  {
+    "broker": "luis gutierrez",
+    "url": "https://gutierbrokers.com/search-businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael scheid",
+    "url": "https://thomashospitality.com/",
+    "status": "success",
+    "listings": 31,
+    "duration": 43,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "james sullivan foster",
+    "url": "https://businessbrokersoforegon.com/listings/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 5
+  },
+  {
+    "broker": "murat demir",
+    "url": "https://www.xerare.com/status/business-for-sale",
+    "status": "success",
+    "listings": 4,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "janice lee",
+    "url": "https://koamrealty.com/2022/category/listing/",
+    "status": "success",
+    "listings": 18,
+    "duration": 59,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ming dong",
+    "url": "https://leebrokers.com/business-for-sale/",
+    "status": "success",
+    "listings": 4,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "richard green",
+    "url": "https://greenandco.biz/featured-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "adam bauer, cbi",
+    "url": "https://tbxllc.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "tom buckley",
+    "url": "https://www.fnbcusa.com/buying-a-business# -- Needs to fill out a form",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "marc l. able",
+    "url": "https://benchmarkbusinessbrokers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sam griffin, cbi",
+    "url": "https://www.gilezanglobal.com/listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jon sheklow",
+    "url": "https://number1businessbroker.com/search/",
+    "status": "success",
+    "listings": 33,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brian stephens",
+    "url": "https://buybizusa.com/all-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 30,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mr. tracy a. burnidge",
+    "url": "https://www.bizbuysell.com/business-broker/mr-tracy-a-burnidge/buy-sell-business-brokers-inc/8827/?ui=true&bwp_url=BuySellBrokers&is_pseo=1",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "shaun rudgear, mcbi, m&ami, cbi, cbb",
+    "url": "https://strategicmedicalbrokers.com/listing/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "colliers & acquisitions",
+    "url": "https://businessbrokerage.colliers.com/listing/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://businessbrokerage.colliers.com/listing/\nCall log:\n  - navigating to \"https://businessbrokerage.colliers.com/listing/\", waiting until \"domcontentloaded\"",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "j&e business group",
+    "url": "https://jebizsales.com/businesses-for-sale",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tommy newton",
+    "url": "https://www.xiteco.com/practice-listings/?_practice_listings_map=2.861753%2C-130.813086%2C57.163602%2C-64.543555",
+    "status": "failed",
+    "error": "HTTP 307",
+    "listings": 0,
+    "duration": 4
+  },
+  {
+    "broker": "matt olufs",
+    "url": "https://compassfirst.com/category/current-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "william white",
+    "url": "https://murphybusiness.com/hudson/businesses-for-sale/",
+    "status": "success",
+    "listings": 10,
+    "duration": 23,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "frank & rose stabler",
+    "url": "https://certifiedbb.com/listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "helen liu",
+    "url": "https://accelvalue.com/current-listing-2/?statuses=ACTIVE",
+    "status": "success",
+    "listings": 3,
+    "duration": 22,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "soo paik",
+    "url": "https://www.equityoregon.com/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 13
+  },
+  {
+    "broker": "celine zeidan",
+    "url": "https://mainsourcerealty.com/mls-listings",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "scott balfour",
+    "url": "https://balfourcommercial.com/businesses/businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "young woo",
+    "url": "https://cincybizbroker.com/current-listings/",
+    "status": "success",
+    "listings": 5,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bizex business brokers",
+    "url": "https://www.bizex.net/business-for-sale",
+    "status": "success",
+    "listings": 19,
+    "duration": 36,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dan long",
+    "url": "https://cincybizbroker.com/current-listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 10
+  },
+  {
+    "broker": "jeff sosville",
+    "url": "https://atmbrokerage.com/atm-routes-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dane desantis",
+    "url": "https://hallmarkbrokers.com/listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "kris fuehr",
+    "url": "https://www.paulsonexchange.com/businesses-for-sale -- Needs to input location",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "young chun",
+    "url": "https://idx.michelephillipsrealtor.com/idx/results/listings?pt=sfr&lp=100000&hp=800000",
+    "status": "success",
+    "listings": 24,
+    "duration": 327,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "billy winkie",
+    "url": "https://southeasternbb.com/search/",
+    "status": "success",
+    "listings": 3,
+    "duration": 33,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rick ziff",
+    "url": "https://actionbusinessbrokerage.com/commercial-real-estate-for-sale-3/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "wasim khan",
+    "url": "https://paradigmbb.com/search-listing/",
+    "status": "success",
+    "listings": 16,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "charles kim",
+    "url": "https://www.bigstarrealty.net/cgi-bin/real?pge=newsearch&state=na&widget=true&sortby=price&area=&price_lo=0&price_hi=100000000&tot_bed_lo=0&tot_bath_lo=0&htype=ALL",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 1325
+  },
+  {
+    "broker": "m. emad salem",
+    "url": "https://emadsalem.sellstatemetro.com/index.php?showagent=1#rslt",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shifang sun",
+    "url": "https://alliancebayrealty.com/lss \n\nhttps://alliancebayrealty.com/OfficeListings",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "penny papaioannou",
+    "url": "https://www.atlanticbusinessbroker.com/our-business-for-sale-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ian harding",
+    "url": "https://hardingbusinessfl.com/search-florida-businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mel lisiten",
+    "url": "https://lisitenassociates.com/exclusive-listings/",
+    "status": "success",
+    "listings": 25,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bruce lee",
+    "url": "https://alliancebayrealty.com/OfficeListings",
+    "status": "success",
+    "listings": 1,
+    "duration": 23,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeffrey d. jones",
+    "url": "https://www.advancedbb.com/pages/business-for-sale\n\nhttps://www.advancedbb.com/pages/hotels-for-sale",
+    "status": "failed",
+    "error": "Connection timeout",
+    "listings": 0,
+    "duration": 60
+  },
+  {
+    "broker": "jacob seo",
+    "url": "http://www.aleemshomerealty.com/results/",
+    "status": "success",
+    "listings": 3,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dan mcguire",
+    "url": "https://www.hscbrokers.com/property-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "denis mezheritskiy",
+    "url": "https://list.roibusinessbrokers.com/featured-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "paul skiadas",
+    "url": "https://realestateps.com/commercial-listings\n\nhttps://realestateps.com/business-listings",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "larry baumgart",
+    "url": "https://abb-businessbrokers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 25,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "h winston hines",
+    "url": "https://adultclubbroker.net/current-listings/additional-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 39,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "achim neumann",
+    "url": "https://neumannassociates.com/business-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "denise houghtaling",
+    "url": "https://scbizadvisors.com/sci-listings",
+    "status": "failed",
+    "error": "Minimal content - JavaScript-heavy",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "gavin raphael",
+    "url": "https://lightandraphael.com/current-offerings/",
+    "status": "failed",
+    "error": "HTTP 503",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "luke billiot",
+    "url": "https://frontrangebusiness.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 13
+  },
+  {
+    "broker": "james lee",
+    "url": "https://www.nestfully.com/Listing/ListingSearch.aspx",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brandon owens",
+    "url": "https://businessforsaleohio.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1",
+    "status": "success",
+    "listings": 1,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "gary l. weston",
+    "url": "https://www.cbcworldwide.com/search/properties?location=United+States&country=United+States&place_id=ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+    "status": "success",
+    "listings": 27,
+    "duration": 23,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carmel business sales",
+    "url": "https://carmelbusinesssales.com/listings/",
+    "status": "success",
+    "listings": 4,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike denham",
+    "url": "https://atlantametro.fcbb.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "william griswold",
+    "url": "https://businessforsaleinrichmondva.com/businesses-for-sale?page=1",
+    "status": "success",
+    "listings": 1,
+    "duration": 22,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeffrey byrd",
+    "url": "https://jeffcconsultinggroup.com/fransearchresults.asp",
+    "status": "success",
+    "listings": 314,
+    "duration": 239,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "david blatteis",
+    "url": "https://www.blatteisrealty.com/commercial-real-estate-for-sale-and-lease -- Needs input",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "lorena tomb",
+    "url": "https://www.urbanlimere.com/for-sale",
+    "status": "success",
+    "listings": 12,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bryan gonzales",
+    "url": "https://sandiegonorth.fcbb.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jock purtle",
+    "url": "https://businessexits.com/listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "cheryl maloney",
+    "url": "https://www.maloneybusinessbrokers.com/properties\n\nhttps://www.maloneybusinessbrokers.com/copy-of-commercial-listings-1",
+    "status": "failed",
+    "error": "HTTP 400",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "doug miller",
+    "url": "https://goexio.com/marketplace/private-sellers",
+    "status": "success",
+    "listings": 4,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "beth palette",
+    "url": "https://www.platzrealtygroup.com/business/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 18
+  },
+  {
+    "broker": "scott gordon",
+    "url": "https://www.blueridgebrokerage.com/commercial-listings/\n\nhttps://www.blueridgebrokerage.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "dean burnette",
+    "url": "https://b3brokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 17
+  },
+  {
+    "broker": "barry maring",
+    "url": "https://northdakota.fcbb.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "vasilis georgiou, cm&aa, m&ami, cbi, cbb, mba",
+    "url": "https://crossroadsbusiness.com/businesses-for-sale",
+    "status": "success",
+    "listings": 7,
+    "duration": 25,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "delcho ogorelkoff",
+    "url": "https://www.beachfrontonline.com/propertysearchframe.asp?region=7&county=miami,dade,broward&ptype2=h,s,t,m&PriceStart=500000",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "darren hall",
+    "url": "https://brockandgrey.com/",
+    "status": "success",
+    "listings": 5,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dominique maddox",
+    "url": "https://eatsbroker.com/restaurants-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jack beraha",
+    "url": "https://ameriteambusinessbrokers.com/search-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "heather valeri, broker of distinction",
+    "url": "https://www.bizbuysell.com/business-broker/heather-valeri-broker-of-distinction/meridian-business-advisors-llc/18549/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "richard farina",
+    "url": "https://www.bsnbuysell.com/inventory",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nicolas zhao",
+    "url": "https://www.bizbuysell.com/business-broker/nicolas-zhao/citadel-commerical/37641/?is_pseo=1",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "peter saejin park",
+    "url": "https://www.ratemyagent.com/real-estate-agency/the-millionaire-realtors-group-llc-id148/sales/properties",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "j.c. kapas real estate company",
+    "url": "https://www.jckapas.com/listings -- Needing a form filled out",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "bryan baese",
+    "url": "https://www.rpmshopsales.com/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mary keller wynn",
+    "url": "https://twgcommercial.com/listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "daniel baldwin",
+    "url": "https://baldwinrealestateenterprises.com/properties/",
+    "status": "success",
+    "listings": 7,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chad b. butler",
+    "url": "https://landscapedepotinvestments.com/search/business-search-results-desktop.php?locid=1&order_by=price&order=desc&cat=all",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "apex commercial real estate",
+    "url": "https://www.apex-cre.com/current-listings",
+    "status": "success",
+    "listings": 32,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike sirounis",
+    "url": "https://www.harborbiz.com/alllistings.html",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "annie l adjchavanich",
+    "url": "https://www.secrethqinc.com/listings",
+    "status": "success",
+    "listings": 10,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "won ra",
+    "url": "http://search.premier-realty-group.net/idx/featured",
+    "status": "success",
+    "listings": 4,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike jani",
+    "url": "https://www.fortunebizness.com/listing",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.fortunebizness.com/listing\nCall log:\n  - navigating to \"https://www.fortunebizness.com/listing\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "david mussari",
+    "url": "https://www.bhhspro.com/index.php?showagency=1#rslt",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sean linch",
+    "url": "https://www.paragonacquisitionsintl.com/listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike finkel",
+    "url": "https://www.newhomesource.com/ - Need to choose location",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "scott kim",
+    "url": "https://www.trustusrealty.com/properties",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "john sandone",
+    "url": "https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=&ask_price_h=&map_id=12&lcity=&keyword=&lst_no=&time=0&bprice=0&fresale=0&ownerfi=0&county_id=0",
+    "status": "success",
+    "listings": 4,
+    "duration": 29,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "eric johnson",
+    "url": "https://sfbay.fcbb.com/businesses-for-sale?location=California&sort=FeaturedLocalBusinesses&page=1",
+    "status": "success",
+    "listings": 1,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "maninder singh sethi, mba",
+    "url": "https://www.businessusa.biz/business-for-sale?listing_number=&type=&state=&county=&price=&gross_annual_sales=&business_search=business_search",
+    "status": "success",
+    "listings": 582,
+    "duration": 1246,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "teri craft",
+    "url": "https://craftbusinesssales.com/",
+    "status": "success",
+    "listings": 4,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "harold mcgee",
+    "url": "https://wesell.group/listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "alex rodriguez-torres",
+    "url": "https://rt-cre.com/business-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "william yoo",
+    "url": "https://skyrei.com/available-spaces/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "julie negovan",
+    "url": "https://www.patburnsiderealty.com/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "paul ahern",
+    "url": "https://nextwavecommercial.com/listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "dashka altanbasan",
+    "url": "https://westgatebusinessgroup.com/current-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "christina lazuric",
+    "url": "https://www.californiabusinessbrokers.com/for-sale-2/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "michael pahng",
+    "url": "https://redpointgroup.net/listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "william laska",
+    "url": "https://www.laskacompany.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 10,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike janis",
+    "url": "https://www.businessbrokersplus.com/our-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chris prasifka",
+    "url": "https://www.trustbusinessbrokers.com/buy-a-business/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "john benoit",
+    "url": "https://vantagepointretail.com/exclusive-property-listings/",
+    "status": "success",
+    "listings": 9,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "adam gilman",
+    "url": "https://www.thedealfirm.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "steve lyle",
+    "url": "https://cbclyle.com/properties/for-sale/?saleOrLease=sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "al lorenzen",
+    "url": "https://businessbrokersinc.com/our-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "anthony wright, mba",
+    "url": "https://bbcpnw.com/",
+    "status": "success",
+    "listings": 3,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "commercial advisors",
+    "url": "https://comrealty.net/search-commercial-real-estate-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brea reger",
+    "url": "https://batesonbrokerage.com/florida-business-for-sale.asp",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "fletcher brown",
+    "url": "https://birminghambusinessbroker.com/businesses-for-sale",
+    "status": "success",
+    "listings": 4,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "doug jackson",
+    "url": "https://www.bizbuysell.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "bob young",
+    "url": "https://acquisitionsdirect.com/buy/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "steve sink lifetime cbi&m&ami",
+    "url": "https://phxaffiliates.com/our-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "kevin waide",
+    "url": "https://www.aprio.com/services/business-acquisitions-by-aprio/view-business-listings/",
+    "status": "success",
+    "listings": 8,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ronnie tarulli",
+    "url": "https://moxbiz.com/search/",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_NETWORK_IO_SUSPENDED at https://moxbiz.com/search/\nCall log:\n  - navigating to \"https://moxbiz.com/search/\", waiting until \"domcontentloaded\"\n",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "trevor thielke",
+    "url": "https://meritus.group/businesses-for-sale/",
+    "status": "success",
+    "listings": 8,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "m. stephen guidry",
+    "url": "https://the321agent.com/property-search/",
+    "status": "success",
+    "listings": 1,
+    "duration": 61,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jenn morin",
+    "url": "https://tbb.biz/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 18
+  },
+  {
+    "broker": "ken richardson",
+    "url": "https://www.vantageres.com/commercial-properties-sale-lease/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "georgette gillis",
+    "url": "https://www.viewpoint-realty.com/homes-for-sale-featured/",
+    "status": "failed",
+    "error": "Connection timeout",
+    "listings": 0,
+    "duration": 599
+  },
+  {
+    "broker": "chalo serrano",
+    "url": "https://www.agenttrustrealty.com/propiedades/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "promed financial",
+    "url": "https://www.promed-financial.com/search-our-listings/",
+    "status": "success",
+    "listings": 5,
+    "duration": 35,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mark laurie",
+    "url": "https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=&ask_price_h=&map_id=12&lcity=&keyword=&lst_no=&time=0&bprice=0&fresale=0&ownerfi=0&county_id=0",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 28
+  },
+  {
+    "broker": "patricia grace",
+    "url": "https://suncoastbiz.net/search-businesses/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 22
+  },
+  {
+    "broker": "peter garrod",
+    "url": "https://wncbusinessbrokerage.com/",
+    "status": "success",
+    "listings": 1,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jim conway",
+    "url": "https://www.conwaycommercial.com/business-opportunities/",
+    "status": "success",
+    "listings": 1,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "martin berliant",
+    "url": "https://fivestarbusinessbrokers.com/search-our-business-listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "randy sokol",
+    "url": "https://businessesforsale.nebba.com/ohio/franklin-county/retail-business-real-estate/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jim myers",
+    "url": "https://myersba.com/my-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "stewart guthrie",
+    "url": "https://www.thelibertygroupofnevada.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "jennifer weinberg",
+    "url": "https://www.bhhsnv.com/homes/sale/status-active;Contingent%20on%20Sale;Active%20Under%20Contract/newlistings/type-Single%20Family;Condo!Townhouse;Vacant%20Land/dsort-n",
+    "status": "success",
+    "listings": 2,
+    "duration": 26,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sam galatas",
+    "url": "https://higginsgroup.com/our-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 34,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike shakeri",
+    "url": "https://americanbussales.net/full-inventory/",
+    "status": "success",
+    "listings": 184,
+    "duration": 109,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ramon sanchez-vinas",
+    "url": "https://bizexitpro.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "gateway mergers & acquisitions",
+    "url": "https://www.gatewayma.com/available-listings",
+    "status": "success",
+    "listings": 108,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dalip gupta",
+    "url": "https://map.realtyonegroup.com/properties/sale/country-USA/type-single%20family;condo!townhouse;Multi_Family;land;farm;mobile!manufactured/rental-false/lat-19.660047492139814-57.66707472957554/lon-_134.4917976875-_64.2671883125/dsort-p",
+    "status": "failed",
+    "error": "HTTP 429",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "jim mayfield, mba",
+    "url": "https://www.islandbusinessbrokers.com/all-listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "business sale",
+    "url": "https://dwellwashington.com/recent-properties/",
+    "status": "success",
+    "listings": 9,
+    "duration": 237,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "kevin t riordan p.a.",
+    "url": "http://gomerritt.com/listings/",
+    "status": "success",
+    "listings": 4,
+    "duration": 24,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "pete harrison",
+    "url": "https://tampabusinessbroker.com/hot-listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "din sharma",
+    "url": "https://ddsrealty.net/commercial-listings",
+    "status": "success",
+    "listings": 3,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carl knickerbocker",
+    "url": "https://eca-ba.com/buy-a-business/",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "keith mackenzie",
+    "url": "https://app.dealbuilder.co/listings?country=CA&region=BC",
+    "status": "success",
+    "listings": 18,
+    "duration": 30,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "eric ross",
+    "url": "https://michiganbusinessbroker.com/listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 31
+  },
+  {
+    "broker": "ryan roques",
+    "url": "https://corona-ontario.fcbb.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jorge deleon",
+    "url": "https://www.c21everest.com/search?location=2#?q_limit=36&mlsId=425|590|498&status=1|3&q_sort=createdAt-&q_offset=0",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike feinman, managing partner",
+    "url": "https://texasbusinessbrokers.com/our-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brian godin",
+    "url": "https://godinpropertybrokers.com/ - List is per category",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "ernesto martinez",
+    "url": "https://jmrealtyservicescorp.squarespace.com/available-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "charles leduc",
+    "url": "https://www.rosebay.com/rosebay-rentals/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "karen schorkopf- managing director, tn business brokers",
+    "url": "https://www.tennbusinessbrokers.com/business-for-sale",
+    "status": "success",
+    "listings": 3,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "coldwell banker lifestyles",
+    "url": "https://www.thecblife.com/listings/",
+    "status": "success",
+    "listings": 7,
+    "duration": 33,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ian lashley",
+    "url": "https://www.tlgbusinessbroker.com/blog-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "adam seidel",
+    "url": "https://www.americanpropertygroup.com/",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "joe liang",
+    "url": "https://www.gabusinessbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jerry diza",
+    "url": "https://pacificrb.com/listings",
+    "status": "success",
+    "listings": 13,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "strategic business brokers group",
+    "url": "https://businessbrokerphoenixaz.com/product-category/current-listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael migliore",
+    "url": "https://atlantahomes.us/business-sales/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "michael sumiyoshi",
+    "url": "https://www.ohanarealtylv.com/vacancies",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "sam takla",
+    "url": "https://www.cbcworldwide.com/search/properties?location=United+States&country=United+States&place_id=ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 24
+  },
+  {
+    "broker": "steve cbi cfc",
+    "url": "https://www.radcommercial.com/services/businesses-for-sale",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "larry blevins",
+    "url": "http://www.americanbusinessbrokers.com/display-national.asp",
+    "status": "success",
+    "listings": 46,
+    "duration": 24,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "matt uhler",
+    "url": "https://wcibusinessbrokers.com/business-listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "fred canada",
+    "url": "https://thequincygroup.net/businesses_for_sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "michael raad",
+    "url": "https://search.bhhsgoldenproperties.com/idx/results/listings?idxID=d025&pt=1&ccz=city&a_statusCategory%5B%5D=active&a_statusCategory%5B%5D=sold",
+    "status": "success",
+    "listings": 9,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nicole wright-neumiller",
+    "url": "https://danforth-federalway-wa.cbcworldwide.com/search/properties?",
+    "status": "success",
+    "listings": 18,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dustin zeher, cbi",
+    "url": "https://www.horizonbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 21
+  },
+  {
+    "broker": "charles maimone",
+    "url": "https://c21reilly.idxbroker.com/idx/featured",
+    "status": "success",
+    "listings": 1,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "david amarando",
+    "url": "https://advancedlaundrysystems.com/laundromat-brokerage/",
+    "status": "success",
+    "listings": 1,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "otis florence",
+    "url": "https://bbrokers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "bill navarra",
+    "url": "https://www.loopnet.com/company/realty-pros-commercial/ormond-beach-fl/sqynrj6l/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "moe & andrea bousaid",
+    "url": "https://orlandometro.fcbb.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shams siddiqui",
+    "url": "https://www.jpar.com/properties/?perRow=4&ourListings=1&order=price%7Cdesc&page=1&limited=true&limit=800&layout=map&propertyTypes=1%7C2%7C3%7C4%7C5%7C6%7C7%7C8%7C9%7C10%7C11%7C12%7C13%7C14%7C15%7C16%7C17%7C18%7C19%7C20%7C21%7C22%7C23%7C27%7C28%7C29%7C30%7C31%7C32%7C33%7C34%7C35%7C37%7C38%7C39%7C40%7C41%7C42%7C43%7C44%7C45%7C46%7C47%7C48%7C49%7C50%7C51%7C52%7C53%7C54",
+    "status": "success",
+    "listings": 101,
+    "duration": 4492,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "angie nolan",
+    "url": "https://www.alaskaunlimitedrealty.com/featured-listings",
+    "status": "success",
+    "listings": 3,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael song",
+    "url": "https://www.mscommercialgroup.com/businesslistings.html",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "lee ossin",
+    "url": "https://www.crowneatlantic.com/premier-listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "autobizbrokers sales team",
+    "url": "https://autobizbrokers.com/search-results/?status%5B%5D=&type%5B%5D=&states%5B%5D=",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "raj s shergill",
+    "url": "https://www.equity55.com/index.php?showagency=1&rtype=",
+    "status": "success",
+    "listings": 74,
+    "duration": 99,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chris barnard",
+    "url": "https://www.bizbuysell.com/business-broker/chris-barnard/marigold-resources/14597/?bp_fat=true",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "gulambasir nagpuria",
+    "url": "https://www.greenstarrealty.biz/biz4sell/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "ahmedali saiyed",
+    "url": "https://www.lamonrealestate.com/listing/listingsearch.aspx",
+    "status": "success",
+    "listings": 2,
+    "duration": 17,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael capuano",
+    "url": "https://www.millenniumrealtyinc.com/index.php?showagency=1#rslt",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "vartan kebabjian",
+    "url": "https://spkrealty.com/businesses/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "bona kim",
+    "url": "https://mergerscorp.com/listings/",
+    "status": "success",
+    "listings": 57,
+    "duration": 524,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "david cutler",
+    "url": "https://woodbridgeinvestmentsinc.net/active-listing",
+    "status": "success",
+    "listings": 8,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "phil reese",
+    "url": "https://www.philsellsbiz.com/listings/",
+    "status": "success",
+    "listings": 11,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "the-trinh nguyen",
+    "url": "https://www.therealtytexas.com/search-results/?keyword=&location%5B%5D=",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "jeff engle",
+    "url": "https://us.businessesforsale.com/us/agents/new-york-business-exchange",
+    "status": "success",
+    "listings": 19,
+    "duration": 28,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ajeet singh",
+    "url": "https://www.mbbbiz.com/view_inventory.php",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ann carter",
+    "url": "https://number1businessbroker.com/search/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 20
+  },
+  {
+    "broker": "keith ryan",
+    "url": "https://cabb.org/listings",
+    "status": "success",
+    "listings": 5,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jay christenson",
+    "url": "https://loamcommercial.com/for-sale",
+    "status": "success",
+    "listings": 18,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "javier castro",
+    "url": "https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "sam tanner",
+    "url": "https://www.theentrustedgroup.com/businesses-for-sale.html",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "linda wagner",
+    "url": "https://gatewayconsultinggroup.com/current-opportunities",
+    "status": "success",
+    "listings": 9,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "steve alexander",
+    "url": "https://abbexinc.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "ashot grigoryan",
+    "url": "https://kwcommercial.com/properties/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "jeffrey trent",
+    "url": "https://us.businessesforsale.com/us/agents/prodigy-business-brokers",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "tina wiltsey-trevizo",
+    "url": "https://wiltseybars.com/listings/?term=4&orderby=menu_order&order=asc",
+    "status": "success",
+    "listings": 33,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael spilky",
+    "url": "https://locationmatters.com/map-property/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "matthew gorman",
+    "url": "https://districtbusinessbrokers.com/listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "paul mcnally",
+    "url": "https://cfbb.biz/our-featured-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dean vacheresse (vash-er-es)",
+    "url": "https://www.vachergroup.com/buybizsell/",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeannie randolph",
+    "url": "https://www.briobrokers.com/listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carlos cardenas",
+    "url": "https://www.tcgbusiness.com/featured-listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "liberty exchange.com various brokers",
+    "url": "https://libertyexchange.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "country business inc.",
+    "url": "https://www.countrybusiness.net/currentopportunities",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michelle regner",
+    "url": "https://businessbrokersofutah.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 26
+  },
+  {
+    "broker": "stephen holzberg",
+    "url": "https://www.businessbroker.net/brokers/stephen-holzberg-culver-city-california-5863.aspx",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "route brokers\u00ae, inc.",
+    "url": "https://www.routebrokers.com/routes-for-sale",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "russell carriere",
+    "url": "https://nashville.fcbb.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1",
+    "status": "success",
+    "listings": 2,
+    "duration": 16,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "darin jerger",
+    "url": "https://www.aegisbuysell.com/premier-listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "ed settino, broker associate",
+    "url": "https://nhbizsales.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 6,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jon la budde",
+    "url": "https://kwcommercial.com/properties/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "fnbc florida llc dba the business broker experts",
+    "url": "https://www.thebusinessbrokerexperts.com/buy-a-business/ - Need to sign up to view listing",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "jeffery e. merry, sr., mba, j.d.",
+    "url": "https://thebusinesshouseinc.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 4,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "j jensen",
+    "url": "https://jensmartconsulting.com/franchises.asp",
+    "status": "success",
+    "listings": 326,
+    "duration": 117,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "diane ho, cbb",
+    "url": "https://sellbuybrokers.com/listings/",
+    "status": "success",
+    "listings": 8,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jason hubler",
+    "url": "https://ess-business.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 15
+  },
+  {
+    "broker": "eric lim",
+    "url": "http://www.megarealtyusa.com/listing/listingsearchresultsonly.aspx?Search=a5f97d56-716c-443e-991b-50913ad979a2&SearchType=AgentHome&InternalAgentCd=&OfficeCds=&AgentHomePageSearchType=AllMyOfficeListings&ListingType=&ListingDistrictTypeID=&PriorSales=&Sort=6",
+    "status": "failed",
+    "error": "Connection timeout",
+    "listings": 0,
+    "duration": 947
+  },
+  {
+    "broker": "tom patipanavat",
+    "url": "https://www.bhhscrest.com/index.php?showagency=1#rslt",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "steve santens -- abi, cbi, sva,",
+    "url": "https://montana406businessbrokers.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "randy singh",
+    "url": "https://www.franbiznetwork.com/listings/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "yorixela hurtado-gentile",
+    "url": "https://bfsglobalgroup.com/en/business-for-sale/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "rebecca walker-jones",
+    "url": "https://oldincsellsbusinesses.com/current-business-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sam ali",
+    "url": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=40264",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "stefan lagmark",
+    "url": "https://alamobrokersoftexas.com/properties-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rocco gallelli",
+    "url": "https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=0&ask_price_h=99000000&map_id=12&lcity=&keyword=&lst_no=&time=&bprice=0&fresale=0&ownerfi=0&county_id=",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 27
+  },
+  {
+    "broker": "kim & joe kwon",
+    "url": "https://www.johnlscott.com/search",
+    "status": "success",
+    "listings": 3,
+    "duration": 19,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "prabhjot randhawa",
+    "url": "https://www.lbaweb.com/listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 24
+  },
+  {
+    "broker": "david bandars",
+    "url": "https://www.bizbuysell.com/business-broker/david-bandars/rpr-business-associates/14610/?bp_sreg=43&bp_cpg=#bdProfileTabs",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "simon wong",
+    "url": "https://www.morerealty.com/buy",
+    "status": "success",
+    "listings": 6,
+    "duration": 25,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "bj delhamer",
+    "url": "https://insiterei.com/properties/",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mani jacob",
+    "url": "https://www.beamrealestate.com/pages/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 4399,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "cris maragos, cbi, cbb, lifetime cbi",
+    "url": "https://tmbusinessbrokers.com/listings",
+    "status": "success",
+    "listings": 14,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeffrey shelly",
+    "url": "https://onesbs.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "marlene sundquist behlman",
+    "url": "https://thetorchteam.com/buy-a-business/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "andy kumar",
+    "url": "https://ubbusa.com/city-neighborhood-street/ - Not showing the listing",
+    "status": "failed",
+    "error": "Unknown: Page.goto: net::ERR_CERT_DATE_INVALID at https://ubbusa.com/city-neighborhood-street/%20-%20Not%20showing%20the%20listing\nCall log:\n  - navigating to \"https://ubbusa.com/city-neighborhood-street/%20-%",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "ruth a. clemens",
+    "url": "https://www.cbcworldwide.com/search/properties?location=United+States&country=United+States&place_id=ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+    "status": "success",
+    "listings": 1,
+    "duration": 23,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "noman khan",
+    "url": "https://nacommercialrealestate.com/# -- Need to choose category",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "larry brusacoram",
+    "url": "https://acctsales.com/practices-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "tony alqam",
+    "url": "https://www.stlbroker.net/index.php/listing/for-sale-properties",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "sy sebastianelli",
+    "url": "https://broker.businessmart.com/scrantonbusinessbrokers?owner=1",
+    "status": "success",
+    "listings": 16,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeff post",
+    "url": "https://firstcolorado.com/properties/sale",
+    "status": "success",
+    "listings": 8,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dan daniel",
+    "url": "https://www.bizbuysell.com/business-broker/dan-daniel/rvabb-mid-atlantic-states-leader-with-98-5-star-reviews-and-counting/25899/?is_pseo=1&gclid=Cj0KCQjw5-WRBhCKARIsAAId9Fls4-5oUL0OuD3nkixIibvoJ06O73UBYv2it3_JS1BqykpBkZmpr1saAnCWEALw_wcB",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "curtis harper",
+    "url": "https://siriusrealtyservices.com/search-results/?z=d1a58464cde2a37ced6f7123eb50358e&board_in=greenville-sc&wp=1&wpfolder=&num_to_show=10&type_in=RES_SFR&low_price=0&high_price=NOMAX&min_sqft_in=&max_sqft_in=&min_acres_in=&max_acres_in=&min_age_in=&max_age_in=&beds_in=0&baths_in=0&hbaths_in=0&status_in=&elemlistin%5B%5D=ALL+SCHOOLS&midlistin%5B%5D=ALL+SCHOOLS&highlistin%5B%5D=ALL+SCHOOLS&arealistin%5B%5D=ALL+AREAS&sublistin%5B%5D=ALL+SUBDIVISIONS&save=Search",
+    "status": "success",
+    "listings": 4,
+    "duration": 18743,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "curtis cochran ph.d., d.m., m.sc., mba, pbc",
+    "url": "https://www.ccochranconsulting.com/business-listings-1.html",
+    "status": "success",
+    "listings": 2,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jason savedoff",
+    "url": "https://filamentbusinessadvisors.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "fred beck",
+    "url": "http://www.fredjbeck.com/business.html",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shane keegan",
+    "url": "https://www.bizbuysell.com/business-broker/shane-keegan/vested-business-partners/32746/?bp_sreg=23&bp_cpg=&bp_scity=largo",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "gregory dicristina",
+    "url": "https://chasegroup.us/listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 23,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "john vassiliades, designated managing broker",
+    "url": "https://laundry-broker.myshopify.com/collections/coming-soon -- Needs log in",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "richard jackim",
+    "url": "https://www.jackimwoods.com/active-engagements/",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mark kincannon",
+    "url": "https://www.resolutionep.com/opportunities",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carolyn ryan",
+    "url": "https://mainascent.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 10
+  },
+  {
+    "broker": "david j sweeten, cpa, cbi, lreb, bcb",
+    "url": "https://www.bizbuysell.com/business-broker/david-j-sweeten-cpa-cbi-lreb-bcb/business-brokers-of-texas-inc/484/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "valori mejia",
+    "url": "https://www.desertbusinessbrokers.com/index.php/listings",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "steve ramsthel",
+    "url": "https://sellmydeliveryroutes.com/buy-routes/",
+    "status": "success",
+    "listings": 1,
+    "duration": 3200,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nirvail singh",
+    "url": "https://californiabusinesssale.com/search-results/?",
+    "status": "success",
+    "listings": 1,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "dana p. cole, cbi, cbb",
+    "url": "https://tucsonbusinessbroker.com/businesses-for-sale",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "yazan ibrahim",
+    "url": "https://firstamericanbrokers.com/listings",
+    "status": "failed",
+    "error": "Minimal content - JavaScript-heavy",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "gerry houlihan",
+    "url": "https://houlihanbusinessbrokers.net/current-listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "rohit mukherjee",
+    "url": "https://www.drebonline.com/listings",
+    "status": "success",
+    "listings": 1,
+    "duration": 11,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "thomas cervone",
+    "url": "https://crproperties.com/search-property-listings/",
+    "status": "success",
+    "listings": 1,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "barry rosayn",
+    "url": "https://propertymanage.biz/realtymasters/rentals/listings -- Needs to fill out form",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "markos bertolotti",
+    "url": "https://faustocommercial.com/inventory/?keyword=&status%5B%5D=&min-price=0&max-price=100000000",
+    "status": "success",
+    "listings": 5,
+    "duration": 67,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "tim dalton",
+    "url": "https://integrabrokers.com/businessesforsale/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "peter j. poulopoulos",
+    "url": "https://realpoul.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 9,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "joshua carnes",
+    "url": "https://lionbusinessbrokers.com/business-for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "cala neu",
+    "url": "https://www.northwoodswi.com/idx/search/homes-for-sale/any/WI_state",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "robert mitchell",
+    "url": "https://premiummergers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 14
+  },
+  {
+    "broker": "les veil",
+    "url": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=15125&m_dmr=1",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "tony arvanitis",
+    "url": "https://lossrealtygroup.com/just-listed/",
+    "status": "success",
+    "listings": 3,
+    "duration": 15,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "sam mozeb",
+    "url": "https://accesscommercial.com/listings/for-sale/",
+    "status": "success",
+    "listings": 1,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "carrie c. ward",
+    "url": "https://hannacre.com/locations/pennsylvania/lehigh-valley/search-properties/",
+    "status": "success",
+    "listings": 1,
+    "duration": 7222,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "chris waters",
+    "url": "https://www.cushmanwakefield.com/en/properties/properties-for-sale",
+    "status": "success",
+    "listings": 25,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "john oberg",
+    "url": "https://www.allenandyoung.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "hosam bader",
+    "url": "https://www.horizonrealtyservices.com/properties",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "brian naab",
+    "url": "https://www.naabconsulting.com/practices-for-sale/",
+    "status": "success",
+    "listings": 5,
+    "duration": 6495,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "mike riccardi",
+    "url": "https://riccardiagency.com/business/",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "shawn kim",
+    "url": "https://princetonrealtygroup.com/properties/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 17
+  },
+  {
+    "broker": "michelle webster",
+    "url": "http://bbfbrokers.com/all%20listings.html",
+    "status": "success",
+    "listings": 13,
+    "duration": 24,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "tim petrou",
+    "url": "https://bluesharkrealty.com/listings - Empty",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 3
+  },
+  {
+    "broker": "jin park",
+    "url": "https://mastersrealty.com/the-collection",
+    "status": "success",
+    "listings": 2,
+    "duration": 10,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "scott sogard",
+    "url": "http://www.sogardproperties.com/restaurants.html",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "stillwell rx",
+    "url": "https://stillwellrx.com/listing/businesses-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 13,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "john bartlett",
+    "url": "https://www.brentwood-growth.com/buying-a-home-services-business/",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 1
+  },
+  {
+    "broker": "thomas w. kerchner",
+    "url": "https://www.bmimergers.com/transactions/current-engagements/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 11
+  },
+  {
+    "broker": "chris springfield, cbi, cm&aa, pmp",
+    "url": "https://springfieldstrategies.com/businesses-for-sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "jeff cbi, cm&ap",
+    "url": "https://www.ecbrokers.com/listings-for-sale/",
+    "status": "success",
+    "listings": 2,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "richard s. burgess",
+    "url": "https://pbabroker.com/listings/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "johney thiara",
+    "url": "https://www.coloproperty.com/listing/list?perPage=200&reportFormat=quick&searchFor=listing&typeIds=1,2&orderBy=prAsc&showSolds=A,AB,AF,AP,C,P&maxResults=200&page=1&exclStatus=,S&latMin=36.91015904817117&latMax=41.09685042665029&lngMin=-109.4940386677683&lngMax=-101.69470933223069",
+    "status": "success",
+    "listings": 12,
+    "duration": 1783,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "michael greene",
+    "url": "https://samgoldenberg.com/business-listings/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "ned gilleland",
+    "url": "https://gillelandproperties.com/",
+    "status": "success",
+    "listings": 2,
+    "duration": 20,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nada sehsah",
+    "url": "https://www.daltonwade.com/index.php?showagency=1&rtype=map",
+    "status": "success",
+    "listings": 3,
+    "duration": 19,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "russell kitzberger",
+    "url": "https://www.crebbgroup.com/business-brokerage-listings",
+    "status": "success",
+    "listings": 2,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "nina kovalyov",
+    "url": "https://www.capitalcomre.com/sale",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "arif sealey",
+    "url": "https://www.sealeybb.com/routes-for-sale/ -- Need to choose State",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 2
+  },
+  {
+    "broker": "mike kane",
+    "url": "https://www.bizbuysell.com/business-broker/mike-kane/top-florida-business-brokers/5298/?is_pseo=1",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "matthew laslo",
+    "url": "https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=&ask_price_h=&map_id=12&lcity=&keyword=&lst_no=&time=0&bprice=0&fresale=0&ownerfi=0&county_id=0",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 28
+  },
+  {
+    "broker": "patrick scheetz",
+    "url": "https://www.exprealty.com/search",
+    "status": "success",
+    "listings": 3,
+    "duration": 21,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "johnnie shamoun",
+    "url": "https://sbboca.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 16
+  },
+  {
+    "broker": "alex vantarakis",
+    "url": "https://www.thevantgroup.com/businesses-for-sale/",
+    "status": "success",
+    "listings": 3,
+    "duration": 12,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "terry tretta, pllc",
+    "url": "https://www.bizbuysell.com/business-broker/terry-tretta-pllc/azbusinessbroker-com-american-realty-brokers/970/?is_pseo=1&is_pseo=1",
+    "status": "failed",
+    "error": "HTTP 403",
+    "listings": 0,
+    "duration": 0
+  },
+  {
+    "broker": "vadim gurman",
+    "url": "https://absolutenetproperties.com/available-property/",
+    "status": "success",
+    "listings": 2,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "scot cockroft",
+    "url": "https://sigmamergers.com/businesses-for-sale/",
+    "status": "failed",
+    "error": "No listings found",
+    "listings": 0,
+    "duration": 12
+  },
+  {
+    "broker": "primesite business brokers",
+    "url": "https://primesitebusiness.com/listings/",
+    "status": "success",
+    "listings": 3,
+    "duration": 14,
+    "method": "pattern_detection"
+  },
+  {
+    "broker": "liberty uy",
+    "url": "https://rldynasty.com/properties/",
+    "status": "failed",
+    "error": "HTTP 404",
+    "listings": 0,
+    "duration": 1
+  }
+]
