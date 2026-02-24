@@ -1132,6 +1132,23 @@ class DealLedgerScraper:
             print("="*70)
             print("PHASE 1: SPECIALIZED FRANCHISE SCRAPERS")
             print("="*70 + "\n")
+            # Deduplicate - only run each specialized scraper type once
+            seen = set()
+            deduped = []
+            for b in specialized_brokers:
+                url = (b.get('listings_url') or b.get('url') or '').lower()
+                name = (b.get('broker_name') or b.get('company_name') or '').lower()
+                for key, patterns in [('murphy',['murphy']), ('transworld',['transworld','tworld.com']),
+                    ('sunbelt',['sunbelt']), ('hedgestone',['hedgestone']), ('vr',['vr business','vrbusiness','vrbbusa']),
+                    ('fcbb',['first choice','fcbb']), ('link',['linkbusiness','link business']), ('bodner',['execbb'])]:
+                    if any(p in name or p in url for p in patterns):
+                        if key not in seen:
+                            seen.add(key)
+                            deduped.append(b)
+                        break
+            print(f'  Deduplicated: {len(specialized_brokers)} -> {len(deduped)} specialized brokers')
+            specialized_brokers = deduped
+
             for i, broker in enumerate(specialized_brokers, 1):
                 self.stats['attempted'] += 1
                 self.stats['specialized_brokers'] += 1

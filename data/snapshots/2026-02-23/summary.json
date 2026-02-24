@@ -1,23 +1,25 @@
 {
-  "run_at": "2026-02-23T16:10:03.505121+00:00",
+  "run_at": "2026-02-23T22:52:24.083284+00:00",
   "vertical_filter": null,
   "stats": {
-    "brokers_attempted": 50,
-    "brokers_success": 28,
-    "brokers_failed": 22,
-    "success_rate": "56.0%",
-    "listings_total": 2178,
-    "with_price": 1775,
-    "with_revenue": 41,
-    "with_cashflow": 1181,
-    "patterns_learned": 28,
-    "ml_predictions_used": 1
+    "brokers_attempted": 200,
+    "brokers_success": 129,
+    "brokers_failed": 71,
+    "success_rate": "64.5%",
+    "listings_total": 13428,
+    "with_price": 8897,
+    "with_revenue": 1617,
+    "with_cashflow": 3507,
+    "patterns_learned": 117,
+    "ml_predictions_used": 13
   },
   "failures_by_type": {
-    "CAPTCHA": 2,
-    "NO_PATTERN": 8,
-    "HTTP_403": 9,
-    "HTTP_404": 2,
-    "TIMEOUT": 1
+    "HTTP_404": 16,
+    "HTTP_403": 27,
+    "NO_PATTERN": 21,
+    "TIMEOUT": 1,
+    "UNKNOWN": 3,
+    "HTTP_400": 1,
+    "CAPTCHA": 1
   }
 }
