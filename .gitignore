@@ -34,3 +34,5 @@ Thumbs.db
 .env.*
 secrets.json
 credentials.json
+data/latest.json
+data/listings/*.json
