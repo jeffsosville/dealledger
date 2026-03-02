@@ -1,8 +1,6 @@
-[
-  {
-    "snapshot_date": "2026-02-23",
-    "path": "data/snapshots/2026-02-23/",
-    "record_count": 7591,
-    "generated_at": "2026-02-24T22:43:38.478642+00:00"
-  }
-]
+{
+  "updated": "2026-03-02",
+  "total_listings": 12029,
+  "snapshot": "2026-02-28",
+  "source": "data/snapshots/2026-02-28/listings.csv"
+}
