@@ -1,0 +1,17 @@
+{
+  "broker_name": "My Car Wash Broker (Ross Brothers Inc.)",
+  "source_url": "https://mycarwashbroker.com/new-york-car-wash-listings/",
+  "container_selector": ".fusion-column-wrapper .fusion-text p",
+  "fields": {
+    "title": ".boldstitle",
+    "sold_image": "img[src*='sold.png']",
+    "image": "img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "New York car wash listings. Total 39 paragraphs found. Title is in span.boldstitle. Financial data (ASKING PRICE, GROSS REVENUE, CASH FLOW, CODE) are in plain text within the paragraph and need regex extraction during post-processing. Some listings include 'SOLD' image indicator. Structure: Each listing is a paragraph with title in boldstitle span, followed by text containing price/revenue/cashflow/code separated by <br> tags. Post-processing regex patterns needed: ASKING PRICE: \\\\$([\\\\d,]+), GROSS REVENUE: \\\\$([\\\\d,]+), CASH FLOW: \\\\$([\\\\d,]+), CODE: (\\\\d+NY), County: ([A-Za-z\\\\s]+County)",
+  "_meta": {
+    "generated_at": "2026-02-27T18:24:52.876480+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "Realpoul Realty",
+  "source_url": "https://realpoul.com/businesses-for-sale/",
+  "container_selector": ".et_pb_row[id^=\"blist-\"]",
+  "fields": {
+    "title": "h3",
+    "description": ".et_pb_text_inner",
+    "price": "strong:contains('ASKING')",
+    "address": "h3",
+    "images": ".et_pb_image a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Small independent broker serving Chicago/Illinois/Wisconsin/Indiana area. Listings are on a single page with no pagination. Each listing is contained in a row with an ID starting with 'blist-'. Title and address are combined in the h3 tag. Price is in a strong tag containing 'ASKING'. Images are available via lightbox links.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:02:13.955064+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

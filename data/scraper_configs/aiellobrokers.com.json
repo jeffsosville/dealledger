@@ -1,0 +1,19 @@
+{
+  "broker_name": "Aiello Business Brokers",
+  "source_url": "https://www.aiellobrokers.com/pcategory/businesses-for-sale/",
+  "container_selector": "ul.display > li:has(div.content_block)",
+  "fields": {
+    "title": ".propertyaddress a",
+    "price": ".price",
+    "agent": ".agent a.emailagent",
+    "listing_url": ".propertyaddress a[href]",
+    "detail_link": "a[href*='/property/']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Aiello Business Brokers - Texas-based broker. Site uses WordPress RealEstate theme. 6 active listings found. Price format includes 'For : $X,XXX,XXX'. Title includes property ID number (e.g., #2152). URL extraction should use href attribute on .propertyaddress a selector. All listings are handled by agent Jim Aiello. Excluded blank spacer li elements using :has(div.content_block) selector. No pagination detected on initial page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:49:45.645208+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

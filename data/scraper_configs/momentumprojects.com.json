@@ -1,0 +1,18 @@
+{
+  "broker_name": "Momentum Projects",
+  "source_url": "https://momentumprojects.com/for-sale-lease/business/",
+  "container_selector": ".fl-post-feed-post",
+  "fields": {
+    "title": "h2 a",
+    "url": "h2 a",
+    "image": "img",
+    "description": "p"
+  },
+  "pagination_next_selector": ".fl-post-feed-pagination a.next, .page-numbers a",
+  "confidence": "medium",
+  "notes": "WordPress site with Beaver Builder. Found 10 business listings. Title extraction working well. Description contains embedded price info (Asking Price:$X, Cash Flow (SDE):$X, Gross Revenue:$X) that will need regex parsing. URL selector returns text instead of href - may need post-processing or href attribute extraction. Image selector returns empty - images may be lazy-loaded or need different selector. No explicit location field - location info is in the title (e.g., '| Oak Island, NC'). Pagination may exist but wasn't visible in initial fetch.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:58:27.116638+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

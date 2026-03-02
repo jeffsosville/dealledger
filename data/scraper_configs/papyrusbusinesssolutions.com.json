@@ -1,0 +1,21 @@
+{
+  "broker_name": "Papyrus Business Solutions",
+  "source_url": "https://www.papyrusbusinesssolutions.com/real-estate",
+  "container_selector": "div.bg-white.shadow-lg.rounded-xl, div.bg-white.shadow-md.rounded-xl",
+  "fields": {
+    "title": "h3",
+    "address": "h4",
+    "price": "p.text-2xl.font-bold",
+    "property_type": "p.font-semibold.text-blue-800",
+    "description": "div.space-y-2 p",
+    "pdf_link": "a[target='_blank']",
+    "image": "img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Commercial real estate listings page. Extracts 12 property listings. Mix of featured properties (shadow-lg) and regular listings (shadow-md). Not all properties have prices displayed - many are contact for details. Property types include development land, multi-family, office space, and retail. PDF flyer links and images present in HTML but may need attribute extraction refinement for full URLs. Based in Central New York area.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:02:01.436800+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

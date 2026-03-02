@@ -1,0 +1,19 @@
+{
+  "broker_name": "RT Commercial Real Estate",
+  "source_url": "https://rt-cre.com/business-listings",
+  "container_selector": "[data-ux='ContentCard'], .listing-container, .business-item",
+  "fields": {
+    "title": "[data-ux='ContentCardHeading'], h2, h3, .listing-title",
+    "price": "[data-aid*='price'], .price, .asking-price, span:contains('$')",
+    "location": "[data-aid*='location'], .location, .address",
+    "description": "[data-ux='ContentCardText'], .description, p",
+    "listing_url": "a[href*='business']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium): This is a GoDaddy/Duda website builder site with heavily obfuscated class names (c1-1, c1-2, etc.). The business listings are loaded dynamically via JavaScript and are NOT present in the static HTML. Static scraping with requests/httpx will NOT work. The selectors provided are educated guesses based on common GoDaddy patterns - they must be verified with a real browser automation tool. The page uses data-ux attributes for components, but actual listing data only appears after JS execution. May also need to handle infinite scroll or click 'Load More' buttons.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:47:49.788972+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

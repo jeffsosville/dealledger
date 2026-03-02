@@ -1,0 +1,18 @@
+{
+  "broker_name": "Keystone Real Estate Advisors",
+  "source_url": "https://keystoneadvisors.co/property-listings/",
+  "container_selector": ".et_pb_with_border.et_pb_column",
+  "fields": {
+    "title": ".et_pb_text_inner h2",
+    "description": ".bullet_list_spacing ul",
+    "image": ".et_pb_image img",
+    "brochure_url": ".et_pb_button_module_wrapper a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Keystone Real Estate Advisors property listings page. Each listing contains title (property name and address), description with bullet points of features, property images, and downloadable brochure links. This is a Divi-based WordPress site. 26 commercial real estate properties found. Note: The current scraper extracts text content well, but attribute extraction (src, href) may require additional processing in the full implementation. No prices are listed on this page - brochures contain detailed information.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:53:19.818228+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

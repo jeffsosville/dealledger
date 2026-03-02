@@ -1,0 +1,16 @@
+{
+  "broker_name": "King & Newton",
+  "source_url": "https://kingnewton.com/properties/",
+  "container_selector": "table[cellpadding=\"3\"] tr:has(td[valign=\"top\"]) td[valign=\"top\"]",
+  "fields": {
+    "title": "a",
+    "description": "span.description"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial real estate broker in Springfield, MA. Listings include both active (FOR LEASE/FOR SALE) and sold properties. Status can be extracted from title text (contains 'SOLD', 'FOR LEASE', etc.). Old-style table-based layout. Each property has title link and description. URLs would need to be extracted separately from href attributes. No prices displayed on listing page. 4 properties total found (2 sold, 1 for lease, 1 active business listing).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:45:36.222285+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

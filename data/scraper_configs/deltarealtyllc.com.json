@@ -1,0 +1,18 @@
+{
+  "broker_name": "Delta Realty LLC",
+  "source_url": "https://www.deltarealtyllc.com/listings.php?county_match[]=dunklin&county_match[]=new%20madrid",
+  "container_selector": ".property-box2",
+  "fields": {
+    "title": "h3.item-title a",
+    "price": ".rent-price .item-price",
+    "location": ".location-area",
+    "details": ".item-categoery3"
+  },
+  "pagination_next_selector": ".pagination .page-link:not(.active)",
+  "confidence": "high",
+  "notes": "Real estate listings page for Delta Realty LLC covering Dunklin and New Madrid counties in Missouri. Page shows 57 total results with 12 per page. Details field contains property specs (bedrooms, bathrooms, square footage, acreage, year built, lot size, city). This is a real estate broker (residential/commercial/land), not specifically business-for-sale listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:03:50.073594+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "House of Realty",
+  "source_url": "https://houseofrealty.com/idx/?url=https%3A%2F%2Flink.flexmls.com%2F1o96mftbu7a2%2C10",
+  "container_selector": "iframe, .flexmls-widget, [id*='flexmls']",
+  "fields": {
+    "title": "h2, .property-title, .listing-title",
+    "price": ".price, .listing-price",
+    "location": ".address, .location",
+    "description": ".description, .details"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site uses FlexMLS IDX integration which loads property listings dynamically via JavaScript/iframe. The static HTML does not contain listing data. REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer). The listings appear to be embedded from link.flexmls.com. Business Opportunity listings are available at: https://houseofrealty.com/search/?url=https%3A%2F%2Flink.flexmls.com%2F1o97bdnkg1fi%2C10%26propertytype%3DD. The site uses the Houzez WordPress theme. To scrape this effectively, you would need to: 1) Use a headless browser to render JavaScript, 2) Wait for the FlexMLS iframe/widget to load, 3) Extract data from the rendered content, or 4) Consider accessing the FlexMLS API directly if available.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:06:28.916346+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

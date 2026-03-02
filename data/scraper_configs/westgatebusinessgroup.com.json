@@ -1,0 +1,19 @@
+{
+  "broker_name": "Westgate Business Group",
+  "source_url": "https://westgatebusinessgroup.com/current-listings/",
+  "container_selector": "#listing_ajax_container .property_listing_ajax, #listing_ajax_container article",
+  "fields": {
+    "title": "h4 a, .listing_title a, .prop_new_details h4 a",
+    "price": ".price_area, .listing_price, .property_price",
+    "location": ".property_listing_details, .listing_location, .property-address",
+    "description": ".listing_detail, .property_listing_detail",
+    "url": "h4 a::attr(href), .listing_title a::attr(href)"
+  },
+  "pagination_next_selector": ".pagination a, .page-numbers a",
+  "confidence": "low",
+  "notes": "**REQUIRES JAVASCRIPT RENDERING** - This site uses WP Residence theme with AJAX-loaded listings. The listings are dynamically populated into #listing_ajax_container via JavaScript after page load. Static HTML fetching returns empty container. Requires Playwright/Selenium/browser automation to scrape. The selectors provided are based on common WP Residence theme patterns but cannot be validated without JS execution. Recommended approach: Use headless browser (Playwright/Puppeteer) and wait for #listing_ajax_container to populate before scraping.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:03:21.434628+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

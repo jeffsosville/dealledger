@@ -1,0 +1,18 @@
+{
+  "broker_name": "2See Properties / Premier Property Group",
+  "source_url": "https://2seeproperties.com/our-listings",
+  "container_selector": "div[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "h4[data-ux='ContentCardHeading']",
+    "description": "div[data-ux='ContentCardText']",
+    "image_src": "img[data-ux='ContentCardImageThumbnail']",
+    "button_text": "a[data-ux='ContentCardButton']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "GoDaddy Website Builder site. Title includes both address and price. Mix of real estate properties and business opportunities. Some listings marked as SOLD. Button text varies between 'View Tour Here' and 'Contact Agent'. Images may require JavaScript rendering. 10 listings found.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:28:14.648705+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "American Bus Sales",
+  "source_url": "https://americanbussales.net/full-inventory/",
+  "container_selector": "li.product",
+  "fields": {
+    "title": "h2.woocommerce-loop-product__title",
+    "link": "a.woocommerce-LoopProduct-link",
+    "image": "img",
+    "price": "span.price"
+  },
+  "pagination_next_selector": "a.next.page-numbers",
+  "confidence": "low",
+  "notes": "WooCommerce-based bus sales site. Successfully extracts 30 listings with titles (100% rate), but price, image src, and link href attributes require JavaScript rendering. Page uses dynamic content loading. Titles contain year, make, model, and stock ID (e.g., '2026 Thomas C2 30+1 WC \u2013 4700'). Full scraping requires Playwright/Selenium for JS execution. Standard WooCommerce pagination is present.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:08:09.664586+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "Platform Brokerage",
+  "source_url": "https://platformbrokerage.com/listings",
+  "container_selector": ".listing-card",
+  "fields": {
+    "title": ".listing-title",
+    "price": ".listing-price",
+    "location": ".listing-location span",
+    "category": ".listing-tag",
+    "business_type": ".listing-type"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Platform Brokerage listings page. Each listing is an anchor tag with class 'listing-card'. Contains title, price, location, category tag, and business type. Listings are primarily in Colorado and focus on technology, agriculture, hospitality, and financial services businesses. The page appears to be static HTML (no JavaScript rendering required).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:04:16.242934+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

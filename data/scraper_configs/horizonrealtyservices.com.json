@@ -1,0 +1,19 @@
+{
+  "broker_name": "Horizon Realty Services",
+  "source_url": "https://www.horizonrealtyservices.com/properties",
+  "container_selector": "section, .property-listing, [data-property]",
+  "fields": {
+    "title": "h2, h3, .property-title",
+    "price": ".price, .property-price",
+    "location": ".location, .property-location, address",
+    "description": "p, .description",
+    "link": "a[href*='property']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED CONTENT DETECTED - This Duda-built website loads property listings dynamically via JavaScript/AJAX after initial page load. The HTML returned by simple HTTP requests contains no listing data, only page structure and navigation. SOLUTION REQUIRED: Use Playwright, Puppeteer, or Selenium to render JavaScript and wait for listings to load. Alternative: Inspect network requests (XHR/Fetch) in browser DevTools to find the API endpoint that serves the property data JSON, then scrape that directly. The page shows a heading 'Chicago Commercial PROPERTY Listings For Sale &amp; Lease' but no actual property cards/listings in static HTML.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:26:41.443916+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

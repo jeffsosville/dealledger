@@ -1,0 +1,13 @@
+{
+  "broker_name": "3CRE Advisors - Business Listings",
+  "source_url": "https://3cre.com/business-listings-columbus/",
+  "container_selector": "#buildout",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium) - Business-for-sale listings are loaded dynamically into <div id='buildout'></div> container via external script. Same setup as property listings page - uses third-party embed system. Static HTML scraping will not work. Need to: 1) Use headless browser to render JavaScript, 2) Wait for #buildout container to populate, 3) Then identify the actual listing selectors after JS execution. The broker is 3CRE Advisors focusing on business brokering/M&A in Ohio region.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:32:45.473837+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

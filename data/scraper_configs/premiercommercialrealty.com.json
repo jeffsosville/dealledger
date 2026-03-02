@@ -1,0 +1,19 @@
+{
+  "broker_name": "Premier Commercial Realty",
+  "source_url": "https://www.premiercommercialrealty.com/search-properties/",
+  "container_selector": "#buildout > div",
+  "fields": {
+    "title": ".property-title, h2, h3, .title",
+    "price": ".price, .property-price",
+    "location": ".location, .address, .city",
+    "description": ".description, .property-description, p",
+    "url": "a[href*='property'], a[href*='listing']"
+  },
+  "pagination_next_selector": ".pagination a, .next-page, button[aria-label*='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). The page loads listings dynamically into #buildout div via JavaScript. Static HTML scraping returns 0 results. Business-for-sale listings available at: /search-properties/?propertyUses=4. Other property types: Retail (propertyType=2), Office (propertyType=1), Industrial (propertyType=3), Land (propertyType=5), Investment (propertyUses=2). The site appears to use a custom JavaScript-based property search system. CSS selectors are estimated and need to be validated with a JavaScript-enabled browser.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:49:24.820681+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

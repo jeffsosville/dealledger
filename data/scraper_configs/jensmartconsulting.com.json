@@ -1,0 +1,17 @@
+{
+  "broker_name": "Jensmart Consulting / Franchise Consulting Services",
+  "source_url": "https://jensmartconsulting.com/franchises.asp",
+  "container_selector": "table.frlist tr:not(:first-child)",
+  "fields": {
+    "title": "td:nth-child(1) a",
+    "category": "td:nth-child(2)",
+    "investment": "td:nth-child(3)"
+  },
+  "pagination_next_selector": "a[href*='offset=']",
+  "confidence": "high",
+  "notes": "Franchise listings in table format. Each row contains franchise name (with link to franchisedetails.asp), category, and total investment range. Page shows 50 franchises at a time with pagination via offset parameter. Detail links follow pattern: franchisedetails.asp?FranID={id}. Categories available via dropdown filter.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:19:38.477663+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "broker_name": "American Business Brokers",
+  "source_url": "http://www.americanbusinessbrokers.com/display-national.asp",
+  "container_selector": "table.detls tr[id^='L']",
+  "fields": {
+    "title": "th a",
+    "raw_text": "th",
+    "price": "td:nth-of-type(1)",
+    "down_payment": "td:nth-of-type(2)",
+    "gross_sales": "td:nth-of-type(3)",
+    "owner_benefit": "td:nth-of-type(4)",
+    "total_assets": "td:nth-of-type(5)"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Table-based listing layout. Each listing has two rows: one with ID starting with 'L' contains main data, and one with ID starting with 'D' contains description. The raw_text field contains both title and location concatenated - location appears after the title following a line break. Descriptions are in following sibling tr[id^='D']. Numeric values may need cleaning (commas, etc.). Detail page URLs are relative and need to be prefixed with domain.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:12:17.417721+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

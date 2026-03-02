@@ -1,0 +1,16 @@
+{
+  "broker_name": "Business Broker World",
+  "source_url": "https://www.businessbrokerworld.com/listings/",
+  "container_selector": "iframe[src*='bizbuysell']",
+  "fields": {
+    "iframe_src": "@src",
+    "note": "Listings are embedded from BizBuySell platform"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Business Broker World does not host listings directly on their website. Instead, they embed listings from BizBuySell.com through an iframe/widget. The page contains a dynamically loaded BizBuySell directory widget (broker ID: 42631). To scrape their actual listings, you would need to: 1) Use a JavaScript-capable scraper (Playwright/Selenium) to render the page and access iframe content, 2) Alternatively, scrape directly from BizBuySell using their broker profile: https://www.bizbuysell.com/Business-Broker/42631/ (Business Broker World - Bradenton, FL). The static HTML contains no actual listing data - all content is loaded client-side via JavaScript. Both /listings/ and /buyer/ pages use the same embedded widget structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:07:51.982949+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "broker_name": "Troy Business Advisors",
+  "source_url": "https://www.troyba.com/buy-a-business/",
+  "container_selector": ".business__item-block",
+  "fields": {
+    "title": "h3.business-item__title",
+    "description": ".business-item__text",
+    "link_text": "a.link-button",
+    "revenue": ".business-item__price-title:contains('Revenue:') + .business-item__price",
+    "ebitda": ".business-item__price-title:contains('EBITDA:') + .business-item__price",
+    "business_value": ".business-item__price-title:contains('Business Value:') + .business-item__price",
+    "real_estate_value": ".business-item__price-title:contains('Real Estate Value:') + .business-item__price",
+    "total_price": ".business-item__price-title:contains('Total Purchase Price:') + .business-item__price"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Static HTML page with 6 business listings. All listings have consistent structure. Extracts title, description, revenue, EBITDA, business value, real estate value, and total purchase price. Note: To extract actual URLs and image sources, use href and src attributes with a.link-button and .business__item-thumb img selectors in post-processing. No pagination detected on single page.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:11:59.399142+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

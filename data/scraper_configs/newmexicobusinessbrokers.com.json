@@ -1,0 +1,19 @@
+{
+  "broker_name": "New Mexico Business Brokers",
+  "source_url": "https://www.newmexicobusinessbrokers.com/listings",
+  "container_selector": "[data-hook='repeater-item'], .wixui-repeater__item, [id^='comp-'][class*='item']",
+  "fields": {
+    "title": "h2, h3, [data-hook='title'], .title-text",
+    "price": "[data-hook='price'], .price, .asking-price",
+    "location": "[data-hook='location'], .location, .city-state",
+    "description": "[data-hook='description'], p, .description-text",
+    "link": "a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "**JavaScript-Rendered Content (Wix Platform)** - This site is built on Wix and requires JavaScript execution to render listing data. The static HTML contains only framework code and placeholder elements. The actual business listings are loaded dynamically via Wix's API after page load. **Requires Playwright/Selenium/Puppeteer** to scrape properly. The selectors provided are best-guess patterns based on common Wix repeater components, but cannot be validated without JS rendering. When implementing with a headless browser, look for: 1) Repeater items (data-hook='repeater-item'), 2) Dynamic comp-* elements that populate after load, 3) Wix's data API endpoints may be an alternative approach. Site uses metaSiteId: 94761e16-043e-4cd9-9fe0-1086f6f44a5a and siteId: de2e771f-5480-41f8-99a4-c355ba3cd8bd which might be useful for API access.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:10:13.944354+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

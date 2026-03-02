@@ -1,0 +1,16 @@
+{
+  "broker_name": "SAG Hospitality Brokerage (formerly Sofranko Advisors)",
+  "source_url": "https://www.sagbrokerage.com/for-sale/",
+  "container_selector": "a.grid-item",
+  "fields": {
+    "title": "h3",
+    "image": ".grid-item-img img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully extracting 170 listings. The container is an <a> tag so the href/url will be automatically extracted. Titles are clean and complete. Images may need attribute extraction support. Site appears to be WordPress-based with static HTML rendering. No pagination selector needed as all listings appear on single page.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:38:52.025396+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

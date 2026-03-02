@@ -1,0 +1,23 @@
+{
+  "broker_name": "Wes Ayranto Real Estate / RE/MAX",
+  "source_url": "https://wesayranto.com/buyers/listings/",
+  "container_selector": "div[data-id=\"div_block-31-51\"]",
+  "fields": {
+    "title": "span[data-id='span-39-51']",
+    "price": "span[data-id='span-8-59631']",
+    "location": "span[data-id='span-41-51']",
+    "url": "a.ct-link",
+    "bedrooms": "span[data-id='span-46-51']",
+    "bathrooms": "span[data-id='span-50-51']",
+    "sqft": "span[data-id='span-54-51']",
+    "status": "span[data-id='span-34-51']",
+    "agent": "span[data-id='span-57-51']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Real estate listings from Wes Ayranto RE/MAX in Barrie, Ontario area. Extracted 19 listings successfully. Fields include property title, price, location (address), bedrooms, bathrooms, square footage, listing status (For Sale/Lease/Rented), and agent name. Note: URL field captures full link element - may need href attribute extraction in post-processing. All listings are residential properties (homes, condos, waterfront properties).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:59:23.765359+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

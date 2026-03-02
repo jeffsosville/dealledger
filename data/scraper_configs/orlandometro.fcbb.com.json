@@ -1,0 +1,19 @@
+{
+  "broker_name": "First Choice Business Brokers - Orlando Metro",
+  "source_url": "https://orlandometro.fcbb.com/businesses-for-sale",
+  "container_selector": ".dm-bfs-listing-item",
+  "fields": {
+    "title": ".dm-bfs-listing-title, [data-field='title']",
+    "price": ".dm-bfs-listing-price, [data-field='price']",
+    "location": ".dm-bfs-listing-location, [data-field='location']",
+    "description": ".dm-bfs-listing-description, [data-field='description']",
+    "url": "a[href*='/business/']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a DudaMobile/Duda platform site with a Business For Sale (dm-bfs) widget. The listings are loaded dynamically via JavaScript and do not appear in the initial HTML response. REQUIRES PLAYWRIGHT/SELENIUM for JavaScript rendering. The selectors provided are educated guesses based on typical Duda BFS widget patterns, but cannot be validated without browser automation. Alternative: Check if FCBB has an API or feed for their listings, or contact them about data access.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:54:32.933022+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "broker_name": "Maine Business Brokers",
+  "source_url": "https://www.mainebusinessbrokers.com/businesses-for-sale",
+  "container_selector": "table.display tbody tr",
+  "fields": {
+    "title": "td:nth-child(1) a",
+    "business_price": "td:nth-child(2)",
+    "real_estate_price": "td:nth-child(3)",
+    "annual_sales": "td:nth-child(4)",
+    "cash_flow": "td:nth-child(5)",
+    "location": "td:nth-child(6)"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Table-based layout with clear structure. Page contains both active listings and recently sold listings. Business price is in column 2, real estate price in column 3, annual sales in column 4, cash flow in column 5, and location in column 6. Some listings may be marked as 'Under Contract' with a span tag inside the title cell. Real estate price and other fields may be empty for some listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:26:47.362670+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

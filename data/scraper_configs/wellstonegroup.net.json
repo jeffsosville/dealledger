@@ -1,0 +1,16 @@
+{
+  "broker_name": "Wellstone Group",
+  "source_url": "https://wellstonegroup.net/business-search/",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {
+    "note": "Listings are dynamically loaded via JavaScript into empty div.et_pb_code_inner",
+    "requires": "Playwright/Selenium or API reverse-engineering"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site uses JavaScript rendering to load business listings. The page contains an empty code module (div.et_pb_code_inner) where listings are injected dynamically. Standard HTML scraping returns no listing data. Options: 1) Use Playwright/Selenium to render JavaScript and wait for content to load, 2) Monitor network requests to find the API endpoint that serves listing data, 3) Check if listings are embedded via iframe from third-party service. The site uses Divi theme with WordPress.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:13:39.223662+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

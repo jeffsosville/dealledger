@@ -1,0 +1,25 @@
+{
+  "broker_name": "KR Capital - Delivery Routes For Sale",
+  "source_url": "https://www.deliveryroutesforsale.com/routes/",
+  "container_selector": "div.route",
+  "fields": {
+    "title": "h2.route__name",
+    "city": "span.locality",
+    "state": "span.region",
+    "price": "dl.route__valuations div:has(dt:contains('Asking Price')) dd",
+    "cash_flow": "dl.route__valuations div:has(dt:contains('Cash Flow')) dd",
+    "gross_revenue": "dl.route__valuations div:has(dt:contains('Gross Revenue')) dd",
+    "route_id": "div.route__id",
+    "route_type": "ul.route__typeNames li a",
+    "route_components": "ul.route__components li.route__components__item",
+    "equipment_value": "dl.route__meta div:has(dt:contains('Equipment Value')) dd",
+    "num_vehicles": "dl.route__meta div:has(dt:contains('# of Vehicles')) dd"
+  },
+  "pagination_next_selector": "a.pagination__link--next",
+  "confidence": "high",
+  "notes": "Specialized site for FedEx delivery routes. Captures route type (Line Haul/P&D), financial metrics (asking price, cash flow, gross revenue), equipment value, and number of vehicles. Some listings may not have complete financial data. Route components field indicates number and type of routes in the package (e.g., '12 Line Haul', '11 P&D').",
+  "_meta": {
+    "generated_at": "2026-02-27T18:50:47.117457+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

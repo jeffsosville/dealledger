@@ -1,0 +1,19 @@
+{
+  "broker_name": "Business For Sale Ohio (First Choice Business Brokers Cincinnati)",
+  "source_url": "https://businessforsaleohio.com/businesses-for-sale",
+  "container_selector": "#swh-df634a7b49474459992782c53519e132 [data-listing-card], #swh-df634a7b49474459992782c53519e132 .listing-card, .business-item",
+  "fields": {
+    "title": ".listing-title, .business-name, h2, h3",
+    "price": ".price, .asking-price, [data-price]",
+    "location": ".location, .city, .address",
+    "description": ".description, .summary",
+    "url": "a[href*='business']"
+  },
+  "pagination_next_selector": ".pagination a.next, a[href*='page=']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT REQUIRED: This site uses Duda website builder with dynamic content loading. The business listings are loaded via JavaScript into container #swh-df634a7b49474459992782c53519e132 (data-wrapper-source=\"appstore\"). Static HTML scraping returns 0 results. REQUIREMENTS: Use Playwright/Selenium with JavaScript rendering. Wait for listings to appear in the container. The selectors provided are estimates and need verification after JS rendering. ALTERNATIVE: Check browser Network tab for API endpoints - may be able to scrape JSON data directly instead of rendering the full page. Pagination appears to use ?page= query parameter.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:54:52.500760+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

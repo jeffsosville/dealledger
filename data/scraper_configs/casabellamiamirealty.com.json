@@ -1,0 +1,18 @@
+{
+  "broker_name": "Casa Bella Miami Realty",
+  "source_url": "https://www.casabellamiamirealty.com/1218/commercial_search/1219",
+  "container_selector": "div[ng-repeat*='property'], .property-card, .listing-card",
+  "fields": {
+    "title": ".property-title, h3, h4",
+    "price": ".price, .property-price",
+    "location": ".location, .address",
+    "description": ".description, p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f IMPORTANT: This is a JavaScript-rendered Angular site. Static HTML scraping returns 0 listings. Requires Playwright/Selenium with JavaScript execution.\n\nThe site uses AngularJS (ng-controller, ng-view, ng-repeat) to dynamically load content via AJAX/API calls. The HTML structure shows only the page skeleton with placeholders like {{agentDetails.offc_phone}}.\n\nNOTE: Casa Bella Miami Realty appears to be primarily a RESIDENTIAL and COMMERCIAL REAL ESTATE brokerage (properties like buildings, offices, retail spaces), NOT a business brokerage. The 'commercial' section refers to commercial real estate properties, not businesses-for-sale.\n\nTo scrape this site, you would need to:\n1. Use Playwright or Selenium to render JavaScript\n2. Wait for Angular to load the property data\n3. Potentially intercept API calls to get data directly\n4. Or extract data from the rendered DOM after JS execution\n\nRecommended approach: Inspect network traffic in browser DevTools to find the API endpoint that returns listing data in JSON format, then scrape the API directly instead of the rendered page.",
+  "_meta": {
+    "generated_at": "2026-02-26T19:33:04.267814+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

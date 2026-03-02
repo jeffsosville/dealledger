@@ -1,0 +1,46 @@
+{
+  "broker_name": "Gratia Equity Partners (Ryan Adair) - BizQuest",
+  "source_url": "https://www.bizquest.com/businesses-for-sale/?BrokerId=BW49320",
+  "container_selector": "app-bfs-card",
+  "fields": {
+    "title": {
+      "selector": ".title a, .business-title a",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".price-val, .asking-price",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".location, .business-location",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": ".title a, .business-title a",
+      "attribute": "href"
+    },
+    "industry": {
+      "selector": ".industry, .business-category",
+      "attribute": "text"
+    },
+    "cash_flow": {
+      "selector": ".cash-flow",
+      "attribute": "text"
+    },
+    "revenue": {
+      "selector": ".revenue, .gross-revenue",
+      "attribute": "text"
+    },
+    "description": {
+      "selector": ".description, .business-description",
+      "attribute": "text"
+    }
+  },
+  "pagination_next_selector": ".pagination .next, button[aria-label='Next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT REQUIRED - BizQuest uses Angular (v18.2.13) with client-side rendering. Listings are loaded dynamically via API calls and do not appear in static HTML. REQUIRES Playwright, Puppeteer, or Selenium to render JavaScript before scraping. The page uses Angular components (app-bfs-card, app-bfs-search-results) to display listings. Static fetch_page returns empty containers. URL filters by BrokerId=BW49320 for Ryan Adair at Gratia Equity Partners. Selectors are estimated based on typical BizQuest structure and need validation with JS-enabled browser.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:10:27.280581+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

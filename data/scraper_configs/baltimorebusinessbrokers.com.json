@@ -1,0 +1,20 @@
+{
+  "broker_name": "Baltimore Business Brokers",
+  "source_url": "https://baltimorebusinessbrokers.com/business?",
+  "container_selector": ".business-listing-card--list",
+  "fields": {
+    "title": ".card-title",
+    "price": ".price-group h4",
+    "location": ".card-subtitle.location",
+    "description": ".card-text",
+    "category": ".category-name",
+    "image": ".card-img-wrapper img"
+  },
+  "pagination_next_selector": ".pagination .page-link[rel=\"next\"]",
+  "confidence": "high",
+  "notes": "Successfully extracts all listing data. Location field contains state and city concatenated (e.g., 'MDFrederick'). Pagination available with numbered pages (8 pages total visible). Each listing card is also a link to detail page.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:22:32.230414+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

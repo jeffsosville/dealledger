@@ -1,0 +1,18 @@
+{
+  "broker_name": "NJ Biz Buy Sell",
+  "source_url": "https://njbizbuysell.com/listings",
+  "container_selector": "div[data-ux=\"GridCell\"] div[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "h4[data-ux='ContentCardHeading']",
+    "description": "div[data-ux='ContentCardText'] p",
+    "business_type": "h4[data-ux='ContentCardHeading']",
+    "button_link": "a[data-ux='ContentCardButton']"
+  },
+  "pagination_next_selector": "none",
+  "confidence": "medium",
+  "notes": "GoDaddy website builder site. Listings page shows 25 business opportunities as content cards. No prices or locations visible on the listing page - appears to be a teaser/inquiry-based model where users must contact the broker for details. First card is an instruction card (not a real listing). Business types include: Pre School, Bagel Shop, Manufacturing Businesses, Tavern-Bar Restaurant, Service Business, etc. No pagination detected - appears to be a single page with all listings. Links are mostly null except for the contact/inquiry button on the first card.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:05:57.196023+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

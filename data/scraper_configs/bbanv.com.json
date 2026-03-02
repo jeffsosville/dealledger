@@ -1,0 +1,19 @@
+{
+  "broker_name": "Benchmark Business Advisors (BBA Nevada)",
+  "source_url": "https://www.bbanv.com/listings",
+  "container_selector": "div.views-row",
+  "fields": {
+    "title": "div.views-field-title h2 a",
+    "price": "span.views-field-field-listing-price span.field-content",
+    "description": "div.views-field-body div.field-content",
+    "url": "div.views-field-title h2 a[href]",
+    "image": "div.views-field-field-listing-image img[src]"
+  },
+  "pagination_next_selector": "a.pager__link--next",
+  "confidence": "high",
+  "notes": "Drupal-based website. Successfully extracts 6 listings with 100% quality on title and price. Description field captures summary text. URLs are relative paths like /listings/606. Additional listings may be on separate category pages (Sold Listings at /listings/sold, Land at /listings/land).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:56:58.636105+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

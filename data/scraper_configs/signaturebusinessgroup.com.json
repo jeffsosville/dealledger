@@ -1,0 +1,17 @@
+{
+  "broker_name": "Signature Business Group",
+  "source_url": "https://www.signaturebusinessgroup.com/businesses-for-sale/",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {
+    "title": "REQUIRES_JS_RENDERING",
+    "price": "REQUIRES_JS_RENDERING",
+    "location": "REQUIRES_JS_RENDERING"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site uses OcularCMS and appears to load all business listings dynamically via JavaScript/AJAX. The static HTML contains only the page header and introductory text ('Our Current Businesses For Sale') but no actual listing data. This requires a JavaScript-enabled scraper (Playwright/Selenium/Puppeteer) to render the page and wait for listings to load. The site is focused on Chicagoland area businesses. Once JS rendering is implemented, will need to inspect the loaded DOM to identify proper selectors for listing containers, titles, prices, and locations.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:21:17.061866+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

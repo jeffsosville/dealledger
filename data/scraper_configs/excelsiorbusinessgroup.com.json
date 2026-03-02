@@ -1,0 +1,22 @@
+{
+  "broker_name": "Excelsior Business Group",
+  "source_url": "https://www.excelsiorbusinessgroup.com/business-for-sale.asp",
+  "container_selector": "div.well.drop-shadow",
+  "fields": {
+    "title": "h4",
+    "industry": "div.col-md-6.listing-data:first-child ul li:nth-child(1) strong",
+    "location": "div.col-md-6.listing-data:first-child ul li:nth-child(2) strong",
+    "listing_number": "div.col-md-6.listing-data:first-child ul li:nth-child(3) a",
+    "price": "div.col-md-6.listing-data:last-child ul li:nth-child(1)",
+    "revenue": "div.col-md-6.listing-data:last-child ul li:nth-child(2)",
+    "cash_flow": "div.col-md-6.listing-data:last-child ul li:nth-child(3)",
+    "description": "div.listing-comments p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Scraper successfully extracts listings from Excelsior Business Group. Financial fields (price, revenue, cash_flow) include label text (e.g., 'Selling Price:$ 2,200,000') which needs cleaning in post-processing. Listing number can be used to construct detail URLs in format: /business-for-sale/business_details.asp?LID={listing_number}. Page shows 2 active listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:00:40.948501+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

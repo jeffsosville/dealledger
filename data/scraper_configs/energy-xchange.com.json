@@ -1,0 +1,19 @@
+{
+  "broker_name": "Energy Xchange",
+  "source_url": "https://www.energy-xchange.com/available-sites/",
+  "container_selector": ".property_div.property",
+  "fields": {
+    "title": ".location a",
+    "listing_url": ".location a",
+    "price": ".askingprice",
+    "details": ".chart",
+    "status": ".contract"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Energy Xchange specializes in service stations and convenience stores. Successfully extracts 11 listings. The 'details' field contains Annual Gallons, Annual Merchandise, and Comments that can be parsed. The 'listing_url' selector extracts text but href attribute should be used in final implementation. Status includes Available/Sold/Pending. Some listings may not have asking prices listed.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:23:30.847271+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

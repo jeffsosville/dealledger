@@ -1,0 +1,16 @@
+{
+  "broker_name": "Brubaker Advisors",
+  "source_url": "https://brubakeradvisors.com/listings",
+  "container_selector": "div.kv-ee-col-12.kv-ee-content.kv-ee-left.kv-ee-drop-shadow",
+  "fields": {
+    "title": "h3.kv-ee-title--sm",
+    "description": "p.kv-ee-body--md"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully extracts 2 business listings. The site uses a custom builder (kv-ee framework). No prices are listed on the main listing page. Additional fields like link href and image URLs are available in the HTML as attributes (a.kv-ee-button[href] and div.kv-ee-item-img.kv-ee-gallery[data-src-normal]) but require attribute extraction. Descriptions appear to be truncated in the display.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:10:05.936395+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

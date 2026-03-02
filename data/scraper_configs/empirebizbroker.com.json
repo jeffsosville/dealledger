@@ -1,0 +1,20 @@
+{
+  "broker_name": "Empire Business Brokers",
+  "source_url": "https://www.empirebizbroker.com/businesses-for-sale",
+  "container_selector": "tbody tr",
+  "fields": {
+    "title": "td:nth-child(1) a",
+    "type": "td:nth-child(2)",
+    "location": "td:nth-child(3)",
+    "price": "td:nth-child(4)",
+    "revenue": "td:nth-child(5)",
+    "cashflow": "td:nth-child(6)"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Table-based listings page with business name, type, location, asking price, revenue, and cash flow. All 34 listings successfully extracted. Note: URLs could be extracted from td:nth-child(1) a href attribute if needed.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:19:22.429370+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

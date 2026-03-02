@@ -1,0 +1,21 @@
+{
+  "broker_name": "Realtec Business Brokers - Rich Gruber (BizBuySell)",
+  "source_url": "https://www.bizbuysell.com/business-broker/rich-gruber/realtec-business-brokers/1025/?cb_ifcb=1&j=aq",
+  "container_selector": "div.business-card, article.listing-item, div[data-listing-id]",
+  "fields": {
+    "title": "h2.business-name, h3.listing-title, a.business-title",
+    "price": "span.price, div.asking-price, span[itemprop='price']",
+    "location": "span.location, div.business-location, span.city-state",
+    "description": "p.description, div.business-description",
+    "revenue": "span.revenue, div.gross-revenue",
+    "cash_flow": "span.cash-flow, div.cash-flow",
+    "url": "a.business-link@href, a.listing-link@href"
+  },
+  "pagination_next_selector": "a.next-page, a.pagination-next, button.load-more",
+  "confidence": "low",
+  "notes": "REQUIRES BROWSER AUTOMATION - BizBuySell uses Akamai bot protection and heavy JavaScript rendering. Static scraping will not work. This page returned only Akamai security challenge HTML. Must use Playwright/Selenium with proper headers, cookies, and delays to bypass bot detection. The selectors provided are educated guesses based on typical BizBuySell structure but could not be validated against live HTML.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:37:05.976443+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

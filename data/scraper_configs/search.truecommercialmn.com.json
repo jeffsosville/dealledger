@@ -1,0 +1,23 @@
+{
+  "broker_name": "True Commercial MN",
+  "source_url": "https://search.truecommercialmn.com/idx/featured",
+  "container_selector": "article.idx-listing-card",
+  "fields": {
+    "street_number": ".idx-listing-card__address--number",
+    "street": ".idx-listing-card__address--street-name",
+    "price": ".idx-listing-card__price",
+    "city": ".idx-listing-card__address--City",
+    "state": ".idx-listing-card__address--state-abrv",
+    "zip": ".idx-listing-card__address--zip",
+    "status": ".idx-listing-card__details--propStatus .idx-text",
+    "acres": ".idx-listing-card__details--acres .idx-text",
+    "sqft": ".idx-listing-card__details--sqft .idx-text"
+  },
+  "pagination_next_selector": ".IDX-pagination a.IDX-next",
+  "confidence": "high",
+  "notes": "IDX-based commercial real estate listings site. Listings include both land (with acres) and commercial buildings (with sqft). The article element also contains data attributes like data-listingid, data-detailsurl, data-lat, data-lng that could be extracted with custom code. Currently extracting 14 featured listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:53:46.092593+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "broker_name": "Murray & Associates Business Brokers",
+  "source_url": "https://murraybizbuy.com/businesses-for-sale-2/",
+  "container_selector": "div.listing",
+  "fields": {
+    "title": "a.listing-title-link",
+    "leftcol_text": "div.leftcol",
+    "rightcol_text": "div.rightcol",
+    "description": "span.business-desc-value",
+    "listing_url": "a.button",
+    "image_url": "div.img-holder img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Extracted 40 listings successfully. leftcol_text contains Listed Price and Gross Revenue (sometimes also Down Payment). rightcol_text contains Cash Flow and Listing ID. These fields will need regex post-processing to extract individual values. The listing_url selector gets the 'View Listing' button href. Some listings may not have images (empty string). All listings appear on a single page with no pagination detected.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:29:48.686900+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

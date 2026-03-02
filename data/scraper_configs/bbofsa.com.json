@@ -1,0 +1,17 @@
+{
+  "broker_name": "BBOFSA (Business Brokers of San Antonio)",
+  "source_url": "https://bbofsa.com/business-listing/",
+  "container_selector": "article.elementor-post",
+  "fields": {
+    "title": ".elementor-post__title a",
+    "description": ".elementor-post__excerpt",
+    "read_more_text": ".elementor-post__read-more"
+  },
+  "pagination_next_selector": ".elementor-pagination a.next",
+  "confidence": "medium",
+  "notes": "BBOFSA (Business Brokers of San Antonio) uses an Elementor-based WordPress site. Listings displayed in article.elementor-post containers. Prices are not displayed on listing cards (confidential listings). Some sold listings include prices in their titles. The site uses a standard WordPress posts loop. URLs for individual listings would need to be extracted via href attributes (requires browser automation). 6 listings found on the main page. Many are marked as SOLD.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:40:32.084717+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

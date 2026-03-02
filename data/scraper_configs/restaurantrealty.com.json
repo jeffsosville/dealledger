@@ -1,0 +1,14 @@
+{
+  "broker_name": "restaurantrealty",
+  "source_url": "https://www.restaurantrealty.com/?ct_ct_status=active&search-listings=true",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "a[href*='listing']"
+  },
+  "listing_count": 26,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-02-28T02:59:40.184655+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

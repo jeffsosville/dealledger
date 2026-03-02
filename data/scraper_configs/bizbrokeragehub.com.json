@@ -1,0 +1,21 @@
+{
+  "broker_name": "BizBrokerageHub",
+  "source_url": "https://www.bizbrokeragehub.com/listings",
+  "container_selector": "article.dr-card",
+  "fields": {
+    "title": "h3.dr-card__title",
+    "price": "div.dr-card__price",
+    "description": "div.dr-card__listing-highlights",
+    "status": "div.dr-card__status",
+    "revenue": "div.dr-card__meta:contains('Revenue')",
+    "cashflow": "div.dr-card__meta:contains('Profits')",
+    "detail_url": "a.dr-button"
+  },
+  "pagination_next_selector": "nav.dr-pagination a",
+  "confidence": "high",
+  "notes": "BizBrokerageHub uses DealRelations platform. Listings show 12 per page with pagination. Site shows '12 of 37 listings' total. Revenue and cashflow fields extracted using :contains() pseudo-selector. No location or industry fields on listing cards but may be available on detail pages. Detail pages use deal-listing URLs.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:24:57.354320+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

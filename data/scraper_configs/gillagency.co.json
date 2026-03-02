@@ -1,0 +1,20 @@
+{
+  "broker_name": "Gill Agency",
+  "source_url": "https://gillagency.co/business-acquisitions/",
+  "container_selector": "div.block",
+  "fields": {
+    "title": "h2",
+    "revenue": "ul li:contains('Revenue')",
+    "sde": "ul li:contains('SDE')",
+    "location": "h6",
+    "description": "p",
+    "link": "div.btn-prt a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully extracted 21 listings. Revenue and SDE are in list items. Link selector returns button text but href attribute should be extracted during implementation. Some listings may not have all financial fields populated. Clean HTML structure makes this a reliable scrape.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:01:05.936308+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

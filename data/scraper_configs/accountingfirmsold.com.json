@@ -1,0 +1,20 @@
+{
+  "broker_name": "Accounting Firm Sold",
+  "source_url": "https://accountingfirmsold.com/listings/",
+  "container_selector": "table.rwd-table tr:not(:first-child)",
+  "fields": {
+    "listing_id": "td[data-th='Listing Number']",
+    "location": "td[data-th='Location']",
+    "annual_gross": "td[data-th='Annual Gross']",
+    "asking_price": "td[data-th='Asking Price']",
+    "description": "td[data-th='Description']",
+    "status": "td[data-th='Status']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Accounting firm listings organized by state in tabbed interface. Each table contains listing number, location, annual gross revenue, asking price, description, and status. Site displays 188 listings across multiple states (CA, CT, FL, GA, IA, IN, IL, KS, KY, MA, MD, MI, MN, MO, MT, NC, ND, NE, NY, OH, PA, RI, SD, TN, TX, VA, WI). No pagination needed - all listings load on single page in tabs.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:40:09.539987+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

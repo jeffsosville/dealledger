@@ -1,0 +1,19 @@
+{
+  "broker_name": "Business Seller Center",
+  "source_url": "https://businesssellercenter.com/listings",
+  "container_selector": ".listing-item, .business-listing, .view-content .views-row",
+  "fields": {
+    "title": "h2, h3, .title",
+    "price": ".price, .asking-price",
+    "location": ".location, .city",
+    "description": ".description, p",
+    "link": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered content detected. The /listings page returns empty content containers in static HTML (only empty paragraph tags in .field-item). The site is built on Drupal CMS. Listings are likely loaded via JavaScript/AJAX after page load. REQUIRES Playwright or Selenium for proper scraping. Static HTML scraping will return 0 results. The broker is located in Cheshire, CT and is run by Kevin F. Murray, CBI, M&AMI. May also be using an embedded iframe or third-party listing service. Recommend browser automation tools for proper data extraction.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:44:36.842985+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

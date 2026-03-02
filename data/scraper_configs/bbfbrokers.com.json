@@ -1,0 +1,19 @@
+{
+  "broker_name": "BB&F Business Brokerage & Finance",
+  "source_url": "http://bbfbrokers.com/all%20listings.html",
+  "container_selector": "table#table_2 tr:has(td.TC-4)",
+  "fields": {
+    "title": "td:nth-child(1) span.C-15",
+    "status": "td:nth-child(1) span.sold",
+    "location": "td:nth-child(2) span.C-15",
+    "price": "td:nth-child(3) span.C-15",
+    "details_url": "td:nth-child(4) a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Simple HTML table layout. Listings include sold/pending status. Note: details_url selector returns link text 'View Details>>>>' - need to extract href attribute in post-processing. Main contact: (734) 323-0376. Single-page listing without pagination.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:25:24.205643+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

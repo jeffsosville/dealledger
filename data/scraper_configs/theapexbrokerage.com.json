@@ -1,0 +1,20 @@
+{
+  "broker_name": "The Apex Brokerage",
+  "source_url": "https://theapexbrokerage.com/?ct_keyword&ct_city=0&ct_state=0&ct_zipcode=0&search-listings=true&ct_property_type=business&ct_ct_status=0&ct_beds=0&ct_baths=0&ct_price_from&ct_price_to&ct_sqft_from&ct_sqft_to&ct_lotsize_from&ct_lotsize_to&ct_community=0&ct_mls",
+  "container_selector": "li.listing.standard",
+  "fields": {
+    "title": ".grid-listing-info header h5 a",
+    "price": ".listing-price",
+    "location": ".location",
+    "link_url": "figure a",
+    "property_type": ".propinfo .property-type .right",
+    "description": ".grid-listing-info p:not(.location):not(.price)"
+  },
+  "pagination_next_selector": ".pagination a.next",
+  "confidence": "high",
+  "notes": "Successfully scraped 6 business listings. Listings use WordPress Real Estate 7 theme. URL extraction requires href attribute from 'figure a' or '.grid-listing-info header h5 a' selectors. Images can be extracted from '.listing-featured-image img' src attribute. Date information available in '.creation-date .right' selector. Site appears to be server-rendered with good static HTML structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:40:47.414486+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

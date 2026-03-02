@@ -1,0 +1,20 @@
+{
+  "broker_name": "National Acquisitions and Investment Group (NAIG LLC)",
+  "source_url": "https://naigllc.com/midwest-rv-center-sales-service/",
+  "container_selector": "body",
+  "fields": {
+    "title": "#banner h1",
+    "description": ".so-widget-sow-editor .siteorigin-widget-tinymce",
+    "image": ".sow-image-container img",
+    "banner_image": "#banner img",
+    "contact_phone": ".contact a",
+    "contact_email": ".ilfl a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Individual listing detail page scraper for NAIG LLC. Each listing is a separate page. Current active listings are found in the navigation menu under 'Listings' dropdown. Works for all three current listings: RV Center, Restaurant Marina, and Marina Satellite Facility. Images may require JavaScript rendering. No pricing information is displayed on the pages.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:37:17.553148+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

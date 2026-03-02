@@ -1,0 +1,19 @@
+{
+  "broker_name": "First Choice Business Brokers - Panama City Beach",
+  "source_url": "https://panamacitybeach.fcbb.com/businesses-for-sale",
+  "container_selector": ".dm-bfs-listing, .bfs-listing-item, [data-bfs-listing]",
+  "fields": {
+    "title": ".listing-title, .business-name, h3, h4",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .city, .address",
+    "description": ".description, .summary, p",
+    "link": "a[href*='business'], a[href*='listing']"
+  },
+  "pagination_next_selector": ".pagination a, .next-page, [data-page]",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer required). This FCBB site uses a dynamic module (dm-bfs) that loads listings via JavaScript. The HTML returned by static fetch contains only the page shell with class 'runtime-module-container dm-bfs'. Listings are not present in static HTML. The selectors provided are best-guess based on typical FCBB patterns and will need validation with a browser automation tool. The page appears to be built on a DudaMobile-like platform. Pagination parameters: ?sort=FeaturedLocalBusinesses&page=N",
+  "_meta": {
+    "generated_at": "2026-02-27T21:12:44.949211+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

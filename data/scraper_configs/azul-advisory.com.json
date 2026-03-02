@@ -1,0 +1,19 @@
+{
+  "broker_name": "Azul Advisory",
+  "source_url": "https://azul-advisory.com/listings/",
+  "container_selector": "tupelo-marketplace",
+  "fields": {
+    "title": "[data-testid='listing-title'], .listing-title, h2, h3",
+    "price": "[data-testid='listing-price'], .listing-price, .price, .asking-price",
+    "location": "[data-testid='listing-location'], .listing-location, .location",
+    "description": "[data-testid='listing-description'], .listing-description, .description",
+    "industry": "[data-testid='listing-industry'], .listing-industry, .industry, .category"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium)\n\nThis site uses a custom Tupelo Marketplace web component (&lt;tupelo-marketplace organization-id=\"cm882kwdh00000ufmk0em0fv1\"&gt;) that loads listings dynamically via JavaScript. The static HTML contains no listing data.\n\nRequirements:\n- Must use Playwright or Selenium to render JavaScript\n- Wait for the tupelo-marketplace component to load listings\n- Listings will appear as child elements within the tupelo-marketplace tag\n- May need to wait for network requests to complete\n\nThe selectors provided are educated guesses based on common patterns. After JS rendering, inspect the actual DOM structure to refine these selectors. Common patterns to look for:\n- Shadow DOM (web components often use shadow roots)\n- Data attributes like data-testid\n- Class names with 'listing', 'business', 'card' patterns\n\nOrganization ID: cm882kwdh00000ufmk0em0fv1 (may be useful for API discovery)",
+  "_meta": {
+    "generated_at": "2026-02-27T20:20:31.408861+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

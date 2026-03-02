@@ -1,0 +1,20 @@
+{
+  "broker_name": "Feather Real Estate Group",
+  "source_url": "https://www.featherrealestategroup.com/commercial_business.phtml",
+  "container_selector": "div.property, a.mls-property",
+  "fields": {
+    "title": "h1, div.content h3",
+    "price": "h3",
+    "location": "p:nth-of-type(1)",
+    "square_feet": "p:nth-of-type(2)",
+    "description": "div.padding p:nth-of-type(3)",
+    "zoning": "div.padding p:last-of-type"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully scrapes both featured properties (div.property) and MLS listings (a.mls-property). Featured properties have detailed info including square footage, proposed use, and zoning. MLS listings have combined price/location in title field. Total 214 listings found. Note: For MLS listings, the title contains both price and location (e.g., '$6,000,000Eau Claire, WI : 4908 Bullis Farm Road') which may need parsing. Individual property URLs are available in href attributes but require custom extraction.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:43:40.980129+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

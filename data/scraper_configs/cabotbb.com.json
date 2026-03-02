@@ -1,0 +1,19 @@
+{
+  "broker_name": "Cabot Business Brokers",
+  "source_url": "https://www.cabotbb.com/businesses-for-sale",
+  "container_selector": ".wixui-repeater__item",
+  "fields": {
+    "title_and_id": ".wixui-rich-text h6.font_6",
+    "subtitle": ".wixui-rich-text h6.font_6 + p.font_7",
+    "financials": "p.font_8",
+    "full_text": ".wixui-rich-text",
+    "image": "img[data-image-info]"
+  },
+  "pagination_next_selector": "a.next, button[aria-label='Next']",
+  "confidence": "medium",
+  "notes": "Wix-based site. The full_text field captures the business title with listing ID (e.g., 'HVAC Contractor #1349'). Financials field captures first financial metric (Cash Flow or Gross Sales). Site is partially JavaScript-rendered - some fields (title_and_id, subtitle, image) may need Playwright/Selenium for full extraction. Successfully captures 8 listings with financial data. Title format: '[Business Type] #[ID]'. Asking prices are included in financial text that needs parsing.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:13:38.807699+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

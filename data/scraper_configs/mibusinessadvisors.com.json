@@ -1,0 +1,18 @@
+{
+  "broker_name": "MI Business Advisors (Michigan Business Advisors LLC)",
+  "source_url": "https://mibusinessadvisors.com/current-listings/",
+  "container_selector": "div.listings-block",
+  "fields": {
+    "title": "h2",
+    "company_overview": "p:has(strong:contains('Company Overview'))",
+    "acquisition_highlights": "p:has(strong:contains('Acquisition Highlights'))",
+    "description": ""
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Listings page displays 5 active business-for-sale listings. Each listing contains title, company overview, and acquisition highlights. No asking prices are publicly displayed - prices appear to be available only upon inquiry via contact form. Location: Traverse City, Michigan. All listings marked as 'For Sale by Owner'.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:53:50.318046+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

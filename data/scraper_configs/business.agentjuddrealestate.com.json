@@ -1,0 +1,17 @@
+{
+  "broker_name": "Paranee Judd - Skyline Properties Inc (Business Sales)",
+  "source_url": "https://business.agentjuddrealestate.com/business-for-sale-page",
+  "container_selector": ".c-section.midWideSection",
+  "fields": {
+    "title": ".c-sub-heading h2",
+    "description": ".c-paragraph div",
+    "price": ".c-sub-heading h2"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Newsletter-style page with 24 business listings. Primarily restaurant businesses in Washington state (Covington, Shoreline, Sultan, Lynden, Ballard, Burlington, etc.). Price is embedded in the title/heading. Images are lazy-loaded via JavaScript and not captured in static HTML. Each listing includes detailed info about square footage, seating capacity, hood type, rent, and NNN costs. Listings are structured as individual sections with two columns (image + details).",
+  "_meta": {
+    "generated_at": "2026-02-27T18:39:45.258125+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

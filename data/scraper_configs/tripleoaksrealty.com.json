@@ -1,0 +1,17 @@
+{
+  "broker_name": "Triple Oaks Realty",
+  "source_url": "https://tripleoaksrealty.com/listings/",
+  "container_selector": ".sidx-search-result-grid-item",
+  "fields": {
+    "full_text": ".sidx-details",
+    "price": ".sidx-price",
+    "url": ".sidx-content a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "NOT A BUSINESS BROKER - This is a traditional real estate brokerage selling residential and commercial properties (buildings), not businesses. Site uses Stellar IDX (SIDX) React-based widget for MLS listings. Data is partially JavaScript-rendered. Successfully extracted 20 residential property listings with price and details. Full property information is concatenated in full_text field including address, beds, baths, sqft. For DealLedger purposes, this site should be EXCLUDED as it does not list businesses for sale.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:32:12.013852+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

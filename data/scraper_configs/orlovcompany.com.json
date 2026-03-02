@@ -1,0 +1,19 @@
+{
+  "broker_name": "Orlov Company",
+  "source_url": "https://www.orlovcompany.com/Business-Listings.aspx",
+  "container_selector": "table#DataList2 tr td > div.featured-services-grids",
+  "fields": {
+    "title": "div.featured-services-grid table tr:nth-of-type(1) td:nth-of-type(2) table tr:nth-of-type(1) td span",
+    "price": "div.featured-services-grid table tr:nth-of-type(1) td:nth-of-type(2) table tr:nth-of-type(2) td span",
+    "type": "div.featured-services-grid table tr:nth-of-type(1) td:nth-of-type(2) table tr:nth-of-type(3) td span",
+    "city": "div.featured-services-grid table tr:nth-of-type(1) td:nth-of-type(2) table tr:nth-of-type(4) td span",
+    "county": "div.featured-services-grid table tr:nth-of-type(1) td:nth-of-type(2) table tr:nth-of-type(5) td span"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "ASP.NET site with business listings in DataList2 table. Captures title, asking price, business type, city, and county. Some listings marked as 'Sold'. No pagination detected on this page.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:17:54.268943+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

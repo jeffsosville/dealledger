@@ -1,0 +1,23 @@
+{
+  "broker_name": "Landscape Depot Investments",
+  "source_url": "https://landscapedepotinvestments.com/search/business-search-results-desktop.php?locid=1&order_by=price&order=desc&cat=all",
+  "container_selector": ".search-result-list-row-wrap",
+  "fields": {
+    "title": ".search-result-business-info-top h3",
+    "price": ".search-list-item-price-item",
+    "location": ".search-list-item-county-item",
+    "business_type": ".search-list-item-type-item",
+    "listing_id": ".search-list-item-id-item",
+    "net_profit": ".search-list-item-profit-item",
+    "assets": ".search-list-item-assets-item",
+    "gross_sales": ".search-list-item-sales-item",
+    "description": ".search-result-business-info-bottom p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Specialized landscape industry business broker. Listings display in table format with comprehensive financial data including net profit, assets, and gross sales. Each listing has listing ID, location, business type, and description.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:59:17.674308+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

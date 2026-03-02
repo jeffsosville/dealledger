@@ -1,0 +1,22 @@
+{
+  "broker_name": "Pebbles Real Estate Ranch",
+  "source_url": "https://listings.pebblesrealestateranch.com/idx/featured",
+  "container_selector": ".IDX-resultsCell",
+  "fields": {
+    "title": ".IDX-resultsAddressLink h4",
+    "price": ".IDX-field-listingPrice .IDX-text",
+    "location": ".IDX-resultsAddressCity",
+    "bedrooms": ".IDX-field-bedrooms .IDX-text",
+    "bathrooms": ".IDX-field-totalBaths .IDX-text",
+    "sqft": ".IDX-field-sqFt .IDX-text",
+    "acres": ".IDX-field-acres .IDX-text",
+    "status": ".IDX-field-propStatus .IDX-resultsText"
+  },
+  "pagination_next_selector": "#IDX-pagination-header-next:not(.IDX-disabled)",
+  "confidence": "high",
+  "notes": "IDX Broker powered real estate listings. Site shows 48 total results across 5 pages (10 per page). Note: This is residential real estate, not business-for-sale listings. Pagination available via next button selector. Listing URLs can be extracted from .IDX-resultsAddressLink href attribute if needed.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:02:07.719741+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

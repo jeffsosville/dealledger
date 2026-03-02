@@ -1,0 +1,18 @@
+{
+  "broker_name": "BHHS Floberg Real Estate",
+  "source_url": "https://www.bhhsfloberg.com/search?SearchType=Empty&PropertyType=1%2C2&ApplicationType=FOR_SALE&ListingStatus=1&NewListing=false&Sort=PRICE_DESCENDING&PageSize=32&Page=1&isAgentPage=false&isFranchisePage=true&franchiseeCode=MT301",
+  "container_selector": "[data-requires-js-rendering]",
+  "fields": {
+    "title": "[requires-js]",
+    "price": "[requires-js]",
+    "location": "[requires-js]",
+    "url": "[requires-js]"
+  },
+  "pagination_next_selector": "[requires-js]",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium/Puppeteer\n\nThis is a Vue.js single-page application that loads all listing data via JavaScript/API calls. The initial HTML contains only the framework structure with no actual listing data.\n\nTECHNICAL DETAILS:\n- Framework: Vue.js application\n- Template: property-search-results-page\n- Data Loading: Dynamic via JavaScript API calls\n- Franchisee: MT301 (Billings, Montana)\n\nURL STRUCTURE:\n- Base Search: /search\n- PropertyType=1,2 (appears to be business/commercial properties)\n- ApplicationType=FOR_SALE\n- ListingStatus=1 (active listings)\n- PageSize=32 (adjustable)\n- Page=1 (pagination parameter)\n- franchiseeCode=MT301\n\nIMPLEMENTATION REQUIRED:\n1. Use Playwright/Selenium/Puppeteer to render JavaScript\n2. Wait for listing cards to load (likely class names: .cmp-search-card or .property-card or similar Vue components)\n3. Monitor network requests to potentially identify the API endpoint directly\n4. May need to handle Vue.js reactive components\n\nALTERNATIVE APPROACH:\nConsider intercepting the API calls this page makes - likely to a BHHS backend API for property search results. Using browser DevTools Network tab would reveal the actual API endpoint being called.\n\nPROPERTY TYPES:\nPropertyType=1,2 suggests filtering for specific types (likely business/commercial listings vs residential)",
+  "_meta": {
+    "generated_at": "2026-02-27T20:59:50.132883+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

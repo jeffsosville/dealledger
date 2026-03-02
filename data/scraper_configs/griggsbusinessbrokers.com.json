@@ -1,0 +1,18 @@
+{
+  "broker_name": "Griggs Business Brokers",
+  "source_url": "https://www.griggsbusinessbrokers.com/featured-listings/",
+  "container_selector": "article.recently-sold .row",
+  "fields": {
+    "title": "h3",
+    "price": "p strong",
+    "location": "p",
+    "status": "::constant:Sold"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "This page shows SOLD businesses (not active listings). Successfully scrapes 15 recently sold businesses. Location field contains both location and price in text - will need parsing to extract just location text before the price. No pagination detected. No active 'for sale' listings found on site - the /buy-a-business page only has informational content.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:55:05.821914+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "broker_name": "Lorimont Commercial Real Estate",
+  "source_url": "https://www.lorimont.com/listings/",
+  "container_selector": "#buildout",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium \u26a0\ufe0f\n\nThis site uses the Real Geeks IDX platform which loads all listings dynamically via JavaScript/AJAX. The listings page (/listings/) contains only an empty div (#buildout) which is populated by JavaScript after page load.\n\nThe site claims to have 119 listings according to /our-listings/ page.\n\nKey characteristics:\n- Platform: Real Geeks (realgeeks.com)\n- Listings container: &lt;div id=\"buildout\"&gt;&lt;/div&gt; (empty in static HTML)\n- Likely uses AJAX API calls to fetch listing data\n- Multiple category pages:\n  * /listings/ - All properties\n  * /listings/?propertyTypes=1,2 - Retail, Office & Restaurant  \n  * /listings/?propertyTypes=3 - Industrial & Manufacturing\n  * /listings/?propertyTypes=5 - Development & Recreational Land\n  * /listings/?propertyUses=1,2,4 - Investment Properties & Businesses\n\nSOLUTION NEEDED:\n1. Use Playwright or Selenium to render JavaScript\n2. Wait for #buildout to be populated with content\n3. Then extract listing cards with selectors like:\n   - Container: .listing-card or similar (inspect after JS loads)\n   - Title, price, location, property type fields\n4. May also be able to intercept API calls to get JSON data directly\n\nContact: 573-334-5200\nLocation: Cape Girardeau, Missouri",
+  "_meta": {
+    "generated_at": "2026-02-27T21:08:07.352827+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

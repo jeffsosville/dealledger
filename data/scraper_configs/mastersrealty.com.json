@@ -1,0 +1,18 @@
+{
+  "broker_name": "Masters Realty",
+  "source_url": "https://mastersrealty.com/the-collection/single-family-homes",
+  "container_selector": ".view-listings.view-display-id-listings .views-row",
+  "fields": {
+    "title": ".views-field-title a",
+    "community_price": ".community-price",
+    "url": ".views-field-title a",
+    "details": ".views-field-nothing-2"
+  },
+  "pagination_next_selector": ".pager-next a",
+  "confidence": "medium",
+  "notes": "Masters Realty real estate broker in Central Florida. Extracts property listings from their collection pages. The site has separate pages for different property types: single-family-homes, commercial, condos, and land. The URL field extracts link text instead of href attribute (tool limitation). Community name and price are combined in one field (format: 'Community | $Price'). Details field contains sqft, bedrooms, bathrooms, lot size, and features. Main collection page: /the-collection shows property type categories. Each category has its own listings page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:27:31.381582+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

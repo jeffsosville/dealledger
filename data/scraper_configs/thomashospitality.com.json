@@ -1,0 +1,20 @@
+{
+  "broker_name": "Thomas Hospitality Group",
+  "source_url": "https://thomashospitality.com/",
+  "container_selector": "li.wp-block-post.type-thg_business",
+  "fields": {
+    "title": "h2.wp-block-post-title a",
+    "url": "h2.wp-block-post-title a",
+    "status": "div.wp-block-group.is-vertical p strong",
+    "description": "div.business-property-description-rich a",
+    "details_table": "table.thg-property-details-table__table",
+    "image": "figure.wp-block-post-featured-image img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Thomas Hospitality Group is a Michigan-based hospitality business broker specializing in restaurants, bars, and hospitality properties. The site uses WordPress with custom post type 'thg_business'. Successfully extracted 36 listings with title, status (FOR SALE/OFF MARKET), description, and details table containing price, rent, MLCC license type, property type, and parking. The details_table field contains combined text from the table that can be parsed for individual fields like price, rent, property type, etc. Note: URL and image attribute extraction may need post-processing to extract href/src attributes.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:45:29.910192+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

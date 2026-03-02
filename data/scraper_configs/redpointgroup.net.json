@@ -1,0 +1,18 @@
+{
+  "broker_name": "Red Point Group",
+  "source_url": "https://redpointgroup.net/listings/",
+  "container_selector": ".col-md-3.col-sm-6",
+  "fields": {
+    "title": ".addr",
+    "price": ".price",
+    "description": ".desc2",
+    "tags": ".tags"
+  },
+  "pagination_next_selector": ".pagination li a",
+  "confidence": "medium",
+  "notes": "Real estate listings page (appears to be residential properties, not business-for-sale). Successfully extracts title/address, price, property details (beds/baths/sqft), and exclusive tags. URL and image extraction need attribute selectors which may require custom implementation. Pagination available with JavaScript function page_go(). Found 12 listings on first page with 6 pages total.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:02:43.225201+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

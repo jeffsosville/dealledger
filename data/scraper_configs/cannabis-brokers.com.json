@@ -1,0 +1,16 @@
+{
+  "broker_name": "Cannabis Business Brokers",
+  "source_url": "https://cannabis-brokers.com/listings",
+  "container_selector": "article.post",
+  "fields": {
+    "title": "h2.entry-title",
+    "title_link": "h2.entry-title a"
+  },
+  "pagination_next_selector": "a.next.page-numbers",
+  "confidence": "medium",
+  "notes": "WordPress-based cannabis business broker site. Archive page shows minimal info (title only). Detailed information (price, location, description) requires visiting individual listing pages. Found 10 active listings. Site uses custom post type 'listings' for business opportunities. Each listing title is clickable to view full details.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:33:41.830046+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

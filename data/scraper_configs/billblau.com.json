@@ -1,0 +1,20 @@
+{
+  "broker_name": "Bill Blau Real Estate Group",
+  "source_url": "https://billblau.com/listings/",
+  "container_selector": "div.listing-container div.list",
+  "fields": {
+    "title": "div.id-no",
+    "price": "div.price",
+    "location": "div.location",
+    "description": "div.center",
+    "url": "div.list-info div.right a[href]",
+    "broker_name": "div.seller-side h1.name"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Commercial gas station broker specializing in New York area. All 37 listings successfully scraped. Listings include gas stations, convenience stores, and repair shops. Price format includes 'Price - ' prefix, location includes 'Location - ' prefix. Note: URL selector returns link text 'Details' instead of href - may need post-processing to extract actual URLs from href attribute.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:59:36.957685+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

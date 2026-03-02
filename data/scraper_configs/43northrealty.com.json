@@ -1,0 +1,20 @@
+{
+  "broker_name": "43 North Realty",
+  "source_url": "https://43northrealty.com/residential.php",
+  "container_selector": "div.blog-grid",
+  "fields": {
+    "title_raw": "div.blog-info h3 a",
+    "description": "div.blog-info p",
+    "beds": "div.blog-info ul li:first-child",
+    "baths": "div.blog-info ul li:nth-child(2)",
+    "image_url": "figure img",
+    "detail_url": "a[href*='single.php']"
+  },
+  "pagination_next_selector": "nav.pagination-nav ul.pagination li.page-item a.page-link[href]",
+  "confidence": "high",
+  "notes": "Residential real estate listings in Michigan (Alma area). Total 240 listings across 20 pages. Title_raw contains address, city, and price in format 'Address, City MI Zip-City - $Price'. Beds/baths extracted as text. Images use protocol-relative URLs (//zimg.paragon.ice.com/...). Pagination uses cur_page parameter. Site also has multifamily.php, land.php, and commercial.php sections.",
+  "_meta": {
+    "generated_at": "2026-02-26T20:02:21.057202+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

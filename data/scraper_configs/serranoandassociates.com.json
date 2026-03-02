@@ -1,0 +1,18 @@
+{
+  "broker_name": "Serrano & Associates",
+  "source_url": "https://www.serranoandassociates.com/commercial-listings/",
+  "container_selector": "div.col-xs-12.imgtext",
+  "fields": {
+    "title": "div.title p",
+    "price": "div.title h2",
+    "location": "div.title p",
+    "details": "div.detailscontainer"
+  },
+  "pagination_next_selector": "div.nextprev a",
+  "confidence": "high",
+  "notes": "Business for sale listings page. Each listing contains location/address in div.title p, price in h2, and additional details (year and square footage) in div.detailscontainer. Note: Listing URLs are in div.hovereffect a href attributes but attribute extraction needs to be implemented separately. The page shows 2 listings currently.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:30:12.932051+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Signature Nevada",
+  "source_url": "https://www.signaturenevada.com/listings/our-listings/",
+  "container_selector": "[data-requires-js]",
+  "fields": {
+    "title": "[data-requires-js]",
+    "price": "[data-requires-js]",
+    "location": "[data-requires-js]",
+    "description": "[data-requires-js]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium required). This site uses a dynamic map-based listing view (id='map-view-panel', class='map-v2-listings'). The page structure shows it's built on a 'shipyard' platform with React/modern JS framework. Static HTML fetch returns empty containers. The raw HTML is 835KB suggesting content is embedded in JSON/JS bundles. Alternate URL: https://www.signaturenevada.com/listings. To scrape this site: 1) Use Playwright/Selenium with JavaScript enabled, 2) Wait for listings to load (look for elements appearing in #map-view-panel), 3) Inspect rendered DOM to identify actual selectors for listing cards, titles, prices, locations. May also have an API endpoint that could be reverse-engineered from network requests.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:50:47.784802+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

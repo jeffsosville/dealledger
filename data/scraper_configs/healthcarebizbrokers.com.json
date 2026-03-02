@@ -1,0 +1,31 @@
+{
+  "broker_name": "Healthcare Biz Brokers",
+  "source_url": "https://healthcarebizbrokers.com/businesses-for-sale",
+  "container_selector": "div[class*='listing'], article[class*='business']",
+  "fields": {
+    "title": [
+      "h2",
+      "h3",
+      "[class*='title']"
+    ],
+    "price": [
+      "[class*='price']",
+      ".price"
+    ],
+    "location": [
+      "[class*='location']",
+      ".location"
+    ],
+    "description": [
+      "[class*='description']",
+      "p"
+    ]
+  },
+  "pagination_next_selector": "a[class*='next'], button[class*='next'], [class*='pagination'] a",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE (React): Page only contains <div id='root'></div>. REQUIRES Playwright/Selenium to execute JavaScript and render content. Alternative URLs tried: /listings, /business-listings, /buy-a-business, /available-businesses - all have same React structure. Selectors are educated guesses based on common patterns. NEXT STEPS: 1) Use Playwright/Selenium to render page, 2) Inspect actual DOM after JS execution, 3) Update selectors based on rendered HTML, 4) May need to intercept API calls if listings loaded via REST/GraphQL.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:33:59.115095+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

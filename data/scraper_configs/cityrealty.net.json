@@ -1,0 +1,18 @@
+{
+  "broker_name": "City Realty Advisors",
+  "source_url": "https://www.cityrealty.net/properties/for-sale/",
+  "container_selector": "div.panel-grid.panel-has-style",
+  "fields": {
+    "title": "h3.widget-title",
+    "address": "div.listingBullets div.textwidget p:nth-of-type(1)",
+    "description": "div.listingBullets div.textwidget p:nth-of-type(2)",
+    "image_url": "div.sow-image-container img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial real estate listings (not business-for-sale). Successfully extracts 28 property listings including title, address, and description. Image URLs appear in HTML but CSS selector returns empty - may require alternative extraction method or is JavaScript-dependent. No pricing information visible on listings page. Some listings have PDF property packages linked via 'VIEW PROPERTY PACKAGE' buttons.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:02:33.620182+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

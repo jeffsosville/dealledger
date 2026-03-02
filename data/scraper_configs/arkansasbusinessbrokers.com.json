@@ -1,0 +1,18 @@
+{
+  "broker_name": "Arkansas Business Brokers (Cantrell-Griffin)",
+  "source_url": "https://www.arkansasbusinessbrokers.com/business-listings",
+  "container_selector": "article.blog-item",
+  "fields": {
+    "category": ".blog-categories-list a",
+    "description": ".blog-excerpt-wrapper p",
+    "status": ".blog-excerpt-wrapper strong",
+    "url": ".blog-more-link"
+  },
+  "pagination_next_selector": ".blog-more-link",
+  "confidence": "medium",
+  "notes": "Squarespace-based site with JavaScript-rendered content. Titles and direct listing URLs require JS rendering (Playwright/Selenium). Successfully extracts: business category, description, and listing status (NEW LISTING, UNDER CONTRACT, etc.). The .blog-more-link provides 'Read More' text but actual href requires JS. 20 listings found on test run. Site uses blog-based layout for listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:21:22.085854+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

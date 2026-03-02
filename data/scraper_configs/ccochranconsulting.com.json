@@ -1,0 +1,18 @@
+{
+  "broker_name": "C Cochran Consulting",
+  "source_url": "https://www.ccochranconsulting.com/business-listings-1.html",
+  "container_selector": "#content .text-plugin .neo-asset-inner",
+  "fields": {
+    "title": "p:nth-of-type(1)",
+    "price": "p:contains('$'), p:contains('Revenue'), p:contains('EBITDA')",
+    "location": "p:contains('Location'), p:contains('CA'), p:contains('County')",
+    "description": "p"
+  },
+  "pagination_next_selector": "a[href*='business-listings']",
+  "confidence": "medium",
+  "notes": "Neo.com website builder platform. Listings are in separate text blocks within #content region. Titles extracted from first paragraph. Price info often includes Revenue and EBITDA mentions. Location data may be sparse. Note: Site has multiple listing pages (business-listings-1.html and business-listings-2.html mentioned in navigation).",
+  "_meta": {
+    "generated_at": "2026-02-27T19:24:36.341242+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

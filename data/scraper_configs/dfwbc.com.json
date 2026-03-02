@@ -1,0 +1,23 @@
+{
+  "broker_name": "D/FW Business Consultants",
+  "source_url": "https://www.dfwbc.com/listing.php",
+  "container_selector": "table[border=\"1\"] tr.style22",
+  "fields": {
+    "title": "td:nth-child(1)",
+    "location": "td:nth-child(2)",
+    "inside_sales": "td:nth-child(3)",
+    "gas_sales": "td:nth-child(4)",
+    "lotto_misc": "td:nth-child(5)",
+    "wet_dry": "td:nth-child(6)",
+    "rent": "td:nth-child(7)",
+    "property": "td:nth-child(8)",
+    "price": "td:nth-child(9)"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Static HTML table layout. Specializes in convenience stores in North Texas. Custom fields: inside_sales (monthly inside sales), gas_sales (gallons per month), lotto_misc (lottery/miscellaneous income), wet_dry (alcohol license status), property (whether property is included). Note: Business sales/incomes are monthly averages. Some prices include '+ Inv' (plus inventory).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:42:33.742688+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

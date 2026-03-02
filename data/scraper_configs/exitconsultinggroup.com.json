@@ -1,0 +1,24 @@
+{
+  "broker_name": "Exit Consulting Group",
+  "source_url": "https://exitconsultinggroup.com/listings/",
+  "container_selector": "acf_65f384a4e68d6[acf]",
+  "fields": {
+    "title": "headline",
+    "status": "status",
+    "category": "category",
+    "image": "image",
+    "description": "content",
+    "asking_price": "asking_price",
+    "location": "location",
+    "cash_flow": "cash_flow",
+    "revenue": "revenue",
+    "link": "link"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Vue.js application - requires JavaScript rendering (Playwright/Selenium) OR JSON parsing from :acf attribute. Listing data is embedded in JSON format within the acf_65f384a4e68d6 component's :acf attribute. The cards array contains all listings with fields: headline, status, category (array), image, content (HTML), asking_price, location, cash_flow, revenue, link. At least 1 listing visible in source (Multi-Site Outpatient Diagnostic Imaging Business #028201). Additional listing appears to be 'East Coast Digital Agency #026601'. Static scraping will return 0 results - dynamic scraping needed.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:47:16.602422+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "ECA Business Alliance",
+  "source_url": "https://eca-ba.com/buy-a-business/",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {
+    "title": "TBD - requires JavaScript rendering",
+    "price": "TBD - requires JavaScript rendering",
+    "location": "TBD - requires JavaScript rendering",
+    "description": "TBD - requires JavaScript rendering"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This page requires JavaScript rendering (Playwright/Selenium) to scrape. The main content area (et_pb_post_content et_pb_post_content_0_tb_body) is empty in static HTML, indicating listings are loaded dynamically via JavaScript, possibly through an iframe or AJAX call. The site uses the Divi WordPress theme. Site focus is on selling businesses in Buffalo/New York area. To scrape this properly, use a headless browser to load the page, wait for content to appear, then inspect the DOM for actual listing selectors. May be using an external listing service/widget.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:08:25.023813+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

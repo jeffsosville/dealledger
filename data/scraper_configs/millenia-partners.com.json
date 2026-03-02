@@ -1,0 +1,13 @@
+{
+  "broker_name": "Millenia Partners",
+  "source_url": "https://millenia-partners.com/listings",
+  "container_selector": "#buildout",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered page using Buildout.com platform. The listings are dynamically loaded into the #buildout container via JavaScript. Static HTML scraping will not work. Requires: 1) Playwright/Selenium with wait for dynamic content, OR 2) Reverse engineering the Buildout API calls (check network tab for API endpoints), OR 3) Using Buildout's API directly if available. The page structure suggests this is a Buildout widget integration, which is a commercial real estate listing platform.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:54:14.499307+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

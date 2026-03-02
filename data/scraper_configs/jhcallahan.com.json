@@ -1,0 +1,24 @@
+{
+  "broker_name": "JH Callahan Real Estate",
+  "source_url": "https://jhcallahan.com/z/fl2/h/static-grid1.php",
+  "container_selector": ".pl-result-property-area",
+  "fields": {
+    "title": ".property-type",
+    "price": ".price",
+    "address": ".property-location",
+    "status": ".status",
+    "mls_number": ".property-description li:last-child .list_value",
+    "beds": ".property-description li:first-child .list_value:first-of-type",
+    "baths": ".property-description li:first-child .list_value:last-of-type",
+    "sqft": ".property-description li:nth-child(2) .list_value",
+    "detail_url": "a.view-details",
+    "image_url": ".pl-featured-image a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "JH Callahan Real Estate broker in Minnesota. Static HTML page with 6 current listings (residential and commercial properties). Page shows mix of active and pending properties. Structure is clean with consistent class names. All key fields extracted successfully including price, location, status, MLS number, beds/baths (when applicable), and square footage.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:24:43.080054+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

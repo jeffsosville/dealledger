@@ -1,0 +1,18 @@
+{
+  "broker_name": "All Trades Global",
+  "source_url": "https://alltradesglobal.com/businesses-for-sale/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {
+    "title": "TBD - needs browser automation",
+    "price": "TBD - needs browser automation",
+    "location": "TBD - needs browser automation",
+    "url": "TBD - needs browser automation"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-Rendered Content Detected: The initial HTML from fetch_page shows only WordPress theme structure (Colibri theme) with header/navigation and footer elements. No business listing content is present in the static HTML. The page likely uses one of the following: 1) Embedded iframe from a third-party listing service, 2) AJAX/API calls to load listings after page load, 3) JavaScript framework rendering. RECOMMENDATION: Requires browser automation (Playwright/Selenium) to render JavaScript and capture the actual listing elements. Once rendered, inspect the page to identify: container selector for individual listings, selectors for title/price/location/URL fields. Alternative: Check browser network tab for API endpoints that might be called to fetch listing data directly.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:28:26.252809+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

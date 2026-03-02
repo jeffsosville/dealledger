@@ -1,0 +1,19 @@
+{
+  "broker_name": "Liberty Realty and Auction",
+  "source_url": "https://www.libertyrealtyandauction.com/real-estate-listings/",
+  "container_selector": ".uk-section-default.uk-padding-remove-top .uk-grid.tm-grid-expand",
+  "fields": {
+    "title": "h2",
+    "address": "ul li:first-child",
+    "price": "ul li:nth-child(2)",
+    "property_type": "ul li:nth-child(3)",
+    "link": "a.uk-button"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully extracts 17 listings with 100% data quality. Title, address, price, and property type are all captured correctly. The page uses UIkit framework. Note: href attributes would need to be extracted separately (selector: a.uk-button or a.el-link within each container). Some listings are marked as SOLD. Property types include both Commercial and Residential real estate.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:26:40.628175+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

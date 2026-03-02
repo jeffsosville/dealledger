@@ -1,0 +1,23 @@
+{
+  "broker_name": "Realty Masters, Inc.",
+  "source_url": "https://propertymanage.biz/realtymasters/rentals/listings",
+  "container_selector": "article.listings__listing",
+  "fields": {
+    "title": "h1.property-name-heading",
+    "price": "h5.mb-0",
+    "location": "h6.bg-light.text-blue",
+    "bedrooms": "div[aria-label*='bedroom'] h6",
+    "bathrooms": "div[aria-label*='bathroom'] h6",
+    "sqft": ".details-counter-blocks:last-child h6",
+    "description": ".property-list--details-text p",
+    "detail_link": "a[href*='/rentals/detail']",
+    "image": "img[alt*='Primary image']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "This is a rental property listings site (not business-for-sale). The site has a filter form with requirements (rent range, bedrooms, bathrooms), location search, and facility filters. Listings are visible without form submission. Some listings show 0 for bedrooms/bathrooms/sqft - this appears to be actual data from the site. The page shows 3 total listings. To scrape filtered results, form data would need to be POSTed to the endpoint.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:28:15.128477+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

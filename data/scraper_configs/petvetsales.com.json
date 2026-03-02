@@ -1,0 +1,18 @@
+{
+  "broker_name": "Pet Vet Sales",
+  "source_url": "https://www.petvetsales.com/listings/",
+  "container_selector": ".active-listings-item",
+  "fields": {
+    "title": ".title-box",
+    "price": ".price-box",
+    "location": ".location-box",
+    "url": ".active-listings-item-bottom a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Pet and veterinary practice sales specialist. Listings show 'M&A Listing' for price. URL selector extracts link text but href should be extracted at engine level. No pagination detected on initial page. Location format is 'Location: [State]'. All listings found are marked as 'Under Contract' or active.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:48:03.978911+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

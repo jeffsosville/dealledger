@@ -1,0 +1,19 @@
+{
+  "broker_name": "RamBizGroup",
+  "source_url": "https://www.rambizgroup.com/businesses-for-sale",
+  "container_selector": ".stk-block-posts__item",
+  "fields": {
+    "title": ".stk-block-post-title__text",
+    "location": ".stk-block-subtitle__text",
+    "description": ".stk-block-text__text",
+    "listing_url": "a.stk-block-posts__image-link|href",
+    "image_url": ".stk-block-posts__image-link img|src"
+  },
+  "pagination_next_selector": "a.page-numbers.next",
+  "confidence": "medium",
+  "notes": "Site has bot protection (403 errors on repeated requests). Successfully fetched page once and analyzed structure. Uses Stackable WordPress plugin for listings. Price information may be on individual listing pages. Listings visible in HTML include items like 'Insulation Installer Business'. May require rotation of user agents or IP addresses for reliable scraping. Consider using Playwright/Selenium with proper headers to avoid 403 errors.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:23:37.046551+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

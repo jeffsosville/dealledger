@@ -1,0 +1,19 @@
+{
+  "broker_name": "The Robert Hedges Company",
+  "source_url": "https://www.trhc.biz/listings.shtml?statuses=ACTIVE",
+  "container_selector": "tupelo-marketplace",
+  "fields": {
+    "title": "[data-listing-title], .listing-title, h2, h3",
+    "price": "[data-listing-price], .listing-price, .price",
+    "location": "[data-listing-location], .listing-location, .location",
+    "description": "[data-listing-description], .listing-description, .description",
+    "id": "[data-listing-id], .listing-id"
+  },
+  "pagination_next_selector": ".pagination a.next, button[aria-label*='next'], .next-page",
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING - Page uses Tupelo Marketplace web component (tupelo-marketplace) with organization-id 'clf9wq01f00000u2k054z7rs6'. Content is loaded dynamically via JavaScript/API. Must use Playwright, Puppeteer, or Selenium to render the page before scraping. Alternative: Investigate Tupelo Marketplace API endpoints (likely at tupelo.io or similar domain) - may accept organization ID as parameter. The selectors provided are generic placeholders and need to be verified after JS rendering.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:25:34.908521+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

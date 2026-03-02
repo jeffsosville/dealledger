@@ -1,0 +1,19 @@
+{
+  "broker_name": "Business Team USA",
+  "source_url": "https://businessteamusa.com/businesses-for-sale/",
+  "container_selector": ".elementor-shortcode",
+  "fields": {
+    "title": "h2, h3, .title, .listing-title",
+    "price": ".price, [class*='price']",
+    "location": ".location, [class*='location']",
+    "description": ".description, .excerpt",
+    "url": "a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). The page uses WordPress Elementor with a shortcode widget that loads listings dynamically. Static HTML shows empty shortcode container. The selectors above are placeholder estimates - actual selectors need to be determined after JS rendering. Recommend using a headless browser to load the page, wait for listings to appear in .elementor-shortcode container, then inspect the actual DOM structure of rendered listing cards.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:44:24.980095+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

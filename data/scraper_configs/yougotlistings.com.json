@@ -1,0 +1,21 @@
+{
+  "broker_name": "YouGotListings (Real Estate IDX)",
+  "source_url": "https://www.yougotlistings.com/client/idx.php?agent_id=102022&agency_id=9729&page=1&per_page=10&view=list",
+  "container_selector": ".property_item",
+  "fields": {
+    "title": ".item_title",
+    "price": ".property_price strong",
+    "beds": ".item_props .col-auto:nth-child(2)",
+    "baths": ".item_props .col-auto:nth-child(3)",
+    "available": ".item_props .col-auto:nth-child(4)",
+    "url": "a.item_title",
+    "image": ".item_image"
+  },
+  "pagination_next_selector": ".next_btn:not(.disabled)",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). This is a Vue.js application that loads data via AJAX. Static HTML only contains Vue templates ({{ rental.title }}, etc). The page uses MLS Property Information Network data. Pagination is handled via JavaScript (@click.prevent). Real-time scraping would require: 1) Headless browser (Playwright/Selenium), 2) Wait for Vue app to load, 3) Wait for AJAX data to populate. Alternative: Investigate if there's an API endpoint at /client/idx.php that returns JSON when called with proper headers.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:13:17.739142+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "The Decain Group",
+  "source_url": "https://thedecaingroup.com/businesses-for-sale/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {
+    "title": "REQUIRES_JAVASCRIPT",
+    "price": "REQUIRES_JAVASCRIPT",
+    "location": "REQUIRES_JAVASCRIPT",
+    "description": "REQUIRES_JAVASCRIPT",
+    "link": "REQUIRES_JAVASCRIPT"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site requires JavaScript rendering (Playwright/Selenium). Business listings appear to be loaded dynamically, possibly via embedded iframe or external platform integration (BizBuySell). The page uses WordPress with Elementor page builder. No custom post types for listings found in WP REST API. Static HTML shows no listing data. Broker also has profile at https://www.bizbuysell.com/Business-Broker/The-Decain-Group-LLC-284940/ which may be the source of listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:41:41.930148+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

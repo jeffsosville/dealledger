@@ -1,0 +1,34 @@
+{
+  "broker_name": "App Business Brokers",
+  "source_url": "https://www.appbusinessbrokers.com/buy/",
+  "container_selector": ".jet-listing-grid__item",
+  "fields": {
+    "title": {
+      "selector": ".jet-listing-dynamic-link__link",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".elementor-element[data-widget_type*='price'] .jet-listing-dynamic-field__content",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".elementor-icon-list-text",
+      "attribute": "text"
+    },
+    "description": {
+      "selector": ".jet-listing-dynamic-field__content",
+      "attribute": "text"
+    },
+    "link": {
+      "selector": ".jet-listing-dynamic-link__link",
+      "attribute": "href"
+    }
+  },
+  "pagination_next_selector": ".jet-listing-pagination a.next",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site uses Elementor + JetEngine and loads all listing data dynamically via JavaScript. Static HTML scraping returns 0 results. REQUIRES Playwright/Selenium with JavaScript execution. The selectors provided are educated guesses based on JetEngine patterns but could not be validated without JS rendering. Alternative approach: Check for REST API endpoints (WordPress + JetEngine often expose /wp-json/jet-engine/... endpoints) or use browser automation to scrape after JS loads.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:49:31.140726+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}
