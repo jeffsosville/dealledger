@@ -1,0 +1,29 @@
+{
+  "broker_name": "ArkBest Realty",
+  "source_url": "https://arkbestrealty.idxbroker.com/idx/featured",
+  "container_selector": ".IDX-resultsCell",
+  "fields": {
+    "title": ".IDX-resultsAddressLink",
+    "price": ".IDX-resultsField-listingPrice .IDX-resultsText",
+    "address_number": ".IDX-resultsAddressNumber",
+    "address_name": ".IDX-resultsAddressName",
+    "city": ".IDX-resultsAddressCity",
+    "state": ".IDX-resultsAddressStateAbrv",
+    "zip": ".IDX-resultsAddressZip",
+    "bedrooms": ".IDX-resultsField-bedrooms .IDX-resultsText",
+    "bathrooms": ".IDX-resultsField-totalBaths .IDX-resultsText",
+    "sqft": ".IDX-resultsField-sqFt .IDX-resultsText",
+    "acres": ".IDX-resultsField-acres .IDX-resultsText",
+    "status": ".IDX-resultsField-propStatus .IDX-resultsText",
+    "listing_id": ".IDX-resultsField-listingID .IDX-resultsText",
+    "description": ".IDX-resultsDescription",
+    "url": ".IDX-resultsDetailsLink a"
+  },
+  "pagination_next_selector": ".IDX-pagination a[href*='start=']",
+  "confidence": "high",
+  "notes": "IDX Broker platform for ArkBest Realty. Real estate listings (not business-for-sale). Total 78 listings with 10 per page. Pagination uses ?per=10&start=X pattern. Address components are broken into separate fields. Note: URL field captures link text 'View Details' instead of href - may need post-processing to extract href attribute.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:07:52.610091+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

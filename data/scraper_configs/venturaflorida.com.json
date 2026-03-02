@@ -1,0 +1,15 @@
+{
+  "broker_name": "Ventura Group of Florida",
+  "source_url": "https://venturaflorida.com/businesses-for-sale/",
+  "container_selector": ".elementor-widget-html .elementor-widget-container",
+  "fields": {
+    "note": "Requires JavaScript rendering - listings not in static HTML"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING: The listings page uses WordPress/Elementor with an empty HTML widget container. The actual business listings are loaded dynamically via JavaScript, AJAX, or possibly embedded through an iframe. Static HTML scraping will not work. This site requires Playwright/Selenium to render the JavaScript and capture the dynamically loaded content. The page structure shows an empty .elementor-widget-html container where listings should appear. Alternative: The site may be using a third-party listing platform (like BizBuySell API or similar) that loads content client-side.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:52:51.410025+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

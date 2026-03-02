@@ -1,0 +1,20 @@
+{
+  "broker_name": "Stillwell Pharmacy Consultants",
+  "source_url": "https://stillwellrx.com/listing/businesses-for-sale/",
+  "container_selector": "bbcrm[api_string=\"searchresults\"]",
+  "fields": {
+    "title": ".listing-title, h3, h2, .title",
+    "price": ".price, .asking-price, .list-price",
+    "location": ".location, .city, .address",
+    "description": ".description, .summary, p",
+    "listing_id": ".listing-id, .ref-number",
+    "link": "a[href*='listing'], a[href*='detail']"
+  },
+  "pagination_next_selector": ".pagination a.next, .next-page, button[aria-label*='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT REQUIRED: This site uses Business Brokers CRM platform with custom &lt;bbcrm&gt; tags that load listings dynamically via JavaScript. The static HTML contains only placeholder tags like &lt;bbcrm api_string=\"searchresults\"&gt;&lt;/bbcrm&gt; with no actual listing data. \n\nREQUIREMENTS:\n- Requires Playwright/Selenium/Puppeteer for JavaScript rendering\n- After JS execution, listings should populate within or after the bbcrm tags\n- The actual container and field selectors will need to be determined after JS renders the content\n\nPLATFORM: Business Brokers CRM (businessbrokerscrm.com)\nBROKER TYPE: Pharmacy-focused broker specializing in pharmacy sales nationwide\n\nTo scrape this site, use a headless browser that executes JavaScript, wait for the BBCRM API to load listings, then inspect the DOM to determine the actual selectors used for listing containers and fields.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:29:06.500064+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

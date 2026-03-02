@@ -1,0 +1,18 @@
+{
+  "broker_name": "Big Block Realty",
+  "source_url": "https://bigblockrealty.com/listings",
+  "container_selector": "table#list tbody tr",
+  "fields": {
+    "title": "td:nth-child(4)",
+    "comments": "td:nth-child(6)",
+    "mls_number": "td:nth-child(5)",
+    "agent": "td:nth-child(3)"
+  },
+  "pagination_next_selector": "div.pagination-container",
+  "confidence": "medium",
+  "notes": "Big Block Realty listings page. This appears to be a residential real estate brokerage, not a business-for-sale broker. The listings are real estate properties with MLS numbers. Table-based layout with property address, agent, MLS number, and comments. Only 1 listing found in test. No pricing information displayed in the table.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:16:34.319304+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

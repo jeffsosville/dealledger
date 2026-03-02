@@ -1,0 +1,18 @@
+{
+  "broker_name": "Coldwell Banker Commercial Lyle & Associates",
+  "source_url": "https://cbclyle.com/properties/for-sale/?saleOrLease=sale",
+  "container_selector": "#buildout [class*='property'], #buildout [class*='listing'], #buildout article",
+  "fields": {
+    "title": "h3, h4, .property-title, .listing-title, .title, [class*='title']",
+    "price": ".price, .asking-price, .property-price, [class*='price']",
+    "location": ".location, .address, .property-location, [class*='location'], [class*='address']",
+    "description": ".description, .property-description, .summary, p"
+  },
+  "pagination_next_selector": ".pagination a.next, .next-page, [class*='next']",
+  "confidence": "low",
+  "notes": "JAVASCRIPT-RENDERED: This site uses dynamic JS loading (likely Buildout platform) to populate listings into #buildout div. Static HTML contains no listing data. Requires Playwright/Selenium with JavaScript execution. Once JS loads, listings should appear within #buildout container. The page structure suggests commercial real estate listings (not business sales). Manual inspection with browser DevTools after JS execution is needed to determine exact selectors for property cards, titles, prices, and locations.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:01:48.139980+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "First Choice Business Brokers - Van Nuys",
+  "source_url": "https://vannuys.fcbb.com/businesses-for-sale",
+  "container_selector": "#swh-aaf914aa8f7f47c99cec0f03a0d7df07 .listing-item, .dm-bfs .business-card, [data-listing-id]",
+  "fields": {
+    "title": "h2, h3, .listing-title, .business-name",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .city, [class*='location']",
+    "description": ".description, .summary, p",
+    "link": "a.listing-link, a[href*='business']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT REQUIRED: This site uses DudaMobile's Business For Sale widget that loads listings dynamically via JavaScript. Static HTML fetch returns empty containers (div id='swh-aaf914aa8f7f47c99cec0f03a0d7df07'). \n\nREQUIREMENTS:\n- Must use Playwright, Puppeteer, or Selenium\n- Wait for widget to load (look for populated elements in #swh-aaf914aa8f7f47c99cec0f03a0d7df07)\n- The widget appears on both /businesses-for-sale and /buy-a-business URLs\n\nPLATFORM: DudaMobile with BFS (Business For Sale) app widget\nBROKER: First Choice Business Brokers (FCBB) - Van Nuys office\nALTERNATIVE: Check if FCBB has a main API or corporate listing feed that aggregates all offices",
+  "_meta": {
+    "generated_at": "2026-02-27T04:20:33.662296+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

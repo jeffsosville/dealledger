@@ -1,0 +1,21 @@
+{
+  "broker_name": "Buy Sell Your Business (BAMA) - Buy-Side Engagements",
+  "source_url": "https://www.buysellyourbusiness.com/current-engagements/buy-side",
+  "container_selector": "ul.engagement-list > li",
+  "fields": {
+    "title": "h3",
+    "revenue": ".cell.info ul li:nth-of-type(1) p",
+    "cash_flow": ".cell.info ul li:nth-of-type(2) p",
+    "location": ".cell.info ul li:nth-of-type(3) p",
+    "detail_url": "a.readmore[href]",
+    "image": ".cell.thumbnail img[src]",
+    "pdf_url": ".cell.type h4 a[target][href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Buy-side engagements page (retained searches). These are acquisition criteria, not businesses for sale. Extracts title, revenue range, cash flow range, and location. Note: This scraper extracts text content; for actual href/src attributes, post-processing may be needed. Some listings have client profile PDFs. Check also /current-engagements for sell-side listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:21:49.027361+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

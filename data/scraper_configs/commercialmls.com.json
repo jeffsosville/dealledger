@@ -1,0 +1,19 @@
+{
+  "broker_name": "Commercial Brokers Association (CBA) / Commercial MLS",
+  "source_url": "https://www.commercialmls.com/search/usersearch",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {
+    "title": "REQUIRES_JAVASCRIPT",
+    "price": "REQUIRES_JAVASCRIPT",
+    "location": "REQUIRES_JAVASCRIPT",
+    "description": "REQUIRES_JAVASCRIPT",
+    "url": "REQUIRES_JAVASCRIPT"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered SPA (Single Page Application) - REQUIRES PLAYWRIGHT/SELENIUM. The site uses a map-based search interface with hash routing (#/search/map). All listing data is loaded via AJAX/API calls after page load. URLs tested: /search/usersearch, /business/BusinessOpportunityListing. Both return empty containers (#MapPanel or dynamic content areas). Static HTML scraping will not work. Recommendation: Use Playwright or Selenium to render JavaScript, wait for listings to load, then extract data. Alternative: Investigate if there's a backend API endpoint that can be called directly (likely requires reverse engineering network requests). This is a commercial real estate MLS system serving the Pacific Northwest region.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:48:04.218842+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

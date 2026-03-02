@@ -14,7 +14,7 @@ Run:
   python scraper_agent_v5.py --print-sql
 """
 
-import argparse, csv, json, os, re, sys, time
+import argparse, csv, hashlib, json, os, re, sys, time
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -145,13 +145,22 @@ def save_listings(domain, url, listings, method):
     sb = get_supabase()
     if not sb or not listings: return
     try:
-        rows = [{"domain": domain, "source_url": url, "title": l.get("title"),
-                 "price": l.get("price"), "location": l.get("location"),
-                 "state": l.get("state"), "listing_url": l.get("url"),
-                 "raw_data": json.dumps(l), "method": method,
-                 "scraped_at": datetime.now(timezone.utc).isoformat()} for l in listings]
-        sb.table("broker_listings").upsert(rows, on_conflict="domain,listing_url").execute()
-    except: pass
+        rows = [{
+            "canonical_id": l.get("canonical_id"),
+            "domain": domain,
+            "source_url": url,
+            "title": l.get("title"),
+            "price": l.get("price"),
+            "location": l.get("location"),
+            "state": l.get("state"),
+            "listing_url": l.get("url"),
+            "raw_data": json.dumps(l),
+            "method": method,
+            "scraped_at": datetime.now(timezone.utc).isoformat()
+        } for l in listings if l.get("canonical_id")]
+        sb.table("broker_listings").upsert(rows, on_conflict="canonical_id").execute()
+    except Exception as e:
+        memory_append("failures", f"- **{domain}** save_listings error: {str(e)[:100]}")
 
 def _extract_items(data):
     if isinstance(data, list): return data
@@ -162,10 +171,13 @@ def _extract_items(data):
 
 def _normalize_api_item(item):
     if not isinstance(item, dict): return {}
-    title = item.get("title") or item.get("name") or item.get("business_name") or item.get("header")
-    price = item.get("price") or item.get("asking_price") or item.get("askingPrice") or item.get("listPrice")
-    location = item.get("location") or item.get("city") or item.get("address") or item.get("state") or item.get("region")
-    url = item.get("url") or item.get("link") or item.get("permalink") or item.get("slug") or item.get("urlStub")
+    def _val(v):
+        if isinstance(v, dict): return v.get("rendered") or v.get("name") or v.get("value") or str(v)
+        return v
+    title = _val(item.get("title") or item.get("name") or item.get("business_name") or item.get("header"))
+    price = _val(item.get("price") or item.get("asking_price") or item.get("askingPrice") or item.get("listPrice"))
+    location = _val(item.get("location") or item.get("city") or item.get("address") or item.get("state") or item.get("region"))
+    url = _val(item.get("url") or item.get("link") or item.get("permalink") or item.get("slug") or item.get("urlStub"))
     return {
         "title": str(title).strip()[:200] if title else None,
         "price": str(price).strip()[:100] if price else None,
@@ -195,21 +207,92 @@ def _walk_rsc(node, out, data_keys):
         for item in node:
             if isinstance(item, (dict, list)): _walk_rsc(item, out, data_keys)
 
-def extract_api_paginated(base_url, endpoint, page_size=100, max_pages=50):
+def extract_api_paginated(base_url, endpoint, page_size=100, max_pages=50, discovery=None):
+    """
+    Pagination-strategy-aware extractor.
+    Uses discovery.pagination if available, otherwise auto-detects on first call.
+    Strategies: page_param, offset, next_url
+    """
     listings = []
-    page = 1
     url_base = base_url.rstrip("/") + endpoint
-    while page <= max_pages:
+
+    # Determine pagination strategy from discovery config
+    pagination_raw = (discovery or {}).get("pagination") or {}
+    # pagination may be a string (from Supabase) or a dict
+    if isinstance(pagination_raw, str):
+        pagination = {"type": pagination_raw}
+    else:
+        pagination = pagination_raw
+    strategy   = pagination.get("type")       # "page_param" | "offset" | "next_url"
+    p_param    = pagination.get("param", "page")
+    s_param    = pagination.get("size_param", "per_page")
+
+    # Auto-detect strategy if not recorded
+    if not strategy:
         sep = "&" if "?" in url_base else "?"
-        url = f"{url_base}{sep}per_page={page_size}&page={page}&limit={page_size}&offset={(page-1)*page_size}"
-        data, err = fetch_json_url(url)
-        if err or data is None: break
+        probe_url = f"{url_base}{sep}{s_param}={page_size}&{p_param}=1"
+        data, err = fetch_json_url(probe_url)
+        if err or data is None: return []
         items = _extract_items(data)
-        if not items: break
+        if not items: return []
+        # Check if offset works better
+        offset_url = f"{url_base}{sep}limit={page_size}&offset=0"
+        data2, err2 = fetch_json_url(offset_url)
+        if not err2 and data2 and len(_extract_items(data2)) == len(items):
+            strategy = "offset"
+        else:
+            strategy = "page_param"
         listings.extend([_normalize_api_item(i) for i in items])
-        if len(items) < page_size: break
-        page += 1
-        time.sleep(REQUEST_DELAY)
+        if len(items) < page_size: return listings
+        start_page = 2
+    else:
+        start_page = 1
+
+    if strategy == "next_url":
+        # Follow next link from response
+        sep = "&" if "?" in url_base else "?"
+        next_url = f"{url_base}{sep}{s_param}={page_size}"
+        pages = 0
+        while next_url and pages < max_pages:
+            data, err = fetch_json_url(next_url)
+            if err or data is None: break
+            items = _extract_items(data)
+            if not items: break
+            listings.extend([_normalize_api_item(i) for i in items])
+            # Look for next link in response
+            next_url = None
+            if isinstance(data, dict):
+                next_url = (data.get("next") or data.get("next_page") or
+                            data.get("nextPage") or data.get("_links", {}).get("next", {}).get("href"))
+            pages += 1
+            time.sleep(REQUEST_DELAY)
+
+    elif strategy == "offset":
+        offset = len(listings)
+        for _ in range(max_pages):
+            sep = "&" if "?" in url_base else "?"
+            url = f"{url_base}{sep}limit={page_size}&offset={offset}"
+            data, err = fetch_json_url(url)
+            if err or data is None: break
+            items = _extract_items(data)
+            if not items: break
+            listings.extend([_normalize_api_item(i) for i in items])
+            if len(items) < page_size: break
+            offset += len(items)
+            time.sleep(REQUEST_DELAY)
+
+    else:  # page_param (default)
+        for page in range(start_page, max_pages + 1):
+            sep = "&" if "?" in url_base else "?"
+            url = f"{url_base}{sep}{s_param}={page_size}&{p_param}={page}"
+            data, err = fetch_json_url(url)
+            if err or data is None: break
+            items = _extract_items(data)
+            if not items: break
+            listings.extend([_normalize_api_item(i) for i in items])
+            if len(items) < page_size: break
+            time.sleep(REQUEST_DELAY)
+
     return listings
 
 def extract_shopify(base_url):
@@ -339,12 +422,239 @@ def extract_css(html, discovery, base_url):
         if any(rec.values()): listings.append(rec)
     return listings
 
+def make_canonical_id(domain, title, price, location, url):
+    """Stable dedup key: sha1 of domain + normalized fields"""
+    # Normalize URL path only (strip tracking params)
+    url_path = ""
+    if url:
+        try:
+            p = urlparse(str(url))
+            # Keep path + query but strip utm/tracking params
+            clean_params = "&".join(
+                f"{k}={v}" for part in (p.query or "").split("&")
+                for k, v in [part.split("=", 1)] if part and not k.startswith(("utm_", "gclid", "fbclid", "_ga"))
+            ) if p.query else ""
+            url_path = p.path + (f"?{clean_params}" if clean_params else "")
+        except: url_path = str(url)[:200]
+
+    raw = "|".join([
+        domain.lower().strip(),
+        (title or "").lower().strip()[:100],
+        re.sub(r"[^0-9]", "", str(price or ""))[:20],
+        (location or "").lower().strip()[:50],
+        url_path.lower()[:200],
+    ])
+    return hashlib.sha1(raw.encode()).hexdigest()
+
+
+def _nj_find_best_list(obj):
+    """find_best_list for network_json — mirrors pw_network_discovery scoring."""
+    HINT = {
+        "title","name","asking","asking_price","askingPrice","price","listPrice",
+        "city","state","location","address","url","link","slug","permalink",
+        "id","listingId","listing_id","business","business_name"
+    }
+    CONTAINERS = ["items","results","data","listings","businesses","records","posts","products"]
+    best, best_score = [], 0
+    def score_list(lst):
+        if not lst or not isinstance(lst, list) or not isinstance(lst[0], dict): return 0
+        keys = set()
+        for it in lst[:5]: keys |= set(it.keys())
+        return len(keys & HINT) * 10 + min(len(lst), 200)
+    def walk(node):
+        nonlocal best, best_score
+        if isinstance(node, dict):
+            for k in CONTAINERS:
+                s = score_list(node.get(k))
+                if s > best_score: best_score, best = s, node[k]
+            for v in node.values(): walk(v)
+        elif isinstance(node, list):
+            s = score_list(node)
+            if s > best_score: best_score, best = s, node
+            for it in node[:20]: walk(it)
+    walk(obj)
+    return best, best_score
+
+def _nj_get_next_url(payload):
+    if isinstance(payload, dict):
+        for k in ("next","next_url","nextUrl","nextPage","next_page"):
+            v = payload.get(k)
+            if isinstance(v, str) and v.startswith("http"): return v
+        links = payload.get("links")
+        if isinstance(links, dict):
+            v = links.get("next")
+            if isinstance(v, str) and v.startswith("http"): return v
+    return None
+
+def _nj_find_cursor(payload):
+    if isinstance(payload, dict):
+        for k in ("next_cursor","nextCursor","cursor","after","endCursor","end_cursor"):
+            v = payload.get(k)
+            if isinstance(v, (str, int)) and str(v): return str(v)
+        def walk(d, depth=0):
+            if depth > 4: return None
+            if isinstance(d, dict):
+                if "pageInfo" in d and isinstance(d["pageInfo"], dict):
+                    pi = d["pageInfo"]
+                    ec = pi.get("endCursor") or pi.get("end_cursor")
+                    if ec: return str(ec)
+                for v in d.values():
+                    got = walk(v, depth+1)
+                    if got: return got
+            elif isinstance(d, list):
+                for it in d[:10]:
+                    got = walk(it, depth+1)
+                    if got: return got
+            return None
+        return walk(payload.get("data") or payload)
+    return None
+
+def _nj_set_param(url, key, value):
+    from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+    parts = urlsplit(url)
+    q = dict(parse_qsl(parts.query, keep_blank_values=True))
+    q[key] = str(value)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(q, doseq=True), parts.fragment))
+
+def _nj_get_param(url, key):
+    from urllib.parse import urlsplit, parse_qsl
+    return dict(parse_qsl(urlsplit(url).query, keep_blank_values=True)).get(key)
+
+def extract_network_json(discovery, base_url, max_pages=50, verbose=False):
+    """
+    Daily executor for network_json method.
+    Uses endpoint_url + pagination stored by Playwright discovery.
+    Returns (listings, error_or_None).
+    """
+    from urllib.parse import urlsplit, parse_qsl, urlencode, urljoin
+
+    # Get plan — stored directly in discovery row or under "config" JSONB
+    plan = discovery
+    if discovery.get("config"):
+        try: plan = json.loads(discovery["config"]) if isinstance(discovery["config"], str) else discovery["config"]
+        except: pass
+
+    endpoint_url = plan.get("endpoint_url") or plan.get("endpoint")
+    if not endpoint_url:
+        return [], "missing_endpoint_url"
+
+    # Make absolute
+    if not endpoint_url.startswith("http"):
+        endpoint_url = urljoin(base_url.rstrip("/") + "/", endpoint_url)
+
+    req_headers = (plan.get("request", {}) or {}).get("headers", {}) or plan.get("request_headers") or {}
+    headers = {k: v for k, v in req_headers.items()
+               if k.lower() in {"accept","authorization","x-api-key","cookie","referer"}}
+    pagination = plan.get("pagination_guess") or plan.get("pagination") or "unknown"
+    page_size = int(discovery.get("page_size") or 50)
+
+    def log(msg):
+        if verbose: print(msg)
+
+    def fetch_page(url):
+        data, err = fetch_json_url(url, extra_headers=headers)
+        return data, err
+
+    listings_out = []
+    seen_hashes = set()
+    url = endpoint_url
+    page = 0
+
+    PAGE_KEYS   = ["page","p","pg"]
+    OFFSET_KEYS = ["offset","skip","start"]
+    CURSOR_KEYS = ["cursor","after","pageCursor","page_cursor","starting_after"]
+
+    while page < max_pages:
+        page += 1
+        data, err = fetch_page(url)
+        if err or data is None:
+            if page == 1: return listings_out, err or "fetch_failed"
+            break
+
+        best_list, score = _nj_find_best_list(data)
+        if score < 30 or not best_list:
+            log(f"   ⚠️  Low score ({score}) on page {page}")
+            if page == 1: return listings_out, "not_listings_json"
+            break
+
+        # Normalize + dedupe
+        for item in best_list:
+            rec = _normalize_api_item(item)
+            key = "|".join([rec.get("url") or "", rec.get("title") or "",
+                            rec.get("price") or "", rec.get("location") or ""])
+            h = hash(key)
+            if h in seen_hashes: continue
+            seen_hashes.add(h)
+            listings_out.append(rec)
+
+        if pagination in ("page_param","offset") and len(best_list) < page_size:
+            break
+
+        # Compute next URL
+        next_url = None
+        q = dict(parse_qsl(urlsplit(url).query, keep_blank_values=True))
+
+        if pagination == "next_url":
+            next_url = _nj_get_next_url(data)
+
+        elif pagination == "cursor":
+            cursor = _nj_find_cursor(data)
+            if cursor:
+                present = next((ck for ck in CURSOR_KEYS if ck in q), "cursor")
+                next_url = _nj_set_param(url, present, cursor)
+            else:
+                next_url = _nj_get_next_url(data)
+
+        elif pagination == "page_param":
+            present = next((pk for pk in PAGE_KEYS if pk in q), None)
+            if present:
+                cur = int(q.get(present, 1))
+                next_url = _nj_set_param(url, present, cur + 1)
+            else:
+                next_url = _nj_set_param(url, "page", page + 1)
+            # Preserve size param
+            for sk in ("per_page","limit","page_size","pagesize"):
+                if sk in q: next_url = _nj_set_param(next_url, sk, q[sk]); break
+
+        elif pagination == "offset":
+            present = next((ok for ok in OFFSET_KEYS if ok in q), None)
+            cur_offset = int(q.get(present, 0)) if present else 0
+            next_url = _nj_set_param(url, present or "offset", cur_offset + page_size)
+            if "limit" not in q and "per_page" not in q:
+                next_url = _nj_set_param(next_url, "limit", page_size)
+
+        else:
+            break  # unknown: single shot
+
+        if not next_url or next_url == url: break
+        url = next_url
+        time.sleep(REQUEST_DELAY)
+
+    return listings_out, None
+
+
 def normalize_listings(listings, base_url):
+    domain = urlparse(base_url).netloc.lower().replace("www.", "")
+    seen = set()
+    out = []
     for l in listings:
+        raw_url = l.get("url")
+        if raw_url:
+            raw_url = str(raw_url).strip()
+            if raw_url.startswith("//"):
+                raw_url = urlparse(base_url).scheme + ":" + raw_url
+            elif raw_url.startswith("/") or not raw_url.startswith("http"):
+                raw_url = base_url.rstrip("/") + "/" + raw_url.lstrip("/")
+            l["url"] = raw_url
         l["state"] = normalize_state(l.get("location"))
-        if l.get("url") and str(l["url"]).startswith("/"):
-            l["url"] = base_url.rstrip("/") + l["url"]
-    return [l for l in listings if any(l.values())]
+        cid = make_canonical_id(domain, l.get("title"), l.get("price"), l.get("location"), l.get("url"))
+        l["canonical_id"] = cid
+        if cid in seen: continue
+        seen.add(cid)
+        if any(v for v in l.values() if v is not None):
+            out.append(l)
+    return out
+
 
 def scrape_url(url, verbose=True):
     domain = urlparse(url).netloc.lower().replace("www.", "")
@@ -372,13 +682,17 @@ def scrape_url(url, verbose=True):
 
     try:
         if method == "wordpress_api":
-            listings = extract_api_paginated(base_url, endpoint, page_size=discovery.get("page_size") or 100)
+            listings = extract_api_paginated(base_url, endpoint, page_size=discovery.get("page_size") or 100, discovery=discovery)
+        elif method == "network_json":
+            listings, nj_err = extract_network_json(discovery, base_url, verbose=verbose)
+            if nj_err and not listings:
+                result["error"] = nj_err; return result
         elif method == "shopify_api":
             listings = extract_shopify(base_url)
         elif method == "squarespace_json":
             listings = extract_squarespace(url)
         elif method in ("ghost_api", "drupal_api", "rest_api"):
-            listings = extract_api_paginated(base_url, endpoint, page_size=discovery.get("page_size") or 20)
+            listings = extract_api_paginated(base_url, endpoint, page_size=discovery.get("page_size") or 20, discovery=discovery)
         elif method == "nextjs_nextdata":
             html, err = fetch_text(url)
             if html: listings = extract_nextdata(html, base_url)
@@ -503,22 +817,28 @@ def run_batch(csv_path, workers=8, failed_only=False):
 SUPABASE_SQL = """
 -- Run AFTER discovery.py --print-sql
 CREATE TABLE IF NOT EXISTS broker_listings (
-    id          BIGSERIAL PRIMARY KEY,
-    domain      TEXT NOT NULL,
-    source_url  TEXT,
-    title       TEXT,
-    price       TEXT,
-    location    TEXT,
-    state       TEXT,
-    listing_url TEXT,
-    raw_data    JSONB,
-    method      TEXT,
-    scraped_at  TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE (domain, listing_url)
+    id           BIGSERIAL PRIMARY KEY,
+    canonical_id TEXT NOT NULL,          -- sha1 dedup key
+    domain       TEXT NOT NULL,
+    source_url   TEXT,
+    title        TEXT,
+    price        TEXT,
+    location     TEXT,
+    state        TEXT,
+    listing_url  TEXT,
+    raw_data     JSONB,
+    method       TEXT,
+    scraped_at   TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (canonical_id)
 );
-CREATE INDEX IF NOT EXISTS broker_listings_domain_idx  ON broker_listings(domain);
-CREATE INDEX IF NOT EXISTS broker_listings_state_idx   ON broker_listings(state);
-CREATE INDEX IF NOT EXISTS broker_listings_scraped_idx ON broker_listings(scraped_at);
+CREATE INDEX IF NOT EXISTS broker_listings_domain_idx    ON broker_listings(domain);
+CREATE INDEX IF NOT EXISTS broker_listings_state_idx     ON broker_listings(state);
+CREATE INDEX IF NOT EXISTS broker_listings_scraped_idx   ON broker_listings(scraped_at);
+CREATE INDEX IF NOT EXISTS broker_listings_canonical_idx ON broker_listings(canonical_id);
+
+-- If migrating existing table, add canonical_id column:
+-- ALTER TABLE broker_listings ADD COLUMN IF NOT EXISTS canonical_id TEXT;
+-- CREATE UNIQUE INDEX IF NOT EXISTS broker_listings_canonical_idx ON broker_listings(canonical_id);
 """
 
 if __name__ == "__main__":

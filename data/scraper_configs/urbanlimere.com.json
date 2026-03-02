@@ -1,0 +1,18 @@
+{
+  "broker_name": "Urbanlime Real Estate",
+  "source_url": "https://www.urbanlimere.com/for-sale",
+  "container_selector": ".summary-item",
+  "fields": {
+    "title": ".summary-title a",
+    "location": ".summary-metadata-item--cats a",
+    "description": ".summary-excerpt",
+    "category": ".summary-metadata-item--cats"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Squarespace-based site. Successfully extracting 21 listings with title, location/category, and description. URL extraction requires href attribute support (listings are at /listings/{slug}). Images are in data-image attribute on img.summary-thumbnail-image. No prices displayed on listing cards. Site shows both for-sale and for-lease properties filtered by tags.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:56:00.897856+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

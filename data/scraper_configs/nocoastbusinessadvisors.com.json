@@ -1,0 +1,18 @@
+{
+  "broker_name": "No Coast Business Advisors",
+  "source_url": "http://nocoastbusinessadvisors.com/search-results/?",
+  "container_selector": "bbcrm[api_string]",
+  "fields": {
+    "title": "NOT_AVAILABLE_STATIC",
+    "price": "NOT_AVAILABLE_STATIC",
+    "location": "NOT_AVAILABLE_STATIC",
+    "description": "NOT_AVAILABLE_STATIC"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JAVASCRIPT REQUIRED: This site uses a custom <bbcrm> web component system that dynamically loads listings via API. The listings are not present in static HTML. \n\nTechnical Details:\n- Uses custom <bbcrm> tags with api_string attributes (e.g., api_string=\"allListingsB\", api_string=\"sidebarsearchtool\")\n- Listings appear to be loaded from a proprietary Business Broker CRM (bbcrm) system\n- Different pages use different presets to filter listings (e.g., presets=\"c_listing_askingprice_c :>:0,c_listing_askingprice_c:<:500000\" for $0-500k)\n- Main search page: http://nocoastbusinessadvisors.com/search-results/?\n- Category pages exist: /listings-0-500k/, /listings-500k-1m/, /listings-1m-and-up/, /listings-manufacturing/, /listings-retail/, /listings-services/\n\nSCRAPING REQUIREMENTS:\n1. Use Playwright/Selenium/Puppeteer to render JavaScript\n2. Wait for bbcrm elements to populate with listing data\n3. Alternative: Reverse engineer the bbcrm API endpoints (likely makes XHR/fetch requests)\n4. The API may require authentication or API keys\n\nRECOMMENDED APPROACH:\n- Use browser automation (Playwright recommended)\n- Wait for network idle or specific elements to appear after page load\n- Extract data from dynamically rendered DOM\n- Or intercept network requests to capture API responses directly",
+  "_meta": {
+    "generated_at": "2026-02-27T21:24:40.304892+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Pensacola Business Brokers",
+  "source_url": "https://pensacolabusinessbrokers.com/business-for-sale-in-pensacola/",
+  "container_selector": "article.elementor-post",
+  "fields": {
+    "title": ".elementor-post__title a",
+    "status": ".elementor-post__badge",
+    "text_content": ".elementor-post__text",
+    "read_more": ".elementor-button-text"
+  },
+  "pagination_next_selector": ".elementor-pagination a.next",
+  "confidence": "medium",
+  "notes": "WordPress Elementor-based site. Successfully extracts 25 listings with titles and 'For Sale' status badges. Price and detailed information appear to be on individual listing detail pages only. Link URLs and images may require attribute extraction (href/src) which needs enhanced selector support. The site uses a clean card-based layout with consistent structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:02:23.349814+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

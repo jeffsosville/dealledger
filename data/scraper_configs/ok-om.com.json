@@ -1,0 +1,19 @@
+{
+  "broker_name": "O'Keeffe & O'Malley",
+  "source_url": "https://www.ok-om.com/businesses-for-sale/",
+  "container_selector": ".private-sales-listing .listing",
+  "fields": {
+    "title": "h2",
+    "revenue": ".revenue strong",
+    "cashflow": ".ebitda strong",
+    "location": ".location strong",
+    "url": "a.absolute.full"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Boutique business broker in Kansas City. Only 1 active listing found on the page. Revenue and cashflow (EBITDA) fields are present. No asking price displayed publicly. URL selector may need manual href extraction in production code. Site appears to be server-rendered (no JS required).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:47:23.921611+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

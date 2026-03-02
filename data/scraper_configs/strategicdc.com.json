@@ -1,0 +1,17 @@
+{
+  "broker_name": "Strategic DC (Strategic Chiropractor)",
+  "source_url": "https://strategicdc.com/chiropractic-practices-for-sale/",
+  "container_selector": "a.listing-box-cont",
+  "fields": {
+    "title": ".listing-title .ct-span",
+    "description": ".listing-content .ct-span p",
+    "location": ".listing-title .ct-span"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Specialized chiropractic practice broker. 199 listings found across 4 US regions (Western, Midwestern, Southern, Northeastern). Listings organized on single page with region filters. Container selector IS the link element (a.listing-box-cont) - href attribute should be extracted from container itself. Titles include location. No prices shown on listing page. WordPress site with Oxygen builder. All listings loaded dynamically but appear to be server-rendered (no JS required). Location can be parsed from title format 'Chiropractic Practice for Sale in [Location], [State]'.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:33:36.773579+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

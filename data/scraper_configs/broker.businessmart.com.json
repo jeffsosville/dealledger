@@ -1,0 +1,19 @@
+{
+  "broker_name": "Sy Sebastianelli & Associates / Business Mart",
+  "source_url": "https://broker.businessmart.com/scrantonbusinessbrokers?owner=1",
+  "container_selector": "table[bgcolor=\"#ffffff\"] tr[bgcolor=\"#FFFFFF\"], table[bgcolor=\"#ffffff\"] tr[bgcolor=\"#EEEEEE\"]",
+  "fields": {
+    "title": "td.listing_bodycopy a",
+    "price": "td.listing_bodycopy:nth-of-type(2)",
+    "cash_flow": "td.listing_bodycopy:nth-of-type(3)",
+    "location": "td.listing_bodycopy:nth-of-type(4)",
+    "url": "td.listing_bodycopy a[href]"
+  },
+  "pagination_next_selector": "table tr td span.busi_headline_black a",
+  "confidence": "high",
+  "notes": "Business Mart broker platform. Table-based layout with alternating row colors. Successfully extracts 17 listings. Note: URL field extracts link text instead of href attribute (would need attribute extraction support). Cash flow field may contain 'Undisclosed'. Some listings marked as 'SOLD' in title. Pagination shown as 'Page 1 of 1'.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:21:09.710839+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Mazz Global Consulting",
+  "source_url": "https://mazzglobalconsulting.com/franchises/",
+  "container_selector": "div.franchise_mp",
+  "fields": {
+    "title": "h5",
+    "description": "p",
+    "listing_url": "a.request_info_btn",
+    "image_url": "a > img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Franchise consulting broker. Successfully extracts title and description for each franchise. Note: URL extraction requires attribute handling (href from a.request_info_btn or a[href*='company']), and image_url needs src attribute from img tag. The description includes 'Request Info' text at the end which should be stripped. No prices listed as these are franchise opportunities. Container div.franchise_mp works well. Tested and found 9+ listings on first page.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:36:58.324728+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

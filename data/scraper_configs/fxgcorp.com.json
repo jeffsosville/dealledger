@@ -1,0 +1,18 @@
+{
+  "broker_name": "FXG Management, Inc.",
+  "source_url": "https://fxgcorp.com/buyers",
+  "container_selector": "#map, #listings",
+  "fields": {
+    "title": "[class*='title'], h3, h4",
+    "price": "[class*='price'], .price",
+    "location": "[class*='location'], .location, .address",
+    "description": "[class*='description'], .description, p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer). The page uses a map-based interface where listings are loaded dynamically via JavaScript. The static HTML contains only empty containers (#map, #listings, #button-placeholder). Listings appear to be FedEx Ground Routes based on the site description. The page likely uses Google Maps API or similar to display listing locations. A browser automation tool is required to: 1) Load the page and wait for the map to initialize, 2) Extract listing markers/popups from the map, or 3) Identify dynamically injected listing cards. May also have an underlying API endpoint that could be discovered via network tab inspection.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:15:12.757172+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

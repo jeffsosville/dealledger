@@ -1,0 +1,19 @@
+{
+  "broker_name": "First Choice Business Brokers - Atlanta Metro",
+  "source_url": "https://atlantametro.fcbb.com/businesses-for-sale",
+  "container_selector": "div[id^=\"swh-\"] > *, [data-wrapper-source=\"appstore\"] > *",
+  "fields": {
+    "title": "h2, h3, .listing-title, .business-title",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .city, [class*='location']",
+    "description": ".description, .summary, p",
+    "link": "a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). Site uses DudaMobile platform with dm-bfs (business for sale) widget that loads listings dynamically via JavaScript. Static HTML contains only empty wrapper divs (id='swh-f96f021866cf4397be8b675fed46a181' and data-wrapper-source='appstore'). Listings are injected client-side. Alternative URLs: /business-listings, /buy-a-business (all have same structure). Will need browser automation to scrape effectively.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:56:19.740145+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

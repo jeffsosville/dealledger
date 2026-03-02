@@ -1,0 +1,20 @@
+{
+  "broker_name": "Transworld Business Advisors - Tri-County (Ireland Site)",
+  "source_url": "https://tworld.ie/locations/tricounty/buy-a-business/active-business-listings/",
+  "container_selector": ".listing-card, article, [class*=\"business-card\"], [class*=\"listing-item\"]",
+  "fields": {
+    "title": "h2, h3, .title, [class*='title']",
+    "price": ".price, [class*='price'], .asking-price",
+    "location": ".location, [class*='location']",
+    "description": ".description, .summary, p",
+    "cash_flow": "[class*='cash-flow'], [class*='cashflow']",
+    "gross_revenue": "[class*='revenue'], [class*='gross']"
+  },
+  "pagination_next_selector": ".pagination a, [class*='next'], button[class*='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium) - This is a React SPA (Single Page Application) with <div id=\"app\"></div> that loads content dynamically. The page returns 904KB of HTML but all listings are rendered client-side via JavaScript. No server-side rendered content available. The selectors provided are educated guesses based on common patterns and would need to be validated once JS rendering is enabled. This appears to be a Transworld Business Advisors franchise location (Tri-County) hosted on tworld.ie domain. For proper scraping, use Playwright or Selenium with waitForSelector to ensure content loads before extraction.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:23:05.794032+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

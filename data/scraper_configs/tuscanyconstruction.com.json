@@ -1,0 +1,18 @@
+{
+  "broker_name": "Tuscany Construction",
+  "source_url": "https://tuscanyconstruction.com/commercial_properties.html",
+  "container_selector": "div.item.col-sm-4",
+  "fields": {
+    "title": "div.image a h3",
+    "location": "div.image a span.location",
+    "link_href": "div.image > a[href]",
+    "image_src": "div.image img[src]"
+  },
+  "pagination_next_selector": "div.pagination ul li a[href]",
+  "confidence": "medium",
+  "notes": "Commercial real estate/construction company listing properties. Successfully extracts title and location for all 6 listings on page 1. URL and image selectors return text content instead of attributes (CSS parser limitation - may need post-processing to extract href/src attributes). Pagination detected: has page 2 link (commercial_properties_II.html). No prices displayed on listing cards.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:33:57.372167+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

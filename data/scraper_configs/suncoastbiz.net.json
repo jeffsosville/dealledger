@@ -1,0 +1,18 @@
+{
+  "broker_name": "Suncoast Business Consultants",
+  "source_url": "https://suncoastbiz.net/search-businesses/",
+  "container_selector": ".wpb-content-wrapper",
+  "fields": {
+    "title": "h2, h3, .listing-title",
+    "price": ".price, .asking-price",
+    "location": ".location, .address",
+    "description": ".description, p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED PAGE - Requires browser automation (Playwright/Selenium/Puppeteer).\n\nThe search-businesses page loads listings dynamically via JavaScript, likely through an embedded widget or third-party listing system. The static HTML shows only an empty container structure.\n\nContent area: <div class='wpb_wrapper'><p></p></div>\n\nThis broker (Brian Zoberg, Suncoast Business Consultants) appears to syndicate listings to multiple platforms (Crexi, BizQuest, BusinessBroker.net, BuySellABusiness.com) based on footer logos.\n\nRECOMMENDED APPROACH:\n1. Use Playwright/Puppeteer to render JavaScript\n2. Wait for dynamic content to load (waitForSelector on listing cards)\n3. Inspect rendered DOM to identify actual listing containers\n4. Alternative: Check if listings available via API calls (inspect Network tab in browser DevTools)\n5. Alternative: Scrape from syndication platforms (BizQuest, Crexi, etc.) where this broker lists\n\nLocation: Miami, South Florida\nContact: brian@suncoastbiz.net, 305.301.2443",
+  "_meta": {
+    "generated_at": "2026-02-27T03:32:55.095160+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

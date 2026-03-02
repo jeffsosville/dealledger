@@ -1,0 +1,22 @@
+{
+  "broker_name": "Commercial Realty Advisors",
+  "source_url": "https://comrealty.net/search-commercial-real-estate-listings/",
+  "container_selector": ".mh-estate, .mh-estate-vertical, article[class*='estate']",
+  "fields": {
+    "title": ".mh-estate__name a, .mh-estate__title a, h2.mh-estate__heading a",
+    "price": ".mh-estate__price, .mh-estate__top-price",
+    "location": ".mh-estate__address, .mh-estate__top-location",
+    "description": ".mh-estate__excerpt, .mh-estate__details-text",
+    "url": ".mh-estate__name a::attr(href), .mh-estate__title a::attr(href)",
+    "image": ".mh-estate__image img::attr(src), .mh-estate__thumbnail img::attr(src)",
+    "property_type": ".mh-estate__attribute--offer_type, .mh-estate__type",
+    "size": ".mh-estate__attribute--area, [data-attribute='area']"
+  },
+  "pagination_next_selector": ".mh-pagination__next, .next.page-numbers",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer). This site uses the MyHome WordPress theme with Vue.js (id='myhome-app'). The listings are dynamically loaded via JavaScript and do not appear in the static HTML. The selectors provided are based on the MyHome theme's standard structure and will work once the page is rendered. The site features commercial real estate listings including retail space, office space, industrial properties, and land for sale/lease in Massachusetts (Cape Cod area). Contact: 508-862-9000, advisors@comrealty.net, 222 West Main Street, Hyannis, MA.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:02:32.339613+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "broker_name": "Emerald Coast Business Intermediaries (EC Brokers)",
+  "source_url": "https://www.ecbrokers.com/listings-for-sale/",
+  "container_selector": "#listings",
+  "fields": {
+    "title": "[data-title], .listing-title, h3",
+    "price": "[data-price], .price, .asking-price",
+    "location": "[data-location], .location, .city",
+    "description": "[data-description], .description, .summary",
+    "listing_id": "[data-id], .listing-id",
+    "link": "a[href*='listing']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium/Puppeteer\n\nThe listings page HTML contains an empty container div (#listings) that is populated dynamically via JavaScript. Static HTML scraping returns no listings.\n\nREQUIREMENTS:\n- Browser automation (Playwright, Puppeteer, or Selenium) required\n- Wait for listings to load after page render\n- The page may use an embedded widget, iframe, or external API to load listings\n\nINVESTIGATED:\n- Primary URL: https://www.ecbrokers.com/listings-for-sale/\n- Alternative URL: https://www.ecbrokers.com/listings (same structure)\n- Empty container structure: <div id=\"listings\"> with white background div\n- No static HTML listing elements present\n\nRECOMMENDED APPROACH:\n1. Use Playwright/Puppeteer to render the page\n2. Wait for listings container to populate (waitForSelector with visible elements)\n3. Extract dynamically-loaded listing cards/items\n4. Inspect network tab for potential API endpoints that could be accessed directly\n\nThe broker is a member of IBBA (International Business Brokers Association) and operates in the Florida/South Alabama region.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:04:07.007156+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

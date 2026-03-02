@@ -1,0 +1,19 @@
+{
+  "broker_name": "Davidson Business Investments (DBI)",
+  "source_url": "http://www.godbi.com/Business-for-sale.html",
+  "container_selector": ".project-section .row > div",
+  "fields": {
+    "title": "h3, h4, .title",
+    "price": ".price, .asking-price",
+    "location": ".location, .address",
+    "description": ".description, p",
+    "link": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING: The listings page exists but content is loaded dynamically via JavaScript. Static HTML shows empty containers in .project-section .row. Requires Playwright/Selenium for scraping. Broker specializes in Healthcare, Medical Billing, Dealerships, Manufacturing. Located in Charlotte, NC. Phone: (704) 362-1295. No listings visible in static HTML - selectors are estimated based on typical page structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:06:46.393131+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

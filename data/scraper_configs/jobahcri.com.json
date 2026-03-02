@@ -1,0 +1,20 @@
+{
+  "broker_name": "Jobah Commercial Real Estate Investments",
+  "source_url": "https://www.jobahcri.com/listings?sale=2",
+  "container_selector": "article.post-modern",
+  "fields": {
+    "title": "h4.post-modern-title a",
+    "price": "ul.post-modern-meta li a.button-winona",
+    "location": "ul.post-modern-meta li:last-of-type",
+    "inventory_info": "p:nth-of-type(1)",
+    "real_estate_info": "p:nth-of-type(2)",
+    "status": "ul.post-modern-meta li.text-danger"
+  },
+  "pagination_next_selector": "a[rel=\"next\"]",
+  "confidence": "high",
+  "notes": "Successfully scraping business opportunity listings. Returns 8 listings per page. Pagination available via next link (saw pages 1, 2, 3 in footer). Additional fields available: listing URL (a.post-modern-media href attribute), image (a.post-modern-media img src attribute). Location field contains full address or 'Call for details' with county/state. Status field shows 'New' for recent listings. Note: Also has Investment Opportunity listings at /listings?sale=1 and Leasing listings at /listings?lease=2",
+  "_meta": {
+    "generated_at": "2026-02-27T18:41:01.265776+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

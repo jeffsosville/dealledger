@@ -1,0 +1,18 @@
+{
+  "broker_name": "Independence Group",
+  "source_url": "https://independencegroup.com/deal-opportunities/",
+  "container_selector": ".df-area .et_pb_column",
+  "fields": {
+    "title": "h3",
+    "status": ".i-btn p",
+    "details_raw": ".d-o-text .et_pb_text_inner",
+    "description": ".et_pb_toggle_content"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully scraping 22 business listings. The details_raw field contains structured data with Revenue, EBITDA, Region, and Lead Advisor information that can be parsed using regex. Status includes: Sold, Available, and Upcoming. All listings are on a single page with no pagination needed.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:12:17.648075+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

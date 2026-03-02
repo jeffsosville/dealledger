@@ -1,0 +1,18 @@
+{
+  "broker_name": "Main Source Realty",
+  "source_url": "https://mainsourcerealty.com/mls-listings",
+  "container_selector": ".sqs-code-container",
+  "fields": {
+    "title": "h2, h3, .title, .property-title",
+    "price": ".price, .amount, .property-price",
+    "location": ".location, .address, .property-location",
+    "description": ".description, .property-description"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). This is a Squarespace site with MLS listings embedded in a code block. The listings are loaded dynamically via JavaScript and are not present in static HTML. The page contains an embedded script block that likely fetches data from an external MLS service. Static scraping will return 0 results. Browser automation is required to wait for dynamic content to load, then inspect the rendered DOM to identify actual listing selectors.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:48:01.317055+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

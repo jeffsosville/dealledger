@@ -1,0 +1,22 @@
+{
+  "broker_name": "Central Florida Business Brokerage",
+  "source_url": "https://cfbb.biz/our-featured-listings/",
+  "container_selector": "div[data-listing], .business-listing-item",
+  "fields": {
+    "title": "h2, h3, .listing-title",
+    "price": ".price, .asking-price",
+    "location": ".location, .city, .address",
+    "description": ".description, .excerpt, p",
+    "link": "a[href]",
+    "business_type": ".category, .business-type",
+    "revenue": ".revenue, .gross-revenue",
+    "cash_flow": ".cash-flow, .earnings"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED CONTENT: This site loads business listings dynamically via JavaScript. Static HTML scraping returns 0 listings. \n\nREQUIRES: Playwright, Puppeteer, or Selenium with JavaScript rendering enabled.\n\nAlternative URLs tested:\n- https://cfbb.biz/our-featured-listings/ (original, JS-rendered)\n- https://cfbb.biz/businesses-for-sale (also JS-rendered)\n\nThe site uses GeneratePress theme with GenerateBlocks page builder. Listings are likely embedded via:\n1. Third-party widget (BizBuySell, BizQuest, etc.)\n2. Custom CRM/listing management system\n3. iFrame embed\n\nRECOMMENDED APPROACH:\n1. Use Playwright/Puppeteer to load the page\n2. Wait for listing containers to appear (waitForSelector)\n3. Look for dynamically injected elements after page load\n4. May need to inspect Network tab for API calls that load listing data\n\nContact: (407)-324-5100, info@CFBB.biz\nLocation: Altamonte Springs, FL",
+  "_meta": {
+    "generated_at": "2026-02-27T19:18:22.549851+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

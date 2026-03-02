@@ -1,0 +1,22 @@
+{
+  "broker_name": "First Choice Business Brokers - North Dakota",
+  "source_url": "https://northdakota.fcbb.com/businesses-for-sale",
+  "container_selector": "div[data-wrapper-source=\"appstore\"], .dm-bfs-listing, [class*=\"bfs-listing\"]",
+  "fields": {
+    "title": "h2, h3, .listing-title, .business-title",
+    "price": ".price, .asking-price, [data-price]",
+    "location": ".location, .city, .region",
+    "description": ".description, .summary",
+    "link": "a[href*='business']",
+    "category": ".category, .industry",
+    "revenue": ".revenue, [data-revenue]",
+    "cashflow": ".cashflow, [data-cashflow]"
+  },
+  "pagination_next_selector": ".pagination a, .next-page, a[href*='page=']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer)\n\nThis FCBB North Dakota site uses the DudaMobile platform with a JavaScript widget to dynamically load business listings. The page HTML only contains navigation/footer elements - no listing data.\n\nThe widget appears to be loaded via: <div id=\"swh-a7fd92bc69774f51938b89bfd8bfb8e5\">\n\nIMPLEMENTATION REQUIRED:\n1. Use Playwright/Puppeteer to render JavaScript\n2. Wait for listings to load (wait for selector or network idle)\n3. Look for dynamically injected listing containers\n4. The actual selectors will only be visible after JS execution\n\nPAGINATION: URL uses ?page=X parameter (e.g., ?sort=FeaturedLocalBusinesses&page=1)\n\nALTERNATIVE: Check if FCBB has a central API or RSS feed that could be used instead of scraping individual franchise sites.\n\nPlatform: DudaMobile (dm-bfs = DudaMobile Business For Sale module)\nEstimated listings: Unknown (requires JS rendering to count)",
+  "_meta": {
+    "generated_at": "2026-02-27T18:58:43.200095+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

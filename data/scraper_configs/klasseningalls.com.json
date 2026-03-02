@@ -1,0 +1,19 @@
+{
+  "broker_name": "Klassen Ingalls",
+  "source_url": "https://www.klasseningalls.com/forsale/",
+  "container_selector": "table.tblForSale tbody tr",
+  "fields": {
+    "title": "td:nth-child(1) b",
+    "description": "td:nth-child(1) p",
+    "price": "td:nth-child(2)",
+    "sde": "td:nth-child(3)",
+    "contact": "td:nth-child(4) a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Simple HTML table structure with all listings on a single page. Includes active listings and sold businesses. Title includes reference number (RN). SDE (Seller Discretionary Earnings) is provided. Contact links to broker team members.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:24:52.134644+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

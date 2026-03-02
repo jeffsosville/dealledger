@@ -1,0 +1,19 @@
+{
+  "broker_name": "DH Brokerage, Inc.",
+  "source_url": "https://www.dhbrokerage.com/listings.php",
+  "container_selector": "tupelo-marketplace",
+  "fields": {
+    "title": "h2, h3, .title, [class*='title']",
+    "price": ".price, [class*='price']",
+    "location": ".location, [class*='location']",
+    "description": ".description, [class*='description']",
+    "category": ".category, [class*='category']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). Site uses Tupelo Marketplace platform (custom web component: tupelo-marketplace organization-id='clo7dd0bv0000rs0fncdxhk1c'). Listings are loaded dynamically via JavaScript API calls. Static HTML contains no listing data. Will need browser automation to scrape actual listings. The exact selectors for listing cards will only be visible after JS renders the component.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:38:04.607149+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

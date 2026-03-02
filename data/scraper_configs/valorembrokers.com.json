@@ -1,0 +1,20 @@
+{
+  "broker_name": "Valorem Brokers",
+  "source_url": "https://valorembrokers.com/businesses-for-sale/",
+  "container_selector": "article.business-listing, .wpr-grid-item, .elementor-post",
+  "fields": {
+    "title": "h2.entry-title, h3.entry-title, .listing-title, .elementor-heading-title",
+    "price": ".price, .listing-price, .asking-price, .wpr-price",
+    "location": ".location, .listing-location, .wpr-location",
+    "description": ".description, .excerpt, .entry-summary",
+    "url": "a.listing-link @href, .elementor-post__title a @href, h2 a @href",
+    "id": ".listing-id, @data-id"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT REQUIRED: This site uses Elementor with dynamic content loading. Listings are not present in the initial HTML and require JavaScript rendering. \n\nREQUIRES: Playwright, Puppeteer, or Selenium to execute JavaScript before scraping.\n\nThe page appears to use WordPress with Elementor Pro and possibly Royal Elementor Addons (wpr-grid classes). The listings are likely loaded via AJAX/API after page load.\n\nRECOMMENDED APPROACH:\n1. Use Playwright/Puppeteer to load the page\n2. Wait for .wpr-grid-item or .elementor-post elements to appear\n3. Then extract data using the selectors provided\n\nALTERNATIVE: Check if there's a REST API endpoint (e.g., /wp-json/wp/v2/listings or similar) that could be accessed directly.\n\nCoverage: Florida, Georgia, & Tennessee\nContact: (561) 596-6691",
+  "_meta": {
+    "generated_at": "2026-02-27T04:50:48.106108+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

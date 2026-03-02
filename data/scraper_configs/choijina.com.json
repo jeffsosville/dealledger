@@ -1,0 +1,20 @@
+{
+  "broker_name": "Professional Realty Group (Jina Choi)",
+  "source_url": "https://choijina.com/index.php/our-properties/",
+  "container_selector": "li.listing.listing-list",
+  "fields": {
+    "title": "h4 a",
+    "price": ".listing-price",
+    "location": "p",
+    "url": "h4 a",
+    "image": "img",
+    "sqft": ".sqft"
+  },
+  "pagination_next_selector": ".pagination a.next",
+  "confidence": "high",
+  "notes": "Business-for-sale listings in Virginia and Maryland. Successfully scraped 26 listings. Location is captured from p tag. Some listings include sqft data. Images may not load properly in static HTML.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:27:53.909125+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "broker_name": "Dawson Commercial Brokers",
+  "source_url": "https://dawsoncommercialbrokers.com/property/for-sale/business/",
+  "container_selector": "div.post.custom-property-listing",
+  "fields": {
+    "title": ".address a",
+    "price": ".price",
+    "location": ".address a",
+    "status": ".status.pill",
+    "mls_id": ".id",
+    "category": ".primary_category",
+    "subcategory": ".secondary_category",
+    "agent_name": ".agent",
+    "description": ".property-description"
+  },
+  "pagination_next_selector": ".navigation.pagination a.next",
+  "confidence": "high",
+  "notes": "Successfully tested on /property/for-sale/commercial/ page with 8 listings found. The business page currently has no listings. All listings include title, price, location, MLS ID, status, category, and agent name. The scraper captures text content; additional processing would be needed to extract href attributes for URLs and src attributes for images. Pagination selector may need testing when multiple pages exist.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:42:38.693772+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

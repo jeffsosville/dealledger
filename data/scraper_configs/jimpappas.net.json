@@ -1,0 +1,19 @@
+{
+  "broker_name": "Jim Pappas Commercial Real Estate",
+  "source_url": "https://jimpappas.net/listing-type/for-sale/",
+  "container_selector": ".listing.type-listing",
+  "fields": {
+    "price": ".listing-price",
+    "description": ".listing-text",
+    "address": ".listing-address",
+    "city_state_zip": ".listing-city-state-zip",
+    "link_text": "a.more-link"
+  },
+  "pagination_next_selector": ".pagination a.next",
+  "confidence": "medium",
+  "notes": "Successfully extracts price, property description, address, and city/state/zip. The listing title and detail URL need to be extracted from href attributes (a.more-link href or .listing-wrap a href) which requires attribute extraction capability. The site uses lazy loading for images (data-src attribute). Total of 6 listings found on the page. To get full URLs and titles, the scraper needs to extract href attributes from links.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:01:39.341514+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

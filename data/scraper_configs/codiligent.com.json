@@ -1,0 +1,19 @@
+{
+  "broker_name": "Codiligent",
+  "source_url": "https://www.codiligent.com/business-listings",
+  "container_selector": ".wixui-rich-text",
+  "fields": {
+    "title": "h1, h2, h3",
+    "price": "span.price, p",
+    "location": "span.location, p",
+    "description": "p",
+    "url": "a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE (Wix platform): This site requires browser automation (Playwright/Selenium) to scrape properly. The business listings are loaded dynamically via JavaScript and do not appear in the static HTML. The page structure suggests listings may be in a Wix repeater/gallery component that needs JS execution to render. Alternative URL: https://www.codiligent.com/buy-a-business (same issue). Static HTML only contains page headers, navigation, and footer - no actual business listing data. Recommend using headless browser with wait for dynamic content to load.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:52:50.781479+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

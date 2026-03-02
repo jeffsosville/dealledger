@@ -1,0 +1,18 @@
+{
+  "broker_name": "Quorum Business Advisors (Q Business Advisors)",
+  "source_url": "https://qbusinessadvisors.com/new-listings/",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {
+    "title": "REQUIRES_JS_RENDERING",
+    "price": "REQUIRES_JS_RENDERING",
+    "location": "REQUIRES_JS_RENDERING",
+    "description": "REQUIRES_JS_RENDERING"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site requires JavaScript rendering (Playwright/Selenium). The page uses WordPress with X Theme Pro and Cornerstone page builder which loads all content dynamically via JavaScript. The static HTML fetch returns only header/footer with no listing content. The site appears to use an embedded listings platform (possibly ASP.NET based on 'buyers-and-sellers-asp' URL). Alternative URLs to try: https://qbusinessadvisors.com/buyers-and-sellers-asp/ and https://qbusinessadvisors.com/category/business-spotlight/. Jacksonville, FL based business broker serving Florida and southeastern US.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:31:41.229049+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Brio Brokers",
+  "source_url": "https://www.briobrokers.com/listings",
+  "container_selector": "div[id*=\"comp-\"]",
+  "fields": {
+    "title": "h1, h2, h3, h4",
+    "price": "[class*='price']",
+    "location": "[class*='location']",
+    "description": "p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "**JAVASCRIPT-RENDERED SITE (Wix Platform)** - This site uses Wix's CMS and loads all listing content dynamically via JavaScript after the initial page load. The static HTML contains only the Wix framework structure without any actual business listings visible. \n\nTo scrape this site, you will need:\n1. **Playwright or Selenium** - A headless browser that can execute JavaScript and wait for content to load\n2. **Wait strategy** - Wait for dynamic content to appear (e.g., wait for specific selectors or network idle)\n3. **Wix API investigation** - Alternatively, investigate Wix's backend API calls to fetch data directly\n\nThe current selectors are placeholders only. After JavaScript renders, you'll need to inspect the live DOM to identify the actual repeater containers and field selectors used by Wix's dynamic content system.\n\nSite characteristics:\n- Platform: Wix\n- Content loading: Dynamic/Async via JavaScript\n- Simple HTML scraping: NOT POSSIBLE\n- Requires: Browser automation (Playwright/Selenium recommended)",
+  "_meta": {
+    "generated_at": "2026-02-27T03:57:10.345269+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Great Lakes Business Group",
+  "source_url": "https://greatlakesbusinessgroup.com/businesses-sale/",
+  "container_selector": ".rtin-single-item",
+  "fields": {
+    "title": ".rtin-item-content h3 a",
+    "description": ".rtin-item-content p",
+    "url": ".rtin-item-content h3 a",
+    "image": ".rtin-item-image img"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Listing page shows 5 active listings. No price or location information displayed on listing cards - only available on detail pages. The URL field extracts link text instead of href attribute (limitation of current scraper). Images are present but not being extracted properly. Description is truncated with ellipsis. Some listings show 'SOLD' tag in images.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:44:12.525473+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

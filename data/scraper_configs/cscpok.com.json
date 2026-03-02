@@ -1,0 +1,18 @@
+{
+  "broker_name": "Cummins-Setters Commercial Partners (CSCP)",
+  "source_url": "https://cscpok.com/search-properties-copy-copy/",
+  "container_selector": "div.fl-html",
+  "fields": {
+    "title": "to be determined with JS rendering",
+    "price": "to be determined with JS rendering",
+    "location": "to be determined with JS rendering",
+    "description": "to be determined with JS rendering"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "IMPORTANT: This site uses JavaScript to dynamically load listings into empty div.fl-html containers. A basic HTTP scraper cannot access the content. REQUIRES Playwright/Selenium for JavaScript rendering. The listings appear to be embedded from a third-party service (possibly an IDX feed or similar). Main listing pages: 1) For Sale: https://cscpok.com/search-properties-copy-copy/ 2) For Lease: https://cscpok.com/search-properties-copy/ 3) Combined: https://cscpok.com/search-properties/ All three pages show the same pattern of empty fl-module-html/fl-html containers that need JS to populate. Site is built on WordPress with Beaver Builder page builder. Next steps: Use Playwright/Puppeteer to render JavaScript, wait for dynamic content to load, then inspect the actual DOM structure to identify proper selectors for title, price, location, etc.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:51:44.278566+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

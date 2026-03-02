@@ -1,0 +1,18 @@
+{
+  "broker_name": "TD Texas Realty",
+  "source_url": "https://www.tdtexasrealty.com/search/results/?city=all&market_area=all&list_price_min=all&list_price_max=all&beds_min=all&baths_min=all&type=res&type=con&type=lnd&type=mul",
+  "container_selector": "div.row.property.results",
+  "fields": {
+    "title": "a.address",
+    "price": "a.price",
+    "description": "p.property-description",
+    "property_details": "div.property-details.featured-details"
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "high",
+  "notes": "Real estate listings site powered by RealGeeks. Total of 54,920 properties but only 500 can be displayed at once. Property details field contains concatenated beds, baths, MLS, sqft, and status information. Site has pagination and sorting options.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:10:54.902219+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

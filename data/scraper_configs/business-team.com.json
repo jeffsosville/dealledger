@@ -1,0 +1,20 @@
+{
+  "broker_name": "Business Team",
+  "source_url": "https://www.business-team.com/buy-a-business/search-results.aspx?lid=all",
+  "container_selector": "div.listing_wrap",
+  "fields": {
+    "title": "div.listing_title h3 a",
+    "price": "div.listing_price p",
+    "revenue": "div.listing_gross p",
+    "cash_flow": "div.listing_net p",
+    "description": "div.listing_title p",
+    "link": "div.listing_details a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Business Team broker with offices in CA, NV, OR, WA. URL with ?lid=all returns all listings. Description field contains Listing ID, Category, and Location in combined format. Price, revenue, and cash_flow fields include labels that need parsing. 112 listings found on test run.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:20:08.284455+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

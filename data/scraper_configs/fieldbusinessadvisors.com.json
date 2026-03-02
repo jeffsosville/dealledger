@@ -1,0 +1,17 @@
+{
+  "broker_name": "Field Business Advisors",
+  "source_url": "https://fieldbusinessadvisors.com/?s=&post_type=listing&types=&price=&state=",
+  "container_selector": "a.group[href^='/listings/']:has(h3)",
+  "fields": {
+    "title": "h3",
+    "price": "p.text-white",
+    "location": "div.flex.items-center span"
+  },
+  "pagination_next_selector": "a[rel='next']",
+  "confidence": "high",
+  "notes": "Field Business Advisors - Specializes in delivery routes and small businesses across the Northeast. Clean modern site with good structure. Container selector filters out skeleton loaders. Listings include route businesses like Pepperidge Farm, Mission Wraps, Herr's Chips, etc.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:50:43.908617+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

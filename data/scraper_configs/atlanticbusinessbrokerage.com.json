@@ -1,0 +1,20 @@
+{
+  "broker_name": "Atlantic Business Brokerage",
+  "source_url": "https://www.atlanticbusinessbrokerage.com/listings/",
+  "container_selector": "ul.wp-posts-list > li",
+  "fields": {
+    "title": "h2 a",
+    "url": "h2 a",
+    "location": ".listing-unit-text p",
+    "revenue": ".listing-right-text > span:first-of-type",
+    "cashflow": ".listing-right-text > span:last-of-type",
+    "price": ".price-box"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "WordPress-based listings page. Extracts 8 active listings. Location field includes state, Ad ID, and business type in a single paragraph. Revenue and cashflow extracted from span elements. URL field currently extracts text instead of href due to system limitations - may need post-processing to extract href attribute. No pagination detected on current page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:32:47.184809+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

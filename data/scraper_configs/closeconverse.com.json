@@ -1,0 +1,19 @@
+{
+  "broker_name": "Close Converse",
+  "source_url": "https://www.closeconverse.com/property-search/?status=for-sale",
+  "container_selector": "article.property-item",
+  "fields": {
+    "title": "h4 a",
+    "price": ".price",
+    "description": "p",
+    "image": "img",
+    "url_title": "h4 a"
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "high",
+  "notes": "Close Converse is a commercial real estate and business brokerage firm. Successfully extracted 71 listings with title (100%), price (100%), and description. The site uses WordPress RealHomes theme. URL extraction would require additional attribute handling. Site appears to handle both commercial real estate (for sale/lease) and businesses for sale. The url_title field can be used to construct URLs by slugifying the title.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:50:53.077798+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

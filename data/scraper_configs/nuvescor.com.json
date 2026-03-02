@@ -1,0 +1,19 @@
+{
+  "broker_name": "NuVescor",
+  "source_url": "https://nuvescor.com/companies-for-sale/",
+  "container_selector": "article.et_pb_post",
+  "fields": {
+    "title": "h2.entry-title",
+    "description": ".post-content-inner",
+    "status": ".post-content-inner p",
+    "image_url": "a.entry-featured-image-url img",
+    "listing_url": "h2.entry-title a"
+  },
+  "pagination_next_selector": ".pagination a",
+  "confidence": "high",
+  "notes": "NuVescor is an M&A advisory firm specializing in manufacturing and industrial companies. Listings include active opportunities, deals under LOI, and completed transactions (for reference). Status is clearly indicated in the description field. The site uses WordPress/Divi builder with blog post format. Note: listing_url field returns text instead of href - may need post-processing or JS rendering for full URL extraction. Listings are categorized (active, buy-side, completed, etc.) via CSS classes on article elements.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:43:44.580733+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

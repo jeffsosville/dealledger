@@ -1,0 +1,19 @@
+{
+  "broker_name": "Schools For Sale Inc.",
+  "source_url": "https://schoolsforsale.com/schools-on-the-market/",
+  "container_selector": "div.property_div.property",
+  "fields": {
+    "title": "li.property_title a",
+    "price": "li.property_price",
+    "location": "ul.wpp_overview_data li:not(.property_title):not(.property_price):not(.more_info)",
+    "detail_link": "li.property_title a",
+    "image_url": "div.property_image img"
+  },
+  "pagination_next_selector": "div.wpp_pagination_forward",
+  "confidence": "high",
+  "notes": "WordPress Property plugin-based site. Extracts 10 schools per page (21 total across 3 pages). Note: detail_link extracts link text instead of href attribute - may need post-processing or Playwright for full URLs. Pagination uses AJAX slider (div.wpp_pagination_forward). Location field captures city/state when available (some listings lack location data). Price format includes exclamation mark.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:51:24.273821+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

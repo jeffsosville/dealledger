@@ -1,0 +1,19 @@
+{
+  "broker_name": "Endeavor Business Brokers",
+  "source_url": "https://www.endeavorbusinessbrokers.com/buyers/businesses-for-sale/",
+  "container_selector": "div.gv-list-view",
+  "fields": {
+    "title": "h3.gv-field-2-1",
+    "location": "h4.gv-field-2-3",
+    "description": "div.gv-field-2-4",
+    "price": "div.gv-field-2-5",
+    "link": "div.gv-field-2-6 a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "GravityView-based listings page. All 13 listings successfully extracted. Links point to BizBuySell detail pages. No pagination observed (showing all 13 listings on single page). Note: Several listings marked as *SALE PENDING*.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:09:55.583962+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "BusinessesForSale.com",
+  "source_url": "https://www.businessesforsale.com/search/businesses-for-sale.rss",
+  "container_selector": "item",
+  "fields": {
+    "title": "title",
+    "description": "description",
+    "url": "guid",
+    "published_date": "pubdate",
+    "image": "enclosure[url]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "BusinessesForSale.com is a major international business listing marketplace operated by Dynamis Ltd. The main search page is JavaScript-rendered, so scraping requires using the RSS feed instead. The RSS feed provides the 25 most recent listings with title, description, URL, publication date, and thumbnail image. Location/country can be inferred from the URL subdomain (e.g., australia.businessesforsale.com, us.businessesforsale.com). Price information is sometimes included in the description text but not as a separate field. The RSS feed is the most reliable data source for this site. For comprehensive scraping, would need to use Playwright/Selenium to render JavaScript on the main search pages or potentially explore their API if available.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:37:41.374224+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

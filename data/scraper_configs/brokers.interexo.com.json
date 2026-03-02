@@ -1,0 +1,16 @@
+{
+  "broker_name": "Interexo Broker Directory",
+  "source_url": "https://brokers.interexo.com/search?",
+  "container_selector": ".row.pt-2",
+  "fields": {
+    "broker_name": ".col.pe-1 .grid-cell a",
+    "company_name": ".col.ps-1 .grid-cell span a"
+  },
+  "pagination_next_selector": ".pagination .page-link[rel='next']",
+  "confidence": "high",
+  "notes": "Interexo broker directory with 397 pages. Each page contains 30 broker records. Brokers are listed with their name and company affiliation. The broker_url is in format: /{country_state}/company/{company-slug}/{broker-name-slug} and company_url is in format: /{country_state}/company/{company-slug}. URLs can be constructed from the href attributes if needed. This is a broker directory, not a business listings site - each record represents a business broker/agent rather than a business for sale.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:26:37.938782+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

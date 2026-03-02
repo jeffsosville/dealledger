@@ -1,0 +1,13 @@
+{
+  "broker_name": "Kidder Mathews",
+  "source_url": "https://kidder.com/properties/index.html?listType=For%20Sale",
+  "container_selector": "N/A - JavaScript Rendered",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a JavaScript-rendered page that loads property listings dynamically via API. The static HTML contains no listing data. To scrape this site, you need:\n\n1. Use Playwright/Selenium for JavaScript rendering\n2. Wait for listings to load (look for elements with class patterns like 'card-property__listing' or similar)\n3. The page uses a split-view interface with map and sidebar for results\n4. Listings are filtered by listType parameter (For Sale / For Lease)\n5. Property types include: Office, Industrial, Multifamily, Retail, Investments, Land, Self-Storage, Food &amp; Cold-Storage\n\nAPI Investigation Needed:\n- Check browser DevTools Network tab for API endpoints\n- Likely uses REST API at /api/ or /wp-json/ endpoints\n- May return JSON data that can be scraped directly\n\nAlternative approaches:\n- Monitor XHR/Fetch requests when page loads\n- Look for endpoints like: /api/properties, /wp-json/km/v1/properties, etc.\n- May need authentication or API keys\n\nProperty search main page: https://kidder.com/property-search/\nResults page pattern: https://kidder.com/properties/?listType=For%20Sale&amp;propertyType={type}",
+  "_meta": {
+    "generated_at": "2026-02-27T19:35:23.528833+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

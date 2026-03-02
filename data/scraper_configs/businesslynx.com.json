@@ -1,0 +1,13 @@
+{
+  "broker_name": "Business Lynx",
+  "source_url": "https://www.businesslynx.com/business-sales",
+  "container_selector": "NOT_APPLICABLE_JS_RENDERED",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a Wix-based website that requires JavaScript rendering to display business listings. The static HTML does not contain any listing data - all content is loaded dynamically via Wix's proprietary APIs after page load. To scrape this site, you will need: 1) A headless browser (Playwright, Puppeteer, or Selenium) to render JavaScript, 2) Wait for dynamic content to load (look for gallery items, repeater items, or product cards to appear), 3) Potential selectors to try after JS rendering: .wixui-repeater-item, [data-hook='item-container'], [class*='gallery'], [class*='ProGalleryItem']. The page references Wix APIs with metaSiteId: 6847be66-0cff-47c8-b299-ed105e2bd068 and pageId: 8fd568_0070990d8fa4abfc904ee09e1b7197e0_351.json. Consider investigating Wix's public APIs or using browser automation to access the content.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:58:39.669383+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

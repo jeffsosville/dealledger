@@ -1,0 +1,22 @@
+{
+  "broker_name": "Preschool Business Solutions",
+  "source_url": "https://preschoolbusinesssolutions.dealrelations.com/listings",
+  "container_selector": "ul.listings li",
+  "fields": {
+    "title": ".listings-title a",
+    "status": ".right-top-row",
+    "location": ".inside-top-row > div:last-child",
+    "description": ".listings-text",
+    "asking_price": ".listings-financials1 .listing-financials-value",
+    "revenue": ".listings-financials2 .listing-financials-value",
+    "cash_flow": ".listings-financials3 .listing-financials-value",
+    "reference": ".bottom-left-cell"
+  },
+  "pagination_next_selector": ".pagination a.next_page",
+  "confidence": "high",
+  "notes": "DealRelations CRM-powered site specializing in preschool and early childhood education center sales. Has pagination (3 pages visible). Status includes: Active, Under LOI, Under Contract, Sold. Listings include both business-only and business+real estate sales. Reference numbers follow format like PILM1124, JPalmB, etc.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:50:02.404323+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

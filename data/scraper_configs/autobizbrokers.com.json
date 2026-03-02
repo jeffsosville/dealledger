@@ -1,0 +1,20 @@
+{
+  "broker_name": "Auto Biz Brokers",
+  "source_url": "https://autobizbrokers.com/listings/",
+  "container_selector": ".item-listing-wrap",
+  "fields": {
+    "title": "h2.item-title a, .item-title a",
+    "price": ".item-price",
+    "location": ".item-address",
+    "description": ".item-short-detail",
+    "url": "h2.item-title a, .item-title a",
+    "business_type": ".item-amenities li"
+  },
+  "pagination_next_selector": ".pagination a.next, .page-numbers .next",
+  "confidence": "medium",
+  "notes": "Auto Biz Brokers - specializes in automotive business sales. Uses Houzez WordPress theme. Successfully extracting 6 listings with titles, prices, and business types. Location field appears empty (likely embedded in title). URL extraction returns text instead of href attribute - may need href attribute specification at runtime. Page shows 6 current listings of automotive businesses including collision centers, auto repair shops, and painting businesses.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:13:43.178261+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

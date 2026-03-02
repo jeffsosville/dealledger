@@ -1,0 +1,18 @@
+{
+  "broker_name": "Signature Associates",
+  "source_url": "https://www.signatureassociates.com/search-properties/",
+  "container_selector": "#associate-connect",
+  "fields": {
+    "title": "[data-property-title]",
+    "price": "[data-property-price]",
+    "location": "[data-property-location]",
+    "property_type": "[data-property-type]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium/Puppeteer. The page uses a third-party embedded application (data-embed='5ed177bd-signature-associates-cpix-and-carwm') that loads property listings dynamically via JavaScript. The static HTML contains only an empty div (#associate-connect). This appears to be a commercial real estate (CRE) brokerage primarily focused on office, retail, industrial properties rather than businesses-for-sale. To scrape this site, you need: 1) Browser automation (Playwright/Selenium), 2) Wait for the embedded app to load, 3) Extract listings from the rendered DOM or intercept API calls. The embed ID suggests they use CPIX or CARWM platform. Alternative approach: Look for API endpoints that the JavaScript application calls to fetch property data.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:29:40.972343+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

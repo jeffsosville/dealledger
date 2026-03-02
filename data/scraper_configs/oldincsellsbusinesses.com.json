@@ -1,0 +1,19 @@
+{
+  "broker_name": "OLD Inc Business Brokers",
+  "source_url": "https://oldincsellsbusinesses.com/current-business-for-sale/",
+  "container_selector": ".fl-module-html .listing-item, .business-listing, .property-item, [class*='listing']",
+  "fields": {
+    "title": "h3, h2, .listing-title, .business-title, .title",
+    "price": ".price, .asking-price, .amount, [class*='price']",
+    "location": ".location, .city, .address, [class*='location']",
+    "description": ".description, .summary, p",
+    "link": "a[href*='business'], a.listing-link"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium): The listings page has an empty HTML module (fl-module-html fl-node-66bb569637572) where listings should be dynamically loaded. The static HTML contains no listing data. The page text indicates they have 'main street' businesses for sale but many are advertised privately. Selectors are generic patterns that should work once JS loads content. Alternative URL /buy-a-business redirects to same page. May also use third-party listing service or embed. Broker services AL, GA, and TX. Contact: 256-344-1746 or info@oldincsellsbusinesses.com",
+  "_meta": {
+    "generated_at": "2026-02-27T03:59:36.056405+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

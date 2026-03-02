@@ -1,0 +1,15 @@
+{
+  "broker_name": "Front Range Business",
+  "source_url": "https://frontrangebusiness.com/businesses-for-sale/",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {
+    "note": "Listings loaded via JavaScript - Playwright/Selenium required"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is an Elementor WordPress site that loads business listings dynamically via JavaScript. The static HTML only contains blog posts about buying/selling businesses, not the actual business-for-sale listings. JavaScript rendering (Playwright/Selenium) is required to scrape the actual listings. The site is located in Colorado and serves Boulder, Denver, Fort Collins, Breckenridge, Parker, and Evergreen areas.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:43:57.206885+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Urban Group SF",
+  "source_url": "https://urbangroupsf.com/buy/",
+  "container_selector": "a.prop.match-h",
+  "fields": {
+    "title": ".pp.prop-name",
+    "description": ".pp.prop-text",
+    "price": ".pp.prop-price",
+    "size": ".pp.prop-size"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial real estate broker in San Francisco. The container selector is an anchor tag, so the listing URL can be extracted from the href attribute of the container. Description field includes property type and location separated by line breaks. Size field includes square footage.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:57:35.068451+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

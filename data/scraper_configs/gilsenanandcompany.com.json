@@ -1,0 +1,20 @@
+{
+  "broker_name": "Gilsenan and Company Realtors",
+  "source_url": "http://www.gilsenanandcompany.com/idx.cfm?action=dsp.results&city=&county=&state=&maxprice=400000&minprice=150000&beds=3&baths=0&propType=&waterfront=&shortsale=&foreclosure=&onlyTours=false&recent=false&sortBy=listdate&office=false&new=false&mlsnum=&agent=false&listingSystem=.&location=&zipcode=&latitude=&longitude=&searchType=default&radius=&adult=&status=A",
+  "container_selector": "div.listing-js div.row-fluid",
+  "fields": {
+    "title": "div.col-md-8 a.prop-title",
+    "mls_number": "a.IDXResultsMlsnum",
+    "property_details": "p.size",
+    "description": "div.col-md-8 p:nth-of-type(2)",
+    "listing_url": "a.prop-title",
+    "image": "div.col-md-4 img.results-page-img"
+  },
+  "pagination_next_selector": "a.next-page",
+  "confidence": "high",
+  "notes": "Real estate listings (not business-for-sale). Successfully extracts 20 listings per page from 52 total. Title includes price and full address. Property details include MLS#, bedrooms, bathrooms. Images may require JavaScript rendering. Pagination available but selector needs verification.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:24:19.566784+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

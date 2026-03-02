@@ -1,0 +1,24 @@
+{
+  "broker_name": "Sky Line Commercial Real Estate",
+  "source_url": "https://skycre.com/sky003/listing/",
+  "container_selector": "figure.wp-block-table",
+  "fields": {
+    "listing_number": "tr:has(td:contains('Listing#')) td:nth-child(2)",
+    "title": "tr:has(td:contains('Name:')) td:nth-child(2)",
+    "restaurant_type": "tr:has(td:contains('Restaurant type:')) td:nth-child(2)",
+    "price": "tr:has(td:contains('Price:')) td:nth-child(2)",
+    "city": "tr:has(td:contains('City:')) td:nth-child(2)",
+    "state": "tr:has(td:contains('State:')) td:nth-child(2)",
+    "status": "tr:has(td:contains('Status')) td:nth-child(2)",
+    "description": "tr:has(td:contains('Description')) td:nth-child(2)",
+    "established": "tr:has(td:contains('Established:')) td:nth-child(2)",
+    "lease": "tr:has(td:contains('Lease:')) td:nth-child(2)"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Sky Line Commercial Real Estate specializes in restaurant sales and leases, primarily in California. Listings are displayed as tables with structured data. Each listing includes listing number, restaurant type, name, location, price, status, and detailed description. The page uses a simple WordPress template with listings laid out as figure blocks containing tables.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:36:12.998977+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

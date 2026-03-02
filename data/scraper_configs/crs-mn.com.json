@@ -1,0 +1,13 @@
+{
+  "broker_name": "Commercial Realty Solutions (CRS)",
+  "source_url": "https://crs-mn.com/businesses/",
+  "container_selector": ".wdc-loader-wrapper",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING - This site uses BrilliantMaps (a FileMaker-based mapping solution by LuminFire) to dynamically load business listings. The page shows a loading wrapper div ('wdc-loader-wrapper') but no static HTML listings are present. \n\nTo scrape this site, you need:\n1. JavaScript rendering tool (Playwright/Selenium/Puppeteer)\n2. Wait for dynamic content to load after page load\n3. Look for dynamically inserted listing elements (likely inserted by JS after API call)\n\nThe site focuses on businesses for sale in Central Minnesota. Static HTML scraping will return 0 listings - all content is client-side rendered through their custom BrilliantMaps platform.\n\nAlternative approach: Inspect network traffic when the page loads to find the API endpoint that serves the listing data (likely a FileMaker Data API or custom JSON endpoint).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:35:35.737167+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Business Sales Group",
+  "source_url": "https://www.bsalesgroup.com/mergers-and-acquisitions-businesses-for-sale",
+  "container_selector": "div.business_box div.inner_box",
+  "fields": {
+    "title": "section h2",
+    "financial_details": "table.whosale-table",
+    "image": "figure img",
+    "detail_link": "section a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Scraper successfully extracts 4 active listings. The financial_details field contains all revenue, EBITDA, and asking price information from the table. Images and detail links are present in the HTML but require attribute extraction for full URLs. The page also contains a separate table for competitive bid processes at the top and under LOI listings at the bottom which are not included in the main container.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:01:03.920937+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

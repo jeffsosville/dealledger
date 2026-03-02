@@ -1,0 +1,18 @@
+{
+  "broker_name": "Select Business Group",
+  "source_url": "https://selectbg.com/listings/",
+  "container_selector": "div.wpbdp-listing",
+  "fields": {
+    "title": ".listing-title h3",
+    "description": ".wpbdp-field-short_description .value",
+    "category": ".wpbdp-field-category .value",
+    "location": ".address-info div"
+  },
+  "pagination_next_selector": ".wpbdp-pagination .next",
+  "confidence": "high",
+  "notes": "WordPress Business Directory Plugin (WPBDP) based site. Successfully extracts 7 listings. All visible listings are marked as SOLD. Location field is optional and not always present. Revenue and cash flow information is embedded in the description field. Note: The listing URL would need to be extracted from .listing-title h3 a href attribute for full listing details, but current scraper extracts text only.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:50:45.236073+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

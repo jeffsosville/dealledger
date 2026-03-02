@@ -1,0 +1,20 @@
+{
+  "broker_name": "BizEx Business Brokers",
+  "source_url": "https://www.bizex.net/business-for-sale",
+  "container_selector": ".listing.clearfix",
+  "fields": {
+    "title": "p b a",
+    "financials": ".financials",
+    "location": "p.location",
+    "description": "p.description",
+    "listing_url": "p b a[href]",
+    "status": ".status"
+  },
+  "pagination_next_selector": "a.next, .pagination a[rel='next']",
+  "confidence": "high",
+  "notes": "BizEx Los Angeles broker. The 'financials' field contains all financial data (Asking Price, Gross Sales, Cash Flow) that needs post-processing to extract individual values. Status field captures 'Under Contract' or 'In Escrow' when present. The listing_url selector captures link text instead of href - needs attribute extraction with @href in post-processing. Page shows 19 total businesses but fetch captured 10 in HTML - may need pagination or scroll handling. Consider parsing the full listing URL by prepending 'https://www.bizex.net' to href values from the title link.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:49:22.338291+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "broker_name": "Bateson Business Brokerage",
+  "source_url": "https://batesonbrokerage.com/orlando-featured-businesses-for-sale.asp",
+  "container_selector": ".col-lg-6.mb-3",
+  "fields": {
+    "title": "h2.h5",
+    "price": ".list-group-item:has(.text-primary:contains('Asking Price')) .data",
+    "location": ".list-group-item:has(.text-primary:contains('Location')) .data",
+    "cash_flow": ".list-group-item:has(.text-primary:contains('Cash Flow')) .data",
+    "gross_revenue": ".list-group-item:has(.text-primary:contains('Gross Revenue')) .data",
+    "ebitda": ".list-group-item:has(.text-primary:contains('EBITA')) .data",
+    "ffe": ".list-group-item:has(.text-primary:contains('FF&E')) .data",
+    "inventory": ".list-group-item:has(.text-primary:contains('Inventory')) .data",
+    "real_estate": ".list-group-item:has(.text-primary:contains('Real Estate')) .data",
+    "established": ".list-group-item:has(.text-primary:contains('Established')) .data",
+    "description": "p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Featured businesses page works with static HTML scraping. Other pages (florida-business-for-sale.asp, orlando-central-fl-businesses-for-sale.asp) have JavaScript-rendered content with empty card bodies and require Playwright/Selenium for dynamic scraping. These pages likely load listings via AJAX calls. The featured page shows 4 listings with detailed financial information including asking price, cash flow, gross revenue, EBITDA, FF&E, inventory, real estate value, and establishment year.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:04:11.841067+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

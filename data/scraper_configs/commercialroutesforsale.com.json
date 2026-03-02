@@ -1,0 +1,22 @@
+{
+  "broker_name": "Commercial Routes For Sale",
+  "source_url": "https://www.commercialroutesforsale.com/RouteList.aspx",
+  "container_selector": "tr.even, tr.odd",
+  "fields": {
+    "title": "td[data-title='Route Type']",
+    "price": "td[data-title='Total Price']",
+    "city": "td[data-title='City']",
+    "state": "td[data-title='State']",
+    "route_number": "td[data-title='Route Number']",
+    "weekly_net": "td[data-title='Weekly Net']",
+    "down_payment": "td[data-title='Down Payment']",
+    "description": "td[data-title='Description']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Independent broker specializing in distribution routes (Wise Snacks, Flowers Bread, Bimbo Bread, etc.). Server-rendered ASP.NET site with table-based listings. Each listing includes route number, type, pricing (total and down payment), weekly net income, location, and detailed descriptions. No pagination detected on main page - all 59 listings appear on single page. Listings can be clicked to view detail pages (RouteListDetail.aspx?RouteID=X).",
+  "_meta": {
+    "generated_at": "2026-02-27T18:27:13.824104+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

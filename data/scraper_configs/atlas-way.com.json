@@ -1,0 +1,17 @@
+{
+  "broker_name": "Atlas-Way Network",
+  "source_url": "https://atlas-way.com/listing-of-opportunites.html",
+  "container_selector": "div.paragraph",
+  "fields": {
+    "title": "font[color='#24678d']",
+    "asking_price": "font[color='#5040ae']",
+    "contact_email": "a[href^='mailto']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Simple static HTML page. All listings in div.paragraph elements. Title in colored font tags, price in purple font tags. Some listings have complete data, others are partial. Total 18 listing blocks found. No pagination detected.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:15:28.334076+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "broker_name": "Texas Business Source",
+  "source_url": "http://www.bbn-net.com/htbin/search.cgi?DB=business&CONTACT=lleney&ALL=&T=business2&SHOW=100",
+  "container_selector": "center > table",
+  "fields": {
+    "listing_id": "tr:first-child td font",
+    "price": "tr:has(td:contains('Asking Price:')) td:nth-child(4) b",
+    "revenue": "tr:has(td:contains('Annual Sales Volume')) td:nth-child(4) b",
+    "cash_flow": "tr:has(td:contains('Cash Flow')) td:nth-child(4) b",
+    "description": "blockquote",
+    "category": "tr:nth-child(2) td center",
+    "inventory": "tr:has(td:contains('Inventory')) td:nth-child(2) b",
+    "ffe": "tr:has(td:contains('Furniture, Fixtures')) td:nth-child(2) b",
+    "down_payment": "tr:has(td:contains('Down Payment:')) td:nth-child(4) b"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Texas Business Source uses a BBN-NET CGI search system. The search form at texasbusinesssource.com/searchsellers.html submits to bbn-net.com. All 51 listings are returned on a single page when submitting an empty search with SHOW=100. Listings contain detailed financial data including asking price, revenue, cash flow, inventory, FFE, and down payment. Location and business type are combined in the category field and would need post-processing to separate. Listing descriptions are truncated in the table view.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:57:45.263553+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

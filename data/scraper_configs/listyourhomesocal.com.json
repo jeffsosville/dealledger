@@ -1,0 +1,20 @@
+{
+  "broker_name": "List Your Home SoCal / Caroline Harabedian",
+  "source_url": "https://listyourhomesocal.com/business-for-sale",
+  "container_selector": "[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "[data-ux='ContentCardHeading']",
+    "full_text": "[data-ux='ContentCardText']",
+    "location": "[data-ux='ContentCardText']",
+    "price": "[data-ux='ContentCardText']",
+    "image_url": "img",
+    "link": "a[data-ux='ContentCardButton']"
+  },
+  "pagination_next_selector": "null",
+  "confidence": "high",
+  "notes": "GoDaddy website builder site with obfuscated CSS classes. Uses ContentCard data-ux attributes for listings. Full text contains combined information (status + business type + location + price) that would need parsing. Found 6 active business listings including shoe repair, liquor stores, mechanic shop, and auto parts store. Price range: $150,000-$600,000. Locations in Southern California (Westwood, Reseda, Huntington Beach, Canoga Park, Los Angeles).",
+  "_meta": {
+    "generated_at": "2026-02-27T05:01:59.153086+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

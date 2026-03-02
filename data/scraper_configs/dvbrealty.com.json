@@ -1,0 +1,13 @@
+{
+  "broker_name": "DVB Commercial Realty",
+  "source_url": "https://www.dvbrealty.com/commercial-sale/",
+  "container_selector": "N/A - JavaScript rendered via CREXI widget",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This page uses a CREXI-powered widget that loads listings via JavaScript. The static HTML only contains 'Powered by CREXI' text with no actual listing data. To scrape this site, you would need: 1) Browser automation (Playwright/Selenium) to execute JavaScript and wait for CREXI widget to load, 2) Inspect network requests to find CREXI API endpoints and scrape directly from their API, or 3) Check if DVB Realty has an alternative listings page format. The page structure suggests listings would appear in the .entry-content area after JS execution. CREXI is a commercial real estate listing platform (crexi.com) that provides embeddable widgets.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:16:10.744929+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

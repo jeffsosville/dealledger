@@ -1,0 +1,18 @@
+{
+  "broker_name": "United Brokers Group",
+  "source_url": "https://unitedbrokersgrp.com/our-listings",
+  "container_selector": ".summary-item",
+  "fields": {
+    "title": ".summary-title",
+    "date": ".summary-metadata-item",
+    "excerpt": ".summary-excerpt",
+    "categories": ".summary-metadata-item--cats"
+  },
+  "pagination_next_selector": ".item-pagination-link--next",
+  "confidence": "medium",
+  "notes": "Squarespace blog/summary page. Captures 15 listings. Price information is embedded in title text (e.g., '$2,150,000'). Excerpt and categories fields may be empty in static HTML. Status indicators (SOLD, ON HOLD, OFF MARKET) also embedded in titles. Date field captures posting date.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:53:35.680438+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

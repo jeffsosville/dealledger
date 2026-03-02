@@ -1,0 +1,18 @@
+{
+  "broker_name": "ProStar Realty",
+  "source_url": "https://www.prostarrealty.com/search/results/?county=Maricopa&city=Phoenix&list_price_min=400000&list_price_max=all&beds_min=all&baths_min=all&type=res&type=con&type=lnd&type=com",
+  "container_selector": "div.row.property.results",
+  "fields": {
+    "title": "a.address",
+    "price": "a.price",
+    "description": "p.property-description",
+    "mls_id": "li.detail span.number"
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "high",
+  "notes": "Real estate listings site (NOT business-for-sale). Successfully scraped 30 listings per page with 100% quality. Site shows 2,707 total properties. This is a RealGeeks-powered site for residential/commercial real estate in Phoenix area. Note: This may not be suitable for DealLedger as it's not a business brokerage site.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:28:50.602708+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

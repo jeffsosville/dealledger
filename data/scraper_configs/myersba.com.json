@@ -1,0 +1,19 @@
+{
+  "broker_name": "Jim Myers Business Advisor",
+  "source_url": "https://myersba.com/my-listings/",
+  "container_selector": ".gb-grid-column:has(h2.gb-headline)",
+  "fields": {
+    "title": "h2.gb-headline",
+    "location": ".gb-container > p:first-of-type",
+    "financial_summary": "p:contains('Asking Price'), p:contains('Revenue')",
+    "business_description": "p:nth-of-type(2)",
+    "image": ".gb-image"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Independent business advisor. Listings include asking price, revenue, cash flow (EBITDA), and real estate details all in financial_summary field. Location typically shown as state (Ohio, Mid-Atlantic, etc.). Some listings marked as 'Under Contract'. No pagination detected - single page with all listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:07:22.671468+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

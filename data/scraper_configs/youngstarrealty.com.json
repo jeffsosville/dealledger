@@ -1,0 +1,19 @@
+{
+  "broker_name": "Young Star Realty",
+  "source_url": "https://www.youngstarrealty.com/idx/listings/businesses/",
+  "container_selector": "li.dsidx-listing-container",
+  "fields": {
+    "title": ".dsidx-address a",
+    "price": ".dsidx-price",
+    "location": ".dsidx-address span",
+    "mls_number": ".dsidx-secondary-data-mls-number span:first-child",
+    "broker": ".dsidx-secondary-data-attribution"
+  },
+  "pagination_next_selector": "a:contains('Next >')",
+  "confidence": "high",
+  "notes": "dsIDX platform. Currently shows 6 total business listings. Site indicates 'Properties 1 - 6 of 6' so no pagination needed. Listings include rentals and sales with prices ranging from $725 to $1.2M. MLS data from New Jersey MLS.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:54:20.588915+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

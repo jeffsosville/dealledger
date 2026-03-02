@@ -1,0 +1,21 @@
+{
+  "broker_name": "Venture Advisors",
+  "source_url": "https://ventureadvisors.net/businesses-for-sale",
+  "container_selector": "#wpv-view-layout-827775 > div > article, #wpv-view-layout-827775 > article, .wpv-loop > .wpv-loop-item",
+  "fields": {
+    "title": "h2 a, h3 a, .entry-title a, .listing-title",
+    "price": ".wpcf-price, .price, [class*='price']",
+    "location": ".wpcf-location, .location, [class*='location']",
+    "cash_flow": ".wpcf-cash-flow, [class*='cash-flow']",
+    "down_payment": ".wpcf-down-payment, [class*='down-payment']",
+    "industry": ".wpcf-industry, .industry, [class*='industry']",
+    "link": "h2 a, h3 a, .entry-title a, a.listing-link"
+  },
+  "pagination_next_selector": ".wpv-pagination a.next, .wpv-filter-next-link",
+  "confidence": "low",
+  "notes": "WordPress Views-based site. Currently showing \"We do not have listing for the requested criteria\" - no active listings visible. Site uses WPV custom fields (wpcf-price, wpcf-location, wpcf-cash-flow, wpcf-down-payment, wpcf-industry) for listing data. Listings are likely loaded dynamically via AJAX when available. The configuration is based on WordPress Views typical structure and the custom field names found in the search form. May require JavaScript rendering (Playwright/Selenium) to capture dynamically loaded content. Needs verification when listings become available.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:54:19.857999+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "Premier Sales AZ",
+  "source_url": "https://www.premiersalesaz.com/businesses_for_sale.php",
+  "container_selector": ".business-listing, .listing-item, [class*='listing'], [class*='business']",
+  "fields": {
+    "title": "h2, h3, .title, .business-name",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .address, [class*='location']",
+    "description": ".description, .summary, p",
+    "listing_id": ".listing-id, .reference"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JavaScript-rendered page - listings not present in static HTML. Requires Playwright/Selenium to render JavaScript before scraping. The page loads as businesses_for_sale.php but actual listings are populated dynamically via JavaScript/AJAX. Selectors are estimated based on common patterns and will need validation once JS rendering is implemented. The page showed only navigation structure and header content without any business listing containers in the static HTML response.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:28:15.578323+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

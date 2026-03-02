@@ -1,0 +1,18 @@
+{
+  "broker_name": "Madison Commercial Properties",
+  "source_url": "https://www.madisoncommercial.com/our-listings/",
+  "container_selector": "#buildout > div",
+  "fields": {
+    "title": "h2, .title, .property-title",
+    "price": ".price, .asking-price",
+    "location": ".location, .address",
+    "description": ".description, p"
+  },
+  "pagination_next_selector": "button.next, a.next, .pagination a[rel='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site loads listings dynamically into #buildout container via JavaScript/API. Static HTML scraping returns 0 listings. REQUIRES: Playwright/Selenium with JavaScript execution enabled. The page uses a custom buildout system that populates listings after page load. Selectors are estimated based on common patterns but cannot be validated without JS rendering. Alternative approach: Inspect network requests to find the API endpoint that serves listing data.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:10:07.323749+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

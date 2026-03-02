@@ -1,0 +1,19 @@
+{
+  "broker_name": "Restaurant For Sales (Grand Realty Group)",
+  "source_url": "https://restaurantforsales.com/buy-a-restaurant.html",
+  "container_selector": "div.inline-container[style*=\"border:1px solid black;\"]",
+  "fields": {
+    "title": ".listing-title",
+    "price": ".listing-price",
+    "location": ".listing-location",
+    "listing_id": ".listing-num",
+    "specs": ".listing-specs"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "143 restaurant listings found with 100% data quality. URL is available in '.listing-col1 a' href attribute but attribute extraction not supported in current field config. Image available in '.listing-col1 img' src attribute. Specs field contains lease info, monthly rent, and square feet in combined text format. Site shows 'Your search resulted in 143 matches!' Page may have pagination but not visible in current view.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:17:04.951514+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

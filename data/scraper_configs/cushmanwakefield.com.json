@@ -1,0 +1,13 @@
+{
+  "broker_name": "Cushman & Wakefield",
+  "source_url": "https://www.cushmanwakefield.com/en/united-states/properties/invest/invest-property-search",
+  "container_selector": "N/A - JavaScript Rendered",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "IMPORTANT: This site uses Coveo search platform with heavy JavaScript rendering. No property data exists in static HTML. \n\nSCRAPING APPROACH REQUIRED:\n1. **Playwright/Selenium**: Use headless browser to render JavaScript and wait for property cards to load\n2. **API Interception**: Monitor network traffic to find Coveo REST API endpoint (/coveo/rest) and replicate API calls\n3. **Potential API endpoint**: https://www.cushmanwakefield.com/coveo/rest/v2/search (needs authentication/session tokens)\n\nCOVEO CONFIGURATION DISCOVERED:\n- Index: Coveo_cw-prod-amrgws-cd-web_index - PRODUCTION\n- REST Endpoint: /coveo/rest\n- Page context: Invest Property Search\n\nALTERNATIVE URLS:\n- Global: https://www.cushmanwakefield.com/en/properties/properties-for-sale\n- US Specific: https://www.cushmanwakefield.com/en/united-states/properties/invest/invest-property-search\n- For Lease: https://www.cushmanwakefield.com/en/united-states/properties/lease/lease-property-search\n\nThis is a large commercial real estate broker (not a business broker). They list commercial properties (office, retail, industrial, investment properties) not operating businesses.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:25:53.759980+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

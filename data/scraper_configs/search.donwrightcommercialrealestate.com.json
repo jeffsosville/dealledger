@@ -1,0 +1,24 @@
+{
+  "broker_name": "Don Wright Commercial Real Estate",
+  "source_url": "https://search.donwrightcommercialrealestate.com/i/search-commercial-listings",
+  "container_selector": ".IDX-resultsRow, .IDX-listingsWrapper .IDX-result",
+  "fields": {
+    "title": ".IDX-resultsAddress, .IDX-address",
+    "price": ".IDX-resultsPrice, .IDX-price",
+    "location": ".IDX-resultsDetails, .IDX-city-state-zip",
+    "details": ".IDX-resultsDetails, .IDX-details",
+    "link": "a.IDX-resultsLink::attr(href), a::attr(href)",
+    "image": "img.IDX-resultsPhoto::attr(src), img::attr(src)",
+    "property_type": ".IDX-propType",
+    "sqft": ".IDX-sqFt",
+    "beds": ".IDX-beds",
+    "baths": ".IDX-baths"
+  },
+  "pagination_next_selector": ".IDX-pagination a.IDX-next, a[rel='next']",
+  "confidence": "low",
+  "notes": "This is an IDX Broker powered site that requires JavaScript rendering (Playwright/Selenium) to scrape. The listing data is loaded dynamically via AJAX and is not present in the initial HTML response. The selectors provided are based on common IDX Broker patterns and may need adjustment once JavaScript rendering is enabled. Alternative URLs: https://donwrightcommercialrealestate.idxbroker.com/i/search-commercial-listings",
+  "_meta": {
+    "generated_at": "2026-02-27T21:04:38.309445+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

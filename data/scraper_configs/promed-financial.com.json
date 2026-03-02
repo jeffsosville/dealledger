@@ -1,0 +1,13 @@
+{
+  "broker_name": "ProMed Financial",
+  "source_url": "https://www.promed-financial.com/search-our-listings/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered page using Elementor + likely bbcrm widget. Listings are not present in static HTML. Requires Playwright/Selenium to render JavaScript and wait for dynamic content to load. May use iframe or AJAX to load listings from external CRM system. Alternative approach: investigate if bbcrm provides an API endpoint or if there's a direct feed URL that can be scraped instead.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:06:36.111542+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

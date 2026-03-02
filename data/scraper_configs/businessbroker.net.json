@@ -1,0 +1,34 @@
+{
+  "broker_name": "BusinessBroker.net",
+  "source_url": "https://www.businessbroker.net/listings/bfs_result.aspx",
+  "container_selector": ".listing-card, .business-listing, [class*=\"listing\"]",
+  "fields": {
+    "title": {
+      "selector": ".listing-title, h2 a, h3 a",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".price, .asking-price, [class*='price']",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".location, .city, [class*='location']",
+      "attribute": "text"
+    },
+    "description": {
+      "selector": ".description, .summary, p",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": "a",
+      "attribute": "href"
+    }
+  },
+  "pagination_next_selector": ".pagination a, .next-page, [class*='pagination']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium. The site shows 15,876+ total listings but they are loaded dynamically via AJAX/JavaScript after initial page load. The initial HTML contains the header showing listing count but no actual listing cards in the DOM. This is an ASP.NET site (.aspx) that uses client-side rendering. \n\nRECOMMENDATIONS:\n1. Use Playwright or Selenium with proper wait conditions\n2. Wait for listing containers to appear in DOM after page load\n3. Look for XHR/API calls in browser DevTools - likely uses an API endpoint to fetch listings\n4. Pagination appears to use AJAX (no URL changes)\n5. The site has 15,876+ listings across all categories, 300+ in laundromat category\n\nALTERNATIVE APPROACH:\n- Check browser Network tab for API calls (likely JSON endpoint)\n- May be calling something like /api/listings or /services/getlistings.asmx\n- Could potentially scrape API directly if endpoint is discoverable\n\nTEST URLs:\n- All listings: https://www.businessbroker.net/listings/bfs_result.aspx\n- Laundromats: https://www.businessbroker.net/keyword/laundromat-businesses-for-sale.aspx",
+  "_meta": {
+    "generated_at": "2026-02-27T05:07:35.164300+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

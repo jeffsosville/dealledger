@@ -1,0 +1,18 @@
+{
+  "broker_name": "XL Business Brokers",
+  "source_url": "https://www.xlbusinessbrokers.com/buy-a-business/",
+  "container_selector": "NOT_AVAILABLE_IN_STATIC_HTML",
+  "fields": {
+    "title": "REQUIRES_JS_RENDERING",
+    "price": "REQUIRES_JS_RENDERING",
+    "location": "REQUIRES_JS_RENDERING",
+    "url": "REQUIRES_JS_RENDERING"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "XL Business Brokers uses JavaScript/AJAX to dynamically load business listings. Static HTML only contains blog posts and page structure. Requires Playwright/Selenium for JavaScript rendering, or direct API endpoint scraping. Site is built with WordPress + Elementor. Phone: (954)871-7184, Email: info@xl-bb.com",
+  "_meta": {
+    "generated_at": "2026-02-27T04:17:12.145418+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

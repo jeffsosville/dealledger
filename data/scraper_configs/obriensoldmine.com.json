@@ -1,0 +1,20 @@
+{
+  "broker_name": "O'Brien Real Estate Inc.",
+  "source_url": "https://www.obriensoldmine.com/our-listings",
+  "container_selector": "li.property-card",
+  "fields": {
+    "title": "li.property_address",
+    "price": "li.property_price",
+    "location": "li.property_address",
+    "description": "li.property_description",
+    "status": "span.badge",
+    "bathrooms": "span.property_baths"
+  },
+  "pagination_next_selector": "a.next-page",
+  "confidence": "high",
+  "notes": "Real estate listings site (commercial and residential properties, not traditional business-for-sale listings). Platform: TOP PRODUCER real estate website. 60 active listings found. Listings include industrial properties, office buildings, income properties, and land. Description text is truncated at 200 chars. Images stored as background-image CSS property in div.property_thumbnail. Some listings missing bathroom data.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:47:02.297442+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

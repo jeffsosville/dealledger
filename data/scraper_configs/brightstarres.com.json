@@ -1,0 +1,23 @@
+{
+  "broker_name": "Brightstar Resources - Real Estate Listings",
+  "source_url": "https://brightstarres.com/realty/",
+  "container_selector": ".property-card, .listing-item, article.property",
+  "fields": {
+    "title": "h2, h3, .property-title, .listing-title",
+    "price": ".price, .asking-price, .sale-price",
+    "location": ".location, .address, .city-state",
+    "description": ".description, .summary, .excerpt",
+    "property_type": ".property-type, .type, .category",
+    "square_feet": ".sqft, .square-feet, .size",
+    "bedrooms": ".beds, .bedrooms",
+    "bathrooms": ".baths, .bathrooms",
+    "url": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). Site uses Oxygen builder - content loaded via JS/React. Static HTML shows only header/footer. Common property listing selectors provided as best guess for when JS rendering is enabled. Test with browser automation to identify actual selectors. Separate business opportunities page at /business-opportunities/",
+  "_meta": {
+    "generated_at": "2026-02-27T04:48:21.567378+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

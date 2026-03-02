@@ -1,0 +1,17 @@
+{
+  "broker_name": "3MG Resources",
+  "source_url": "https://www.3mgresources.com/franchises_az.asp?letter=",
+  "container_selector": "div.col-md-3.col-sm-4.col-xs-6.wow.fadeIn",
+  "fields": {
+    "title": "h5",
+    "category": "div[style*='height: 65px'] p",
+    "price": "p[style*='margin-top']"
+  },
+  "pagination_next_selector": "a.letter[href*='offset=']",
+  "confidence": "high",
+  "notes": "Franchise listing site with 24 franchises per page. Pagination uses offset parameter. Each listing includes franchise name, industry category, and investment price range. Detail URLs are in format franchisedetails.asp?FranID=[id] but href attribute extraction not supported by current scraper. Listings can be filtered A-Z by letter parameter or show all with letter= (empty). The site has 'Next' and 'Last' pagination links at the bottom.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:52:24.692908+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

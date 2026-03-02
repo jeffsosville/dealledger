@@ -1,0 +1,22 @@
+{
+  "broker_name": "Armen Nazarian",
+  "source_url": "https://www.armennazarian.com/buy/",
+  "container_selector": "table.business-list-table-small tr:not(.heading)",
+  "fields": {
+    "file_number": "td:nth-child(1) a",
+    "title": "td:nth-child(2) a",
+    "location": "td:nth-child(2) .location",
+    "gross_sales": "td:nth-child(3)",
+    "cash_flow": "td:nth-child(4)",
+    "price": "td:nth-child(5)",
+    "down_payment": "td:nth-child(6)",
+    "url": "td:nth-child(2) a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Table-based listing page with all listings on a single page. Contains file numbers, business titles, locations, gross sales, cash flow, price, and down payment. URLs should be extracted from href attributes of links in first or second column. Field values include label text (e.g., 'Gross Sales$300,000') which may need cleaning in post-processing. 25 active listings found. No pagination detected.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:19:59.673051+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

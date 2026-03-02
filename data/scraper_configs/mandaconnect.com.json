@@ -1,0 +1,17 @@
+{
+  "broker_name": "M&A Connect (William Martin & Company)",
+  "source_url": "https://mandaconnect.com/companies-for-sale",
+  "container_selector": "article.node--type-profile",
+  "fields": {
+    "title": "h2.node__title a",
+    "description": "div.field--name-body",
+    "url": "h2.node__title a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Drupal-based site. Found 6 active listings. URLs are relative paths (e.g., /profile/manufacturer-branded-craft-products) that need to be converted to absolute URLs by prepending https://mandaconnect.com. No price information is displayed on the listing page - companies are listed with minimal details. The url field should extract href attribute from the link, not text content. Some listings have minimal descriptions.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:45:54.798793+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

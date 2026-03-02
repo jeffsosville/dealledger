@@ -1,0 +1,20 @@
+{
+  "broker_name": "Commercial Industrial Consultants, Inc",
+  "source_url": "https://commercialindustrialconsultants.com/business-listings",
+  "container_selector": "div.x-el-div[data-ux=\"GridCell\"][class*=\"c1-\"]",
+  "fields": {
+    "title": "h4",
+    "price": "p:contains('Asking Price')",
+    "location": "p:contains('Location:')",
+    "cash_flow": "p:contains('Cash Flow')",
+    "gross_revenue": "p:contains('Gross:')",
+    "description": "div[data-ux='ContentCardText'] p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "GoDaddy website builder site with obfuscated class names. Listings displayed in grid layout. Successfully captures title, asking price, location, cash flow, and gross revenue. 6 listings found with 80% data quality.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:49:00.178041+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "broker_name": "Commercial Real Estate Professionals (Orlando) - IDX Broker",
+  "source_url": "https://orlandocommercialrealestate.idxbroker.com/idx/featured?srt=newest",
+  "container_selector": ".IDX-resultsRow",
+  "fields": {
+    "title": ".IDX-resultsAddress",
+    "price": ".IDX-resultsPriceColumn",
+    "location": ".IDX-resultsAddressCity",
+    "description": ".IDX-resultsRemarks",
+    "property_type": ".IDX-resultsDetails",
+    "beds": ".IDX-resultsBedsValue",
+    "baths": ".IDX-resultsBathsValue",
+    "sqft": ".IDX-resultsSqftValue",
+    "details_url": "a.IDX-resultsLink::attr(href)"
+  },
+  "pagination_next_selector": ".IDX-pagination a.IDX-next",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium) - IDX Broker platform loads listings dynamically via AJAX. Static HTML contains no listing data. Selectors are based on typical IDX Broker structure but untested due to JS requirement. The page uses IDX Broker's standard framework with #IDX-main container. Listings appear after JavaScript execution. May also need to handle lazy loading and infinite scroll.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:29:39.037399+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

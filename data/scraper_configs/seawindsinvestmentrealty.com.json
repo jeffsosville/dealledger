@@ -1,0 +1,38 @@
+{
+  "broker_name": "Seawinds Investment Realty",
+  "source_url": "https://seawindsinvestmentrealty.com/buying-search",
+  "container_selector": ".module_listing_search_simple_results_list_item",
+  "fields": {
+    "title": {
+      "selector": ".module_listing_search_simple_results_list_item_address",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".module_listing_search_simple_results_list_item_price",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".module_listing_search_simple_results_list_item_location",
+      "attribute": "text"
+    },
+    "description": {
+      "selector": ".module_listing_search_simple_results_list_item_remarks",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": "a",
+      "attribute": "href"
+    },
+    "image": {
+      "selector": "img",
+      "attribute": "src"
+    }
+  },
+  "pagination_next_selector": ".swift_pagination_next",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer)\n\nThis site uses the Swift/QuickTours real estate platform which is fully React/JavaScript-rendered. Static HTML scraping will return 0 results.\n\nPlatform: Swift MLS (quicktours.net)\nRender Method: Client-side React rendering\nAlternative URLs tested:\n- /buying-search (original)\n- /listings (found via find_listings_url)\n- /buying\n\nAll pages return empty templates in static HTML.\n\nSelectors provided are based on common Swift platform class patterns observed in similar sites. They should work once JavaScript renders the content.\n\nRecommended approach:\n1. Use Playwright/Selenium with JavaScript enabled\n2. Wait for listings to load (wait for .module_listing_search_simple_results_list_item)\n3. Consider checking for API endpoints that Swift platform might expose (typically GraphQL or REST at /api/ endpoints)\n\nThe site appears to be a business brokerage specializing in investment properties in Palm Beach Gardens, FL area.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:36:17.607224+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

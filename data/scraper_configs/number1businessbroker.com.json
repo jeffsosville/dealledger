@@ -1,0 +1,18 @@
+{
+  "broker_name": "Number 1 Business Broker",
+  "source_url": "https://number1businessbroker.com/search/",
+  "container_selector": "bbcrm[api_string=\"submitsearchtoolnew\"]",
+  "fields": {
+    "title": "REQUIRES_JS_RENDERING",
+    "price": "REQUIRES_JS_RENDERING",
+    "location": "REQUIRES_JS_RENDERING",
+    "description": "REQUIRES_JS_RENDERING"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site uses custom <bbcrm> tags that load listings dynamically via BizBuySell CRM API integration. Static HTML scraping returns 0 listings. SOLUTION REQUIRED: 1) Use Playwright/Selenium to render JavaScript and wait for listings to load, OR 2) Reverse-engineer the BizBuySell CRM API calls (check network tab for API endpoints), OR 3) Scrape their BizBuySell profile directly at: https://www.bizbuysell.com/business-broker/jon-sheklow/number1businessbroker-com/31104/ The page structure uses: <bbcrm api_string='submitsearchtoolnew' lazyload='1' sort='createDate:desc'> which needs JS execution to populate with actual listing data.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:47:17.163030+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

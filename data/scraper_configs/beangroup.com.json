@@ -1,0 +1,19 @@
+{
+  "broker_name": "Bean Group",
+  "source_url": "https://www.beangroup.com/properties/?perRow=auto&limit=800&layout=map&searchtype=forsale&statuses=0%7C55&priceMin=400000&order=listingdate%7Cdesc&page=1&limited=true&propertyTypes=1%7C2%7C56",
+  "container_selector": "[data-requires-js=\"true\"]",
+  "fields": {
+    "title": "[data-field='title']",
+    "price": "[data-field='price']",
+    "location": "[data-field='location']",
+    "description": "[data-field='description']",
+    "url": "a@href"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING: This site uses a modern SPA (Single Page Application) architecture. All listing content is loaded dynamically via JavaScript into the #map-view-panel container. The initial HTML response is empty.\n\nSOLUTION NEEDED: This scraper requires Playwright, Puppeteer, or Selenium to render JavaScript before scraping.\n\nTechnical Details:\n- Main container: #map-view-panel (empty in static HTML)\n- Site type: 'shipyard' (data-site-type attribute)\n- Layout options tested: map, list, grid (all JS-rendered)\n- The page loads with limit=800 in the URL, suggesting it can show many listings at once\n- Property types parameter: propertyTypes=1|2|56 (likely businesses)\n\nAPI Investigation Needed:\n- Check browser DevTools Network tab for API endpoints\n- Look for XHR/Fetch requests to endpoints like /api/properties or /api/listings\n- The API likely returns JSON data that could be scraped directly\n\nAlternative URLs tried:\n- https://www.beangroup.com/listings (also JS-rendered)\n- Various layout parameters (map, list, grid) - all JS-rendered",
+  "_meta": {
+    "generated_at": "2026-02-27T20:34:14.993318+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

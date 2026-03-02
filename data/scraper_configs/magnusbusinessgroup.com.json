@@ -1,0 +1,23 @@
+{
+  "broker_name": "Magnus Business Group",
+  "source_url": "https://magnusbusinessgroup.com/active-listings/",
+  "container_selector": "div.row.indi-listings",
+  "fields": {
+    "title": "h3",
+    "price": "div.list-price",
+    "location": "div.list-location",
+    "listing_id": "div.list-id",
+    "revenue": "div.list-sales",
+    "cash_flow": "div.list-sde",
+    "industry": "div.list-industry",
+    "image": "div.column-wrapper.left img",
+    "url": "a.list-btn"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Magnus Business Group listings page. Found 4 active listings. All listings have gated content requiring login for full financial details. Price format includes 'Price: $' prefix. Location includes 'Location: ' prefix. Revenue and SDE fields show 'Please login/register for more details.' for protected information. Image selector may need adjustment if images don't extract properly.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:15:25.583706+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

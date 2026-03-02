@@ -1,0 +1,19 @@
+{
+  "broker_name": "Profiles International Realty",
+  "source_url": "https://www.profilesrealty.com/106/Business-Search",
+  "container_selector": "#colno3 .listing-item, .business-result, [data-listing]",
+  "fields": {
+    "title": ".title, h3, h4, .business-name",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .address, [class*='location']",
+    "description": ".description, .details, p",
+    "listing_id": "[data-id], .listing-id"
+  },
+  "pagination_next_selector": ".next-page, .pagination a, [rel='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium) - Page content is dynamically loaded via JavaScript. The static HTML shows empty content containers. A browser automation tool is needed to execute JavaScript and wait for listings to load. The selectors provided are estimated based on common patterns and will need to be verified once JS rendering is implemented. The page appears to use IMAGEPRO website platform which typically loads business listings asynchronously. Manual inspection with browser DevTools recommended to identify actual selectors and any API endpoints used for data loading.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:17:33.343046+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

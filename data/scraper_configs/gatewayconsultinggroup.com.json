@@ -1,0 +1,16 @@
+{
+  "broker_name": "Gateway Consulting Group",
+  "source_url": "https://gatewayconsultinggroup.com/current-opportunities",
+  "container_selector": ".kv-ee-list-control .kv-ee-item",
+  "fields": {
+    "location": ".kv-ee-title",
+    "description": ".kv-ee-description"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Gateway Consulting Group specializes in insurance agency sales, primarily Allstate agencies. The site is built on Constant Contact platform. Listings are organized by state/region (Florida, Georgia, Indiana, etc.) with each listing showing the location as title and detailed description including premium amounts, revenue, asking prices, retention rates, staff info, and lease details. Found 14 active listings. Prices and revenue information are embedded in the description text.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:17:55.032977+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "broker_name": "IW Business Brokers",
+  "source_url": "http://iwbusbrokers.com/listings/",
+  "container_selector": "REQUIRES_JS",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered site. The listings page (http://iwbusbrokers.com/listings/) shows only a header image and contact form in static HTML. No listing elements are present in the DOM without JavaScript execution. This appears to be an Agent Image/AIOS theme that loads listings dynamically via JavaScript, possibly through an iframe or API. A headless browser (Playwright/Selenium) is required to scrape this site. The site also has a search form that posts to /search-results/ which may be an alternative approach. Contact: 405.381.4000, brokers@iwbusbrokers.com. Oklahoma City based business broker.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:22:01.995420+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

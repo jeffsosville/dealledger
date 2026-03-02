@@ -1,0 +1,20 @@
+{
+  "broker_name": "New Star Business Consulting Group",
+  "source_url": "http://newstarrealtyny.com/property-type/business/",
+  "container_selector": "article.property-item",
+  "fields": {
+    "title": "h4 a",
+    "price": "h5.price",
+    "description": ".detail p",
+    "link": "h4 a[href]",
+    "business_type": "h5.price small",
+    "area_sqft": ".property-meta span:has(.icon-area)"
+  },
+  "pagination_next_selector": ".pagination a.next",
+  "confidence": "high",
+  "notes": "New York-based business broker. Successfully extracts 9 listings per page. Link selector extracts text instead of href attribute - may need post-processing to construct full URLs. Business type and area data extracted from metadata. Site uses WordPress RealHomes theme. Bilingual listings (English/Korean). Pagination may exist but needs verification.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:54:45.474909+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

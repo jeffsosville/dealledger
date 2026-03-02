@@ -1,0 +1,20 @@
+{
+  "broker_name": "West Coast Business Brokers",
+  "source_url": "https://westcoastbusinessbrokers.com/listings/",
+  "container_selector": "article.post",
+  "fields": {
+    "title": "header h1 a",
+    "listing_url": "header h1 a[href]",
+    "description": "section.entry p",
+    "category": ".post-category a",
+    "date": ".post-date span:last-child",
+    "read_more": ".read-more a"
+  },
+  "pagination_next_selector": ".pagination a",
+  "confidence": "high",
+  "notes": "WordPress blog-style listings page. Each listing is an article element. URL field extracts text content rather than href - may need post-processing to extract actual URLs from the page source. Listings include category tags and posting dates. No prices visible on listing page - likely shown on detail pages.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:11:52.771729+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

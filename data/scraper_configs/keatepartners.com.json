@@ -1,0 +1,21 @@
+{
+  "broker_name": "Keate Partners",
+  "source_url": "https://www.keatepartners.com/business-listings/",
+  "container_selector": "table#tablepress-1 tbody tr",
+  "fields": {
+    "listing_id": "td.column-1",
+    "title": "td.column-2 a",
+    "price": "td.column-3",
+    "revenue": "td.column-4",
+    "cash_flow": "td.column-5",
+    "industry": "td.column-6",
+    "status": "td.column-7"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Listings are displayed in a TablePress table. Seven active listings scraped successfully. The page also contains a second table (tablepress-2) with recently sold businesses without individual listing details.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:01:48.198302+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

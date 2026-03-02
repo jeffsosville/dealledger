@@ -1,0 +1,20 @@
+{
+  "broker_name": "East Coast Business Brokers",
+  "source_url": "https://www.eastcoastbusinessbrokers.com/index.php?p=search-result",
+  "container_selector": ".card.hover-y",
+  "fields": {
+    "title": ".card-title a",
+    "price": ".card-footer div:first-child",
+    "location": ".card-body > p.card-text:first-of-type",
+    "description": ".card-body > p.card-text:nth-of-type(2)",
+    "reference_id": ".card-footer div:last-child",
+    "url": "a.card-image"
+  },
+  "pagination_next_selector": "a.page-link[rel=\"next\"]",
+  "confidence": "high",
+  "notes": "Successfully extracts 187 listings. URL can be constructed as 'https://www.eastcoastbusinessbrokers.com/index.php?p=item&id={reference_id}'. Price includes dollar amount with decimals. Location and description extracted from card-text paragraphs. Grid view with multiple listings per page.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:18:30.457255+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

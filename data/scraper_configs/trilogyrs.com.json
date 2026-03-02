@@ -1,0 +1,13 @@
+{
+  "broker_name": "Trilogy Real Estate Services",
+  "source_url": "https://www.trilogyrs.com/businesses-for-sale",
+  "container_selector": "REQUIRES_JAVASCRIPT_RENDERING",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Google Sites platform - content is JavaScript-rendered. Requires Playwright/Selenium to render the page before scraping. Initial HTML contains only framework code with no listing data. All selector tests returned empty or no results. Need to implement headless browser solution to extract business listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:31:37.354048+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}
