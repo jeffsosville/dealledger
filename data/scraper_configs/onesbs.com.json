@@ -1,0 +1,17 @@
+{
+  "broker_name": "OneSource Business Solutions (OneSBS)",
+  "source_url": "https://onesbs.com/businesses-for-sale/",
+  "container_selector": "div.et_pb_text.et_clickable",
+  "fields": {
+    "title": "h4 strong",
+    "description": "p",
+    "full_text": "div.et_pb_text_inner"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Static HTML page with listings in clickable text modules. Price is embedded in title (format varies: some with $ prefix, some without). Each listing has business name, price, and description. Located primarily in Central Pennsylvania. No pagination detected - all 21 listings on single page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:21:40.312747+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

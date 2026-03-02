@@ -1,0 +1,16 @@
+{
+  "broker_name": "Patriot Business Advisors",
+  "source_url": "https://www.patriotbusinessadvisors.com/Listings.html",
+  "container_selector": "div#e16 table table tr td[height]:not([height=\"20\"])",
+  "fields": {
+    "title": "span b font:first-of-type",
+    "description": "span"
+  },
+  "pagination_next_selector": "a[href*='Listingspg']",
+  "confidence": "high",
+  "notes": "Static HTML table layout. Each listing contains business type, location, asking price, revenue, and cash flow all in one text field. The site uses an older HTML table-based layout with absolute positioning. Data includes businesses primarily in PA, NJ, and DE. Some listings include notes about seller financing. Pagination links follow pattern 'Listingspg2.html', 'Listingspg3.html', etc. First page has 17 listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:29:28.921501+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

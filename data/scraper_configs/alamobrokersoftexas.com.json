@@ -1,0 +1,17 @@
+{
+  "broker_name": "Alamo Brokers of Texas",
+  "source_url": "https://alamobrokersoftexas.com/properties-for-sale",
+  "container_selector": ".container.sell .col.col-md-4",
+  "fields": {
+    "title": "h5",
+    "details": "p",
+    "image": ".respond-image img"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Scraper extracts 21 property listings. Details field contains structured data with Location, Size, and Asking Price. Images are in lazy-load format (data-src attribute) and may need special handling for full URLs. Some listings marked as SOLD.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:18:52.550364+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

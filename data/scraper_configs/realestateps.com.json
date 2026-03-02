@@ -1,0 +1,19 @@
+{
+  "broker_name": "Real Estate PS - Business",
+  "source_url": "https://realestateps.com/business-listings",
+  "container_selector": "[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "[data-ux='ContentCardHeading']",
+    "description": "[data-ux='ContentCardText']",
+    "image": "img[data-ux='ContentCardImageThumbnail']",
+    "button_text": "[data-ux='ContentCardButton']",
+    "link": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "GoDaddy Website Builder site. Successfully extracts 6 business-for-sale listings with title and description. Titles include business type and listing numbers (e.g., '#0312'). Descriptions provide detailed business information but are truncated. Location information is embedded in titles (e.g., 'Northern NJ', 'Essex County'). No explicit pricing - likely confidential/contact-for-details model. Images, links, and buttons return null - may be dynamically loaded.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:52:41.339251+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Excellence Business Brokers",
+  "source_url": "https://www.excellencebusinessbrokers.com/businesses-for-sale",
+  "container_selector": "JAVASCRIPT_REQUIRED",
+  "fields": {
+    "title": "JAVASCRIPT_REQUIRED",
+    "price": "JAVASCRIPT_REQUIRED",
+    "location": "JAVASCRIPT_REQUIRED",
+    "url": "JAVASCRIPT_REQUIRED"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a Wix-based website that requires JavaScript rendering (Playwright/Selenium). The static HTML contains no listing data - all content is loaded dynamically via JavaScript. The page structure shows typical Wix components with data loaded from Wix APIs. To scrape this site, you would need to: 1) Use Playwright or Selenium to render JavaScript, 2) Wait for the gallery/listing elements to load, 3) Look for selectors like [data-testid='gallery-item'], .wixui-gallery__item, or similar Wix gallery components once JS renders. The page appears to use Wix's native gallery or repeater components for displaying listings. Alternative approach: Investigate Wix's data APIs or check browser network tab for API endpoints that could be called directly.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:24:52.590697+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

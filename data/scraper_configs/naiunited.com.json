@@ -1,0 +1,20 @@
+{
+  "broker_name": "NAI United",
+  "source_url": "https://www.naiunited.com/inventory/",
+  "container_selector": "#buildout [data-property], #buildout .property-card, #buildout article",
+  "fields": {
+    "title": "h2, h3, .property-title, .title",
+    "price": ".price, .property-price, [data-price]",
+    "location": ".location, .property-location, .address",
+    "property_type": ".type, .property-type",
+    "description": ".description, .summary, p",
+    "url": "a@href"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). The page uses dynamic content loading via JavaScript into a div#buildout container. Static HTML fetch returns empty content. The selectors provided are educated guesses based on common patterns for property listing sites and will need to be validated once JS rendering is enabled. The page likely loads data from an API endpoint that populates the buildout container dynamically. Consider inspecting network requests to find the API endpoint for direct data access.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:46:48.056704+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

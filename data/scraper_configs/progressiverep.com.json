@@ -1,0 +1,19 @@
+{
+  "broker_name": "Progressive Real Estate Partners",
+  "source_url": "https://progressiverep.com/property-search-all/",
+  "container_selector": "#buildout [data-property], #buildout .property-card, #buildout article",
+  "fields": {
+    "title": "h2, h3, .property-title, .title",
+    "price": ".price, .property-price, [class*='price']",
+    "location": ".location, .address, .property-location, [class*='location']",
+    "description": ".description, .property-description, p",
+    "url": "a[href*='property']@href, a.property-link@href"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium. Listings dynamically loaded into #buildout div. Static HTML scraping returns 0 results. Site uses Alpine.js and WordPress. Multiple property categories available via query params (saleOrLease, propertyUses). Selectors are theoretical and need validation with JS rendering enabled. Alternative URLs to try: /property-search-all/owner-user-sale/, /property-search-all/investment-sale/, /property-search-all/retail-lease/",
+  "_meta": {
+    "generated_at": "2026-02-27T20:29:04.589452+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "Tangent Brokerage",
+  "source_url": "https://tangentbrokerage.com/search/",
+  "container_selector": ".listing-card, .business-listing, article.listing",
+  "fields": {
+    "title": "h2.listing-title, h3.listing-title, .title",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .city, [class*='location']",
+    "description": ".description, .excerpt, p.description",
+    "url": "a.listing-link, a[href*='/listing/']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered listings. The page uses WordPress with Elementor page builder. Listings are loaded dynamically via JavaScript after page load. Static HTML fetch returns only header/footer elements with no listing content. REQUIRES: Playwright, Puppeteer, or Selenium with JavaScript rendering enabled. Wait for listings to load with selector like '.listing-card' or check for dynamic content injection. The site may also use an API endpoint or WordPress REST API to fetch listings - inspect network tab to find API calls. Tried URLs: /search/, /listings, /buy-a-business - all JavaScript-rendered.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:48:30.020661+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

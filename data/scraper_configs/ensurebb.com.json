@@ -1,0 +1,19 @@
+{
+  "broker_name": "Ensure Business Brokerage",
+  "source_url": "https://ensurebb.com/businesses-for-sale-georgia",
+  "container_selector": "[data-listings-container], .listing-card, .business-item",
+  "fields": {
+    "title": ".listing-title, h3, h2",
+    "price": ".price, .asking-price",
+    "location": ".location, .address",
+    "description": ".description, .summary",
+    "url": "a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT RENDERING REQUIRED - This site loads all listings dynamically via JavaScript after initial page load. The HTML returned by simple HTTP requests contains only the page header/footer but NO listing data. \n\nSCRAPING REQUIREMENTS:\n- Must use Playwright, Puppeteer, Selenium, or similar headless browser\n- Must wait for dynamic content to load (wait for network idle or specific selectors)\n- Listings appear to be embedded via external service or custom JS\n\nSITE DETAILS:\n- Broker: Ensure Business Brokerage (James M. McGeehan)\n- Location: Atlanta, GA / Virginia\n- Contact: (703) 665-5390, (404) 290-9982\n- Site: WordPress with Customizr theme\n- Partnership with American Healthcare Capital\n\nThe selectors provided are placeholders - actual selectors can only be determined by inspecting the page with browser DevTools after JS loads. When implementing with a headless browser:\n1. Load page with JavaScript enabled\n2. Wait for listings to appear (use waitForSelector or network idle)\n3. Inspect DOM to identify actual container/field selectors\n4. Update configuration with real selectors",
+  "_meta": {
+    "generated_at": "2026-02-27T19:39:58.182215+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

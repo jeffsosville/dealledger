@@ -1,0 +1,38 @@
+{
+  "broker_name": "Aspect Business Brokers",
+  "source_url": "https://www.aspectbrokers.biz/BusinessForSale/BusinessForSale",
+  "container_selector": "#divresult > div[class*='col-']",
+  "fields": {
+    "title": {
+      "selector": "h3 a, .listing_title a, .single_listing_one_content h3 a",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".price, .listing_price, .single_listing_one_content_price p",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".location, .listing_location p, .single_listing_one_content .listing_location p",
+      "attribute": "text"
+    },
+    "category": {
+      "selector": ".category, .listing_category, .single_listing_one_content .listing_category",
+      "attribute": "text"
+    },
+    "link": {
+      "selector": "a[href*='Detail'], h3 a, .listing_title a",
+      "attribute": "href"
+    },
+    "image": {
+      "selector": "img, .listing_img img, .single_listing_one_img img",
+      "attribute": "src"
+    }
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site loads listings dynamically via AJAX into #divresult container. Requires Playwright/Selenium with wait conditions. Categories visible: Convenience Store (2), Convenience Store & Gas Station (7), Motel (3), Pizza Restaurant (1), Liquor Store (1), HVAC Business (1), Home Health Care (1), Grocery & Meat Store (1), Furniture & Appliance (1), Indian Restaurant - QSR (1), Rental Income Property (1). Estimated 20+ total listings. Location filters include NC and SC cities (Charlotte, Gastonia, Bessemer City, etc.). Wait for #divresult to populate after page load. May need to disable filters or iterate through categories.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:35:13.692845+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "broker_name": "The Gas Broker",
+  "source_url": "https://www.thegasbroker.com/activelistings",
+  "container_selector": ".amp-cpt-list-item",
+  "fields": {
+    "title": ".amp-cpt-module-header span",
+    "price": ".amp-listings-meta-price",
+    "location": ".post-excerpt h1 strong",
+    "listing_type": ".post-excerpt p strong",
+    "description": ".post-excerpt p",
+    "availability": ".amp-listings-availability"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Gas station and convenience store broker based in California. Listings show title, price, location (county), listing type (business only or with property), and availability status. Page uses AMP (Accelerated Mobile Pages) custom post type listing module.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:12:15.224534+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

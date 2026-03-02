@@ -1,0 +1,17 @@
+{
+  "broker_name": "Legacy Advisors LLC",
+  "source_url": "https://legacyadvisors.info/listings-1",
+  "container_selector": ".x-el.x-el-div[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "h4[data-ux='ContentCardHeading']",
+    "description": "div[data-ux='ContentCardText']",
+    "image": "img[data-ux='Image']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Legacy Advisors LLC listings page built on GoDaddy website builder platform. Found 3 active listings. Listings include title and full description with location details embedded in description text. No explicit pricing shown on listing cards - likely requires contact for price. Images appear to be present in the structure but may need JavaScript rendering. Location information (e.g., Somerset County, NJ, Hoboken) is embedded within description text.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:03:04.640599+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

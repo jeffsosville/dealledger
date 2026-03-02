@@ -1,0 +1,27 @@
+{
+  "broker_name": "Intero Real Estate",
+  "source_url": "https://www.intero.com/realestate/search/company-listings",
+  "container_selector": "a.prop-link",
+  "fields": {
+    "link": "@href",
+    "property_id": "@target",
+    "image": ".image-area .image@data-lazy",
+    "image_bg": ".image-area .image@style",
+    "status": ".banner span",
+    "address": ".prop-detail .address",
+    "city": ".prop-detail .city",
+    "price": ".prop-detail .price",
+    "beds": ".prop-detail .beds",
+    "baths": ".prop-detail .baths",
+    "sqft": ".prop-detail .sqft",
+    "lot_size": ".prop-detail .lot-size",
+    "property_type": ".prop-detail .property-type"
+  },
+  "pagination_next_selector": "button.next-page, a.next-page",
+  "confidence": "medium",
+  "notes": "\u26a0\ufe0f IMPORTANT: This site requires special handling:\n1. Bot Protection: Returns 403 Forbidden on automated requests - requires Playwright/Selenium with proper headers and user-agent\n2. Partially JS-rendered: Listings appear in initial HTML but may dynamically load with pagination\n3. Real Estate Site: This is a residential real estate site (NOT business-for-sale listings)\n4. Listing Count: Page shows \"100 out of 420 Results\" with pagination\n5. Image URLs: Available in both data-lazy attribute and style background-image\n6. Link Format: Relative URLs like \"./details/115524018/418-college-ave-san-francisco-ca-94112\"\n7. Property IDs: Available in @target attribute of the link wrapper\n8. Status Badges: \"New\" and likely other statuses in .banner span elements\n\nSELECTORS IDENTIFIED (not fully tested due to 403 blocks):\n- Container: a.prop-link (wraps each property card)\n- Alternative: article.prop-card (the actual card element)\n- Image: .image-area .image with @data-lazy or @style extraction\n- Details section: .prop-detail contains address, price, beds, baths, sqft\n\nRECOMMENDED IMPLEMENTATION:\n- Use Playwright with stealth mode and proper headers\n- Handle relative URLs by prepending base domain\n- Extract background-image URL from style attribute if data-lazy is empty\n- Parse listing count from .srp-list-count element\n- Handle pagination (appears to use button/link based navigation)",
+  "_meta": {
+    "generated_at": "2026-02-27T19:48:10.601451+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

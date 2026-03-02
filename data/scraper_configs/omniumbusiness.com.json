@@ -1,0 +1,21 @@
+{
+  "broker_name": "Omnium Business Brokers",
+  "source_url": "https://omniumbusiness.com/for-sale/",
+  "container_selector": "div.row[style*=\"line-height:1.35715\"]",
+  "fields": {
+    "title": "p[style*='font-size:20px'] a",
+    "asking_price": "p.spnnnan:has(span[id='below-heading']:contains('Asking Price'))",
+    "revenue": "p.spnnnan:has(span[id='below-heading']:contains('REVENUE'))",
+    "ebitda": "p.spnnnan:has(span[id='below-heading2']:contains('EBITDA'))",
+    "location": "p#below-heading-values:has(span[id='below-heading3']:contains('Location'))",
+    "description": "p#below-heading-values[style*='text-align:justify']",
+    "image_url": "img#icon"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Listings page with 3 active for-sale businesses. Each listing includes title with Ref ID, asking price, revenue, EBITDA, location, and description. Links point to contact page, not individual listing pages. Image selector may need adjustment if images are dynamically loaded. The text fields include labels (e.g., 'Asking Price:', 'REVENUE:', 'EBITDA:', 'Location:', 'Description:') which may need to be stripped in post-processing.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:48:16.844303+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

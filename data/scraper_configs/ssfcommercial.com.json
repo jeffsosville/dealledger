@@ -1,0 +1,13 @@
+{
+  "broker_name": "SSF Commercial / The C&E Group",
+  "source_url": "http://ssfcommercial.com/for-sale-1",
+  "container_selector": "REQUIRES_JS_RENDERING",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a Squarespace site that heavily relies on JavaScript to render listing content. The static HTML does not contain any listing data - it's loaded dynamically after page load. Multiple listing URLs found: /for-sale-1, /business-listings, /listings. All appear to be JavaScript-rendered. To scrape this site, you will need: 1) Playwright or Selenium for JavaScript rendering, 2) After rendering, likely selectors would be Squarespace-specific like .blog-item, .summary-item, or .grid-item. Company: The C&E Group (formerly SSF Commercial), based in Aspen and Basalt, Colorado. Handles commercial real estate sales, leases, and business opportunities.",
+  "_meta": {
+    "generated_at": "2026-02-26T20:03:17.563361+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

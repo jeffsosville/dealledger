@@ -1,0 +1,18 @@
+{
+  "broker_name": "SV Business Broker",
+  "source_url": "https://www.svbusinessbroker.com/business-listing/",
+  "container_selector": "NOT_APPLICABLE_JS_RENDERED",
+  "fields": {
+    "title": "REQUIRES_JS",
+    "price": "REQUIRES_JS",
+    "location": "REQUIRES_JS",
+    "description": "REQUIRES_JS"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JAVASCRIPT-RENDERED SITE: This site loads all business listings dynamically via JavaScript/AJAX. The static HTML only contains a loading spinner and page structure. To scrape this site, you will need:\n\n1. BROWSER AUTOMATION: Use Playwright, Puppeteer, or Selenium to render JavaScript\n2. WAIT FOR CONTENT: Wait for the loading spinner (#jSplash) to disappear and listings to appear\n3. ALTERNATIVE URLS: The site has multiple listing pages:\n   - https://www.svbusinessbroker.com/business-listing/\n   - https://www.svbusinessbroker.com/buy-a-business (also found working)\n4. SITE STRUCTURE: WordPress site with Visual Composer\n5. LOCATION: Maryland, Washington DC, Vienna VA, Northern Virginia area\n6. CONTACT: info@svbusinessbroker.com, (301) 956-6004, (301) 675-1292\n\nNEXT STEPS FOR SCRAPING:\n- Use Playwright/Puppeteer to load the page\n- Wait for content to appear (wait for network idle or specific selectors)\n- Inspect the rendered DOM to identify listing container and field selectors\n- May also check browser Network tab for API endpoints that could be called directly",
+  "_meta": {
+    "generated_at": "2026-02-27T19:54:31.501203+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

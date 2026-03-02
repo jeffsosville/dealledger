@@ -1,0 +1,16 @@
+{
+  "broker_name": "Business Broker George (GM Consultants / The Tow Broker)",
+  "source_url": "https://www.businessbrokergeorge.com/listings/",
+  "container_selector": ".atw_info_col",
+  "fields": {
+    "title": ".atw_column_title_text",
+    "details": ".atw_info_col_details"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Scraper extracts 48 towing business listings. Site uses custom aTables plugin. Title includes business name and status (Sale Pending/SOLD). Details field contains all listing information including asking price, location, revenue, equipment value, and description in text format. Site specializes in towing companies (light duty, heavy duty, recovery). Many listings show sold/pending status. No pagination detected - all listings on one page.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:20:30.555250+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

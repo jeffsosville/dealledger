@@ -1,0 +1,18 @@
+{
+  "broker_name": "Florida Connexion Business",
+  "source_url": "https://floridaconnexionbusiness.com/buy/featured-businesses-for-sale/",
+  "container_selector": ".business-listing",
+  "fields": {
+    "title": ".business-listing-title__text",
+    "listing_id": ".business-listing-id__text",
+    "description": ".business-listing-description__text",
+    "details_raw": ".business-listing-details"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Successfully extracts 13 listings. Title and description work perfectly. Listing IDs captured where available. Detail fields (Category, Price, Down Payment, Total Sales, SDE) are captured as raw text in details_raw field - these appear to be in nested divs that require post-processing to parse. Individual detail selectors did not work, possibly due to JS rendering or complex nested structure. The raw details text contains structured data that can be parsed with regex/text processing.",
+  "_meta": {
+    "generated_at": "2026-02-27T05:05:21.000255+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

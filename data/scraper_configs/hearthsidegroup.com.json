@@ -1,0 +1,16 @@
+{
+  "broker_name": "Hearthside Group",
+  "source_url": "https://hearthsidegroup.com/buyers/",
+  "container_selector": "a.post-card",
+  "fields": {
+    "title": "h3.post-card-title",
+    "description": "p.post-card-excerpt"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "WordPress-based hospitality properties broker. Extracts title and description successfully. Link URLs are on the container 'href' attribute (not currently extracted by basic CSS selector). No prices shown on listings page - likely on detail pages. Images available in HTML but not extracted. Only 2 active listings found on page.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:44:40.216282+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "broker_name": "Vantage Point Retail",
+  "source_url": "https://vantagepointretail.com/exclusive-property-listings/",
+  "container_selector": "table tbody tr",
+  "fields": {
+    "title": "td:nth-child(1)",
+    "size": "td:nth-child(2)",
+    "property_type": "td:nth-child(3)",
+    "listing_type": "td:nth-child(4)",
+    "description": "td:nth-child(5)",
+    "contact_name": "td:nth-child(6)",
+    "pdf_url": "td:nth-child(1) a[href]",
+    "contact_email": "td:nth-child(6) a[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial retail property listings in Massachusetts and Connecticut. Listings are in a simple HTML table format. Each listing includes property location/address, square footage, property type (Endcap, In-Line, Pad Site, Office, Land), listing type (For Lease/For Sale), description, and contact information. PDF flyers are linked from the title/address column. No traditional pricing displayed - properties are for lease or sale. Static HTML page, no pagination needed.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:03:13.233050+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

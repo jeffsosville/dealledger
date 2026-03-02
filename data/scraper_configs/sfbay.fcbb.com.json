@@ -1,0 +1,15 @@
+{
+  "broker_name": "First Choice Business Brokers - San Francisco Bay",
+  "source_url": "https://sfbay.fcbb.com/businesses-for-sale",
+  "container_selector": "JAVASCRIPT_REQUIRED",
+  "fields": {
+    "note": "This site uses DudaMobile website builder with dm-bfs (business-for-sale) module. Content is dynamically loaded via JavaScript and cannot be scraped with static HTML parsing."
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "FCBB San Francisco Bay uses a DudaMobile website builder with JavaScript-rendered listings. The page shows 'dm-bfs' class indicating a business-for-sale module, but all listing content is loaded client-side. This requires either: 1) Playwright/Selenium with JavaScript execution, 2) Finding an API endpoint that the JavaScript calls, or 3) A specialized FCBB scraper that handles their specific platform. The URL pattern is /businesses-for-sale with query parameters for filtering (location, sort, page). Standard static HTML scraping returns only the page shell with no listing data.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:47:21.568969+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

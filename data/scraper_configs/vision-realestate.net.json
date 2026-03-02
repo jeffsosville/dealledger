@@ -1,0 +1,18 @@
+{
+  "broker_name": "Vision Real Estate",
+  "source_url": "https://vision-realestate.net/en/sale",
+  "container_selector": "div.col-lg-4.col-sm-12",
+  "fields": {
+    "title": ".project_title a",
+    "location": ".location p span a",
+    "bedrooms": ".room p span a",
+    "bathrooms": ".bath p span"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Real estate listings site (residential properties, not businesses). Currently showing only 1 listing. No price visible in listing cards. Page may use JavaScript to load additional listings dynamically. Bedrooms extracted from .room p span a, bathrooms from .bath p span. Detail page URLs follow pattern /en/unit/{slug}. Site supports both English (/en/) and Arabic versions.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:38:42.869683+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

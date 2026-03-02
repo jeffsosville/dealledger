@@ -1,0 +1,22 @@
+{
+  "broker_name": "Maple Shade Business Association",
+  "source_url": "https://thinkmapleshade.com/directory/",
+  "container_selector": ".cn-list-body .cn-entry",
+  "fields": {
+    "title": "span.org.fn",
+    "detail_url": ".cn-entry-name > a",
+    "phone": ".cn-phone-number",
+    "address": ".cn-address",
+    "website": ".cn-link a",
+    "email": ".cn-email-address a",
+    "bio": ".cn-excerpt",
+    "categories": ".cn-category a"
+  },
+  "pagination_next_selector": ".cn-list-body .cn-entry",
+  "confidence": "high",
+  "notes": "Maple Shade Business Association directory using Connections Business Directory WordPress plugin. Successfully extracting business name, phone, address, website, and email. The directory appears to show 10 businesses per page with alphabetical navigation. Phone numbers include label 'Phone:' prefix and 'work' suffix. Addresses include street, city, state, zip with 'postal' suffix. Detail URLs and categories may not be available for all entries.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:52:53.768027+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

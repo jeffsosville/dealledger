@@ -1,0 +1,20 @@
+{
+  "broker_name": "Grand Realty of America",
+  "source_url": "https://grandrealtyofamerica.com/our_listings",
+  "container_selector": "ng-view [ng-repeat], .listing-item, .property-card",
+  "fields": {
+    "title": "h2, h3, h4, .title, .property-title",
+    "price": ".price, .listing-price, .amount",
+    "location": ".location, .address, .city",
+    "description": ".description, .summary, p",
+    "business_type": ".type, .category, .business-type",
+    "link": "a[href*='listing'], a[href*='property'], a[href*='business']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE (AngularJS) - Requires Playwright/Selenium/Puppeteer to scrape. The page uses AngularJS with client-side routing. All listing content is loaded dynamically into an ng-view container after page load. Static HTML fetch returns empty containers. The site appears to handle both real estate and business-for-sale listings. Business listings may be accessible via: https://grandrealtyofamerica.com/107/business_brokers_of_florida/2130. Additional URLs to try: https://grandrealtyofamerica.com/listings, https://grandrealtyofamerica.com/for_sale. Requires JavaScript execution to retrieve actual listing data and identify correct selectors. Pagination likely handled via AngularJS routing or AJAX calls.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:52:36.583229+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

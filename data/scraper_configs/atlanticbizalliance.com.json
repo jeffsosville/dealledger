@@ -1,0 +1,17 @@
+{
+  "broker_name": "Atlantic Biz Alliance",
+  "source_url": "https://www.atlanticbizalliance.com/listings.html",
+  "container_selector": "TBD - requires JS rendering",
+  "fields": {
+    "title": "TBD",
+    "price": "TBD",
+    "location": "TBD"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Site is JavaScript-rendered. The fetch_page tool returned empty body content. Requires Playwright/Selenium/Puppeteer to render the page before scraping. Common listing selectors did not match any elements. After JS rendering, typical selectors like .listing, .business-listing, article, or similar should be tested. Manual inspection with browser DevTools recommended to identify actual DOM structure after JS loads.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:16:29.023301+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

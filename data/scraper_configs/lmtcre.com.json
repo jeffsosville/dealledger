@@ -1,0 +1,19 @@
+{
+  "broker_name": "LMT Commercial Realty",
+  "source_url": "https://lmtcre.com/businesses-for-sale/",
+  "container_selector": ".col-md-12 > *:not(:empty)",
+  "fields": {
+    "title": "h2, h3, .title, .business-name, a",
+    "price": ".price, .asking-price, .cost",
+    "location": ".location, .address, .city",
+    "description": ".description, .excerpt, p",
+    "link": "a@href"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "**JavaScript-rendered page** - The listings page loads with an empty content container (div.col-md-12). Content is dynamically loaded via JavaScript/AJAX. **Requires Playwright or Selenium** to render the page and wait for content to load. The static HTML fetch shows only the page shell with no listing data. Once rendered, inspect the DOM to determine actual container and field selectors. Site is WordPress-based (LMT Commercial theme). May also have a REST API endpoint that could be discovered through browser network inspection.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:37:02.368107+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

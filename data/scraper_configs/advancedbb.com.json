@@ -1,0 +1,19 @@
+{
+  "broker_name": "Advanced Business Brokers",
+  "source_url": "https://www.advancedbb.com/pages/business-for-sale",
+  "container_selector": "table.listing-table tbody tr",
+  "fields": {
+    "reference": "td:nth-child(2)",
+    "title": "td.listings-link-title a",
+    "price": "td.listings-price",
+    "revenue": "td.listings-revenue",
+    "profit": "td.listings-profits"
+  },
+  "pagination_next_selector": "a.next_page",
+  "confidence": "high",
+  "notes": "Clean table structure. 15 listings per page with pagination (3+ pages available). Note: URL can be extracted from 'td.listings-link-title a' href attribute, and image from 'td:first-child img' src attribute. Some listings have price in the 'profit' column instead of 'price' column. Hotels-for-sale URL returns 404.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:53:51.464272+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

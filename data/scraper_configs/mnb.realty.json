@@ -1,0 +1,50 @@
+{
+  "broker_name": "MNB Realty",
+  "source_url": "https://mnb.realty/properties/",
+  "container_selector": ".wpl_prp_container_box",
+  "fields": {
+    "title": {
+      "selector": ".wpl_prp_title a",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".wpl_prp_price",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".wpl_prp_listing_location",
+      "attribute": "text"
+    },
+    "description": {
+      "selector": ".wpl_prp_desc",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": ".wpl_prp_title a",
+      "attribute": "href"
+    },
+    "property_type": {
+      "selector": ".wpl_prp_listing_icon_box .wpl_prp_show_detail_icon[data-wpl_pshow_field='property_type'] .wpl_prp_show_detail_txt",
+      "attribute": "text"
+    },
+    "bedrooms": {
+      "selector": ".wpl_prp_show_detail_icon[data-wpl_pshow_field='bedrooms'] .wpl_prp_show_detail_txt",
+      "attribute": "text"
+    },
+    "bathrooms": {
+      "selector": ".wpl_prp_show_detail_icon[data-wpl_pshow_field='bathrooms'] .wpl_prp_show_detail_txt",
+      "attribute": "text"
+    },
+    "area": {
+      "selector": ".wpl_prp_show_detail_icon[data-wpl_pshow_field='living_area'] .wpl_prp_show_detail_txt",
+      "attribute": "text"
+    }
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "medium",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). This site uses WordPress Property Listing (WPL) plugin that loads property listings dynamically via AJAX. The page shows 12 properties per page with 93 total results across 8 pages. Pagination uses ?wplpage=X format. Static HTML fetch returns empty containers - JavaScript must be executed to see actual listings. The selectors are based on the WPL plugin's standard structure which should work once JS is rendered.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:23:56.177595+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

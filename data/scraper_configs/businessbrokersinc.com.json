@@ -1,0 +1,18 @@
+{
+  "broker_name": "Business Brokers Inc.",
+  "source_url": "https://businessbrokersinc.com/our-listings/",
+  "container_selector": ".fusion-portfolio-post, .business-listing, article.post",
+  "fields": {
+    "title": "h2, h3, .title, .listing-title",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, [class*='location']",
+    "description": ".excerpt, .description, p"
+  },
+  "pagination_next_selector": ".pagination a.next, .fusion-pagination a[rel='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium): The listings page (https://businessbrokersinc.com/our-listings/) exists but contains no visible listing data in static HTML. The page shows only a heading 'Businesses for Sale' with text stating 'To receive additional information about our businesses for sale, click on the Contact link. Note that Highly Confidential engagements and larger offerings may not be shown on this page.' This indicates listings are either: (1) loaded via JavaScript/AJAX after page load, (2) behind a contact/login wall, or (3) embedded via iframe/third-party system. Broker: Alan Weidner, Brigantine, NJ. The provided selectors are educated guesses based on WordPress/Avada theme patterns but CANNOT be validated without JS rendering. Site uses Avada WordPress theme. Contact: 609-839-1638.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:49:13.344371+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

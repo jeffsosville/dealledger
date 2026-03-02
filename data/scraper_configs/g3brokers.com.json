@@ -1,0 +1,18 @@
+{
+  "broker_name": "G3 Business Brokers",
+  "source_url": "https://www.g3brokers.com/our-listings",
+  "container_selector": "div.sqs-code-container",
+  "fields": {
+    "title": "h1, h2, h3",
+    "price": ".price",
+    "location": ".location",
+    "description": "p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES JAVASCRIPT RENDERING: This is a Squarespace site that loads listings via embedded JavaScript code blocks. The static HTML contains empty div.sqs-code-container elements. To scrape this site, you will need: 1) Playwright/Selenium/Puppeteer to render JavaScript, 2) Wait for dynamic content to load after page render, 3) Inspect the page with browser DevTools when fully loaded to identify the actual listing container selectors. The listings are likely loaded from an external service or API embedded in the code blocks (block-yui_3_17_2_1_1528211081634_4114 and block-yui_3_17_2_18_1497458400023_15612). Alternative: Check if G3 Brokers uses a third-party listing service like BizBuySell, LoopNet, or similar that might have its own API.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:34:59.049765+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

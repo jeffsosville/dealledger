@@ -1,0 +1,19 @@
+{
+  "broker_name": "Denver Business Brokers (Business Brokerage Services)",
+  "source_url": "https://denverbbs.com/buy-a-business/",
+  "container_selector": "div#root",
+  "fields": {
+    "title": ".listing-title, h2, h3",
+    "price": ".price, .asking-price",
+    "location": ".location, .city",
+    "description": ".description, p",
+    "link": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer)\n\nDenver Business Brokers uses Salesstream CRM (https://denverbbs.salestreamcrm.com) which is a React-based single-page application. The listings page shows only <div id='root'></div> in static HTML - all content is loaded dynamically via JavaScript/API.\n\nIMPLEMENTATION OPTIONS:\n1. Use Playwright/Puppeteer to render JavaScript and extract data from DOM\n2. Reverse-engineer the Salesstream API by inspecting network calls in browser DevTools\n3. Contact broker for API access or data feed\n\nThe main listing pages all redirect to the same Elementor-built WordPress page (page-id-5060) which likely contains an embedded Salesstream widget/iframe.\n\nURLs checked:\n- https://denverbbs.com/buy-a-business/ (main URL)\n- https://denverbbs.com/businesses-for-sale\n- https://denverbbs.com/listings\n- https://denverbbs.salestreamcrm.com/listings (React SPA)\n\nAll point to Salesstream CRM integration which requires JavaScript execution.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:45:11.754112+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

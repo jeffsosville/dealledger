@@ -1,0 +1,24 @@
+{
+  "total": 1658,
+  "success": 355,
+  "total_listings": 64983,
+  "methods": {
+    "css_rules": 15,
+    "wordpress_api": 275,
+    "squarespace_json": 2,
+    "data_attributes": 41,
+    "jsonld": 18,
+    "shopify_api": 2,
+    "rest_api": 2
+  },
+  "errors": {
+    "no_discovery": 944,
+    "js_only": 105,
+    "failed": 177,
+    "dead": 55,
+    "empty": 18,
+    "auth_required": 1,
+    "graphql_manual": 1,
+    "selectors_broken": 2
+  }
+}

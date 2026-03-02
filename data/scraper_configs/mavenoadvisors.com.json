@@ -1,0 +1,20 @@
+{
+  "broker_name": "Maveno Advisors",
+  "source_url": "https://mavenoadvisors.com/businesses-for-sale/",
+  "container_selector": "div[data-listing-id], .listing-item, .business-listing",
+  "fields": {
+    "title": "h3, h2, .listing-title",
+    "price": ".price, .asking-price",
+    "location": ".location, .listing-location",
+    "description": ".description, .listing-description",
+    "cashflow": ".cashflow, .cash-flow",
+    "revenue": ".revenue, .gross-revenue"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JAVASCRIPT RENDERING REQUIRED - This site uses dynamic content loading (likely an embedded widget or third-party platform). The HTML returned by simple HTTP requests does not contain listing data. All tested URLs (/businesses-for-sale/, /listings, /search/) show identical page structure without listings. Requires Playwright/Selenium/Puppeteer to render JavaScript. The CSS selectors provided are generic placeholders and will need to be updated after JS rendering reveals the actual DOM structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:46:31.880040+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

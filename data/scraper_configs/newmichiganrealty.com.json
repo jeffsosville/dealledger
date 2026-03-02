@@ -1,0 +1,18 @@
+{
+  "broker_name": "New Michigan Realty",
+  "source_url": "https://newmichiganrealty.com/search-result/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {
+    "title": "REQUIRES_JAVASCRIPT",
+    "price": "REQUIRES_JAVASCRIPT",
+    "location": "REQUIRES_JAVASCRIPT",
+    "description": "REQUIRES_JAVASCRIPT"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This is a React/JavaScript-rendered application. The page loads with only '<div id=\\\"root\\\"></div>' and all content is dynamically rendered client-side. REQUIRES Playwright/Selenium/Puppeteer for scraping. Static HTML fetching returns empty content. All tested URLs (search-result, businesses-for-sale, listings, business-listings, buy-a-business, available-businesses) have the same structure. The site likely uses a REST API or GraphQL endpoint to fetch listing data that could potentially be accessed directly, but requires browser DevTools inspection to identify the API endpoints.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:28:31.062497+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

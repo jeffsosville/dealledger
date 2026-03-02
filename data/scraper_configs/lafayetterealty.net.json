@@ -1,0 +1,20 @@
+{
+  "broker_name": "Lafayette Realty",
+  "source_url": "https://www.lafayetterealty.net/featuredlistings/",
+  "container_selector": ".featured-listing-container",
+  "fields": {
+    "title": ".row.primary .col-6 b:first-child",
+    "price": ".property-price b",
+    "address": ".property-location",
+    "beds": ".row.py-2.text-nowrap > div:nth-child(1)",
+    "baths": ".row.py-2.text-nowrap > div:nth-child(2)",
+    "sqft": ".row.py-2.text-nowrap > div:nth-child(3)"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "WARNING: This is a residential real estate broker, NOT a business-for-sale broker. Listings include homes/properties with beds/baths/sqft. Outside of DealLedger's typical scope (business-for-sale). Site uses lazy-loading images (data-src attribute). Successfully extracted 6 residential property listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:45:37.530238+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

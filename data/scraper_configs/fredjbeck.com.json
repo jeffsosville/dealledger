@@ -1,0 +1,17 @@
+{
+  "broker_name": "Fred Beck & Associates",
+  "source_url": "http://www.fredjbeck.com/business.html",
+  "container_selector": "div.wsb-element-text:has(h1:contains('$')), div.wsb-element-text:has(h2:contains('$'))",
+  "fields": {
+    "title": "h1, h2",
+    "description": "p",
+    "price": "h1, h2"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Fred Beck & Associates real estate brokerage in Angola, Indiana. Business listings page with 5 active/sold listings. The page uses a GoDaddy website builder (wsb-element classes). Listings are in text containers with h1 or h2 headings containing the business name and price. Most listings show SOLD status. Price needs to be extracted from title text.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:23:23.877836+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

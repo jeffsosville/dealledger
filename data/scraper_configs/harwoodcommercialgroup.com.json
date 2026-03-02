@@ -1,0 +1,21 @@
+{
+  "broker_name": "Harwood Commercial Group",
+  "source_url": "https://www.harwoodcommercialgroup.com/our-listings/",
+  "container_selector": "article.elementor-post",
+  "fields": {
+    "title": ".elementor-post__title a",
+    "price": ".elementor-post__excerpt",
+    "location": ".elementor-post__excerpt",
+    "status": ".elementor-post__badge",
+    "url": ".elementor-post__title a",
+    "image": ".elementor-post__thumbnail img",
+    "date": ".elementor-post-date"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Elementor-based WordPress site with clear listing structure. Each listing contains title, price/details in excerpt text, status badge (For Sale/For Lease), date, and URLs. The price and location info is combined in the excerpt field and will need parsing. URLs should extract href attribute, images should extract src attribute. Found 16 active listings on the page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:55:37.351574+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

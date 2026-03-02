@@ -1,0 +1,18 @@
+{
+  "broker_name": "Tucson Business Investments",
+  "source_url": "https://www.tucsonbusiness.com/listings.html",
+  "container_selector": "div.isotope-item",
+  "fields": {
+    "title": "h5",
+    "price": "h4.text-color-light",
+    "description": "p.font-weight-semibold",
+    "image": "img.img-fluid"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Successfully scraped 12 business listings from Tucson Business Investments. The site uses isotope-item containers with filterable categories (franchise, manufacturing, restaurant, retail, services) via CSS classes. Listings include title, price, and brief description. No pagination detected - all listings appear on single page. Images are present in HTML but may require additional attribute selectors.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:43:36.177150+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

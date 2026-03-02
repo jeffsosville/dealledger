@@ -1,0 +1,21 @@
+{
+  "broker_name": "Gilcrest Properties",
+  "source_url": "https://search.gilcrestproperties.com/idx/search/commercial",
+  "container_selector": ".IDX-results-item",
+  "fields": {
+    "title": ".IDX-results-address",
+    "price": ".IDX-results-price",
+    "location": ".IDX-results-cityState",
+    "description": ".IDX-results-remarks",
+    "listing_url": "a.IDX-results-detailsLink::attr(href)",
+    "sqft": ".IDX-results-sqft",
+    "property_type": ".IDX-results-propertyType"
+  },
+  "pagination_next_selector": ".IDX-pagination-next, a[data-action='next']",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium/Puppeteer\n\nThis site uses an IDX (Internet Data Exchange) system that loads all listing data dynamically via JavaScript. The initial HTML contains only a loading screen and empty containers.\n\nTECHNICAL DETAILS:\n- Platform: IDX Broker (commercial real estate IDX)\n- Content loads via AJAX after page load\n- Listings container: .IDX-results-item (not present in static HTML)\n- Alternative URLs tried: /listings (same issue)\n\nSCRAPING APPROACH NEEDED:\n1. Use headless browser (Playwright/Puppeteer/Selenium)\n2. Wait for selector: .IDX-results-item or #IDX-resultsContainer\n3. Wait for AJAX loading to complete (check for #IDX-loadingScreen to hide)\n4. Then extract listing data using the selectors above\n\nALTERNATIVE APPROACH:\n- Monitor network requests for API calls (likely /idx/ajax/*.php endpoints)\n- May be able to call API directly for JSON data\n- Requires reverse-engineering their AJAX calls\n\nSELECTORS (for use with JS rendering):\n- Container: .IDX-results-item\n- Title/Address: .IDX-results-address\n- Price: .IDX-results-price\n- Location: .IDX-results-cityState\n- Description: .IDX-results-remarks\n- Link: a.IDX-results-detailsLink\n- Property Type: .IDX-results-propertyType\n- Square Footage: .IDX-results-sqft",
+  "_meta": {
+    "generated_at": "2026-02-27T19:52:42.136150+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

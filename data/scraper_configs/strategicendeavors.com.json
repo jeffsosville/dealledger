@@ -1,0 +1,13 @@
+{
+  "broker_name": "Strategic Endeavors",
+  "source_url": "https://www.strategicendeavors.com/businesses-for-sale.php",
+  "container_selector": "UNKNOWN - JS Required",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JAVASCRIPT RENDERING REQUIRED: The page returns minimal static HTML with only header/footer. The listings section is completely empty in static HTML, indicating content is loaded via JavaScript after page load. This site requires Playwright/Selenium to properly scrape. Need to inspect with browser DevTools to identify: 1) actual container selectors after JS loads, 2) any API calls that could be intercepted, 3) iframe or third-party widgets. Static scraping will not work for this broker.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:51:18.896012+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

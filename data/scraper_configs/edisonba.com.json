@@ -1,0 +1,20 @@
+{
+  "broker_name": "Edison Business Advisors",
+  "source_url": "https://www.edisonba.com/pages/active-listings",
+  "container_selector": "ul.listings > li",
+  "fields": {
+    "title": ".cell.title .link-title",
+    "asking_price": ".cell.details li:has(h4:contains('PRICE')) p",
+    "revenue": ".cell.details li:has(h4:contains('REVENUE')) p",
+    "cash_flow": ".cell.details li:has(h4:contains('PROFITS')) p",
+    "status": ".cell.listing-status",
+    "url": ".location-link-title a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Edison Business Advisors active listings page. All listings are rendered in static HTML with no JavaScript required. Each listing contains title, asking price (may be 'Undisclosed'), revenue, profits/cash flow, and listing status. The URL field captures the 'More Info' link text - actual href extraction would need post-processing. Status values include: Active, New, Under Contract.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:30:21.625902+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

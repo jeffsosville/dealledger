@@ -1,0 +1,13 @@
+{
+  "broker_name": "KW Shore Properties (Keller Williams)",
+  "source_url": "https://www.kwshoreproperties.com/featured-listings/",
+  "container_selector": "N/A - JavaScript rendered",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f NOT A BUSINESS BROKER - This is a real estate brokerage (Keller Williams franchise) that lists residential and commercial real estate properties, not businesses for sale. The site uses PropertyPress IDX widget which loads listings dynamically via JavaScript. All listing pages (Featured, Commercial, Residential, Luxury) use the same JS-rendered widget. Main listings page at /listings contains embedded JSON in bcoidx-data div but requires JavaScript to render. Not suitable for DealLedger as it does not list businesses for sale.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:16:53.408684+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "broker_name": "Centurion 7 Business Advisors",
+  "source_url": "https://centurion7.com/business-opportunities/",
+  "container_selector": "article.pbmit-portfolio-style-2",
+  "fields": {
+    "title": {
+      "selector": ".pbmit-title",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": "a.pbmit-link",
+      "attribute": "href"
+    },
+    "category": {
+      "selector": ".pbmit-port-cat a",
+      "attribute": "text"
+    },
+    "image": {
+      "selector": ".pbmit-featured-wrapper img",
+      "attribute": "src"
+    }
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Portfolio-style listings using WordPress theme. Listings are displayed as articles with portfolio styling. Each listing has a title, link to detail page, category tag (Opportunities), and featured image. No price or location information visible on the listings page - these would need to be scraped from individual listing pages. The page appears to be server-rendered (not JavaScript-dependent).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:14:44.914522+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

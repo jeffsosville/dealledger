@@ -1,0 +1,19 @@
+{
+  "broker_name": "Urban Business Brokers",
+  "source_url": "https://urbanbusinessbrokers.com/listing.html",
+  "container_selector": ".list-content .container > div",
+  "fields": {
+    "title": "h3, h4, .title",
+    "price": ".price, .amount",
+    "location": ".location, address",
+    "description": "p, .description",
+    "type": ".type, .category"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). The listings container (.list-content .container) is empty in static HTML - content is loaded dynamically via JavaScript. The page structure suggests listings should appear in the container div, but they are not present in the initial HTML response. Field selectors are estimated based on common patterns and will need to be validated once JS rendering is implemented. The site serves the Chicagoland area, IL and covers 36+ industries including professional services, trade professionals, and manufacturing.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:51:22.316048+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

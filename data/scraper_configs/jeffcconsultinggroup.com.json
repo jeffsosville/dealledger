@@ -1,0 +1,18 @@
+{
+  "broker_name": "Jeff C Consulting Group",
+  "source_url": "https://jeffcconsultinggroup.com/fransearchresults.asp",
+  "container_selector": "div.col-md-3.col-sm-4.col-xs-6 a",
+  "fields": {
+    "title": "h5",
+    "category": "div:nth-of-type(2) p",
+    "price": "p[style*='margin-top']",
+    "detail_url": ""
+  },
+  "pagination_next_selector": "a.letter[href*='offset']",
+  "confidence": "high",
+  "notes": "Franchise consulting site with 753 franchises. Uses pagination with offset parameter. Each listing shows franchise name, category/industry, and investment range. The site is hosted/managed by FranServe Inc. The empty selector for detail_url captures the href of the container anchor tag. Page size is 24 listings per page.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:57:08.993980+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

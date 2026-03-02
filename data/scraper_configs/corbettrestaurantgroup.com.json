@@ -1,0 +1,18 @@
+{
+  "broker_name": "Corbett Restaurant Group",
+  "source_url": "https://corbettrestaurantgroup.com/listings/",
+  "container_selector": "astro-island[component-url*='ListingsContainer']",
+  "fields": {
+    "json_data": {
+      "attribute": "props",
+      "notes": "Contains serialized JSON with allListings array"
+    }
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "JavaScript-rendered React application using Astro Islands. Listing data is embedded in the page as serialized JSON in the 'props' attribute of the astro-island component. Requires JavaScript execution (Playwright/Selenium) to render the actual listing cards, OR custom parser to decode the serialized props data. The props attribute contains encoded JSON with fields: id, title, location, listing_price, sales, cash_flow, type, full_address, city, state, postal_code, content, square_footage, seating, concept, parking, licenses, hours, lease_terms, and more. Each listing has a slug that can be used to construct detail page URLs like: /listings/{slug}/. Multiple active listings found in the data including restaurants, bars, and other F&B businesses primarily in Massachusetts.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:20:35.615238+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

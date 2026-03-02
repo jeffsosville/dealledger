@@ -1,0 +1,17 @@
+{
+  "broker_name": "Advantage Business Brokers",
+  "source_url": "https://advantagebusinessbrokers.com/businesses-for-sale/",
+  "container_selector": "article.elementor-post",
+  "fields": {
+    "title": "a",
+    "url": "a[href]",
+    "date": ".elementor-post-date"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered content. Static HTML only shows blog articles, not actual business listings. Listings appear to load dynamically via AJAX or require form interaction. Requires Playwright/Selenium for JavaScript rendering. Site built with Elementor WordPress page builder. May require form submission or user interaction to view listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:39:12.047791+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "broker_name": "Grand Mesa Real Estate Services",
+  "source_url": "https://www.grandmesares.com/our-active-listings",
+  "container_selector": "[data-react=\"root\"]",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "JavaScript-rendered site using React and iHOUSE Elite platform. Page shows only loading spinner in static HTML. Requires Playwright/Selenium with JavaScript execution to scrape listings. The site loads content dynamically via React components. Alternative: may have API endpoints that could be discovered through browser DevTools network inspection.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:04:56.978661+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

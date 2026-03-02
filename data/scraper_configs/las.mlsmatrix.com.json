@@ -1,0 +1,22 @@
+{
+  "broker_name": "Las Vegas MLS Matrix IDX",
+  "source_url": "https://las.mlsmatrix.com/Matrix/Public/IDXSearch.aspx?count=1&idx=18f7be2&pv=&or=",
+  "container_selector": "div.d-wrapperTable",
+  "fields": {
+    "title": "div.d-fontSize--largest.d-color--brandDark a",
+    "price": "span.d-fontSize--largest",
+    "status": "span[class*='Status']",
+    "location": "div.d-textSoft span.formula",
+    "description": "span.d-section",
+    "property_details": "div.d-marginLeft--10",
+    "image_url": "img.ivrImg",
+    "listing_link": "div.d-fontSize--largest.d-color--brandDark a"
+  },
+  "pagination_next_selector": "ul.pagination.mtx-pagination li a",
+  "confidence": "high",
+  "notes": "MLS Matrix IDX system for Greater Las Vegas Association of REALTORS. Captures residential properties (both for sale and rental). The page uses ASP.NET ViewState with complex pagination. Contains 16 listings per page. Property details include beds, baths, sqft, and year built in a concatenated format. Images are loaded via MediaServer API. Status classes follow pattern Status_A, Status_P, etc.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:55:59.245928+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

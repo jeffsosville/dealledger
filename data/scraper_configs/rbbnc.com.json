@@ -1,0 +1,19 @@
+{
+  "broker_name": "Resource Business Brokerage (RBBNC)",
+  "source_url": "https://rbbnc.com/current-listings/",
+  "container_selector": ".listing-block",
+  "fields": {
+    "title": "h2",
+    "price": ".asking-price",
+    "description": ".listing-info-content p",
+    "image": ".listing-preview img[src]",
+    "link": ".listing-info-content a.button[href]"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Static HTML page with clear listing structure. Successfully extracts title, price, and description. Image selector '.listing-preview img[src]' and link selector '.listing-info-content a.button[href]' locate correct elements but may need attribute extraction enhancement. Price format: 'Asking Price $X'. Site redirects to BizBuySell for detailed listings. No pagination observed.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:45:50.400794+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

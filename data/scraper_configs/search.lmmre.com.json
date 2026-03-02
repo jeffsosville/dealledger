@@ -1,0 +1,38 @@
+{
+  "broker_name": "Levey Miller Maretz (LMM Real Estate)",
+  "source_url": "https://search.lmmre.com/i/commercial-properties",
+  "container_selector": ".IDX-resultsListings .IDX-listing",
+  "fields": {
+    "title": {
+      "selector": ".IDX-listingAddress, .IDX-listingTitle",
+      "attribute": "text"
+    },
+    "price": {
+      "selector": ".IDX-listingPrice",
+      "attribute": "text"
+    },
+    "location": {
+      "selector": ".IDX-listingCity, .IDX-listingLocation",
+      "attribute": "text"
+    },
+    "details": {
+      "selector": ".IDX-listingDetails, .IDX-listingDescription",
+      "attribute": "text"
+    },
+    "url": {
+      "selector": "a.IDX-listingLink, .IDX-listing a",
+      "attribute": "href"
+    },
+    "image": {
+      "selector": ".IDX-listingPhoto img, .IDX-photo img",
+      "attribute": "src"
+    }
+  },
+  "pagination_next_selector": ".IDX-pagination a.IDX-next, #IDX-nextLink",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium). This site uses IDX (Internet Data Exchange) system that loads all listing data dynamically via JavaScript/AJAX. The static HTML only contains empty containers. Listings appear under #IDX-resultsContainer but content is injected client-side. The page indicates ~500 total results available. Alternative URLs: apartments (https://search.lmmre.com/i/apartments-for-rent), residential (https://search.lmmre.com/idx/featured). This is a commercial real estate broker (not business-for-sale), focusing on retail, commercial/industrial, and investment properties in Connecticut.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:57:51.701158+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

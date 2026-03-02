@@ -1,0 +1,19 @@
+{
+  "broker_name": "Ivy Realty",
+  "source_url": "https://ivy-realty.com/portfolio/",
+  "container_selector": "article.dp-dfg-item",
+  "fields": {
+    "title": "h2.entry-title a",
+    "address": ".dp-dfg-cf-property_address .dp-dfg-custom-field-value",
+    "location": ".dp-dfg-cf-city_state .dp-dfg-custom-field-value",
+    "square_feet": ".dp-dfg-cf-sf_for_menu .dp-dfg-custom-field-value",
+    "status": ".dp-dfg-cf-sold_date .dp-dfg-custom-field-value"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial real estate portfolio. 118 listings including industrial, multi-family, office, and retail properties. Location data is available. Some properties show square footage, and sold properties are marked with 'SOLD' status. No pricing information visible on listing cards. Property links are available via h2.entry-title a[href] attribute. Images available via .dp-dfg-featured-image[src] attribute. All data loads on initial page (no pagination needed).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:24:39.817632+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

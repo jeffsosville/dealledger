@@ -1,0 +1,20 @@
+{
+  "broker_name": "SFRMC (San Francisco Realty & Mortgage Company)",
+  "source_url": "https://www.sfrmc.com/our_listings",
+  "container_selector": "ng-view [ng-repeat*=\"listing\"]",
+  "fields": {
+    "title": ".listing-title, h3, h4, .title",
+    "price": ".price, .listing-price",
+    "location": ".location, .listing-location",
+    "description": ".description, .listing-description",
+    "listing_id": "[data-id], .listing-id",
+    "category": ".category, .industry"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE (AngularJS) - This site uses AngularJS framework with client-side rendering. The listing data is loaded dynamically via JavaScript after the initial page load, making it impossible to scrape with simple HTTP requests. \n\nREQUIREMENTS:\n- Requires Playwright, Puppeteer, or Selenium with JavaScript execution enabled\n- Need to wait for Angular to bootstrap and load listing data\n- May need to wait for specific selectors to appear in DOM\n\nTECHNICAL DETAILS:\n- Framework: AngularJS (ng-controller, ng-view, ng-repeat)\n- Main controller: indexcontroller\n- Content injected into: <ng-view> element\n- Static HTML fetch returns empty containers\n\nNEXT STEPS:\n1. Use Playwright/Puppeteer to render JavaScript\n2. Wait for listings to load (wait for selectors to appear)\n3. Inspect rendered DOM to identify actual selectors for:\n   - Listing container (likely has ng-repeat directive)\n   - Title, price, location, description fields\n4. May need to reverse-engineer API calls (check Network tab for JSON endpoints)\n\nThe selectors provided above are placeholders and need to be verified against the JavaScript-rendered DOM.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:51:00.631120+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

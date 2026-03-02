@@ -1,0 +1,19 @@
+{
+  "broker_name": "Accounting Biz Brokers",
+  "source_url": "https://accountingbizbrokers.com/listings/",
+  "container_selector": ".jet-listing-grid__item",
+  "fields": {
+    "title": ".jet-listing-dynamic-link__link, h2 a, h3 a",
+    "price": ".elementor-heading-title:contains('$'), [class*='price']",
+    "location": ".jet-listing-dynamic-terms__link, [class*='location']",
+    "description": ".elementor-text-editor p",
+    "link": "a.jet-listing-dynamic-link__link, .jet-listing-grid__item-inner > a"
+  },
+  "pagination_next_selector": ".jet-filters-pagination__link, .elementor-pagination a",
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer). Site uses WordPress Elementor + JetEngine with lazy-loaded listings. The listing grid has class 'jet-listing-grid--lazy-load' with data attribute data-lazy-load='{\"offset\":\"0px\",\"post_id\":333,\"queried_id\":\"31|WP_Post\"}'. Listings are loaded dynamically via AJAX after page load. Initial HTML only contains loader spinner. Selectors provided are based on common JetEngine patterns and will work once JS renders the content. Alternative: May have a REST API endpoint at /wp-json/jet-engine/... that could be used for direct data access.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:48:01.427347+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

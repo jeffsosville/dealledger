@@ -1,0 +1,20 @@
+{
+  "broker_name": "Basso Associates",
+  "source_url": "http://www.bassoassociates.com/listings.htm",
+  "container_selector": "tr:has(td[style*=\"font-family: arial\"][width=\"50%\"])",
+  "fields": {
+    "title": "td:nth-child(1) a",
+    "id": "td:nth-child(2)",
+    "price": "td:nth-child(3)",
+    "county": "td:nth-child(4)",
+    "state": "td:nth-child(5)",
+    "url": "td:nth-child(1) a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "Table-based layout with listings organized by category. Each listing row contains title with link, ID#, asking price, county, and state. The selector picks up some navigation rows that need filtering (rows with \"Home\" as title), but successfully extracts 4+ actual business listings. URL field extracts link text instead of href attribute. Post-processing should filter rows where ID is not numeric and convert relative URLs to absolute (e.g., 1301.htm -> http://www.bassoassociates.com/1301.htm).",
+  "_meta": {
+    "generated_at": "2026-02-27T20:40:30.784956+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

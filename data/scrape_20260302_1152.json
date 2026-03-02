@@ -1,0 +1,27 @@
+{
+  "total": 1658,
+  "success": 845,
+  "total_listings": 109547,
+  "methods": {
+    "css_rules": 60,
+    "haiku_css": 91,
+    "wordpress_api": 503,
+    "jsonld": 83,
+    "squarespace_json": 3,
+    "data_attributes": 92,
+    "rest_api": 11,
+    "shopify_api": 2
+  },
+  "errors": {
+    "failed": 364,
+    "js_only": 217,
+    "selectors_broken": 15,
+    "dead": 153,
+    "empty": 46,
+    "no_discovery": 12,
+    "auth_required": 2,
+    "Invalid character '|' position 29\n  line 1:\ndd.inline:contains('Price:') | dd.inline\n                             ^": 1,
+    "graphql_manual": 2,
+    "Invalid character '(' position 14\n  line 1:\nth > br + text()\n              ^": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "broker_name": "Certified Business Brokers (CBB)",
+  "source_url": "https://certifiedbb.com/listings/",
+  "container_selector": "tupelo-marketplace [data-listing], tupelo-marketplace .listing-card, tupelo-marketplace .business-card",
+  "fields": {
+    "title": "h2, h3, .listing-title, .business-title",
+    "price": ".price, .asking-price, [class*='price']",
+    "location": ".location, .address, [class*='location']",
+    "description": ".description, .summary, p",
+    "url": "a[href*='/listing/'], a[href*='/business/']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer). Site uses Tupelo Marketplace custom web component (organization-id: cmae8krad00000uvpcxogwexz) that dynamically loads listings via JavaScript. Static HTML fetch returns empty container. The selectors provided are educated guesses based on common Tupelo Marketplace patterns - they need to be validated with a headless browser. Alternative approach: May have a JSON API endpoint that the widget calls - investigate network traffic in browser DevTools to find API endpoint (likely format: https://api.tupelo.com/... or similar).",
+  "_meta": {
+    "generated_at": "2026-02-27T18:48:51.696053+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

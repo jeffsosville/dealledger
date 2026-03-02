@@ -1,0 +1,19 @@
+{
+  "broker_name": "The Realty Texas",
+  "source_url": "https://www.therealtytexas.com/search-results/?keyword=&location%5B%5D=",
+  "container_selector": ".listing-item, .business-listing, article.listing, .property-item, div[class*='listing']",
+  "fields": {
+    "title": "h2 a, h3 a, .listing-title, .business-name, [class*='title']",
+    "price": ".price, .listing-price, [class*='price']",
+    "location": ".location, .listing-location, [class*='location']",
+    "description": ".description, .listing-description, p",
+    "listing_url": "a[href*='business'], a[href*='listing']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f CAPTCHA PROTECTION DETECTED - SiteGround CAPTCHA is blocking automated access. This configuration is UNTESTED and based on common patterns. To scrape this site, you will need:\n1. Playwright/Selenium with browser automation to solve CAPTCHA\n2. Residential proxies or CAPTCHA solving service\n3. Human intervention to pass initial verification\n4. Session/cookie management to maintain access\n\nThe site structure cannot be analyzed without bypassing the CAPTCHA first. Selectors provided are educated guesses based on common patterns for business listing sites.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:16:27.438298+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "broker_name": "Midtown Boston Real Estate",
+  "source_url": "https://midtownboston.com/?page_id=53",
+  "container_selector": "div.wp-block-column",
+  "fields": {
+    "title": "p.has-text-align-center",
+    "details": "figcaption",
+    "property_type": "p.has-text-align-center"
+  },
+  "pagination_next_selector": "div.wp-block-button a[href*='page_id']",
+  "confidence": "high",
+  "notes": "Real estate transactions page with property listings. Each listing contains property type, location (mostly Boston/Brookline, MA), and details including square footage, bedrooms/bathrooms, and price when available. Pagination available via Page 1/Page 2 links at bottom. Images are present in HTML but stored in lazy-loading format. 23 listings found on page 1.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:58:00.763355+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

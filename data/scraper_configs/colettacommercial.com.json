@@ -1,0 +1,17 @@
+{
+  "broker_name": "Coletta Commercial",
+  "source_url": "https://colettacommercial.com/listings/",
+  "container_selector": ".et_pb_post",
+  "fields": {
+    "title": ".entry-title",
+    "location": ".post-meta",
+    "description": ".post-content p"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "WordPress/Divi theme site. Successfully extracts 10 listings with title, location (as categories), and description. Price information is embedded in description text. URL and image fields appear to be JavaScript-rendered and return null with static HTML scraping - would require Playwright/Selenium for full extraction. Location field contains comma-separated categories (e.g., 'Buy,Exclusive,For Sale,New Jersey'). Prices mentioned in description can be parsed from text.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:41:11.166327+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

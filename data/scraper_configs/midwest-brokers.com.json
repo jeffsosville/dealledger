@@ -1,0 +1,13 @@
+{
+  "broker_name": "Midwest Business Brokers",
+  "source_url": "https://www.midwest-brokers.com/businesses-for-sale/",
+  "container_selector": "N/A - JavaScript Rendered",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "REQUIRES PLAYWRIGHT/SELENIUM: The listings page uses JavaScript to dynamically load business listings into an empty div (class 'et_pb_code_2'). The page is built with Divi theme and appears to embed listings via a third-party widget or custom JavaScript application. Static HTML scraping returns no listing data. To scrape this site, you need: 1) Use Playwright or Selenium to render JavaScript, 2) Wait for listings to load in the DOM, 3) Identify the dynamically-generated selectors after JS execution. Alternative approach: Check if the widget makes API calls that could be intercepted and scraped directly. The site has been in business since 1936 according to their branding.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:25:03.887518+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

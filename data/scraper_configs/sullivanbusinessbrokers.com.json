@@ -1,0 +1,17 @@
+{
+  "broker_name": "Sullivan Business Brokers",
+  "source_url": "https://sullivanbusinessbrokers.com/category/uncategorized/",
+  "container_selector": ".post",
+  "fields": {
+    "title": "h2.title a",
+    "description": ".entry p",
+    "category": ".postmeta a[rel='category tag']"
+  },
+  "pagination_next_selector": ".navigation a",
+  "confidence": "high",
+  "notes": "All listings on this page appear to be SOLD (titles start with 'Sold:'). Location information is embedded in the title. Price information may be in the description text (e.g., 'Asking Price: 875k'). WordPress-based site. Simple HTML structure, no JavaScript rendering required. The category is 'All Business Listings' but contains only sold listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:39:08.526811+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

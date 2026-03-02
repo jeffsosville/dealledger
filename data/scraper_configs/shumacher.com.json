@@ -1,0 +1,18 @@
+{
+  "broker_name": "The Shumacher Group",
+  "source_url": "https://www.shumacher.com/category/listings/",
+  "container_selector": "div.teaser",
+  "fields": {
+    "title": "h2.entry-title a",
+    "url": "h2.entry-title a",
+    "description": ".format_teaser.entry-content p",
+    "listing_id": ".format_teaser.entry-content p"
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "high",
+  "notes": "Atlanta-based restaurant and real estate broker. Successfully extracts 82 listings. Price and location info embedded in title text (e.g., 'Downtown Marietta GA' and '$89,000'). Listing IDs in description starting with # (e.g., #6527). Images may require JavaScript rendering or are dynamically loaded. The page uses standard WordPress blog structure with .teaser containers. URL extraction returns text content - may need post-processing to extract href attributes in production.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:18:58.110947+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

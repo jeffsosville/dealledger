@@ -1,0 +1,30 @@
+{
+  "broker_name": "HUNT Real Estate",
+  "source_url": "https://www.huntrealestate.com/HUNT-Properties",
+  "container_selector": "article.int-prop",
+  "fields": {
+    "title": "div.address:first-of-type",
+    "price": "h2.price",
+    "location": "div.address:nth-of-type(2)",
+    "status": "div.status",
+    "sqft": "ul.info li:first-child",
+    "lot_size": "ul.info li:last-child",
+    "listing_url": {
+      "selector": "a.link",
+      "attribute": "href"
+    },
+    "image_url": {
+      "selector": "div.image",
+      "attribute": "data-lazy"
+    },
+    "courtesy": "div.courtesy",
+    "broker_compensation": "div.brokerage-compensation button"
+  },
+  "pagination_next_selector": "ul.pagination li a",
+  "confidence": "medium",
+  "notes": "Site has 746 properties across 75 pages (Page 1 of 75). Site implements anti-bot protection (403 errors on direct scraper requests), but fetch_page works successfully. May require headless browser (Playwright/Selenium) for production scraping. Pagination uses JavaScript click events on li elements with data-page attributes. Full listing URLs need to be prefixed with base domain. This is a residential real estate site, not business-for-sale listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:21:40.805476+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

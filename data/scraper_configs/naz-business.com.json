@@ -1,0 +1,18 @@
+{
+  "broker_name": "Naz Business Group",
+  "source_url": "https://naz-business.com/listings",
+  "container_selector": "div[data-ux='ContentCard']",
+  "fields": {
+    "title": "h4[data-ux='ContentCardHeading']",
+    "price_and_details": "div[data-ux='ContentCardText']",
+    "image": "img[data-ux='Image']",
+    "category": "h4[data-ux='ContentCardHeading']"
+  },
+  "pagination_next_selector": "a[data-ux='PaginationLink']",
+  "confidence": "high",
+  "notes": "Successfully extracting 76 listings. The site uses a website builder (likely GoDaddy). Price and revenue info are embedded in the price_and_details field as text (e.g., '2277Asking Price:  $ 100,000'). Title contains location info (e.g., 'Jefferson County, WI'). Images appear to be embedded but not extracting - may require JS rendering. 80% of listings have titles. Site focuses on gas stations, convenience stores, and liquor stores primarily in Wisconsin.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:28:33.521714+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

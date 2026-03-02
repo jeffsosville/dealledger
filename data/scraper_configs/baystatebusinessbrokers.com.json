@@ -1,0 +1,20 @@
+{
+  "broker_name": "Bay State Business Brokers",
+  "source_url": "https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+  "container_selector": ".listing-item, .business-listing, article.listing",
+  "fields": {
+    "title": ".listing-title, h2.title, .business-name",
+    "price": ".price, .asking-price, .listing-price",
+    "location": ".location, .business-location, .address",
+    "description": ".description, .listing-description, .excerpt",
+    "cashflow": ".cashflow, .cash-flow, .ebitda",
+    "revenue": ".revenue, .gross-revenue, .sales"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "IMPORTANT: Site protected by SiteGround bot protection (sgcaptcha). All pages return captcha challenge redirect. Requires Playwright/Selenium with browser automation to bypass. Selectors are estimated based on common patterns but NOT validated due to captcha. Manual browser testing or headless browser with proper wait/solve captcha logic needed. Alternative URLs tried: /businesses-for-sale, /listings - all protected.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:47:24.065526+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

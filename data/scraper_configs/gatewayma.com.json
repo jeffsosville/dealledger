@@ -1,0 +1,20 @@
+{
+  "broker_name": "Gateway M&A",
+  "source_url": "https://www.gatewayma.com/available-listings",
+  "container_selector": ".epl-property-blog",
+  "fields": {
+    "title": ".entry-title a",
+    "price": ".askprice.alignright",
+    "revenue": ".price.box3_hr:nth-of-type(1) .price.alignright",
+    "cash_flow": ".price.box3_hr:nth-of-type(2) .price.alignright",
+    "description": ".entry-content",
+    "url": ".epl-more-link"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Gateway M&A (Dallas/North Texas). Returns 109 listings with complete data. Revenue and cash flow (Seller's Discretionary Earnings) are available. Location data is not populated in the HTML. Uses EPL (Easy Property Listings) WordPress plugin. URL selector gets text 'More Details' - may need href extraction in production.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:08:33.056100+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

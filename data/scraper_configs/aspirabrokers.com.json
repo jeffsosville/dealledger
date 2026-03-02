@@ -1,0 +1,18 @@
+{
+  "broker_name": "ASPIRA Business Brokers",
+  "source_url": "https://aspirabrokers.com/listings-bbs/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {
+    "title": "REQUIRES_JAVASCRIPT",
+    "price": "REQUIRES_JAVASCRIPT",
+    "location": "REQUIRES_JAVASCRIPT",
+    "description": "REQUIRES_JAVASCRIPT"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "This site requires JavaScript rendering (Playwright/Selenium). The listings page at https://aspirabrokers.com/listings-bbs/ uses dynamic content loading, likely via BizBuySell integration or similar widget. The static HTML contains only empty code/paragraph tags in the content area. Alternative URL https://aspirabrokers.com/listings also requires JavaScript. The page uses WordPress with Divi theme. To scrape this site, use a headless browser to render the page, then inspect the DOM for listing containers, titles, prices, and locations after JavaScript execution.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:06:42.966039+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

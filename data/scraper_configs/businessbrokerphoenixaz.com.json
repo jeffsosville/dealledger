@@ -1,0 +1,18 @@
+{
+  "broker_name": "Business Broker Phoenix AZ (Strategic Business Consultants)",
+  "source_url": "https://businessbrokerphoenixaz.com/product-category/current-listings/",
+  "container_selector": "li.product",
+  "fields": {
+    "title": "h2.woocommerce-loop-product__title",
+    "price": "span.price bdi",
+    "description": ".woocommerce-loop-product__excerpt",
+    "location": ".product-location"
+  },
+  "pagination_next_selector": "a.next.page-numbers",
+  "confidence": "medium",
+  "notes": "WooCommerce-based listings. Successfully extracts 12 listings with titles and prices at 100% quality. Location and description fields return null (may be JS-rendered or not present on listing page). URL and image extraction would require attribute selectors (href, src) which are not supported by the current text-extraction method. Full details likely available on individual listing pages. Pagination selector included for multi-page scraping.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:12:30.931199+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "broker_name": "Capstone Commercial M&A Advisors",
+  "source_url": "https://capstonebrevard.com/commercial-real-estate/active-listings/",
+  "container_selector": "REQUIRES_JAVASCRIPT",
+  "fields": {},
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Site requires JavaScript/Playwright. All pages (active-listings, sold-listings for both commercial-real-estate and business-brokerage) use dynamic content loading. No static HTML contains listing data. WordPress site with custom theme by Switch Creatives. Listings appear to load via AJAX after page render. Would need browser automation (Selenium/Playwright) to extract data. Also has loading indicators: .loading-tranpatent and #loading_pulse which confirm async data loading pattern.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:02:00.759792+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

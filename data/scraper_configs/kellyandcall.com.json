@@ -1,0 +1,19 @@
+{
+  "broker_name": "Kelly and Call Commercial Real Estate",
+  "source_url": "https://www.kellyandcall.com/projects",
+  "container_selector": "div[data-testid=\"pro-gallery-item\"]",
+  "fields": {
+    "title": "h3, h2",
+    "price": "span:contains('$')",
+    "description": "p",
+    "location": ".location, span:contains('Flagstaff')",
+    "link": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Wix site with JavaScript-rendered content. The business listings page exists at /projects but requires Playwright/Selenium to render JavaScript and extract listing data. Static HTML fetch returns empty containers. Based in Flagstaff, AZ. The site uses Wix's gallery/portfolio components to display business listings. A browser automation approach is required to scrape this site successfully.",
+  "_meta": {
+    "generated_at": "2026-02-26T19:52:58.331310+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

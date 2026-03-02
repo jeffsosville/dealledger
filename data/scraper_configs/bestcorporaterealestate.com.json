@@ -1,0 +1,17 @@
+{
+  "broker_name": "Best Corporate Real Estate",
+  "source_url": "https://www.bestcorporaterealestate.com/property_listings_index.php?category=Business Opportunity",
+  "container_selector": "div.table-row",
+  "fields": {
+    "title": "div.table-data:nth-of-type(2)",
+    "price": "div.table-data:nth-of-type(3)",
+    "location": "div.table-data:nth-of-type(2)"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Scraper for Business Opportunity listings. Title and location are combined in the same field (address on first line, city/state/zip on second line). URL attribute extraction not supported by current scraper - links are at 'additional_info_bcre.php?listingoid={id}'. Images are available at 'listingimages/{id}.jpg' format. Currently showing 2 active business opportunity listings.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:33:15.851602+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

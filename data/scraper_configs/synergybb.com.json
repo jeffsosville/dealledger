@@ -1,0 +1,23 @@
+{
+  "broker_name": "Synergy Business Brokers",
+  "source_url": "https://synergybb.com/businesses-for-sale/",
+  "container_selector": "#listings-container .listing-item",
+  "fields": {
+    "title": ".listing-item__info__title a",
+    "price": ".listing-item__price__value",
+    "location": ".listing-item__info__location",
+    "revenue": ".listing-item__info__details__item:has-text('Revenue') .listing-item__info__details__item__value",
+    "cash_flow": ".listing-item__info__details__item:has-text('Cash Flow') .listing-item__info__details__item__value",
+    "ebitda": ".listing-item__info__details__item:has-text('EBITDA') .listing-item__info__details__item__value",
+    "industry": ".listing-item__info__industry",
+    "url": ".listing-item__info__title a::attr(href)",
+    "listing_id": ".listing-item::attr(data-id)"
+  },
+  "pagination_next_selector": ".pagination .next",
+  "confidence": "medium",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer required). The page loads listings dynamically via AJAX. Static HTML contains empty #listings-container div. Listings appear to use .listing-item class structure based on typical WordPress listing plugin patterns. The site uses WordPress and likely has a REST API endpoint (e.g., /wp-json/synergy/v1/listings) that could be used for API-based scraping as an alternative to browser automation. Site has 500+ listings across multiple industries and locations. Filter options available for industry, location, price range, revenue, and cash flow.",
+  "_meta": {
+    "generated_at": "2026-02-27T01:35:25.111123+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

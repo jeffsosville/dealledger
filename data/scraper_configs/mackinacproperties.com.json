@@ -1,0 +1,20 @@
+{
+  "broker_name": "Mackinac Properties",
+  "source_url": "https://mackinacproperties.com/listings/commercial.php?oid=20050121235030353539000000",
+  "container_selector": "div.product-right-grids",
+  "fields": {
+    "address": "div.p-right-left2 h5 a",
+    "title_price": "div.p-right-left2 h5",
+    "mls_number": "div.p-right-left a",
+    "description": "div.col-md-12.p-right-left p",
+    "detail_link": "form[action*='commercialdetail.php']",
+    "status_info": "div.col-md-6.p-right-left p"
+  },
+  "pagination_next_selector": "a.bn",
+  "confidence": "high",
+  "notes": "Commercial listings page for Mackinac Properties. The title_price field contains both address and price concatenated (e.g., '241 State Street St. Ignace, MI$595,000'). Price needs to be extracted via regex. Detail links are in form actions. Page has sorting options and filters. Limited to 2 listings on this test page.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:53:36.885282+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

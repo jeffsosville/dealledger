@@ -1,0 +1,17 @@
+{
+  "broker_name": "Resources Real Estate",
+  "source_url": "https://www.resourcesrealestate.com/exclusive-listings/",
+  "container_selector": ".ihf-grid-result",
+  "fields": {
+    "title": ".ihf-grid-result-address",
+    "price": ".ihf-grid-result-price",
+    "details": ".ihf-grid-result-basic-info-container"
+  },
+  "pagination_next_selector": null,
+  "confidence": "medium",
+  "notes": "WARNING: This is a residential/commercial REAL ESTATE brokerage, NOT a business-for-sale brokerage. The listings are properties (houses, land, commercial buildings), not businesses. Uses iHomefinder IDX system. Listings are dynamically loaded. Found 12 listings, primarily residential with some commercial properties. Location is embedded in the title field. No separate URL extraction working properly due to container structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:50:37.416847+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

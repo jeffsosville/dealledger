@@ -1,0 +1,21 @@
+{
+  "broker_name": "MS Commercial Group",
+  "source_url": "https://www.mscommercialgroup.com/businesslistings.html",
+  "container_selector": "table.MsoNormalTable tr:not(:first-child):has(td:nth-child(2))",
+  "fields": {
+    "listing_id": "td:nth-child(2)",
+    "location": "td:nth-child(3)",
+    "price": "td:nth-child(4)",
+    "revenue": "td:nth-child(5)",
+    "additional_info": "td:nth-child(6)",
+    "other_income": "td:nth-child(7)",
+    "description": "td:last-child"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "MS Commercial Group specializes in gas stations and commercial properties in Texas/Oklahoma. The page has two main sections: Gas Stations (with fields for inside sales, gas volume, other income) and Shopping Centers (with building/lot size info). All listings are in table rows with consistent structure. The site appears to be static HTML, making it reliable for scraping.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:14:19.149487+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

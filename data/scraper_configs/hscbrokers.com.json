@@ -1,0 +1,19 @@
+{
+  "broker_name": "HSC Brokers",
+  "source_url": "https://www.hscbrokers.com/property-listings/",
+  "container_selector": "li.product",
+  "fields": {
+    "title": ".fusion-rollover-title, .product-title",
+    "price": ".price .woocommerce-Price-amount",
+    "location": ".product_meta",
+    "link": ".fusion-product-image-link, a",
+    "image": ".fusion-product-image img, img"
+  },
+  "pagination_next_selector": ".pagination a.next, .woocommerce-pagination a.next",
+  "confidence": "medium",
+  "notes": "WooCommerce-based listings site. Successfully extracts price (100%) and location (100%) from 101 listings. Title, link, and image fields appear to be JavaScript-rendered (Fusion/Avada theme dynamic content) and return null/empty in static HTML. For complete data extraction, JavaScript rendering (Playwright/Selenium) is required. Location data includes state/city information. Prices range from $175,000 to $3,650,000+.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:42:29.667951+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

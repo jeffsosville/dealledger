@@ -1,0 +1,21 @@
+{
+  "broker_name": "Midway Business Broker",
+  "source_url": "https://www.mbbbiz.com/view_inventory.php",
+  "container_selector": ".products-row",
+  "fields": {
+    "title": "div.col-md-10 div.col-md-5:nth-of-type(2) div:nth-of-type(1) strong",
+    "price": "div.col-md-10 div.col-md-5:nth-of-type(2) div:nth-of-type(2) strong",
+    "location": "div.col-md-10 div.col-md-5:nth-of-type(1) div:nth-of-type(3) strong",
+    "industry": "div.col-md-10 div.col-md-5:nth-of-type(1) div:nth-of-type(1) strong",
+    "business_id": "div.col-md-10 div.col-md-5:nth-of-type(1) div:nth-of-type(2) strong",
+    "financing": "div.col-md-10 div.col-md-5:nth-of-type(2) div:nth-of-type(3) strong",
+    "detail_url": "a[href*='business_details']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Scraper working well. Returns 18 listings. Data includes prefixes (e.g., 'Business Name : ', 'Price : ') that need to be cleaned in post-processing using regex. Detail URLs are relative paths (business_details.php?businessid=X). No pagination detected on this page - appears to be a single page inventory listing. Financing availability is also captured.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:13:24.945678+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

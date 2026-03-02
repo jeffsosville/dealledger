@@ -1,0 +1,18 @@
+{
+  "broker_name": "Absolute Net Properties",
+  "source_url": "https://absolutenetproperties.com/available-property/",
+  "container_selector": "section.kc_row.xt_kc_row_has_container",
+  "fields": {
+    "title": "h3.entry-title",
+    "location": ".property-address .adderess",
+    "description": ".epl-excerpt-content p",
+    "flyer_link": "a.kc_button"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Commercial real estate broker specializing in net lease properties and retail development sites. Listings include title, location, description, and property flyer links. Note: This broker deals with real estate properties (land/retail sites) rather than traditional business-for-sale listings. To extract image URLs and flyer URLs as attributes, additional processing may be needed. Static HTML site built with KingComposer WordPress plugin.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:31:36.983956+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

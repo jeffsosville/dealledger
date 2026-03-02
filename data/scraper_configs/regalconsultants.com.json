@@ -1,0 +1,21 @@
+{
+  "broker_name": "Regal Consultants",
+  "source_url": "https://regalconsultants.com/businesses-for-sale-2/",
+  "container_selector": "div.list-post",
+  "fields": {
+    "title": "h2 a",
+    "url": "h2 a",
+    "industry": "p.list-ind",
+    "location": "p.list-loc",
+    "revenue": "div.fourcol.last p:contains('Revenue')",
+    "cash_flow": "div.fourcol.last p:contains('Cash Flow')",
+    "description": "p.list-dec"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Successfully scraped 59 listings. All fields populate correctly including title, industry, location, revenue, cash flow, and description. The page uses WordPress with a custom Search & Filter Pro plugin. No pagination selector needed as all listings appear to load on a single page.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:30:44.417800+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

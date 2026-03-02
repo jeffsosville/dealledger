@@ -1,0 +1,19 @@
+{
+  "broker_name": "We Sell Restaurants",
+  "source_url": "https://www.wesellrestaurants.com/restaurant-for-sale-near-me/All",
+  "container_selector": ".card, [class*='restaurant-card'], [class*='listing-card']",
+  "fields": {
+    "title": "h3, h4, .card-title, [class*='title']",
+    "price": "[class*='price'], .price",
+    "location": "[class*='location'], .location",
+    "description": ".card-text, [class*='description']",
+    "url": "a"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium needed). This is a Next.js React application that loads all listing data dynamically via API calls after page load. The initial HTML only contains the page structure (header, footer, filters) but no actual listing data. A headless browser is required to wait for the JavaScript to execute and populate the listings. Alternative URL patterns found: /listings, /businesses-for-sale. The site uses CSS module classes (e.g., search_searchResult__r7ZTA, Restaurant_wsSelectors__p4Eg7) which may change between builds. Once rendered, listings likely appear in card elements within the search results section. API endpoint investigation recommended as an alternative approach.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:15:37.930308+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "broker_name": "Amerivest Group (BBF-134)",
+  "source_url": "https://bbms.biz/listings/bbf-134/bus-ownx.asp",
+  "container_selector": "table.special tr:has(a[href*='LIST_NUMBER'])",
+  "fields": {
+    "listing_id": "td:nth-of-type(1) a",
+    "location": "td:nth-of-type(2)",
+    "category": "td:nth-of-type(3)",
+    "price": "td:nth-of-type(4)",
+    "down_payment": "td:nth-of-type(5)",
+    "disc_earn": "td:nth-of-type(6)",
+    "sales": "td:nth-of-type(7)",
+    "detail_url": "td:nth-of-type(1) a"
+  },
+  "pagination_next_selector": "",
+  "confidence": "high",
+  "notes": "Frame-based site - main page at bus-own.asp redirects to bus-ownx.asp. Listings organized by category in multiple tables with class 'special'. Each listing row contains: listing ID (with link to detail page), location, category (may include special tags like '*May Qualify For Visa*'), price, down payment, discretionary earnings (disc_earn), and sales figures. All 14 listings successfully extracted. Note: The detail_url selector extracts the link element which contains the href to the full listing details page.",
+  "_meta": {
+    "generated_at": "2026-02-27T03:34:53.640671+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "broker_name": "Peak Business Brokers LLC",
+  "source_url": "https://peakbusinessbrokersllc.com/business-listings/",
+  "container_selector": ".elementor-container:has(.elementor-col-33):has(.elementor-col-66)",
+  "fields": {
+    "title": ".elementor-col-66 strong",
+    "info_block": ".elementor-col-33 .elementor-widget-container",
+    "description": ".elementor-col-66 .elementor-widget-container",
+    "image": ".elementor-col-33 img[src]"
+  },
+  "pagination_next_selector": "none",
+  "confidence": "high",
+  "notes": "Elementor-based WordPress site with 31 listings. Info block contains Location, Asking Price, Net Income (optional), and Gross Revenue (optional) in a single text block. Images are stored at /business_photos/ with relative paths. The info_block field should be parsed for: Location (city, state), Asking Price, Net Income, and Gross Revenue. Description includes title prefix that may need trimming.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:32:54.983172+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

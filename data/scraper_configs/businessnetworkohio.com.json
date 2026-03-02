@@ -1,0 +1,16 @@
+{
+  "broker_name": "Business Network of Ohio",
+  "source_url": "https://www.businessnetworkohio.com/featured-listings",
+  "container_selector": ".item.itemPreview",
+  "fields": {
+    "title": "h2.contentTitle",
+    "url": "a.button"
+  },
+  "pagination_next_selector": null,
+  "confidence": "high",
+  "notes": "Featured listings page with 4 active business listings. The URL field selector points to anchor tags with href attributes (e.g., /ann-arbor-area-construction-business) that should be extracted as href attributes in implementation. Page also contains a 'Recently Sold' section below the active listings, but those are in a different structure and not included in this scraper config. No price or location data visible on listings page - details are on individual listing pages.",
+  "_meta": {
+    "generated_at": "2026-02-27T21:17:10.834739+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

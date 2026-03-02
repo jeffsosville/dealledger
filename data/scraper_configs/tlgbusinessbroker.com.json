@@ -1,0 +1,18 @@
+{
+  "broker_name": "The Lashley Group (TLG Business Broker)",
+  "source_url": "https://www.tlgbusinessbroker.com/blog-listings",
+  "container_selector": ".post-item.w-dyn-item",
+  "fields": {
+    "title": "h1.heading",
+    "full_description": ".default-text.w-richtext",
+    "link_text": "a.w-inline-block",
+    "image_alt": ".ian-img img"
+  },
+  "pagination_next_selector": ".w-pagination-next",
+  "confidence": "high",
+  "notes": "Webflow CMS site with 60 listings found. Full description contains structured price/revenue data. URL construction: prepend base domain to link_text slug. Price, revenue, cash flow, and location info embedded in full_description field and can be parsed. Many listings marked as SOLD or Under Contract in title.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:10:57.647578+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

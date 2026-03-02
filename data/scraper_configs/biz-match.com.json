@@ -1,0 +1,21 @@
+{
+  "broker_name": "BizMatch, Inc.",
+  "source_url": "https://www.biz-match.com/listings",
+  "container_selector": "dl.listings",
+  "fields": {
+    "title": "dt a",
+    "url": "dt a",
+    "location": "dd:not(.inline):not(.description)",
+    "price": "dd.inline:contains('Price:')",
+    "revenue": "dd.inline:contains('Sales Revenue:')",
+    "net_profit": "dd.inline:contains('Net Profit:')",
+    "description": "dd.description"
+  },
+  "pagination_next_selector": "li.next a, a[name='pagelink']",
+  "confidence": "high",
+  "notes": "Static HTML site with clean structure. URL field extracts link text (title) - href attribute should be extracted using BeautifulSoup/lxml .get('href') in implementation. Price/revenue/net_profit fields include labels (e.g., 'Price:$650,000') - strip 'Price:', 'Sales Revenue:', 'Net Profit:' prefixes during data cleaning. Pagination links found: next page link (li.next a) and numbered page links (a[name='pagelink']). Site shows 20 listings per page with 4+ pages available.",
+  "_meta": {
+    "generated_at": "2026-02-27T18:38:54.983492+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

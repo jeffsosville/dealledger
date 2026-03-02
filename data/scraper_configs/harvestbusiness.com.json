@@ -1,0 +1,16 @@
+{
+  "broker_name": "Harvest Business Brokers",
+  "source_url": "https://www.harvestbusiness.com/s-projects-basic",
+  "container_selector": "[data-hook=\"post-list-item\"]",
+  "fields": {
+    "title": "[data-hook=\"post-title\"]",
+    "description": "[data-hook=\"post-description\"]"
+  },
+  "pagination_next_selector": "a[data-hook=\"pagination-next\"], .pagination-next",
+  "confidence": "medium",
+  "notes": "Wix-based site with JavaScript rendering. Successfully captures title and description. Description contains embedded financial data (Gross Revenue and Seller's Discretionary Earnings). Links and images are dynamically loaded and would require JavaScript execution (Playwright/Selenium) to fully capture. Found 4 listings on test page. Financial info follows pattern: 'Gross Revenue: $X,XXX,XXX' and 'Seller's Discretionary Earnings: $XXX,XXX' in description.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:25:08.078853+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

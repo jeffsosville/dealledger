@@ -1,0 +1,16 @@
+{
+  "broker_name": "Laundry Broker / J. Vassiliades & Company (HTML)",
+  "source_url": "https://laundry-broker.myshopify.com/collections/all",
+  "container_selector": ".products .thumbnail",
+  "fields": {
+    "title": ".title",
+    "status": ".new_banner"
+  },
+  "pagination_next_selector": "a.next",
+  "confidence": "medium",
+  "notes": "HTML scraping backup method for Laundry Broker. The JSON API method is preferred (see laundry-broker.myshopify.com.json config). This HTML scraper works on /collections/all page which does NOT require login (unlike /collections/coming-soon). Current selectors capture title and status. URL and image extraction need attribute selectors which may require custom parsing. Found 22 listings on test run.",
+  "_meta": {
+    "generated_at": "2026-02-27T19:24:05.661465+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

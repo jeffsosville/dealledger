@@ -1,0 +1,18 @@
+{
+  "broker_name": "Ezekiel & Associates",
+  "source_url": "https://www.ezekielinc.com/purchase2.htm",
+  "container_selector": "table[cellpadding='5'] > tbody > tr:has(img[src*='idyllwild']) td",
+  "fields": {
+    "title": "font[color='#000080'][face='Arial']",
+    "price": "b i",
+    "image": "img",
+    "description": "font[size='2']"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "Very basic old HTML site with only one listing displayed. The listing is hardcoded in the HTML (Idyllwild property for $505,000). The site appears to be primarily a commercial real estate search form. The scraper extracts the single visible listing, but this site may not have a traditional listings directory page. Image selector returns empty but the img tag exists. Title includes 'View Details' prefix. Low confidence due to single listing and dated website structure.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:35:44.927641+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

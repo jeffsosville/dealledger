@@ -1,0 +1,18 @@
+{
+  "broker_name": "BW Brokerage (Baltimore Washington Business Brokerage)",
+  "source_url": "https://bwbrokerage.com/businesses-for-sale",
+  "container_selector": "div[data-ux=\"ContentCard\"]",
+  "fields": {
+    "title": "h4[data-ux='ContentCardHeading']",
+    "details": "div[data-ux='ContentCardText']",
+    "image_url": "img[data-ux='Image']",
+    "cta_button": "a[data-ux='ContentCardButton']"
+  },
+  "pagination_next_selector": "a[data-ux='PaginationLink']",
+  "confidence": "high",
+  "notes": "Website built on a website builder platform (likely Wix/GoDaddy) with obfuscated class names. Listings display in ContentCard components. Price is embedded in the title field. Details field contains location, revenue, inventory, and contact information. Images appear to be placeholders (empty src). CTA buttons are generic 'Find Out More' text without actual URLs to individual listing pages. The site appears to use a modal or popup system for full listing details rather than individual listing pages.",
+  "_meta": {
+    "generated_at": "2026-02-27T04:07:50.753946+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

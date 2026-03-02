@@ -1,0 +1,20 @@
+{
+  "broker_name": "First Street Business Brokers",
+  "source_url": "https://www.firststreetbusinessbrokers.com/opportunities/",
+  "container_selector": "ul.job_listings li.job_listing",
+  "fields": {
+    "title": "h3 a::text",
+    "link": "h3 a::attr(href)",
+    "location": ".location::text",
+    "category": ".job-type::text",
+    "description": ".job-description::text",
+    "price": ".job-salary::text, .price::text"
+  },
+  "pagination_next_selector": "a.load_more_jobs",
+  "confidence": "medium",
+  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium)\n\nThis site uses WordPress WP Job Manager plugin with AJAX-loaded listings. The listings are NOT in the initial HTML and require JavaScript execution.\n\nTechnical Details:\n- Plugin: WP Job Manager\n- Data loaded via AJAX to: /wp-admin/admin-ajax.php\n- Action parameter: job_manager_get_listings\n- Empty container in static HTML: ul.job_listings\n- Configured to show 100 items per page (data-per_page=\"100\")\n- Has filter form with category checkboxes and search\n- Pagination: Load more button (a.load_more_jobs)\n\nAlternative URLs to try:\n- https://www.firststreetbusinessbrokers.com/opportunities/businesses-for-sale/ (Under $1M, 50 per page)\n- https://www.firststreetbusinessbrokers.com/opportunities/larger-companies-for-sale/ (Over $1M)\n- https://www.firststreetbusinessbrokers.com/opportunities/restaurants-for-sale/ (Restaurants)\n- https://www.firststreetbusinessbrokers.com/opportunities/mls-business-listings-new-england/ (MLS listings)\n\nExpected selectors (after JS renders):\n- Container: ul.job_listings li.job_listing (or similar)\n- Title: h3 a or .job_listing-title\n- Link: h3 a[href]\n- Location: .location\n- Category: .job-type\n- Price/Revenue: .job-salary or custom field\n\nTo scrape this site, you need to:\n1. Use Playwright or Selenium to render JavaScript\n2. Wait for ul.job_listings to populate\n3. May need to trigger 'Load More' button clicks for pagination\n4. Consider using WP REST API endpoint if available",
+  "_meta": {
+    "generated_at": "2026-02-27T19:34:38.117433+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "broker_name": "NAI Harmon Group",
+  "source_url": "https://www.naiharmon.com/search-properties/",
+  "container_selector": "#buildout [data-property], #buildout .property-item, #buildout article",
+  "fields": {
+    "title": "h2, h3, .property-title",
+    "price": ".price, .asking-price",
+    "location": ".location, .address",
+    "property_type": ".property-type, .type",
+    "size": ".size, .square-feet",
+    "url": "a@href"
+  },
+  "pagination_next_selector": null,
+  "confidence": "low",
+  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site uses the Buildout platform to dynamically load listings via JavaScript. The main container is #buildout but it's empty in static HTML. REQUIRES: Playwright/Selenium/Puppeteer for browser automation to render JavaScript before scraping. The selectors provided are estimated patterns - actual selectors need to be verified after JS rendering. Alternative: Investigate if there's a Buildout API endpoint (check Network tab for XHR/Fetch requests to api.buildout.com or similar).",
+  "_meta": {
+    "generated_at": "2026-02-27T21:09:05.312577+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}

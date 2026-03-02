@@ -1,0 +1,18 @@
+{
+  "broker_name": "Vandermade (vmade.com)",
+  "source_url": "http://vmade.com/current-requirements/",
+  "container_selector": "table tbody tr:has(strong)",
+  "fields": {
+    "title": "td:nth-child(2) strong",
+    "description": "td:nth-child(2)",
+    "location": "td:nth-child(2)",
+    "price": "td:nth-child(2)"
+  },
+  "pagination_next_selector": "none",
+  "confidence": "high",
+  "notes": "Commercial real estate tenant requirements page. Each listing contains tenant type (Developer, Tenant, Investor), space requirements, location, and target pricing. The data is in table rows with the full details in the second cell. Title is in bold/strong tags. These are buyer requirements rather than seller listings. 30 active requirements found. Site has SSL certificate issues on HTTPS, use HTTP instead.",
+  "_meta": {
+    "generated_at": "2026-02-27T20:53:54.763464+00:00",
+    "generator": "dealledger-scraper-agent-v3"
+  }
+}
