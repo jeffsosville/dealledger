@@ -322,6 +322,7 @@ def scrape_url(url, verbose=True):
         result["success"] = True
         result["count"] = count
         result["config"] = path
+        result["listings"] = listings
         log(f"   ✅ Saved config: {path} [{confidence}]")
         if listings:
             log(f"   → Sample: {json.dumps(listings[0])[:120]}")
@@ -392,6 +393,22 @@ def run_batch(csv_path, workers=5):
             errors[e] = errors.get(e, 0) + 1
     if errors:
         print(f"Error breakdown: {json.dumps(errors)}")
+
+    # Save all listings to data/listings/
+    os.makedirs("data/listings", exist_ok=True)
+    all_listings = []
+    for r in results:
+        if r.get("success") and r.get("listings"):
+            for l in r["listings"]:
+                l["broker_name"] = l.get("broker_name") or r.get("url","")
+                l["source_url"] = l.get("source_url") or l.get("url") or r.get("url","")
+                all_listings.append(l)
+    if all_listings:
+        today = datetime.now().strftime('%Y%m%d')
+        listings_path = f"data/listings/v4_batch_{today}.json"
+        with open(listings_path, "w") as f:
+            json.dump(all_listings, f, default=str)
+        print(f"💾 Saved {len(all_listings)} listings → {listings_path}")
 
     os.makedirs("data", exist_ok=True)
     summary_path = f"data/batch_summary_{datetime.now().strftime('%Y%m%d_%H%M')}.json"
