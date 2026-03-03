@@ -8,12 +8,6 @@ on:
 permissions:
   contents: write
 
-permissions:
-  contents: write
-
-permissions:
-  contents: write
-
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -28,43 +22,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4 curl_cffi pandas selenium
+          pip install requests beautifulsoup4 curl_cffi pandas selenium webdriver-manager playwright
+          playwright install chromium
 
       - name: Run specialized scrapers (big 8)
+        continue-on-error: true
         run: |
-          python3 - << 'PYEOF'
-          import json, os, sys
-          from datetime import datetime, timezone
-
-          sys.path.insert(0, 'scrapers')
-          from specialized_scrapers import scrape_specialized_broker
-
-          BROKERS = [
-              ("murphy", "https://murphybusiness.com/business-brokerage/view-our-listings/", 999998),
-              ("transworld", "https://www.tworld.com/listings/", 999997),
-              ("sunbelt", "https://www.sunbeltnetwork.com/business-search/business-results/", 999996),
-              ("fcbb", "https://fcbb.com/businesses-for-sale", 999995),
-              ("hedgestone", "https://www.hedgestone.com/businesses-for-sale/", 999994),
-              ("vr", "https://www.vrbusinessbrokers.com/businesses-for-sale/", 999993),
-              ("link", "https://linkbusiness.com/businesses-for-sale", 999992),
-          ]
-
-          os.makedirs('data/listings', exist_ok=True)
-          today = datetime.now(timezone.utc).strftime('%Y%m%d')
-          all_listings = []
-
-          for name, url, account in BROKERS:
-              try:
-                  listings = scrape_specialized_broker(url, broker_account=account)
-                  print(f"✅ {name}: {len(listings)} listings")
-                  all_listings.extend(listings)
-                  with open(f'data/listings/{name}_{today}.json', 'w') as f:
-                      json.dump(listings, f, default=str)
-              except Exception as e:
-                  print(f"❌ {name}: {e}")
-
-          print(f"\nSpecialized total: {len(all_listings)}")
-          PYEOF
+          python3 scrapers/specialized_scrapers.py
 
       - name: Run v4 agent (independent brokers)
         run: |
@@ -78,67 +42,25 @@ jobs:
 
           today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
           os.makedirs(f'data/snapshots/{today}', exist_ok=True)
-
           all_listings = []
           seen = set()
 
           for f in glob.glob('data/listings/*.json') + glob.glob('data/listings/*.jsonl'):
               try:
                   with open(f) as fh:
-                      if f.endswith('.jsonl'):
-                          data = [json.loads(l) for l in fh if l.strip()]
-                      else:
-                          data = json.load(fh)
-                          if not isinstance(data, list): continue
-
+                      data = [json.loads(l) for l in fh] if f.endswith('.jsonl') else json.load(fh)
+                  if not isinstance(data, list): continue
                   for l in data:
-                      # Normalize schema
-                      uid = l.get('id') or l.get('listing_id') or l.get('hash') or hashlib.md5(
-                          (l.get('source_url') or l.get('listing_url') or '').encode()
-                      ).hexdigest()
+                      uid = l.get('id') or l.get('listing_id') or hashlib.md5((l.get('source_url') or l.get('listing_url') or '').encode()).hexdigest()
                       if uid in seen: continue
                       seen.add(uid)
+                      all_listings.append({'id': uid, 'source_url': l.get('source_url') or l.get('listing_url',''), 'broker_name': l.get('broker_name') or l.get('broker',''), 'title': l.get('title',''), 'asking_price': l.get('asking_price') or l.get('price',''), 'revenue': l.get('revenue',''), 'cash_flow': l.get('cash_flow',''), 'state': l.get('state',''), 'city': l.get('city',''), 'business_type': l.get('business_type',''), 'first_seen': l.get('first_seen') or today, 'status': l.get('status','active')})
+              except: pass
 
-                      normalized = {
-                          'id': uid,
-                          'source_url': l.get('source_url') or l.get('listing_url') or l.get('url', ''),
-                          'broker_name': l.get('broker_name') or l.get('broker', ''),
-                          'title': l.get('title', ''),
-                          'asking_price': l.get('asking_price') or l.get('price', ''),
-                          'revenue': l.get('revenue', ''),
-                          'cash_flow': l.get('cash_flow', ''),
-                          'state': l.get('state', ''),
-                          'city': l.get('city', ''),
-                          'business_type': l.get('business_type') or l.get('category', ''),
-                          'first_seen': l.get('first_seen') or today,
-                          'status': l.get('status', 'active'),
-                      }
-                      all_listings.append(normalized)
-
-              except Exception as e:
-                  print(f"Error reading {f}: {e}")
-
-          print(f"Total unique listings: {len(all_listings)}")
-
-          # Sort newest first
-          all_listings.sort(key=lambda x: x.get('first_seen', ''), reverse=True)
-
-          # Save snapshot
-          with open(f'data/snapshots/{today}/listings.json', 'w') as f:
-              json.dump(all_listings, f, default=str)
-
-          # Update latest
-          with open('data/latest.json', 'w') as f:
-              json.dump(all_listings, f, default=str)
-
-          # Update latest CSV
-          if all_listings:
-              with open('data/latest.csv', 'w', newline='') as f:
-                  writer = csv.DictWriter(f, fieldnames=all_listings[0].keys())
-                  writer.writeheader()
-                  writer.writerows(all_listings)
-
-          print(f"Snapshot: data/snapshots/{today}/listings.json")
+          all_listings.sort(key=lambda x: x.get('first_seen',''), reverse=True)
+          json.dump(all_listings, open(f'data/snapshots/{today}/listings.json','w'), default=str)
+          json.dump(all_listings, open('data/latest.json','w'), default=str)
+          print(f"Total: {len(all_listings)}")
           PYEOF
 
       - name: Commit results
@@ -146,5 +68,5 @@ jobs:
           git config user.name "DealLedger Bot"
           git config user.email "bot@dealledger.org"
           git add data/snapshots/ data/latest.json data/latest.csv data/listings/ data/scraper_configs/
-          git commit -m "Daily scrape $(date +%Y-%m-%d): $(python3 -c "import json; d=json.load(open('data/latest.json')); print(len(d))" 2>/dev/null || echo '?') listings" || echo "No changes"
+          git commit -m "Daily scrape $(date +%Y-%m-%d)" || echo "No changes"
           git push || echo "Nothing to push"
