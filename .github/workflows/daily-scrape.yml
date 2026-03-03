@@ -36,6 +36,7 @@ jobs:
 
       - name: Build snapshot
         run: |
+          mkdir -p data/listings data/snapshots
           python3 - << 'PYEOF'
           import json, glob, sys
           from datetime import datetime, timezone
