@@ -37,30 +37,34 @@ jobs:
       - name: Build snapshot
         run: |
           python3 - << 'PYEOF'
-          import json, glob, os, csv, hashlib
+          import json, glob, sys
           from datetime import datetime, timezone
 
-          today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-          os.makedirs(f'data/snapshots/{today}', exist_ok=True)
-          all_listings = []
-          seen = set()
+          sys.path.insert(0, '.')
+          from ledger_ingestion import ledger_upsert, build_daily_diff
 
+          today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+          from datetime import timedelta
+          yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime('%Y-%m-%d')
+
+          # Load all listing files
+          all_raw = []
           for f in glob.glob('data/listings/*.json') + glob.glob('data/listings/*.jsonl'):
               try:
                   with open(f) as fh:
                       data = [json.loads(l) for l in fh] if f.endswith('.jsonl') else json.load(fh)
-                  if not isinstance(data, list): continue
-                  for l in data:
-                      uid = l.get('id') or l.get('listing_id') or hashlib.md5((l.get('source_url') or l.get('listing_url') or '').encode()).hexdigest()
-                      if uid in seen: continue
-                      seen.add(uid)
-                      all_listings.append({'id': uid, 'source_url': l.get('source_url') or l.get('listing_url',''), 'broker_name': l.get('broker_name') or l.get('broker',''), 'title': l.get('title',''), 'asking_price': l.get('asking_price') or l.get('price',''), 'revenue': l.get('revenue',''), 'cash_flow': l.get('cash_flow',''), 'state': l.get('state',''), 'city': l.get('city',''), 'business_type': l.get('business_type',''), 'first_seen': l.get('first_seen') or today, 'status': l.get('status','active')})
-              except: pass
+                  if isinstance(data, list):
+                      source = f.split('/')[-1].replace('.json','').replace('.jsonl','')
+                      for l in data:
+                          l['raw_source'] = l.get('raw_source') or source
+                      all_raw.extend(data)
+              except Exception as e:
+                  print(f"Error reading {f}: {e}")
 
-          all_listings.sort(key=lambda x: x.get('first_seen',''), reverse=True)
-          json.dump(all_listings, open(f'data/snapshots/{today}/listings.json','w'), default=str)
-          json.dump(all_listings, open('data/latest.json','w'), default=str)
-          print(f"Total: {len(all_listings)}")
+          print(f"Total raw listings from files: {len(all_raw)}")
+          stats = ledger_upsert(all_raw, source="daily_scrape")
+          diff = build_daily_diff(today, yesterday)
+          print(f"Diff: {diff}")
           PYEOF
 
       - name: Commit results
