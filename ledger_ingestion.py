@@ -58,6 +58,10 @@ def canonicalize(raw: dict, source: str = "") -> dict | None:
     revenue      = _clean_price(raw.get('revenue') or raw.get('gross_revenue') or '')
     cash_flow    = _clean_price(raw.get('cash_flow') or raw.get('sde') or raw.get('ebitda') or '')
     state        = _clean_state(raw.get('state') or raw.get('location') or '')
+    if not state:
+        state = _clean_state(raw.get('city') or '')
+    if not state:
+        state = _clean_state(title)
     city         = (raw.get('city') or '').strip().title()
     business_type = (raw.get('business_type') or raw.get('category') or raw.get('vertical') or '').strip().lower()
 
@@ -99,12 +103,30 @@ def _clean_price(val) -> str:
         return ''
 
 
+
+STATE_NAMES = {
+    'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA',
+    'colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA',
+    'hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA',
+    'kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD',
+    'massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS',
+    'missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH',
+    'new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC',
+    'north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA',
+    'rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN',
+    'texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA',
+    'west virginia':'WV','wisconsin':'WI','wyoming':'WY','washington dc':'DC',
+}
+
 def _clean_state(val) -> str:
     if not val: return ''
     s = str(val).strip().upper()
     if s in US_STATES: return s
     m = re.search(r'\b([A-Z]{2})\b', s)
     if m and m.group(1) in US_STATES: return m.group(1)
+    s_lower = str(val).strip().lower()
+    for name, code in STATE_NAMES.items():
+        if name in s_lower: return code
     return ''
 
 
