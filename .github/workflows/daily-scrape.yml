@@ -72,6 +72,7 @@ jobs:
         run: |
           git config user.name "DealLedger Bot"
           git config user.email "bot@dealledger.org"
-          git add data/snapshots/ data/latest.json data/latest.csv data/listings/ data/scraper_configs/
+          git add data/snapshots/ data/latest.json data/latest.csv || true
+          git add data/listings/ data/scraper_configs/ 2>/dev/null || true
           git commit -m "Daily scrape $(date +%Y-%m-%d)" || echo "No changes"
           git push || echo "Nothing to push"
