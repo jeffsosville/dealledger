@@ -530,6 +530,18 @@
         </div>
     </div>
 
+
+    <!-- Diff bar -->
+    <div id="diff-bar" style="display:none;border-bottom:1px solid #d4d4d4;padding:10px 0;background:#fff;">
+        <div class="container">
+            <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
+                <span style="font-family:var(--mono);font-size:11px;color:#78716c;text-transform:uppercase;letter-spacing:0.5px;" id="diff-date"></span>
+                <span style="font-family:var(--mono);font-size:12px;color:#166534;" id="diff-new"></span>
+                <span style="font-family:var(--mono);font-size:12px;color:#991b1b;" id="diff-removed"></span>
+                <span style="font-family:var(--mono);font-size:12px;color:#92400e;" id="diff-relisted"></span>
+            </div>
+        </div>
+    </div>
     <div class="filters">
         <div class="container">
             <div class="filters-content">
@@ -692,6 +704,7 @@
     <script>
         // Configuration
         const DATA_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json';
+        const DIFF_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/snapshots/';
         const BROKERS_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/brokers.csv';
         const PER_PAGE = 50;
 
@@ -892,6 +905,27 @@
             }
         }
 
+
+        async function loadDiff() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const url = DIFF_URL + today + '/diff.json';
+                const r = await fetch(url);
+                if (!r.ok) return;
+                const diff = await r.json();
+                if (!diff) return;
+
+                const bar = document.getElementById('diff-bar');
+                bar.style.display = 'block';
+                document.getElementById('diff-date').textContent = 'Today ' + diff.date + ':';
+                document.getElementById('diff-new').textContent = diff.new > 0 ? '+' + diff.new + ' new' : '';
+                document.getElementById('diff-removed').textContent = diff.removed > 0 ? '−' + diff.removed + ' removed' : '';
+                document.getElementById('diff-relisted').textContent = diff.relisted > 0 ? diff.relisted + ' relisted' : '';
+            } catch(e) {
+                // No diff yet — hide bar
+            }
+        }
+
         // Load data
         async function loadData() {
             try {
@@ -936,6 +970,7 @@
 
         // Initialize
         loadData();
+        loadDiff();
     
         // Broker submission
         document.getElementById('brokerForm').addEventListener('submit', function(e) {
