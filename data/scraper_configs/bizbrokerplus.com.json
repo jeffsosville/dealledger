@@ -1,18 +1,14 @@
 {
-  "broker_name": "BizBroker Plus",
-  "source_url": "https://www.bizbrokerplus.com/businessforsale/",
-  "container_selector": ".item-listing-wrap",
+  "broker_name": "bizbrokerplus",
+  "source_url": "https://www.bizbrokerplus.com/listings",
+  "container_selector": "article",
   "fields": {
-    "title": ".item-title a",
-    "price": ".item-price",
-    "location": ".item-address",
-    "business_type": ".item-amenities"
+    "title": "h2"
   },
-  "pagination_next_selector": ".page-link",
+  "listing_count": 4,
   "confidence": "high",
-  "notes": "Successfully extracted 26 listings. Uses Houzez WordPress theme. Core fields working well: title, price, location, business_type. Note: Some locations are empty strings. URLs and images would require attribute extraction (href/src) which isn't supported in current selector format. Pagination appears to use .page-link class for navigation.",
   "_meta": {
-    "generated_at": "2026-02-27T05:00:41.456970+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:49:57.913770+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

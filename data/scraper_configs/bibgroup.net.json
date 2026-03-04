@@ -1,16 +1,14 @@
 {
-  "broker_name": "BIB Group - Business Investment Brokers",
+  "broker_name": "bibgroup",
   "source_url": "https://bibgroup.net/buy/",
-  "container_selector": "article.et_pb_post.business-for-sale",
+  "container_selector": "article",
   "fields": {
-    "title": "h2.entry-title a",
-    "description": "div.post-data p"
+    "title": "h2"
   },
-  "pagination_next_selector": null,
+  "listing_count": 5,
   "confidence": "high",
-  "notes": "Successfully extracting 4 business listings. Title and description fields work perfectly. The page uses Divi Builder with custom post types for business-for-sale listings. No pricing information is displayed on the listings page - would need to scrape detail pages for that. Links are in the h2.entry-title a elements and images in img.et_pb_post_main_image elements, but attribute extraction needs specialized handling. The listings page shows quality data with clear business descriptions.",
   "_meta": {
-    "generated_at": "2026-02-27T21:00:19.252055+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:47:47.107087+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

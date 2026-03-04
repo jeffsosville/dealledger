@@ -1,19 +1,15 @@
 {
-  "broker_name": "Charleston Business Brokers",
+  "broker_name": "charlestonbusinessbrokers",
   "source_url": "https://www.charlestonbusinessbrokers.com/businesses-for-sale/",
-  "container_selector": "article.w2dc-listing",
+  "container_selector": "article",
   "fields": {
-    "title": "header.w2dc-listing-header h2 a",
-    "detail_url": "header.w2dc-listing-header h2 a",
-    "asking_price": ".w2dc-field-output-block-9 .w2dc-field-content",
-    "gross_revenue": ".w2dc-field-output-block-10 .w2dc-field-content",
-    "employees": ".w2dc-field-output-block-15 .w2dc-field-content"
+    "title": "h2",
+    "price": "span:contains('$')"
   },
-  "pagination_next_selector": "a.w2dc-next-locations",
+  "listing_count": 30,
   "confidence": "high",
-  "notes": "Successfully extracts 30 listings. Uses W2DC directory plugin. detail_url currently captures text (same as title) - href attribute extraction needs post-processing or JavaScript. All listings include title and asking_price. gross_revenue and employees fields available for most listings. May have pagination but all 30 listings appear on single page.",
   "_meta": {
-    "generated_at": "2026-02-27T20:00:07.569967+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:43:33.333893+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

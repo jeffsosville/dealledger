@@ -1,18 +1,16 @@
 {
-  "broker_name": "Pacific Commercial Brokers",
+  "broker_name": "pacificcommercialbrokers",
   "source_url": "https://pacificcommercialbrokers.com/listings/",
   "container_selector": ".property-item",
   "fields": {
-    "title": ".property-title a",
-    "price": ".property-price",
-    "location": ".property-location span",
-    "area": ".property-area span"
+    "title": "h2",
+    "price": "[class*='price']",
+    "location": "[class*='location']"
   },
-  "pagination_next_selector": ".pagination a.next",
+  "listing_count": 12,
   "confidence": "high",
-  "notes": "JavaScript-rendered WordPress site using Essential Real Estate plugin. Successfully extracts 12+ listings with title, price, location, and square footage. Listings appear to be dynamically loaded via AJAX. May require JavaScript rendering for full pagination support. Main fields captured: title, asking price, county/city location, and property area where available.",
   "_meta": {
-    "generated_at": "2026-02-27T18:23:01.874691+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:36:26.992920+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

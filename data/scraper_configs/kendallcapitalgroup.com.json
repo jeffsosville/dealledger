@@ -1,19 +1,15 @@
 {
-  "broker_name": "Kendall Capital Group",
+  "broker_name": "kendallcapitalgroup",
   "source_url": "https://www.kendallcapitalgroup.com/pages/our-listings",
-  "container_selector": "table.listing-table tbody tr",
+  "container_selector": "table tr",
   "fields": {
-    "title": "td.listings-link-title a",
-    "price": "td.listings-price",
-    "revenue": "td.listings-revenue",
-    "profits": "td.listings-profits",
-    "status": "td:nth-child(1)"
+    "title": "[class*='title']",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": "div.will-paginate a",
+  "listing_count": 11,
   "confidence": "high",
-  "notes": "Table-based listing layout with status, title, price, revenue, and profits. The page shows 11 listings (mix of Active and Sold). URLs are in the format /listings/[slug]. Some listings have empty revenue/profits fields. The site uses DealRelations CRM platform. No pagination links found on this page.",
   "_meta": {
-    "generated_at": "2026-02-27T21:07:29.555869+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:48:16.343730+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

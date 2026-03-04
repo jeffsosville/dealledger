@@ -1,0 +1,15 @@
+{
+  "broker_name": "morganandwestfield",
+  "source_url": "https://morganandwestfield.com/buy/businesses-for-sale/",
+  "container_selector": "article",
+  "fields": {
+    "title": "h3",
+    "price": "span:contains('$')"
+  },
+  "listing_count": 7,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:45:14.367541+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

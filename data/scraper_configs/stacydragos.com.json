@@ -1,22 +1,15 @@
 {
-  "broker_name": "Stacy Dragos - Century 21 Toma Partners",
+  "broker_name": "stacydragos",
   "source_url": "https://stacydragos.com/listings/my-active-listings",
-  "container_selector": "div.singlelisting",
+  "container_selector": ".item",
   "fields": {
-    "title": "div.single-listing-right h3",
-    "price": "div.single-listing-img-price",
-    "address": "div.single-listing-right > div:nth-child(2)",
-    "property_type": "div.single-listing-right h4",
-    "details": "ul.single-listing-details",
-    "mls": "div.single-listing-right > div:nth-child(4)",
-    "description": "div.single-listing-right > div:nth-child(5)",
-    "status": "span.status-label"
+    "title": "h2",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": null,
-  "confidence": "medium",
-  "notes": "MoxiWorks-powered real estate listing site. Successfully extracts 12 listings with title (address), price, MLS number, description, and status. Property type and details (beds/baths/sqft) appear to be JavaScript-rendered and may need JS execution for full extraction. Core fields work well with static HTML.",
+  "listing_count": 6,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:22:50.995644+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:44:51.059499+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

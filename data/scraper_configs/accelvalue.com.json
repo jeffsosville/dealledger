@@ -1,0 +1,14 @@
+{
+  "broker_name": "accelvalue",
+  "source_url": "https://accelvalue.com/current-listing-2/?statuses=ACTIVE",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 33,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:38:45.617167+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

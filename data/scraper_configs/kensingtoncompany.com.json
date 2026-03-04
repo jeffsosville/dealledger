@@ -1,20 +1,15 @@
 {
-  "broker_name": "Kensington Company",
+  "broker_name": "kensingtoncompany",
   "source_url": "https://kensingtoncompany.com/business-listings/",
-  "container_selector": ".items-general .item",
+  "container_selector": ".item",
   "fields": {
-    "title": ".description .title",
-    "location": ".description .country",
-    "price": ".container-info-date .price",
-    "financial_info": ".container-info-date .cash",
-    "listing_id": ".container-info-date .listing",
-    "detail_link": ".inquire a"
+    "title": ".title",
+    "price": ".price"
   },
-  "pagination_next_selector": "null",
+  "listing_count": 4,
   "confidence": "high",
-  "notes": "Successfully scraped 4 business listings. All listings have title, location, price, and listing ID. Some listings include financial information (revenue/cash flow). The page uses a slider/carousel format. The detail_link selector captures the link but returns text content only (limitation of basic CSS selectors - href attribute extraction would require more advanced parsing). To get actual URLs, parse the href attribute from the <a> tag within .inquire. Consider that this may be a paginated or dynamically loaded carousel with more listings available.",
   "_meta": {
-    "generated_at": "2026-02-27T18:18:27.544451+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:35:57.394022+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

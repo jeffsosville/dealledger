@@ -1,0 +1,15 @@
+{
+  "broker_name": "hammondfamilygroup",
+  "source_url": "https://hammondfamilygroup.com/listings/featured-properties",
+  "container_selector": ".item",
+  "fields": {
+    "title": "h2",
+    "price": "[class*='price']"
+  },
+  "listing_count": 55,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:47:51.478117+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

@@ -1,20 +1,14 @@
 {
-  "broker_name": "Business Brokers of Arizona",
+  "broker_name": "azbusinessbrokers",
   "source_url": "https://www.azbusinessbrokers.com/search-listings",
-  "container_selector": "article.blog-item",
+  "container_selector": "article",
   "fields": {
-    "title": ".blog-title a",
-    "price": ".blog-excerpt",
-    "category": ".blog-categories-list a",
-    "link": ".blog-title a",
-    "description": ".blog-excerpt",
-    "date": ".blog-date"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": ".blog-more-link a",
+  "listing_count": 21,
   "confidence": "high",
-  "notes": "Squarespace-based blog layout. Successfully scraped 20 listings with 100% title and price coverage. Price format: 'Asking Price: $X,XXX,XXX' (needs parsing). Categories capture business type. Date shows listing/update date. Link selector captures text only - href attribute must be extracted via DOM in production (relative URLs like /search-listings/listing-title). Pagination available via .blog-more-link. All listings are Arizona-based businesses.",
   "_meta": {
-    "generated_at": "2026-02-27T05:07:49.041537+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:36:23.483995+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

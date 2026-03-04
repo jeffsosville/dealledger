@@ -1,0 +1,14 @@
+{
+  "broker_name": "tokcommercial",
+  "source_url": "https://www.tokcommercial.com/properties",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "h2"
+  },
+  "listing_count": 54,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:45:43.060759+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

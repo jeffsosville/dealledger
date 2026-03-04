@@ -1,18 +1,14 @@
 {
-  "broker_name": "Lee Brokers",
+  "broker_name": "leebrokers",
   "source_url": "https://leebrokers.com/business-for-sale/",
-  "container_selector": "REQUIRES_JS_RENDERING",
+  "container_selector": "[data-id]",
   "fields": {
-    "title": "REQUIRES_JS_RENDERING",
-    "price": "REQUIRES_JS_RENDERING",
-    "location": "REQUIRES_JS_RENDERING",
-    "link": "REQUIRES_JS_RENDERING"
+    "title": "a[href*='listing']"
   },
-  "pagination_next_selector": null,
-  "confidence": "low",
-  "notes": "This is a WordPress/Elementor site where business listings are loaded dynamically via JavaScript. The static HTML does not contain any business listing elements. Requires JavaScript rendering (Playwright/Selenium/Puppeteer) to scrape. The page appears to be the correct listings URL (/business-for-sale/) but content is client-side rendered. Contact: (508) 962-2589, leebrokers@gmail.com, Located in Quincy, MA. No alternative API endpoints or static listing pages were found through common URL pattern testing.",
+  "listing_count": 18,
+  "confidence": "medium",
   "_meta": {
-    "generated_at": "2026-02-27T03:38:56.673836+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:38:41.951884+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

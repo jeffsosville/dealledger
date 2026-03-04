@@ -1,0 +1,15 @@
+{
+  "broker_name": "sellmorerestaurants",
+  "source_url": "https://www.sellmorerestaurants.com/restaurants-for-sale.html",
+  "container_selector": "table tr",
+  "fields": {
+    "title": "h2",
+    "price": "span:contains('$')"
+  },
+  "listing_count": 27,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:49:56.465820+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "broker_name": "chiscagroup",
+  "source_url": "https://www.chiscagroup.com/businesses-for-sale/",
+  "container_selector": ".post",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 65,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:50:06.937138+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

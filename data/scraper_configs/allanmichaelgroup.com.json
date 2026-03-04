@@ -1,19 +1,14 @@
 {
-  "broker_name": "Allan Michael Group",
+  "broker_name": "allanmichaelgroup",
   "source_url": "https://allanmichaelgroup.com/category/available/",
   "container_selector": ".post",
   "fields": {
-    "title": "h2.entry-title a",
-    "url": "h2.entry-title a",
-    "description": ".entry-content",
-    "category": ".categories a",
-    "posted_date": ".post-info"
+    "title": "h2"
   },
-  "pagination_next_selector": ".pagination a.next",
-  "confidence": "medium",
-  "notes": "WordPress/Genesis framework site. Listings found at 10 per page. The 'url' field currently captures text instead of href - may need post-processing or href extraction. Asking price is embedded in the description text and would need text parsing. Each listing has full description in .entry-content. Pagination uses .pagination a.next selector.",
+  "listing_count": 10,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:19:55.384716+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:44:39.069100+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

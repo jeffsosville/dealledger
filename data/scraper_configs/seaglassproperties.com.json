@@ -1,0 +1,15 @@
+{
+  "broker_name": "seaglassproperties",
+  "source_url": "https://www.seaglassproperties.com/us-virgin-islands-real-estate/",
+  "container_selector": ".listing",
+  "fields": {
+    "title": "[class*='title']",
+    "price": ".listing-price"
+  },
+  "listing_count": 42,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:44:35.134862+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

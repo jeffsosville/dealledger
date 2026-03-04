@@ -1,0 +1,14 @@
+{
+  "broker_name": "lisitenassociates",
+  "source_url": "https://lisitenassociates.com/exclusive-listings/",
+  "container_selector": ".listing",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 23,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:38:55.460068+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

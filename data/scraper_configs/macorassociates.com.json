@@ -1,0 +1,14 @@
+{
+  "broker_name": "macorassociates",
+  "source_url": "https://macorassociates.com/listings.php",
+  "container_selector": "table tr",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 9,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:44:30.570131+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

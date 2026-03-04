@@ -1,18 +1,16 @@
 {
-  "broker_name": "Palm Commercial Brokerage",
+  "broker_name": "palmcommercialbrokerage",
   "source_url": "https://palmcommercialbrokerage.com/listings/",
-  "container_selector": "article.listing",
+  "container_selector": ".listing",
   "fields": {
-    "title": "h4.ptb_post_title a",
-    "price": ".ptb_listing_price strong",
-    "location": ".ptb_listing_location",
-    "status": ".ptb_listing_status"
+    "title": "[class*='title']",
+    "price": "[class*='price']",
+    "location": "[class*='location']"
   },
-  "pagination_next_selector": null,
+  "listing_count": 6,
   "confidence": "high",
-  "notes": "Successfully extracts 6 listings. Location and Status fields include prefix text ('Location:' and 'Status:') that should be stripped during post-processing. URL available at 'h4.ptb_post_title a[href]' and image at 'figure.ptb_post_image img[src]' but attribute extraction needs implementation. All listings appear to be sold/leased (no active listings currently on page).",
   "_meta": {
-    "generated_at": "2026-02-27T20:47:44.366591+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:47:02.090006+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

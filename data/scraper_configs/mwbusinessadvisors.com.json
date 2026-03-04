@@ -1,0 +1,15 @@
+{
+  "broker_name": "mwbusinessadvisors",
+  "source_url": "https://www.mwbusinessadvisors.com/businesses-for-sale-1",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']",
+    "price": "span:contains('$')"
+  },
+  "listing_count": 6,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:49:15.381735+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}
