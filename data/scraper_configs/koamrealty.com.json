@@ -1,17 +1,14 @@
 {
-  "broker_name": "KOAM Realty & Investment",
+  "broker_name": "koamrealty",
   "source_url": "https://koamrealty.com/2022/category/listing/",
-  "container_selector": "article.post",
+  "container_selector": "table tr",
   "fields": {
-    "title": "h3 a",
-    "description": "p",
-    "date": "div[align=\"right\"]"
+    "title": "h3"
   },
-  "pagination_next_selector": "a.next.page-numbers",
-  "confidence": "medium",
-  "notes": "WordPress-based listings page. Successfully extracts 10 listings per page with title, description, and date. Price information is embedded in the description text and needs parsing (e.g., 'AP $1.35 Million', '$1,125,000'). Location information is in title/description (VA, MD, Fairfax, etc.). Images available at img.wp-post-image selector but not extracted in text mode. URLs need to be extracted from href attributes via post-processing. Pagination available with 3+ pages. Mixed English/Korean content. Includes commercial real estate (retail buildings, office buildings) and restaurants/businesses.",
+  "listing_count": 11,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T18:46:23.807199+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:38:37.789650+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

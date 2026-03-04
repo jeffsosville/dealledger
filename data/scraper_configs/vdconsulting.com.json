@@ -1,0 +1,14 @@
+{
+  "broker_name": "vdconsulting",
+  "source_url": "https://www.vdconsulting.com/business-listings/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "a[href*='listing']"
+  },
+  "listing_count": 24,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:48:35.785190+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

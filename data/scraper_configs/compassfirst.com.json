@@ -1,18 +1,15 @@
 {
-  "broker_name": "Compass First Business Advisors",
+  "broker_name": "compassfirst",
   "source_url": "https://compassfirst.com/category/current-listings/",
-  "container_selector": ".entry",
+  "container_selector": ".post",
   "fields": {
-    "title": "h3.title a",
-    "price": ".price2 span",
-    "description": "p",
-    "link_text": "a.readmore span"
+    "title": "h3",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": ".page-numbers a",
+  "listing_count": 6,
   "confidence": "high",
-  "notes": "WordPress-based listings page with clear structure. Successfully extracting title, price, and description from 6 listings. Note: URL and image attributes would require attribute extraction support (href from h3.title a, src from .thumbnail img). Location information appears to be embedded in category classes (e.g., category-santa-barbara, category-carpinteria). The site uses ElegantEstate WordPress theme.",
   "_meta": {
-    "generated_at": "2026-02-27T18:47:54.898579+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:38:42.597803+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

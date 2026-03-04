@@ -1,18 +1,14 @@
 {
-  "broker_name": "Barnett Capital Group",
+  "broker_name": "barnettcapitalgroup",
   "source_url": "https://barnettcapitalgroup.com/businesses-for-sale/",
-  "container_selector": "div.listing",
+  "container_selector": ".listing",
   "fields": {
-    "title": "div.title-holder a.listing-title-link",
-    "industry_location": "div.leftcol",
-    "listing_id_raw": "div.rightcol",
-    "description": "div.descriptionlisting span.business-desc-value"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": null,
-  "confidence": "medium",
-  "notes": "Successfully extracts 30 listings. Title, industry/location combined field, listing ID, and description are captured. Industry/location field needs post-processing to split (format: 'Industry:[value]Location:[value]'). Listing ID needs post-processing to extract ID (format: 'Listing ID:[value]'). URLs are in href attributes of 'a.listing-title-link' and 'a.button' elements but require attribute extraction. No price information displayed on listing page. No pagination detected - appears to show all listings on one page.",
+  "listing_count": 30,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T04:56:05.517494+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:49:30.988356+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

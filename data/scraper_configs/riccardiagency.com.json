@@ -1,20 +1,14 @@
 {
-  "broker_name": "M. Riccardi Agency Inc.",
-  "source_url": "https://riccardiagency.com/business/",
-  "container_selector": "div.small-12.medium-4.columns.responsive-column",
+  "broker_name": "riccardiagency",
+  "source_url": "https://riccardiagency.com/listings",
+  "container_selector": "article",
   "fields": {
-    "title": "div.resp-col-inner:nth-of-type(2) strong:first-of-type",
-    "location": "div.resp-col-inner:nth-of-type(2) strong:nth-of-type(2)",
-    "description": "div.resp-col-inner:nth-of-type(2) p:not(:first-child)",
-    "price": "div.resp-col-inner:nth-of-type(2) p:contains('$')",
-    "image": "a img",
-    "link": "a"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": null,
-  "confidence": "medium",
-  "notes": "Business-for-sale listings page. Note: Most listings appear to be marked as SOLD. The page uses a WordPress-based layout with responsive columns. Image URLs and external links need attribute extraction (src/href) which may require additional processing. Price information is embedded within paragraph text and needs text extraction/parsing.",
+  "listing_count": 2,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T04:03:18.064174+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:41:21.812396+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

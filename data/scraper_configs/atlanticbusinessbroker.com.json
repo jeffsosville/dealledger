@@ -1,0 +1,14 @@
+{
+  "broker_name": "atlanticbusinessbroker",
+  "source_url": "https://www.atlanticbusinessbroker.com/our-business-for-sale-listings",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 18,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:38:58.836895+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

@@ -1,18 +1,14 @@
 {
-  "broker_name": "Gulfstream Realty Services",
-  "source_url": "http://gulfstreamrealty.biz/cgi-bin/a-bus2ff.asp?forsale=go",
-  "container_selector": "REQUIRES_JAVASCRIPT",
+  "broker_name": "gulfstreamrealty",
+  "source_url": "http://gulfstreamrealty.biz/listings",
+  "container_selector": "table tr",
   "fields": {
-    "title": "REQUIRES_PLAYWRIGHT",
-    "price": "REQUIRES_PLAYWRIGHT",
-    "location": "REQUIRES_PLAYWRIGHT",
-    "description": "REQUIRES_PLAYWRIGHT"
+    "title": "a[href*='listing']"
   },
-  "pagination_next_selector": null,
-  "confidence": "low",
-  "notes": "Site uses ASP/CGI with JavaScript rendering. Empty body returned on direct HTTP GET. Requires headless browser (Playwright/Selenium) to: 1) Access search form at http://gulfstreamrealty.biz/bus-all.asp 2) Submit form with desired parameters 3) Wait for JavaScript to render listings 4) Extract content. Powered by Global MLS Services platform. Alternative approach: POST to /cgi-bin/a-bus2ff.asp with form data (folder=bbf-270, state=FLORIDA, process=search, etc.)",
+  "listing_count": 5,
+  "confidence": "medium",
   "_meta": {
-    "generated_at": "2026-02-27T20:44:21.838518+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:46:42.213128+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

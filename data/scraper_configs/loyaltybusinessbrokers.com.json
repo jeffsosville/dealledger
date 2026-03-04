@@ -1,19 +1,14 @@
 {
-  "broker_name": "Loyalty Business Brokers",
-  "source_url": "https://loyaltybusinessbrokers.com/all-listings/",
-  "container_selector": ".property-unit, .listing_wrapper .property",
+  "broker_name": "loyaltybusinessbrokers",
+  "source_url": "https://loyaltybusinessbrokers.com/buy-a-business",
+  "container_selector": "[data-id]",
   "fields": {
-    "title": "h4 a, .property_title a",
-    "price": ".price_area, .listing-unit-price-wrapper",
-    "location": ".property_listing_address, .listing-unit-county",
-    "url": "h4 a, .property_title a",
-    "description": ".property_listing_description"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": ".pagination a.next, .next_page",
-  "confidence": "low",
-  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED: This site uses WP Residence theme with AJAX loading. The listings page loads content dynamically after initial page load. No listings found in static HTML. \n\nREQUIRES: Playwright, Puppeteer, or Selenium to render JavaScript before scraping.\n\nAJAX ENDPOINT: The site likely uses WordPress REST API or WP Residence AJAX calls to load listings. Look for these endpoints:\n- Check network tab for requests to /wp-admin/admin-ajax.php\n- Common WP Residence AJAX actions: action=wpestate_ajax_filter_listings\n- Alternative working URL found: https://loyaltybusinessbrokers.com/buy-a-business\n\nRECOMMENDED APPROACH:\n1. Use Playwright/Puppeteer to load the page\n2. Wait for selector: '.property-unit' or '#listing_ajax_container'\n3. Let JavaScript render for 2-3 seconds\n4. Then extract with the selectors above\n\nTHEME: WP Residence (WordPress real estate/business listing theme)\nSELECTORS TESTED: Multiple variations tried but all returned 0 results without JS rendering.",
+  "listing_count": 20,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:33:46.624422+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:45:53.605559+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

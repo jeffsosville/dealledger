@@ -1,0 +1,14 @@
+{
+  "broker_name": "sigmamergers",
+  "source_url": "https://sigmamergers.com/businesses-for-sale/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 37,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:41:55.261439+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

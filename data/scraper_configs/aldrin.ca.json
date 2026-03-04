@@ -1,0 +1,15 @@
+{
+  "broker_name": "aldrin",
+  "source_url": "https://www.aldrin.ca/businesses-for-sale/",
+  "container_selector": ".listing",
+  "fields": {
+    "title": "[class*='title']",
+    "location": "[class*='location']"
+  },
+  "listing_count": 24,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:36:16.172566+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

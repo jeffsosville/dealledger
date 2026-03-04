@@ -1,0 +1,14 @@
+{
+  "broker_name": "jumpinternationalbusinessbrokers",
+  "source_url": "https://jumpinternationalbusinessbrokers.com/businesses-for-sale/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "a[href*='listing']"
+  },
+  "listing_count": 6,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:44:20.355270+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

@@ -1,16 +1,14 @@
 {
-  "broker_name": "Fortune Realty Advisors",
+  "broker_name": "fortunerealtyadvisors",
   "source_url": "https://fortunerealtyadvisors.com/properties/",
-  "container_selector": "article.fusion-post-grid",
+  "container_selector": ".post",
   "fields": {
-    "title": "h2.blog-shortcode-post-title a",
-    "description": "h2.blog-shortcode-post-title a"
+    "title": "h2"
   },
-  "pagination_next_selector": null,
-  "confidence": "medium",
-  "notes": "WordPress Avada theme. Found 8 commercial real estate listings. Titles contain property addresses/locations. The scraper extracts text content but href and src attributes may need additional handling. Properties include mixed-use buildings, office centers, and real estate opportunities in DC, Maryland, and Virginia area. No visible pricing information on listing cards. Full details likely on individual property pages.",
+  "listing_count": 8,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T04:26:31.861318+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:44:26.449559+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

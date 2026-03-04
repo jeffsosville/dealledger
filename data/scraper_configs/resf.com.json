@@ -1,0 +1,14 @@
+{
+  "broker_name": "resf",
+  "source_url": "https://resf.com/exclusive-listings/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 6,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:50:33.792294+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

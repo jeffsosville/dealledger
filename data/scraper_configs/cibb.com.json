@@ -1,20 +1,14 @@
 {
-  "broker_name": "CIBB - Confidential Intermediary Business Brokers",
+  "broker_name": "cibb",
   "source_url": "https://www.cibb.com/cibb-exclusive-listings/",
-  "container_selector": ".listing-card-wrapper",
+  "container_selector": ".listing-card",
   "fields": {
-    "title": "h3",
-    "listing_id": ".card-meta:nth-of-type(1)",
-    "asking_price": ".card-meta:nth-of-type(2)",
-    "cash_flow": ".card-meta:nth-of-type(3)",
-    "location": ".listing-categories:last-of-type",
-    "category": ".listing-categories:first-of-type"
+    "title": "h3"
   },
-  "pagination_next_selector": "None observed - appears to be single page listing",
+  "listing_count": 38,
   "confidence": "high",
-  "notes": "CIBB exclusive listings page. Each listing card contains title, listing ID, asking price, owner benefit (cash flow), location, and category (typically 'CIBB Exclusives'). 39 listings found on test run. Detail URLs are in a.card-header and a.listing-button elements but href extraction not supported by current tool. Location can be specific county (Lee, Collier County, Charlotte, Sarasota) or general 'Florida'. All listings are in Florida.",
   "_meta": {
-    "generated_at": "2026-02-27T18:21:31.387848+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:36:22.965349+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

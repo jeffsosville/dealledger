@@ -1,17 +1,15 @@
 {
-  "broker_name": "Glass City Partners",
+  "broker_name": "glasscitypartners",
   "source_url": "http://www.glasscitypartners.com/available-listings.html",
-  "container_selector": "td.wsite-multicol-col div.platform-element-contents",
+  "container_selector": "table tr",
   "fields": {
-    "title": "h2.wsite-content-title",
-    "location": "h2.wsite-content-title",
-    "details": "div.paragraph"
+    "title": "h2",
+    "price": "span:contains('$')"
   },
-  "pagination_next_selector": null,
+  "listing_count": 3,
   "confidence": "high",
-  "notes": "Glass City Partners specializes in FXG (FedEx Ground) contractor route sales. Listings include state location in title, with structured details containing ID, asking price, gross revenue, cash flow, and establishment year. Details field can be parsed with regex to extract individual values. No pagination detected - all listings on single page.",
   "_meta": {
-    "generated_at": "2026-02-27T20:35:56.359859+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:46:03.774507+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

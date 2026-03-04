@@ -1,20 +1,16 @@
 {
-  "broker_name": "Fitness Club Business Broker",
+  "broker_name": "fitnessclubbusinessbroker",
   "source_url": "https://fitnessclubbusinessbroker.com/listings",
-  "container_selector": ".rtcl-listing-card",
+  "container_selector": ".listing-item",
   "fields": {
-    "title": ".listing-title a",
-    "price": ".rtcl-price-amount",
-    "location": ".rt-location a",
-    "category": ".rt-categories a",
-    "views": ".rt-views",
-    "date_posted": ".updated"
+    "title": ".listing-title",
+    "price": "[class*='price']",
+    "location": "[class*='location']"
   },
-  "pagination_next_selector": ".rtcl-pagination a.next",
+  "listing_count": 16,
   "confidence": "high",
-  "notes": "Uses RTCL WordPress plugin. Found 16 listings. All listings appear to be sold clubs (marked with 'Sold' in title). Price format is unusual (e.g., '130$', '0$'). Note: URL extraction from .listing-title a href attribute would need separate handling. Most listings are marked as sold, may want to filter or check for active listings. The original URL /club-listings/ appears to be a duplicate/redirect to /listings/.",
   "_meta": {
-    "generated_at": "2026-02-27T19:52:42.953788+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:43:01.402816+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

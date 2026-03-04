@@ -1,0 +1,14 @@
+{
+  "broker_name": "atmbrokerage",
+  "source_url": "https://atmbrokerage.com/atm-routes-for-sale/",
+  "container_selector": "article",
+  "fields": {
+    "title": "h3"
+  },
+  "listing_count": 38,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:38:47.306082+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

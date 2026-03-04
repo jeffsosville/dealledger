@@ -1,0 +1,14 @@
+{
+  "broker_name": "gerspachergroup",
+  "source_url": "https://gerspachergroup.com/properties/?saleOrLease",
+  "container_selector": ".card",
+  "fields": {
+    "title": ".property-name"
+  },
+  "listing_count": 109,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:46:42.296912+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

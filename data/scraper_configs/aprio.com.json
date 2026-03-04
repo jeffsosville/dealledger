@@ -1,0 +1,14 @@
+{
+  "broker_name": "aprio",
+  "source_url": "https://www.aprio.com/services/business-acquisitions-by-aprio/view-business-listings/",
+  "container_selector": "article",
+  "fields": {
+    "title": "h3"
+  },
+  "listing_count": 8,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:39:42.898150+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}
