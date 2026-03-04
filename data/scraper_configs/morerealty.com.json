@@ -1,16 +1,15 @@
 {
-  "broker_name": "MORE Realty",
-  "source_url": "https://www.morerealty.com/property-listings/sitemap",
-  "container_selector": "ul.item-list li a",
+  "broker_name": "morerealty",
+  "source_url": "https://www.morerealty.com/buy",
+  "container_selector": "article",
   "fields": {
-    "title": "span.search-title",
-    "location": "span.search-title"
+    "title": "h3",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": "div.page-index a.next",
-  "confidence": "medium",
-  "notes": "\u26a0\ufe0f WARNING: This is a REAL ESTATE brokerage (residential/land properties), NOT a business-for-sale broker. Listings are residential properties in OR, WA, NV, NM, ID. The sitemap page contains property listings. Main search page (/buy) is JavaScript-rendered via Lofty platform and requires Playwright/Selenium. This sitemap page shows 20 listings per page but prices are not visible in the list - would need to scrape individual listing detail pages. MLS IDs are included in titles.",
+  "listing_count": 6,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T19:20:23.684795+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:40:38.798595+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

@@ -1,19 +1,14 @@
 {
-  "broker_name": "Platz Realty Group",
+  "broker_name": "platzrealtygroup",
   "source_url": "https://www.platzrealtygroup.com/business/",
-  "container_selector": "a.no-decor",
+  "container_selector": ".property-item",
   "fields": {
-    "title": ".property-title",
-    "price": ".spec-bubble:nth-of-type(4)",
-    "description": ".property-summary p",
-    "specs": ".the-specs p strong",
-    "status": ".sign-style"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": null,
+  "listing_count": 15,
   "confidence": "high",
-  "notes": "Platz Realty Group business listings. Each listing is wrapped in an anchor tag (a.no-decor). The price is in the 4th spec-bubble. The specs field contains combined price, square footage, and acreage info. Some listings may have square footage in the price field if no price is displayed. Note: URL can be extracted from the href attribute of the container anchor tag.",
   "_meta": {
-    "generated_at": "2026-02-27T18:56:15.847819+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:39:04.738426+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

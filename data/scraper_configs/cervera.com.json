@@ -1,0 +1,14 @@
+{
+  "broker_name": "cervera",
+  "source_url": "https://cervera.com/search/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 6,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:43:27.115260+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

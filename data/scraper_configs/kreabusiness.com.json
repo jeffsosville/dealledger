@@ -1,18 +1,14 @@
 {
-  "broker_name": "Krea Business Advisory Services",
-  "source_url": "https://kreabusiness.com/businessforsale/",
-  "container_selector": "tupelo-marketplace",
+  "broker_name": "kreabusiness",
+  "source_url": "https://kreabusiness.com/for-sale",
+  "container_selector": "article",
   "fields": {
-    "title": "REQUIRES_JS_RENDERING",
-    "price": "REQUIRES_JS_RENDERING",
-    "location": "REQUIRES_JS_RENDERING",
-    "description": "REQUIRES_JS_RENDERING"
+    "title": "h2"
   },
-  "pagination_next_selector": null,
-  "confidence": "low",
-  "notes": "This site uses a third-party Tupelo marketplace widget (organization ID: cm4xn1drl0000dhxtcem9cls1) that renders listings dynamically via JavaScript. The HTML contains only <tupelo-marketplace> web component with no actual listing data. REQUIRES JavaScript rendering with Playwright/Selenium to extract listings. The widget may load data from an API endpoint that could potentially be reverse-engineered for direct API access. Alternative approach: investigate network requests to find the Tupelo API endpoint being called.",
+  "listing_count": 2,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T05:08:12.456041+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:51:28.121709+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

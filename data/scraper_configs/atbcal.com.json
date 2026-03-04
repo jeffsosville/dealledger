@@ -1,0 +1,14 @@
+{
+  "broker_name": "atbcal",
+  "source_url": "https://www.atbcal.com/listings/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "a[href*='listing']"
+  },
+  "listing_count": 38,
+  "confidence": "medium",
+  "_meta": {
+    "generated_at": "2026-03-04T06:42:12.564823+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

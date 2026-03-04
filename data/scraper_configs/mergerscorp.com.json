@@ -1,0 +1,16 @@
+{
+  "broker_name": "mergerscorp",
+  "source_url": "https://mergerscorp.com/listings/",
+  "container_selector": ".property-item",
+  "fields": {
+    "title": "h2",
+    "price": ".price",
+    "location": ".address"
+  },
+  "listing_count": 40,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:40:27.985456+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

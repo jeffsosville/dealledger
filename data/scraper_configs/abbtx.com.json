@@ -1,26 +1,16 @@
 {
-  "broker_name": "Austin Business Brokers",
+  "broker_name": "abbtx",
   "source_url": "https://www.abbtx.com/listings",
-  "container_selector": "table.views-table tbody tr",
+  "container_selector": "table tr",
   "fields": {
-    "title": "td.views-field-title a",
-    "listing_id": "td.views-field-title a",
-    "business_type": "td.views-field-field-business-type",
-    "location": "td.views-field-field-location",
-    "price": "td.views-field-field-asking-price",
-    "asking_price": "td.views-field-field-asking-price",
-    "down_payment": "td.views-field-field-down-payment",
-    "annual_sales": "td.views-field-field-gross-sales",
-    "net_income": "td.views-field-field-net-income",
-    "status": "td.views-field-field-status",
-    "roi": "td.views-field-field-roi",
-    "score": "td.views-field-field-scorecard"
+    "title": "[class*='title']",
+    "price": "[class*='price']",
+    "location": "[class*='location']"
   },
-  "pagination_next_selector": "nav.pager a.pager__link--next",
+  "listing_count": 3,
   "confidence": "high",
-  "notes": "Table-based listings page built on Drupal. Captures listing ID (which is also the title), business type, location, asking price, down payment, annual sales, net income, status, ROI, and score. Note: Only 2 active listings found at time of scraping. The page also has sortable columns. Individual listing URLs are available at /[listing_id] format.",
   "_meta": {
-    "generated_at": "2026-02-27T20:32:36.071727+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:45:48.450918+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

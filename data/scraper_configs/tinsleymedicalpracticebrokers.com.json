@@ -1,0 +1,14 @@
+{
+  "broker_name": "tinsleymedicalpracticebrokers",
+  "source_url": "https://tinsleymedicalpracticebrokers.com/listings/",
+  "container_selector": "article",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 15,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:39:31.671451+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

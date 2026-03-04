@@ -1,0 +1,14 @@
+{
+  "broker_name": "pk-property",
+  "source_url": "https://pk-property.com/business-listing/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "[class*='title']"
+  },
+  "listing_count": 24,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:36:23.951119+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

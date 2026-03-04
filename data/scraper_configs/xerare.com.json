@@ -1,19 +1,15 @@
 {
-  "broker_name": "Xera Realty",
+  "broker_name": "xerare",
   "source_url": "https://www.xerare.com/status/business-for-sale",
-  "container_selector": ".item-listing-wrap",
+  "container_selector": ".card",
   "fields": {
-    "title": ".item-title a",
-    "price": ".item-price",
-    "location": ".item-address",
-    "property_type": ".h-type span",
-    "area_sqft": ".hz-figure"
+    "title": "h2",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": ".page-link",
+  "listing_count": 9,
   "confidence": "high",
-  "notes": "WordPress site using Houzez theme. Business listings page with 9 active listings. Captures title, price, location, property type, and square footage where available. Note: URL and image extraction may require attribute selectors if needed in future.",
   "_meta": {
-    "generated_at": "2026-02-27T18:46:57.196262+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:38:40.246488+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

@@ -1,21 +1,15 @@
 {
-  "broker_name": "Doaba Brokers",
+  "broker_name": "doababrokers",
   "source_url": "https://www.doababrokers.com/listings",
   "container_selector": ".listing-card",
   "fields": {
-    "title": "h5.title",
-    "location": "p.city-state",
-    "listing_type": "p.sale-type",
-    "link": "a",
-    "detail_1": ".highlights p:nth-of-type(1)",
-    "detail_2": ".highlights p:nth-of-type(2)",
-    "detail_3": ".highlights p:nth-of-type(3)"
+    "title": ".title",
+    "location": "[class*='city']"
   },
-  "pagination_next_selector": "a.MuiButton-root.button:contains('Next')",
-  "confidence": "medium",
-  "notes": "Commercial real estate broker (primarily lease listings, not business-for-sale). Currently showing 3 lease listings on page 1 of 1. Link field captures text instead of href - may need post-processing to construct URLs from titles. Details vary by listing (size, price per SF, property type). Page uses React/Next.js with Material-UI components.",
+  "listing_count": 3,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:43:12.629497+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:46:35.412176+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

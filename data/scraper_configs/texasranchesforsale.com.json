@@ -1,20 +1,15 @@
 {
-  "broker_name": "Texas Ranches For Sale",
+  "broker_name": "texasranchesforsale",
   "source_url": "https://www.texasranchesforsale.com/",
-  "container_selector": ".property-card, .w-dyn-item[role=\"listitem\"]",
+  "container_selector": ".property-card",
   "fields": {
-    "title": ".property-name, .property-title, h3, h2",
-    "price": ".property-price, .price, [class*='price']",
-    "location": ".property-location, .location, [class*='location'], [class*='county']",
-    "acres": ".property-acres, .acres, .acreage, [class*='acre']",
-    "description": ".property-description, .description, p",
-    "url": "a.property-link, a"
+    "title": "h2",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": ".pagination a, .w-pagination-next",
-  "confidence": "low",
-  "notes": "\u26a0\ufe0f REQUIRES JAVASCRIPT RENDERING (Playwright/Selenium/Puppeteer)\n\nThis is a Webflow CMS site with client-side rendering using Finsweet CMS Library. The property listings are NOT present in the static HTML and must be scraped with a headless browser.\n\nKey Technical Details:\n- Built on Webflow CMS\n- Uses Finsweet CMS Library (fs-list-element attributes)\n- Dynamic content loaded via JavaScript\n- Collection list containers use: .w-dyn-list > .w-dyn-items > .w-dyn-item\n- Properties are ranch/land listings, not businesses\n- Main listings page: https://www.texasranchesforsale.com/ (homepage serves as listings page)\n- Individual listing URLs follow pattern: /listings/[county]-[property-name]\n\nTo scrape successfully:\n1. Use Playwright/Selenium to load page\n2. Wait for .w-dyn-items to populate (wait for network idle or specific element)\n3. Look for property cards within .w-dyn-item containers\n4. Property details may be in custom classes (needs JS inspection in browser DevTools)\n\nSample listing URLs found in updates:\n- https://www.texasranchesforsale.com/listings/gillespie-county-2330-summit-forest-nw-fredericksburg-ranch-for-sale\n- https://www.texasranchesforsale.com/listings/edwards-county-bbr-ranch-nw-rocksprings-ranch-for-sale\n\nThe selectors provided are estimates based on common Webflow patterns. Actual class names must be confirmed by inspecting the rendered page in a browser.",
+  "listing_count": 266,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:52:16.874701+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:47:23.531281+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

@@ -1,19 +1,14 @@
 {
-  "broker_name": "Preferred Brokers",
+  "broker_name": "preferredbrokers",
   "source_url": "https://preferredbrokers.com/listings/",
-  "container_selector": "article.post",
+  "container_selector": ".post",
   "fields": {
-    "title": "h1.entry-title",
-    "listing_url": "h1.entry-title a",
-    "full_description": "div.entry-content",
-    "category": "footer.entry-footer a[rel='category tag']",
-    "posted_date": "time.published"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": null,
+  "listing_count": 106,
   "confidence": "high",
-  "notes": "WordPress blog-based listings page with 106 total listings. Each listing is a blog post (article.post). Financial data (Cash Flow, Gross Revenue, EBITDA, etc.) is embedded in the description text. Many listings show SOLD status in title. Categories include Medical Services, Construction, Retail, Service Business, etc. Posted dates range from 2017-2024. Location is primarily Metro Atlanta, GA area.",
   "_meta": {
-    "generated_at": "2026-02-27T19:54:59.261105+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:43:11.210938+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

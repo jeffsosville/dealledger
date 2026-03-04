@@ -1,18 +1,15 @@
 {
-  "broker_name": "Century 21 Rauh & Johns",
+  "broker_name": "century21rauhandjohns",
   "source_url": "https://century21rauhandjohns.com/listings/brokerage-active-listings",
-  "container_selector": "div.singlelisting.row",
+  "container_selector": ".item",
   "fields": {
-    "address": ".single-listing-right h3",
-    "price": ".single-listing-img-price",
-    "status": ".status-label",
-    "listing_text": "a.linktooverlay"
+    "title": "h2",
+    "price": "[class*='price']"
   },
-  "pagination_next_selector": null,
+  "listing_count": 47,
   "confidence": "high",
-  "notes": "Century 21 brokerage using MoxiWorks platform. Successfully captures address (from h3), price (with USD currency), and status (Pending/Active/Coming Soon). The listing_text field contains all listing details in plain text format including bedrooms, bathrooms, sqft, MLS number, and description which can be parsed post-scrape. Site has 10 active listings at time of configuration. Note: detailed fields (beds, baths, sqft, MLS) are embedded in the link structure and not easily accessible via simple CSS selectors - may need JS rendering or regex parsing of listing_text for full details.",
   "_meta": {
-    "generated_at": "2026-02-27T19:50:57.675139+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-04T06:42:50.256594+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

@@ -1,0 +1,15 @@
+{
+  "broker_name": "mglbusinesssolutions",
+  "source_url": "https://mglbusinesssolutions.com/businesses-for-sale/",
+  "container_selector": ".listing-box",
+  "fields": {
+    "title": ".listing-title",
+    "price": ".listing-price"
+  },
+  "listing_count": 10,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:46:56.871175+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

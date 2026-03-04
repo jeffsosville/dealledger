@@ -1,0 +1,15 @@
+{
+  "broker_name": "century21hometown",
+  "source_url": "https://www.century21hometown.com/property-listings/",
+  "container_selector": ".listing-box",
+  "fields": {
+    "title": "h3",
+    "price": "[class*='price']"
+  },
+  "listing_count": 12,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-04T06:52:31.280042+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}
