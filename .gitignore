@@ -39,4 +39,3 @@ data/listings/*.json
 data/listings_clean.jsonl
 data/listings_clean2.jsonl
 data/listings/*.jsonl
-data/ledger.jsonl
