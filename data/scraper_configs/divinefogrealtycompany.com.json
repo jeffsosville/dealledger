@@ -1,0 +1,14 @@
+{
+  "broker_name": "divinefogrealtycompany",
+  "source_url": "https://divinefogrealtycompany.com/homes-for-sale-in-lynchburg-va",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "h2"
+  },
+  "listing_count": 10,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-05T06:47:09.274611+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

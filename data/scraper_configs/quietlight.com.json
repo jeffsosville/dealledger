@@ -1,0 +1,15 @@
+{
+  "broker_name": "quietlight",
+  "source_url": "https://quietlight.com/listings/",
+  "container_selector": ".listing-card",
+  "fields": {
+    "title": "h3",
+    "price": "[class*='price']"
+  },
+  "listing_count": 315,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-05T06:39:37.838375+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

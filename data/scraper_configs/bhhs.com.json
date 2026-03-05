@@ -1,21 +1,14 @@
 {
-  "broker_name": "BHHS Alliance Real Estate (MO304)",
+  "broker_name": "bhhs",
   "source_url": "https://www.bhhs.com/alliance-real-estate-mo304/search?SearchType=Empty&PropertyType=1%2C2&ApplicationType=FOR_SALE&ListingStatus=1&NewListing=false&Sort=PRICE_DESCENDING&PageSize=32&Page=1&isAgentPage=false&isFranchisePage=true&franchiseeCode=MO304",
   "container_selector": "article",
   "fields": {
-    "title": ".cmp-property-card__title, .property-title, h2, h3",
-    "price": ".cmp-property-card__price, .price",
-    "location": ".cmp-property-card__location, .location, .address",
-    "bedrooms": ".cmp-property-card__beds, .beds",
-    "bathrooms": ".cmp-property-card__baths, .baths",
-    "sqft": ".cmp-property-card__sqft, .square-feet",
-    "url": "a.cmp-property-card__link"
+    "title": "h3"
   },
-  "pagination_next_selector": ".pagination .next, button[aria-label*='next']",
-  "confidence": "low",
-  "notes": "\u26a0\ufe0f JAVASCRIPT-RENDERED SITE - Requires Playwright/Selenium/Puppeteer. This is a Vue.js application (bhhs.com) that loads property listings dynamically via API calls after page load. The HTML structure contains 13 empty article elements that get populated by JavaScript. Static HTML scraping returns 0 data. The URL structure supports pagination via Page parameter (&Page=1, &Page=2, etc.) and PageSize parameter (&PageSize=32). This is a commercial/business properties search page filtered by PropertyType=1,2 and ApplicationType=FOR_SALE. The site uses the 'cmp-property-card' component pattern (based on AEM framework class naming conventions). To scrape successfully: 1) Use browser automation (Playwright recommended), 2) Wait for article elements to populate with data, 3) Extract using the selectors provided above, 4) Increment Page parameter for pagination.",
+  "listing_count": 13,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:59:05.997128+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-05T06:50:43.253840+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }
