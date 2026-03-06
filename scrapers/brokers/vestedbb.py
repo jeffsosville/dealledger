@@ -103,3 +103,15 @@ if __name__ == '__main__':
     print(f"\nSample:")
     for r in results[:3]:
         print(r)
+
+
+# BaseScraper-compatible wrapper for run_all.py auto-discovery
+try:
+    from scrapers.base import BaseScraper
+    class VestedBBScraper(BaseScraper):
+        broker_id = 'vestedbb'
+        broker_name = 'vested business brokers'
+        def run(self):
+            return scrape(max_pages=120, verbose=True)
+except ImportError:
+    pass
