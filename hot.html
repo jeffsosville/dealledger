@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot 100 — Most-Watched Businesses For Sale | DealLedger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            background: var(--bg);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        nav a:hover, nav a.active { color: var(--text); }
+
+        /* STATS BAR */
+        .stats-bar {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            background: var(--bg-alt);
+        }
+        .stats-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .stats { display: flex; gap: 32px; flex-wrap: wrap; }
+        .stat { font-family: var(--mono); font-size: 13px; }
+        .stat-value { font-weight: 600; color: var(--text); }
+        .stat-label { color: var(--text-muted); margin-left: 4px; }
+
+        /* FILTERS */
+        .filters {
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+        }
+        .filters-content {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+        .filter-btn {
+            font-family: var(--mono);
+            font-size: 11px;
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-btn:hover { background: var(--bg-alt); color: var(--text); }
+        .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .search-input {
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            width: 220px;
+            margin-left: auto;
+        }
+        .search-input:focus { outline: 2px solid var(--text); outline-offset: 1px; }
+        .search-input::placeholder { color: var(--text-muted); }
+        .results-count {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* NOTICE */
+        .notice {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 12px 16px;
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+        /* TABLE */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            background: var(--bg-alt);
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        tr:hover td { background: var(--bg-alt); }
+
+        .col-rank {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            width: 48px;
+        }
+        .col-title { max-width: 340px; }
+        .col-title a { color: var(--text); text-decoration: none; }
+        .col-title a:hover { text-decoration: underline; }
+        .listing-sub {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .fsbo-tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 1px 5px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            margin-left: 6px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .col-state {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .col-views {
+            font-family: var(--mono);
+            font-size: 12px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .views-bar {
+            height: 2px;
+            background: var(--border);
+            margin-top: 4px;
+            width: 80px;
+            margin-left: auto;
+        }
+        .views-bar-fill { height: 100%; background: var(--text); }
+        .col-price {
+            font-family: var(--mono);
+            font-size: 12px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .col-cf {
+            font-family: var(--mono);
+            font-size: 12px;
+            text-align: right;
+            white-space: nowrap;
+            color: var(--text-muted);
+        }
+        .col-source { text-align: center; width: 60px; }
+        .source-link {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--link);
+            text-decoration: none;
+        }
+        .source-link:hover { text-decoration: underline; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            margin-top: 40px;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .footer-links a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; }
+            .stats { gap: 16px; }
+            th, td { padding: 8px 10px; }
+            .col-title { max-width: 200px; }
+            .search-input { margin-left: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline"> — Hot 100: Most-watched businesses for sale in America</span>
+            </div>
+            <nav>
+                <a href="https://dealledger.org">All Listings</a>
+                <a href="#" class="active">Hot 100</a>
+                <a href="https://dealledger.org/removed.html">Removed</a>
+                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="stats-bar">
+    <div class="container">
+        <div class="stats-content">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value">100</span>
+                    <span class="stat-label">listings ranked</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="stat-views">—</span>
+                    <span class="stat-label">total views tracked</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="stat-fsbo">—</span>
+                    <span class="stat-label">FSBO (no broker)</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">41,783</span>
+                    <span class="stat-label">listings in source dataset</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">Nov 2024</span>
+                    <span class="stat-label">snapshot date</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="filters">
+    <div class="container">
+        <div class="filters-content">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="laundromat">Laundromats</button>
+            <button class="filter-btn" data-filter="gas">Gas Stations</button>
+            <button class="filter-btn" data-filter="vending">Vending</button>
+            <button class="filter-btn" data-filter="atm">ATMs</button>
+            <button class="filter-btn" data-filter="ecommerce">eCommerce</button>
+            <button class="filter-btn" data-filter="fsbo">FSBO Only</button>
+            <span class="results-count" id="results-count">100 results</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+        </div>
+    </div>
+</div>
+
+<main class="container">
+    <div class="notice">
+        Ranked by BizQuest profile views — raw buyer demand signal, not broker spend. Source data: 41,783 listings, 55.8M total views observed November 2024.
+        <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a>
+    </div>
+
+    <div class="table-container">
+        <table id="hot-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Business</th>
+                    <th>State</th>
+                    <th style="text-align:right">Views</th>
+                    <th style="text-align:right">Ask Price</th>
+                    <th style="text-align:right">Cash Flow</th>
+                    <th style="text-align:center">Source</th>
+                </tr>
+            </thead>
+            <tbody id="listings-body"></tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">
+                DealLedger observes and publishes. We don't rank, recommend, or broker.<br>
+                Code: MIT License. Data: CC0.
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/jeffsosville/dealledger" target="_blank">Source</a>
+                <a href="https://dealledger.org">All Listings</a>
+                <a href="https://github.com/jeffsosville/dealledger/issues" target="_blank">Report Issue</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+const HOT100 = [{"rank":1,"title":"9 Years Established Laundromat in Houston Metro area For Sale","location":"Houston, TX","state":"TX","price":400000,"cash_flow":120000,"views":14003,"url":"https://www.bizquest.com/business-for-sale/9-years-established-laundromat-in-houston-metro-area-for-sale/BW2420580/","broker":"FSBO"},{"rank":2,"title":"Coin Laundromat fully equipped ready to go!","location":"Escondido, CA","state":"CA","price":80000,"cash_flow":null,"views":9686,"url":"https://www.bizquest.com/asset-sales/coin-laundromat-fully-equipped-ready-to-go/BW2428214/","broker":"FSBO"},{"rank":3,"title":"SmartPark Access: Hands-Free Parking with Camera & Gate Payment","location":"Los Angeles, CA","state":"CA","price":100000,"cash_flow":65000,"views":6271,"url":"https://www.bizquest.com/business-for-sale/smartpark-access-hands-free-parking-with-camera-and-gate-payment/BW2420856/","broker":"FSBO"},{"rank":4,"title":"Dumpster Rental E-commerce: Asset-light | 60 markets | $1.13M SDE","location":"Texas","state":"TX","price":5650000,"cash_flow":1130000,"views":5877,"url":"https://www.bizquest.com/business-for-sale/dumpster-rental-e-commerce-asset-light-60-markets-1-13m-sde/BW2423533/","broker":"Earned Exits Business Brokers"},{"rank":5,"title":"Profitable Amazon Supplement Business - Exclusive Distribution Rights","location":"Los Angeles, CA","state":"CA","price":109000,"cash_flow":665876,"views":5865,"url":"https://www.bizquest.com/business-for-sale/profitable-amazon-supplement-business-exclusive-distribution-rights/BW2416974/","broker":"FSBO"},{"rank":6,"title":"Established Liquor Store/Bar, Strong Legacy — Ready for New Leadership","location":"Teaneck, NJ","state":"NJ","price":540000,"cash_flow":121725,"views":5497,"url":"https://www.bizquest.com/business-for-sale/established-liquor-store-bar-strong-legacy-ready-for-new-leadership/BW2421483/","broker":"FSBO"},{"rank":7,"title":"Established Coin-Operated Laundromat – Fort Worth Area, TX","location":"Fort Worth, TX","state":"TX","price":150000,"cash_flow":null,"views":5359,"url":"https://www.bizquest.com/business-for-sale/established-coin-operated-laundromat-fort-worth-area-tx/BW2421571/","broker":"Sunbelt Business Brokers"},{"rank":8,"title":"Laundromat for Sale – High Visibility Retail Plaza Location","location":"Middlesex County, MA","state":"MA","price":195000,"cash_flow":null,"views":5344,"url":"https://www.bizquest.com/business-for-sale/laundromat-for-sale-high-visibility-retail-plaza-location/BW2417906/","broker":"Berkshire Hathaway"},{"rank":9,"title":"Unattended Coin Laundromat. ONLY $110,000!","location":"Tucson, AZ","state":"AZ","price":110000,"cash_flow":8717,"views":5054,"url":"https://www.bizquest.com/business-for-sale/unattended-coin-laundromat-only-110-000/BW2420758/","broker":"Tucson Business Investments"},{"rank":10,"title":"Move to Florida and own a Simple successful business! Owner retiring","location":"Palm Beach County, FL","state":"FL","price":150000,"cash_flow":null,"views":4928,"url":"https://www.bizquest.com/business-for-sale/move-to-florida-and-own-a-simple-successful-business-owner-retiring/BW2424595/","broker":"FSBO"},{"rank":11,"title":"Established Distribution & eCommerce Company with Proprietary Brands","location":"Dallas County, TX","state":"TX","price":1300000,"cash_flow":516208,"views":4590,"url":"https://www.bizquest.com/business-for-sale/established-distribution-and-ecommerce-company-with-proprietary-brands/BW2419781/","broker":"FSBO"},{"rank":12,"title":"Tremendous Location Coffee Shop","location":"Alameda, CA","state":"CA","price":115000,"cash_flow":null,"views":4215,"url":"https://www.bizquest.com/business-for-sale/tremendous-location-coffee-shop/BW2422474/","broker":"Berkshire Hathaway Drysdale Properties"},{"rank":13,"title":"Profitable Established Fire Retardant Manufacturer","location":"Fort Worth, TX","state":"TX","price":1350000,"cash_flow":null,"views":4189,"url":"https://www.bizquest.com/business-for-sale/profitable-established-fire-retardant-manufacturer/BW2424628/","broker":"FSBO"},{"rank":14,"title":"No Goodwill Corporate Owned 2 Gas Stations For Lease In Michigan","location":"Grand Rapids, MI","state":"MI","price":35000,"cash_flow":null,"views":4016,"url":"https://www.bizquest.com/business-for-sale/no-goodwill-corporate-owned-2-gas-stations-for-lease-in-michigan/BW2423490/","broker":"Ajeet Singh"},{"rank":15,"title":"The Realty TX | Laundromat Washateria | South West Loop, Houston TX","location":"Houston, TX","state":"TX","price":455000,"cash_flow":198668,"views":3863,"url":"https://www.bizquest.com/business-for-sale/the-realty-tx-laundromat-washateria-south-west-loop-houston-tx/BW2432090/","broker":"The Realty TX"},{"rank":16,"title":"Profitable Family-Owned Laundromat With Apartment Unit For Sale","location":"Philadelphia, PA","state":"PA","price":360000,"cash_flow":65600,"views":3839,"url":"https://www.bizquest.com/business-for-sale/profitable-family-owned-laundromat-with-apartment-unit-for-sale/BW2420584/","broker":"Hedgestone Business Advisors"},{"rank":17,"title":"Coin Laundry For Sale in Oakland - Alameda County","location":"Oakland, CA","state":"CA","price":135000,"cash_flow":33928,"views":3793,"url":"https://www.bizquest.com/business-for-sale/coin-laundry-for-sale-in-oakland-alameda-county/BW2424074/","broker":"Best Business Brokers"},{"rank":18,"title":"**Under Contract** Established, Cash Flowing, Laundromat","location":"St. Petersburg, FL","state":"FL","price":285000,"cash_flow":null,"views":3692,"url":"https://www.bizquest.com/business-for-sale/under-contract-established-cash-flowing-laundromat/BW2424386/","broker":"FSBO"},{"rank":19,"title":"High demand recession proof biz with lots of clients. All of Texas","location":"Houston, TX","state":"TX","price":50000,"cash_flow":150000,"views":3650,"url":"https://www.bizquest.com/business-for-sale/high-demand-recession-proof-biz-with-lots-of-clients-all-of-texas/BW2423816/","broker":"FSBO"},{"rank":20,"title":"Long Established Laundromat","location":"Suffolk County, NY","state":"NY","price":299000,"cash_flow":42516,"views":3639,"url":"https://www.bizquest.com/business-for-sale/long-established-laundromat/BW2421092/","broker":"Vested Business Brokers, Ltd"},{"rank":21,"title":"Thriving 3PL & eCommerce Fulfillment Business – $480K+ Net Income","location":"Hallandale Beach, FL","state":"FL","price":1599999,"cash_flow":592000,"views":3533,"url":"https://www.bizquest.com/business-for-sale/thriving-3pl-and-ecommerce-fulfillment-business-480k-net-income/BW2422996/","broker":"FSBO"},{"rank":22,"title":"Laundromat for Sale in Prince George's county MD","location":"Prince George's County, MD","state":"MD","price":1699000,"cash_flow":null,"views":3464,"url":"https://www.bizquest.com/business-for-sale/laundromat-for-sale-in-prince-georges-county-md-9029/BW2419903/","broker":"Business USA, Inc."},{"rank":23,"title":"Beachfront Whisky Distillery in San Francisco","location":"Pacifica, CA","state":"CA","price":49000,"cash_flow":4000,"views":3461,"url":"https://www.bizquest.com/business-for-sale/beachfront-whisky-distillery-in-san-franisco/BW2423661/","broker":"FSBO"},{"rank":24,"title":"No Goodwill Corporate Owned Gas Station For Lease In Memphis, TN","location":"Memphis, TN","state":"TN","price":45000,"cash_flow":null,"views":3447,"url":"https://www.bizquest.com/business-for-sale/no-goodwill-corporate-owned-gas-station-for-lease-in-memphis-tn/BW2428171/","broker":"Ajeet Singh"},{"rank":25,"title":"Turnkey Airbnb Business for sale | Miami | E-2 Visa Eligible","location":"Miami, FL","state":"FL","price":259000,"cash_flow":125000,"views":3429,"url":"https://www.bizquest.com/business-for-sale/turnkey-airbnb-business-for-sale-miami-e-2-visa-eligible/BW2433586/","broker":"FSBO"},{"rank":26,"title":"Pasadena Self & Full Service Laundromat","location":"Pasadena, CA","state":"CA","price":689000,"cash_flow":137184,"views":3354,"url":"https://www.bizquest.com/business-for-sale/pasadena-self-and-full-service-laundromat/BW2432998/","broker":"FSBO"},{"rank":27,"title":"Permian Basin Construction and Env Remediation/Reclamation Company","location":"Midland County, TX","state":"TX","price":50000000,"cash_flow":null,"views":3319,"url":"https://www.bizquest.com/business-for-sale/permian-basin-construction-and-env-remediation-reclamation-company/BW2433124/","broker":"The Fountainhead Firm"},{"rank":28,"title":"Yellowsack - Unique dumpster bags in SF Bay and LA","location":"Redwood City, CA","state":"CA","price":1600000,"cash_flow":450000,"views":3279,"url":"https://www.bizquest.com/business-for-sale/yellowsack-unique-dumpster-bags-in-sf-bay-and-la/BW2433262/","broker":"FSBO"},{"rank":29,"title":"Italian Food Truck in Los Angeles","location":"Los Angeles, CA","state":"CA","price":115000,"cash_flow":null,"views":3179,"url":"https://www.bizquest.com/business-for-sale/italian-food-truck-in-los-angeles/BW2433846/","broker":"FSBO"},{"rank":30,"title":"High Volume Manufacturing and Machining","location":"Orange County, CA","state":"CA","price":3000000,"cash_flow":null,"views":3165,"url":"https://www.bizquest.com/business-for-sale/high-volume-manufacturing-and-machining/BW2267500/","broker":"FSBO"},{"rank":31,"title":"Arkansas River Tourist Corridor","location":"Fremont County, CO","state":"CO","price":1475000,"cash_flow":null,"views":3152,"url":"https://www.bizquest.com/business-for-sale/arkansas-river-tourist-corridor/BW2422862/","broker":"FSBO"},{"rank":32,"title":"Absentee-Run Coin Laundry – Prime Location – 4,000 SF – For Sale","location":"Lawrenceville, GA","state":"GA","price":700000,"cash_flow":108000,"views":3141,"url":"https://www.bizquest.com/business-for-sale/absentee-run-coin-laundry-prime-location-4-000-sf-for-sale/BW2422570/","broker":"National Representative Realty, LLC"},{"rank":33,"title":"Well-Known Laundromat with Busy Wash & Fold Service","location":"Manatee County, FL","state":"FL","price":59000,"cash_flow":null,"views":3122,"url":"https://www.bizquest.com/business-for-sale/well-known-laundromat-with-busy-wash-and-fold-service/BW2430852/","broker":"American Business Brokers"},{"rank":34,"title":"Under Contract – Accepting Backup Offers! Coin Laundromat in Littleton","location":"Littleton, CO","state":"CO","price":409000,"cash_flow":null,"views":3101,"url":"https://www.bizquest.com/business-for-sale/under-contract-accepting-backup-offers-coin-laundromat-in-littleton/BW2421999/","broker":"RE/MAX Masters Millennium"},{"rank":35,"title":"Turnkey Retooled Laundromat with New Equipment & Long-Term Lease","location":"Decatur, GA","state":"GA","price":420000,"cash_flow":null,"views":3034,"url":"https://www.bizquest.com/business-for-sale/turnkey-retooled-laundromat-with-new-equipment-and-long-term-lease/BW2420354/","broker":"Metrobrokers Inc."},{"rank":36,"title":"Turn-Key Laundromat, Fully Equipped & Priced to Sell!","location":"San Leandro, CA","state":"CA","price":325000,"cash_flow":null,"views":3021,"url":"https://www.bizquest.com/business-for-sale/turn-key-laundromat-fully-equipped-and-priced-to-sell/BW2436060/","broker":"BisBroker"},{"rank":37,"title":"Solid Texas Wholesale Business","location":"Fort Worth, TX","state":"TX","price":8000000,"cash_flow":1750000,"views":2992,"url":"https://www.bizquest.com/business-for-sale/solid-texas-wholesale-business/BW2437207/","broker":"FSBO"},{"rank":38,"title":"Popular Quick-Service Restaurant Near USC Campus","location":"Los Angeles, CA","state":"CA","price":180000,"cash_flow":60000,"views":2962,"url":"https://www.bizquest.com/business-for-sale/popular-quick-service-restaurant-near-usc-campus/BW2422511/","broker":"CBD Investment Inc"},{"rank":39,"title":"150 ATMs. $360K Revenue. $288K Cash Flow.","location":"Indianapolis, IN","state":"IN","price":1008000,"cash_flow":288000,"views":2922,"url":"https://www.bizquest.com/business-for-sale/150-atms-360k-revenue-288k-cash-flow/BW2424632/","broker":"FSBO"},{"rank":40,"title":"LIQUOR STORE FOR SALE - Prime Location / Turnkey","location":"Canton Twp, MI","state":"MI","price":395000,"cash_flow":70000,"views":2893,"url":"https://www.bizquest.com/business-for-sale/liquor-store-for-sale-prime-location-turnkey/BW2432764/","broker":"Locations Commercial Real Estate Services"},{"rank":41,"title":"Stunning Profitable Restaurant/Bar in WEST HOLLYWOOD","location":"West Hollywood, CA","state":"CA","price":1500000,"cash_flow":null,"views":2889,"url":"https://www.bizquest.com/business-for-sale/stunning-must-see-profitable-restaurant-bar-in-west-hollywood/BW2434092/","broker":"Pacific Edge Partners"},{"rank":42,"title":"Shell Gas Station for Sale","location":"Fort Myers, FL","state":"FL","price":75000,"cash_flow":null,"views":2879,"url":"https://www.bizquest.com/business-for-sale/shell-gas-station-for-sale/BW2423559/","broker":"Truforte Business Group"},{"rank":43,"title":"Amazon FBA Private Label Pregnancy Pillow Brand","location":"Chicago, IL","state":"IL","price":98000,"cash_flow":587787,"views":2872,"url":"https://www.bizquest.com/business-for-sale/amazon-fba-private-label-pregnancy-pillow-brand/BW2435509/","broker":"FSBO"},{"rank":44,"title":"C-store/Gas Station with Hot Food","location":"Johnston County, NC","state":"NC","price":289000,"cash_flow":81420,"views":2831,"url":"https://www.bizquest.com/business-for-sale/c-store-gas-station-with-hot-food/BW2420168/","broker":"Southeastern Business Brokers"},{"rank":45,"title":"Own a Steady Cash-Flow Business – Established Laundromat Opportunity!","location":"Sacramento, CA","state":"CA","price":500000,"cash_flow":null,"views":2828,"url":"https://www.bizquest.com/business-for-sale/own-a-steady-cash-flow-business-established-laundromat-opportunity/BW2439329/","broker":"FSBO"},{"rank":46,"title":"No Goodwill Corporate Owned Gas Station For Lease In Ohio","location":"Elyria, OH","state":"OH","price":35000,"cash_flow":null,"views":2772,"url":"https://www.bizquest.com/business-for-sale/no-goodwill-corporate-owned-gas-station-for-lease-in-ohio/BW2434594/","broker":"Ajeet Singh"},{"rank":47,"title":"Turnkey Busy Auto Repair Powerhouse, 7 Lifts, Rental Permit, 40+ Years","location":"Los Angeles County, CA","state":"CA","price":350000,"cash_flow":120000,"views":2770,"url":"https://www.bizquest.com/business-for-sale/turnkey-busy-auto-repair-powerhouse-7-lifts-rental-permit-40-years/BW2434222/","broker":"FSBO"},{"rank":48,"title":"Amazon FBA Cleaning Essentials Store – Auto-Ship Revenue Stream","location":"Bethlehem, PA","state":"PA","price":134999,"cash_flow":97895,"views":2744,"url":"https://www.bizquest.com/business-for-sale/amazon-fba-cleaning-essentials-store-auto-ship-revenue-stream/BW2431932/","broker":"FSBO"},{"rank":49,"title":"35+ Year Landscaping Business with Loyal Accounts","location":"Dallas County, TX","state":"TX","price":405000,"cash_flow":152796,"views":2677,"url":"https://www.bizquest.com/business-for-sale/35-year-landscaping-business-with-loyal-accounts/BW2419789/","broker":"Business Lynx International"},{"rank":50,"title":"Austin, TX Medical Spa for Sale","location":"Austin, TX","state":"TX","price":null,"cash_flow":697000,"views":2625,"url":"https://www.bizquest.com/business-for-sale/austin-tx-medical-spa-for-sale/BW2419718/","broker":"FSBO"},{"rank":51,"title":"Great business, fantastic clients (there's only one small catch)","location":"Irvine, CA","state":"CA","price":488888,"cash_flow":162000,"views":2623,"url":"https://www.bizquest.com/business-for-sale/great-business-fantastic-clients-theres-only-one-small-catch/BW2416746/","broker":"FSBO"},{"rank":52,"title":"296-Unit ATM Route: $570K EBITDA","location":"Philadelphia, PA","state":"PA","price":2000000,"cash_flow":570000,"views":2592,"url":"https://www.bizquest.com/business-for-sale/296-unit-atm-route-570k-ebitda/BW2436689/","broker":"FSBO"},{"rank":53,"title":"FOR SALE – Full-Service Car Wash | Prime Location","location":"Houston, TX","state":"TX","price":3900000,"cash_flow":null,"views":2558,"url":"https://www.bizquest.com/business-for-sale/for-sale-full-service-car-wash-prime-location/BW2421358/","broker":"FSBO"},{"rank":54,"title":"Vending Machine Route Business - Absentee Owned","location":"Sacramento, CA","state":"CA","price":74900,"cash_flow":null,"views":2547,"url":"https://www.bizquest.com/business-for-sale/vending-machine-route-business-absentee-owned-sc2243/BW2420394/","broker":"FSBO"},{"rank":55,"title":"Party Boat Rental Business for Sale – Austin, TX","location":"Austin, TX","state":"TX","price":150000,"cash_flow":null,"views":2540,"url":"https://www.bizquest.com/business-for-sale/party-boat-rental-business-for-sale-austin-tx/BW2424031/","broker":"FSBO"},{"rank":56,"title":"Two Vending Machines WITH Location $12,500","location":"Las Vegas, NV","state":"NV","price":12500,"cash_flow":null,"views":2514,"url":"https://www.bizquest.com/business-for-sale/two-vending-machines-with-location-12-500-no-commission-on-sales/BW2419715/","broker":"FSBO"},{"rank":57,"title":"Luxury Glamping Complex with 5 Alpine Cabins and 9 Acres","location":"Montgomery, TX","state":"TX","price":2200000,"cash_flow":null,"views":2491,"url":"https://www.bizquest.com/business-for-sale/luxury-glampling-complex-with-5-alpine-cabins-and-9-acres-of-land/BW2424201/","broker":"FSBO"},{"rank":58,"title":"11 FedEx P&D Routes - Northern Virginia","location":"Virginia","state":"VA","price":1500000,"cash_flow":491932,"views":2452,"url":"https://www.bizquest.com/business-for-sale/11-fedex-pandd-routes-northern-virginia/BW2420116/","broker":"Route Consultant"},{"rank":59,"title":"Deli/Sandwich Shop: Profit Winner","location":"Roswell, GA","state":"GA","price":369900,"cash_flow":220000,"views":2439,"url":"https://www.bizquest.com/business-for-sale/deli-sandwich-shop-profit-winner-beast/BW2422669/","broker":"Realty Gold Team"},{"rank":60,"title":"Well-Established Laundry Facility | 35 Years of Steady Profitability","location":"Cook County, IL","state":"IL","price":280000,"cash_flow":45000,"views":2423,"url":"https://www.bizquest.com/business-for-sale/well-established-laundry-facility-35-years-of-steady-profitability/BW2435101/","broker":"National Industry Network Business Brokers"},{"rank":61,"title":"Profitable Property Management in Utah's Top Markets","location":"Utah","state":"UT","price":700000,"cash_flow":229188,"views":2422,"url":"https://www.bizquest.com/business-for-sale/profitable-property-management-in-utahs-top-markets/BW2424017/","broker":"Business Brokers of Utah"},{"rank":62,"title":"Healthy Juice Bar for Sale inside LA Fitness near Downtown Orlando","location":"Orlando, FL","state":"FL","price":50000,"cash_flow":null,"views":2417,"url":"https://www.bizquest.com/business-for-sale/healthy-juice-bar-for-sale-inside-la-fitness-near-downtown-orlando-fl/BW2388903/","broker":"FSBO"},{"rank":63,"title":"Salon - Fully Fixtured - Operate your own salon","location":"Midlothian, VA","state":"VA","price":1000,"cash_flow":null,"views":2417,"url":"https://www.bizquest.com/business-for-sale/salon-fully-fixtured-operate-your-own-salon/BW2421430/","broker":"FSBO"},{"rank":64,"title":"Coin Laundromat in Fullerton, CA","location":"Fullerton, CA","state":"CA","price":525000,"cash_flow":null,"views":2411,"url":"https://www.bizquest.com/business-for-sale/coin-laundromat-in-fullerton-ca/BW2432746/","broker":"Elite Business Investments Corp."},{"rank":65,"title":"Laundromat for Sale in Kings County, New York","location":"Kings County, NY","state":"NY","price":200000,"cash_flow":81000,"views":2403,"url":"https://www.bizquest.com/business-for-sale/laundromat-for-sale-in-kings-county-new-york/BW2420079/","broker":"Vested Business Brokers, Ltd"},{"rank":66,"title":"Proven Wholesale Operation – Ready for Next Owner","location":"Apopka, FL","state":"FL","price":3820000,"cash_flow":920000,"views":2348,"url":"https://www.bizquest.com/business-for-sale/proven-wholesale-operation-ready-for-next-owner/BW2426594/","broker":"FSBO"},{"rank":67,"title":"Laundromat For Sale In NYC","location":"Bronx, NY","state":"NY","price":650000,"cash_flow":200000,"views":2341,"url":"https://www.bizquest.com/business-for-sale/laundromat-for-sale-in-nyc/BW2434210/","broker":"FSBO"},{"rank":68,"title":"UNDER CONTRACT - Full Service Location Nets $190K","location":"Broward County, FL","state":"FL","price":665000,"cash_flow":191443,"views":2336,"url":"https://www.bizquest.com/business-for-sale/under-contract-full-service-location-nets-190k/BW2426576/","broker":"McLane Business Brokers"},{"rank":69,"title":"Successful, Reputable North Shore Auto Repair Business","location":"Peabody, MA","state":"MA","price":275000,"cash_flow":135000,"views":2336,"url":"https://www.bizquest.com/business-for-sale/successful-reputable-north-shore-auto-repair-business/BW2421392/","broker":"FSBO"},{"rank":70,"title":"Hyperbaric Oxygen Medicine Center","location":"Los Angeles County, CA","state":"CA","price":2000000,"cash_flow":540000,"views":2335,"url":"https://www.bizquest.com/business-for-sale/hyperbaric-oxygen-medicine-center/BW2424494/","broker":"FSBO"},{"rank":71,"title":"Tariff-Free E-Commerce Pet Food Business","location":"Dallas, TX","state":"TX","price":101000,"cash_flow":89126,"views":2331,"url":"https://www.bizquest.com/business-for-sale/tariff-free-e-commerce-pet-food-business/BW2424263/","broker":"FSBO"},{"rank":72,"title":"Spin Into Profits! Thriving Laundry Business for Sale","location":"Los Angeles, CA","state":"CA","price":269000,"cash_flow":175700,"views":2326,"url":"https://www.bizquest.com/business-for-sale/spin-into-profits-thriving-laundry-business-for-sale/BW2436012/","broker":"FSBO"},{"rank":73,"title":"Established Laundromat in Bucks County PA","location":"Bucks County, PA","state":"PA","price":75000,"cash_flow":25000,"views":2323,"url":"https://www.bizquest.com/business-for-sale/established-laundromat-in-bucks-county-pa/BW2434025/","broker":"Laundry Buyers LLC"},{"rank":74,"title":"Family Entertainment Center - Urban Air","location":"Dublin, OH","state":"OH","price":715000,"cash_flow":null,"views":2308,"url":"https://www.bizquest.com/business-for-sale/family-entertainment-center-urban-air/BW2435466/","broker":"FSBO"},{"rank":75,"title":"Well Established, Semi-Absentee Laundromat","location":"Morro Bay, CA","state":"CA","price":895000,"cash_flow":192000,"views":2302,"url":"https://www.bizquest.com/business-for-sale/well-established-semi-absentee-laundromat/BW2426704/","broker":"Dehlan Group"},{"rank":76,"title":"East Valley Laundromat For Sale – Premium Auto Open Location. Nets $65k","location":"Mesa, AZ","state":"AZ","price":359500,"cash_flow":65000,"views":2299,"url":"https://www.bizquest.com/business-for-sale/east-valley-laundromat-for-sale-premium-auto-open-location-nets-65k/BW2436480/","broker":"American Realty Brokers"},{"rank":77,"title":"High-Margin Consumable Med Device Distributor with Recurring Revenue","location":"Fort Bend County, TX","state":"TX","price":null,"cash_flow":643969,"views":2297,"url":"https://www.bizquest.com/business-for-sale/high-margin-consumable-med-device-distributor-with-recurring-revenue/BW2424133/","broker":"FSBO"},{"rank":78,"title":"Turnkey AI Vending Machine Location with New AI Assets on Location","location":"McKinney, TX","state":"TX","price":189000,"cash_flow":null,"views":2294,"url":"https://www.bizquest.com/asset-sales/turnkey-ai-vending-machine-location-with-new-ai-assets-on-location/BW2419344/","broker":"FSBO"},{"rank":79,"title":"Real Estate Investment Company | Section 8 Investments Market","location":"Tampa, FL","state":"FL","price":6500000,"cash_flow":2057058,"views":2253,"url":"https://www.bizquest.com/business-for-sale/real-estate-investment-company-section-8-investments-market/BW2428202/","broker":"WebsiteClosers.com"},{"rank":80,"title":"Profitable Concrete Construction Firm with Established Customer Base","location":"Hopkins County, TX","state":"TX","price":3500000,"cash_flow":896298,"views":2248,"url":"https://www.bizquest.com/business-for-sale/profitable-concrete-construction-firm-with-established-customer-base/BW2421238/","broker":"LINK Business Fort Worth"},{"rank":81,"title":"Profitable $2M Revenue HVAC Company with $500K SDE","location":"Hunterdon County, NJ","state":"NJ","price":2050000,"cash_flow":500000,"views":2226,"url":"https://www.bizquest.com/business-for-sale/profitable-2m-revenue-hvac-company-with-500k-sde-under-loi/BW2419582/","broker":"VR Business Sales Bucks County"},{"rank":82,"title":"Established Car Wash in Growing Area of Phoenix","location":"El Mirage, AZ","state":"AZ","price":200000,"cash_flow":59400,"views":2225,"url":"https://www.bizquest.com/business-for-sale/established-car-wash-in-growing-area-of-phoenix/BW2430723/","broker":"FSBO"},{"rank":83,"title":"Indoor Family Entertainment Fun Park","location":"Morrisville, NC","state":"NC","price":3500000,"cash_flow":null,"views":2218,"url":"https://www.bizquest.com/business-for-sale/indoor-family-entertainment-fun-park/BW2436605/","broker":"FSBO"},{"rank":84,"title":"The Realty TX Laundromat Washateria | S Main Area, Houston","location":"Houston, TX","state":"TX","price":60000,"cash_flow":null,"views":2192,"url":"https://www.bizquest.com/asset-sales/the-realty-tx-laundromat-washateria-s-main-area-houston/BW2435821/","broker":"The Realty TX"},{"rank":85,"title":"Auto Repair Franchise - Financing Opportunity - No Experience Needed","location":"Pinellas County, FL","state":"FL","price":995000,"cash_flow":338277,"views":2185,"url":"https://www.bizquest.com/business-for-sale/auto-repair-franchise-financing-opportunity-no-experience-needed/BW2422445/","broker":"Boss Group International, LLC"},{"rank":86,"title":"Online Real Estate Service Business - Work from Home - Turnkey","location":"Arizona","state":"AZ","price":35000,"cash_flow":84900,"views":2175,"url":"https://www.bizquest.com/business-for-sale/online-real-estate-service-business-work-from-home-turnkey/BW2435103/","broker":"FSBO"},{"rank":87,"title":"Profitable Minnesota Home Care Agency Generating $960K/year","location":"Anoka County, MN","state":"MN","price":4900000,"cash_flow":992764,"views":2165,"url":"https://www.bizquest.com/business-for-sale/profitable-minnesota-home-care-agency-generating-960k-year/BW2434488/","broker":"FSBO"},{"rank":88,"title":"Turnkey Sports & Retail Merchandise Distributor","location":"Wynnewood, PA","state":"PA","price":3750000,"cash_flow":875000,"views":2153,"url":"https://www.bizquest.com/business-for-sale/turnkey-sports-and-retail-merchandise-distributor/BW2421303/","broker":"FSBO"},{"rank":89,"title":"Digital Traffic Intermediary Business with Enterprise Clients","location":"Columbia, MO","state":"MO","price":1150000,"cash_flow":330000,"views":2148,"url":"https://www.bizquest.com/business-for-sale/digital-traffic-intermediary-business-with-enterprise-clients/BW2422281/","broker":"FSBO"},{"rank":90,"title":"Prime Downtown Encinitas Location","location":"Encinitas, CA","state":"CA","price":125000,"cash_flow":null,"views":2139,"url":"https://www.bizquest.com/business-for-sale/prime-downtown-encinitas-location/BW2422517/","broker":"FSBO"},{"rank":91,"title":"Coin Laundromat in Oxnard","location":"Ventura, CA","state":"CA","price":405500,"cash_flow":null,"views":2139,"url":"https://www.bizquest.com/business-for-sale/coin-laundromat-in-oxnard/BW2432749/","broker":"Elite Business Investments Corp."},{"rank":92,"title":"Profitable 7-Eleven Franchise with $259k Verifiable Cash Flow","location":"San Diego, CA","state":"CA","price":378000,"cash_flow":259292,"views":2115,"url":"https://www.bizquest.com/business-for-sale/profitable-7-eleven-franchise-with-259k-verifiable-cash-flow/BW2431874/","broker":"Livmo"},{"rank":93,"title":"Price Reduction! High-Revenue Major Fast Food Franchise In Prime LA","location":"Los Angeles, CA","state":"CA","price":208000,"cash_flow":104000,"views":2110,"url":"https://www.bizquest.com/business-for-sale/price-reduction-high-revenue-major-fast-food-franchise-in-prime-la/BW2438209/","broker":"Zoom Business Brokers"},{"rank":94,"title":"High Volume Gas and Convenience Store","location":"Fayetteville, NC","state":"NC","price":190000,"cash_flow":null,"views":2105,"url":"https://www.bizquest.com/business-for-sale/high-volume-gas-and-convenience-store/BW2420371/","broker":"FSBO"},{"rank":95,"title":"PRICE REDUCED - Temple Terrace, FL Laundry for Sale","location":"Tampa, FL","state":"FL","price":650000,"cash_flow":null,"views":2079,"url":"https://www.bizquest.com/business-for-sale/price-reduced-temple-terrace-fl-laundry-or-sale/BW2432081/","broker":"Lbrokers"},{"rank":96,"title":"Profitable Tea House & Dessert Café – Prime Costa Mesa Location","location":"Costa Mesa, CA","state":"CA","price":100000,"cash_flow":null,"views":2067,"url":"https://www.bizquest.com/business-for-sale/profitable-tea-house-and-dessert-cafe-prime-costa-mesa-location/BW2421169/","broker":"FSBO"},{"rank":97,"title":"Storage Facility - 9.0% Cap Rate - List Price: $1,200,000","location":"Decatur, TX","state":"TX","price":1200000,"cash_flow":null,"views":2044,"url":"https://www.bizquest.com/business-for-sale/storage-facility-9-0-cap-rate-list-price-1-200-000/BW2419714/","broker":"FSBO"},{"rank":98,"title":"High-Margin Auto Parts Drop-Shipping | Made in USA","location":"Virginia","state":"VA","price":875000,"cash_flow":277641,"views":2033,"url":"https://www.bizquest.com/business-for-sale/high-margin-auto-parts-drop-shipping-made-in-usa-preferred-pricing/BW2428082/","broker":"Quiet Light Brokerage, Inc."},{"rank":99,"title":"Health Care / Senior Care Services, Rewarding and Profitable!","location":"Fairfield County, CT","state":"CT","price":1700000,"cash_flow":425000,"views":2023,"url":"https://www.bizquest.com/business-for-sale/health-care-senior-care-services-rewarding-and-profitable/BW2433299/","broker":"Inbar Group Inc"},{"rank":100,"title":"Historic Lake Bar & Restaurant","location":"Harveys Lake, PA","state":"PA","price":1150000,"cash_flow":null,"views":2020,"url":"https://www.bizquest.com/business-for-sale/historic-lake-bar-and-restaurant/BW2414036/","broker":"FSBO"}];
+
+const maxViews = HOT100[0].views;
+
+function fmt(n) {
+    if (!n) return '—';
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
+    return '$' + n.toLocaleString();
+}
+
+function matchesFilter(l, filter) {
+    const t = l.title.toLowerCase();
+    const map = {
+        all: () => true,
+        laundromat: () => t.includes('laundromat') || t.includes('laundry') || t.includes('coin laundry') || t.includes('washateria'),
+        gas: () => t.includes('gas station') || t.includes('c-store') || t.includes('convenience store'),
+        vending: () => t.includes('vending'),
+        atm: () => t.includes('atm'),
+        ecommerce: () => t.includes('ecommerce') || t.includes('e-commerce') || t.includes('amazon') || t.includes('fba') || t.includes('online'),
+        fsbo: () => l.broker === 'FSBO'
+    };
+    return (map[filter] || map.all)();
+}
+
+function render(filter, search) {
+    const q = (search || '').toLowerCase();
+    const visible = HOT100.filter(l => {
+        return matchesFilter(l, filter) && (!q || l.title.toLowerCase().includes(q) || l.location.toLowerCase().includes(q) || l.state.toLowerCase().includes(q));
+    });
+
+    document.getElementById('results-count').textContent = visible.length + ' results';
+
+    const tbody = document.getElementById('listings-body');
+    if (visible.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No listings match the current filter.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = visible.map(l => {
+        const barWidth = Math.round((l.views / maxViews) * 100);
+        const isFSBO = l.broker === 'FSBO';
+        return `<tr>
+            <td class="col-rank">${l.rank}</td>
+            <td class="col-title">
+                <a href="${l.url}" target="_blank" rel="noopener">${l.title}</a>${isFSBO ? '<span class="fsbo-tag">FSBO</span>' : ''}
+                <div class="listing-sub">${l.location}</div>
+            </td>
+            <td class="col-state">${l.state}</td>
+            <td class="col-views">
+                ${l.views.toLocaleString()}
+                <div class="views-bar"><div class="views-bar-fill" style="width:${barWidth}%"></div></div>
+            </td>
+            <td class="col-price">${fmt(l.price)}</td>
+            <td class="col-cf">${fmt(l.cash_flow)}</td>
+            <td class="col-source"><a href="${l.url}" target="_blank" rel="noopener" class="source-link">→</a></td>
+        </tr>`;
+    }).join('');
+}
+
+// Stats
+const totalViews = HOT100.reduce((s, l) => s + l.views, 0);
+const fsboCount = HOT100.filter(l => l.broker === 'FSBO').length;
+document.getElementById('stat-views').textContent = (totalViews/1000).toFixed(0) + 'K';
+document.getElementById('stat-fsbo').textContent = fsboCount;
+
+// Filter + search state
+let currentFilter = 'all';
+let currentSearch = '';
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        render(currentFilter, currentSearch);
+    });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+    currentSearch = e.target.value;
+    render(currentFilter, currentSearch);
+});
+
+render('all', '');
+</script>
+</body>
+</html>
