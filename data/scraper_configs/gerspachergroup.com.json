@@ -5,10 +5,10 @@
   "fields": {
     "title": ".property-name"
   },
-  "listing_count": 109,
+  "listing_count": 110,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-06T06:45:44.887635+00:00",
+    "generated_at": "2026-03-07T06:38:06.000373+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
