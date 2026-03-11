@@ -168,7 +168,9 @@ def load_to_supabase(listings, supabase, broker_map, daily_mode=False):
     rows = []
 
     for l in listings:
-        url = l.get('urlStub', '').strip()
+        if not l:
+            continue
+        url = (l.get("urlStub") or "").strip()
         if not url:
             continue
 
