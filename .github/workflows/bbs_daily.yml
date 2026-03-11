@@ -1,0 +1,42 @@
+name: BBS Daily Laundromat Scrape
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # 6am ET (UTC-5)
+  workflow_dispatch:       # manual trigger from GitHub Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install curl_cffi supabase
+
+      - name: Run BBS daily scrape
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/bbs_pipeline.py --mode daily
+
+      - name: Run BBS weekly full scrape (Sundays only)
+        if: github.event_name == 'schedule' && startsWith(github.event.schedule, '0 11') && toJSON(github.event) != '' 
+        env:
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          DAY=$(date +%u)
+          if [ "$DAY" = "7" ]; then
+            echo "Sunday — running full scrape"
+            python3 scrapers/bbs_pipeline.py --mode full
+          else
+            echo "Not Sunday — daily mode only"
+          fi
