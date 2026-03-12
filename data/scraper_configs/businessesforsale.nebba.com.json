@@ -1,16 +1,16 @@
 {
-  "broker_name": "cabi",
-  "source_url": "https://cabi.coloradobusinesses.com/california/pasadena/other-service-business-assets-for-sale/",
+  "broker_name": "businessesforsale",
+  "source_url": "https://businessesforsale.nebba.com/ohio/franklin-county/retail-business-real-estate/",
   "container_selector": ".listing",
   "fields": {
     "title": ".title",
     "price": ".asking-price",
     "location": ".location"
   },
-  "listing_count": 3,
+  "listing_count": 8,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-12T06:48:11.173926+00:00",
+    "generated_at": "2026-03-12T06:45:30.022261+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
