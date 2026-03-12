@@ -1,19 +1,14 @@
 {
-  "broker_name": "Dallas Business Realty",
+  "broker_name": "dallasbusinessrealty",
   "source_url": "https://dallasbusinessrealty.com/wp/current-listings/",
-  "container_selector": "article.post-area.hentry.category-listing",
+  "container_selector": "article",
   "fields": {
-    "title": "h2.post-title a",
-    "price": "dl dt:contains('Asking Price') + dd",
-    "location": "dl dt:contains('Location') + dd",
-    "property_type": "dl dt:contains('Property Type') + dd",
-    "land_included": "dl dt:contains('Land Included') + dd"
+    "title": "[class*='title']"
   },
-  "pagination_next_selector": "Not observed on current page",
+  "listing_count": 5,
   "confidence": "high",
-  "notes": "WordPress-based listings page. Listings are in article tags with category-listing class. Details are in dl/dt/dd structure. Successfully captures 3-4 business listings with title, price, location, property type, and land details. Price field has 75% coverage (some listings may not have price listed). Note: One non-listing article (Please note:) may appear in results but can be filtered during post-processing.",
   "_meta": {
-    "generated_at": "2026-02-27T21:04:08.350029+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-12T06:54:04.029683+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }
