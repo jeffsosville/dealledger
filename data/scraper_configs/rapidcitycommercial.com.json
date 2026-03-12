@@ -7,10 +7,10 @@
     "price": ".price",
     "location": ".address"
   },
-  "listing_count": 66,
+  "listing_count": 68,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-11T06:55:41.973520+00:00",
+    "generated_at": "2026-03-12T06:55:07.815053+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
