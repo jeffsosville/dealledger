@@ -1,6 +1,6 @@
 {
-  "broker_name": "kreabusiness",
-  "source_url": "https://kreabusiness.com/for-sale",
+  "broker_name": "tolestemple",
+  "source_url": "https://tolestemple.com/for-sale",
   "container_selector": "article",
   "fields": {
     "title": "h2"
@@ -8,7 +8,7 @@
   "listing_count": 2,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-13T06:55:19.816341+00:00",
+    "generated_at": "2026-03-13T06:53:31.300293+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
