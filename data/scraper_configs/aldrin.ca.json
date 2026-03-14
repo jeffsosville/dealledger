@@ -4,13 +4,12 @@
   "container_selector": ".listing",
   "fields": {
     "title": "[class*='title']",
-    "price": "[class*='price']",
     "location": "[class*='location']"
   },
   "listing_count": 24,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-13T06:40:14.059154+00:00",
+    "generated_at": "2026-03-14T06:35:28.639678+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
