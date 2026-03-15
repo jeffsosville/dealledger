@@ -1,0 +1,16 @@
+{
+  "broker_name": "mrcflorida",
+  "source_url": "https://mrcflorida.idxbroker.com/idx/results/listings?statusCategory=active&srt=newest",
+  "container_selector": "article",
+  "fields": {
+    "title": "[class*='name']",
+    "price": "[class*='price']",
+    "location": "[class*='state']"
+  },
+  "listing_count": 25,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-15T06:58:22.250562+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}
