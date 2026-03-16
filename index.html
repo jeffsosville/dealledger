@@ -614,10 +614,10 @@
         <div class="container">
             <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:24px;">How It Works</h2>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
-                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 &#8212; OBSERVE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Scrape broker sites</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Automated scrapers visit 1,687 broker websites daily. Specialized parsers for major franchises. ML pattern detection for the long tail.</p></div>
-                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 &#8212; RECORD</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Hash and timestamp</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Every listing gets a hash, a timestamp, and a source link. If it can not be traced to its original broker, it does not exist in the ledger.</p></div>
-                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 &#8212; PUBLISH</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Commit to GitHub</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Snapshots are committed daily. Diffs show what is new, removed, and relisted. The full history is public and reproducible from code.</p></div>
-                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 &#8212; VERIFY</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Do not trust &#8212; verify</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Every snapshot includes SHA-256 hashes. Anyone can rerun the scrapers and compare. The code and methodology are open.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 &#8212; OBSERVE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Scrape marketplaces + brokers</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Daily scrapes from BizBuySell (40,000+ marketplace listings) and 1,700+ individual broker websites. Two sources, one ledger.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 &#8212; TIMESTAMP</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Recover listing dates</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We reverse-engineer them from sequential listing IDs calibrated against known anchors. Mean error: ±12 days.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 &#8212; PUBLISH</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open API + GitHub</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplace data in a public Supabase database — queryable by anyone. Broker-direct data committed to GitHub daily. All CC0.</p></div>
+                <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 &#8212; MEASURE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Liquidity intelligence</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Days on market, zombie rate, disappearance detection, state-level liquidity index. Published monthly in the SMB Liquidity Report.</p></div>
             </div>
         </div>
     </section>
@@ -669,13 +669,13 @@
                 <h2 class="about-title">About DealLedger</h2>
                 
                 <div class="about-text">
-                    <p><strong>The problem:</strong> There is no public registry for business listings. The same listing can appear multiple times across sites, disappear without notice, and persist after removal. Inventory is not auditable.</p>
+                    <p><strong>The problem:</strong> There is no public registry for small business transactions. The same listing appears across multiple sites, listing dates are hidden, and inventory numbers are inflated by stale and zombie listings. The market is opaque by design.</p>
                     
-                    <p><strong>What this is:</strong> DealLedger is a public deed registry for businesses for sale. We scrape broker websites, timestamp everything, and publish the raw data. Every record is source-linked. Some records are broker-verified; others are marketplace-only and labeled as such.</p>
+                    <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from marketplaces and broker websites, recover listing dates through our sequential ID methodology, and publish everything as open data. 28.1% of tracked listings are zombies — over a year on market with no sale. Median days on market: 256. These numbers were not available before DealLedger.</p>
                     
                     <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
                     
-                    <p><strong>How it works:</strong> Automated scrapers pull listings from broker websites. Data is normalized, deduplicated, and published as flat files. The code is open source. The methodology is documented. Anyone can verify. Coverage expands over time.</p>
+                    <p><strong>How it works:</strong> Two data layers — marketplace listings (BizBuySell, 40k+ records, daily updates via Supabase API) and broker-direct listings (1,700+ broker sites, 9,600+ records, committed to GitHub daily). The methodology is documented. The code is open. Anyone can verify and build on it.</p>
                 </div>
 
                 <div class="about-links">
@@ -693,7 +693,7 @@
             <div class="footer-content">
                 <div class="footer-text">
                     DealLedger observes and publishes. We don't rank, recommend, or broker.<br>
-                    Code: MIT License. Data: CC-BY 4.0.
+                    Code: MIT License. Data: CC0.
                 </div>
                 <div class="footer-links">
                     <a href="https://github.com/jeffsosville/dealledger" target="_blank">Source</a>
