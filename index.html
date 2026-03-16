@@ -25,6 +25,19 @@
             box-sizing: border-box;
         }
 
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        th.sortable:hover {
+            color: #0c4a6e;
+        }
+        .sort-arrow {
+            font-size: 11px;
+            margin-left: 3px;
+            color: #c2410c;
+        }
+
         body {
             font-family: var(--sans);
             background: var(--bg);
@@ -573,11 +586,11 @@
             <table id="listings-table">
                 <thead>
                     <tr>
-                        <th>Listed</th>
+                        <th class="sortable" onclick="setSort('estimated_listed_date')" id="th-listed">Listed <span class="sort-arrow">↓</span></th>
                         <th>Title</th>
-                        <th>State</th>
-                        <th style="text-align: right">Price</th>
-                        <th style="text-align: right">DOM</th>
+                        <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
+                        <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
+                        <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM <span class="sort-arrow"></span></th>
                         <th style="text-align: center">Source</th>
                     </tr>
                 </thead>
@@ -717,6 +730,8 @@
         let filteredListings = [];
         let currentPage = 1;
         let brokerCount = 0;
+        let sortField = 'estimated_listed_date';
+        let sortDir = -1; // -1 = desc, 1 = asc
 
         // Elements
         const totalCountEl = document.getElementById('total-count');
@@ -847,6 +862,37 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Sort listings
+        function sortListings() {
+            filteredListings.sort((a, b) => {
+                let va = a[sortField];
+                let vb = b[sortField];
+                if (va == null) va = sortDir === 1 ? '￿' : '';
+                if (vb == null) vb = sortDir === 1 ? '￿' : '';
+                if (typeof va === 'string') return va.localeCompare(vb) * sortDir;
+                return ((va || 0) - (vb || 0)) * sortDir;
+            });
+        }
+
+        // Set sort field
+        function setSort(field) {
+            if (sortField === field) {
+                sortDir *= -1;
+            } else {
+                sortField = field;
+                sortDir = field === 'estimated_listed_date' ? -1 : -1;
+            }
+            // Update arrow indicators
+            document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
+            const arrow = sortDir === -1 ? '↓' : '↑';
+            const th = document.getElementById('th-' + field.replace('estimated_listed_date','listed').replace('days_on_market','dom'));
+            if (th) th.querySelector('.sort-arrow').textContent = arrow;
+            sortListings();
+            currentPage = 1;
+            renderListings();
+            renderPagination();
+        }
+
         // Apply filters
         function applyFilters() {
             const stateFilter = filterStateEl.value;
@@ -858,8 +904,8 @@
                 return true;
             });
 
-            // Sort by days_on_market desc — most stale first (transparency default)
-            filteredListings.sort((a, b) => (b.days_on_market || 0) - (a.days_on_market || 0));
+            // Sort by current sort state
+            sortListings();
 
             currentPage = 1;
             filteredCountEl.textContent = filteredListings.length.toLocaleString();
