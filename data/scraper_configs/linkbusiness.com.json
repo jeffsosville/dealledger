@@ -1,0 +1,16 @@
+{
+  "broker_name": "Link Business",
+  "source_url": "https://linkbusiness.com/businesses-for-sale",
+  "container_selector": ".card",
+  "fields": {
+    "title": "h3",
+    "price": ".price",
+    "location": ".location"
+  },
+  "listing_count": 24,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-10T23:24:51.097597+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}

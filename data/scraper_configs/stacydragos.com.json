@@ -6,10 +6,10 @@
     "title": "h2",
     "price": "[class*='price']"
   },
-  "listing_count": 5,
+  "listing_count": 6,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-16T07:15:19.523810+00:00",
+    "generated_at": "2026-03-10T23:24:35.191086+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }

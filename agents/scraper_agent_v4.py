@@ -11,6 +11,7 @@ Run:
 """
 
 import argparse, csv, json, os, re, sys, time
+from markitdown import MarkItDown
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -300,9 +301,19 @@ def scrape_url(url, verbose=True):
         if is_js_rendered(soup, container_sel):
             log(f"   ⚠️  Likely JS-rendered — needs Playwright")
             result["error"] = "js_rendered"
-        else:
-            log(f"   ❌ No listing containers found")
-            result["error"] = "no_containers"
+            return result
+        # Try markitdown fallback
+        log(f"   🔄 Trying markitdown fallback...")
+        listings = extract_with_markitdown(url, html)
+        if listings:
+            result["success"] = True
+            result["count"] = len(listings)
+            result["listings"] = listings
+            result["method"] = "markitdown"
+            log(f"   ✅ Markitdown succeeded: {len(listings)} listings")
+            return result
+        log(f"   ❌ No listing containers found")
+        result["error"] = "no_containers"
         return result
 
     # 5. Extract listings
@@ -327,10 +338,69 @@ def scrape_url(url, verbose=True):
         if listings:
             log(f"   → Sample: {json.dumps(listings[0])[:120]}")
     else:
-        log(f"   ❌ Quality too low ({quality:.0f}%) — skipping")
-        result["error"] = "low_quality"
+        log(f"   ⚠️  Quality too low ({quality:.0f}%) — trying markitdown fallback...")
+        listings = extract_with_markitdown(url, html)
+        if listings:
+            result["success"] = True
+            result["count"] = len(listings)
+            result["listings"] = listings
+            result["method"] = "markitdown"
+            log(f"   ✅ Markitdown succeeded: {len(listings)} listings")
+        else:
+            result["error"] = "low_quality"
 
     return result
+
+
+# ── Markitdown fallback extractor ─────────────────────────────────────────────
+
+def extract_with_markitdown(url, html):
+    """Fallback: markitdown + regex, no API cost."""
+    try:
+        import tempfile, re as _re
+        md = MarkItDown()
+        with tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False, encoding="utf-8") as f:
+            f.write(html)
+            tmp = f.name
+        result = md.convert(tmp)
+        markdown = result.text_content[:12000]
+        os.unlink(tmp)
+        if not markdown or len(markdown) < 100:
+            return []
+        listings = []
+        current = {}
+        price_re = _re.compile(r"\$([\d,]+(?:\.\d+)?\s*[KkMm]?)")
+        url_re = _re.compile(r"\((https?://[^)]+)\)")
+        for line in markdown.split("\n"):
+            line = line.strip()
+            if not line:
+                if current.get("title"): listings.append(current)
+                current = {}
+                continue
+            if line.startswith("## ") or line.startswith("### "):
+                if current.get("title"): listings.append(current)
+                current = {"title": line.lstrip("#").strip()}
+            elif line.startswith("**") and line.endswith("**") and 6 < len(line) < 120:
+                if current.get("title"): listings.append(current)
+                current = {"title": line.strip("*").strip()}
+            pm = price_re.search(line)
+            if pm and current.get("title"):
+                ps = pm.group(1).replace(",","").strip()
+                try:
+                    if ps.upper().endswith("K"): current["asking_price"] = int(float(ps[:-1])*1000)
+                    elif ps.upper().endswith("M"): current["asking_price"] = int(float(ps[:-1])*1000000)
+                    else: current["asking_price"] = int(float(ps))
+                except: pass
+            um = url_re.search(line)
+            if um and current.get("title") and not current.get("source_url"):
+                current["source_url"] = um.group(1)
+        if current.get("title"): listings.append(current)
+        listings = [l for l in listings if len(l.get("title","")) > 8]
+        print(f"   📝 Markitdown parsed {len(listings)} listings")
+        return listings
+    except Exception as e:
+        print(f"   ⚠️  Markitdown failed: {e}")
+        return []
 
 # ── Batch runner ───────────────────────────────────────────────────────────────
 
