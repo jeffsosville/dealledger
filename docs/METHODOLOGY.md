@@ -1,262 +1,201 @@
 # DealLedger Methodology
 
-This document describes how DealLedger collects, verifies, and classifies business-for-sale listings.
+This document describes how DealLedger collects, timestamps, and publishes small business listing data.
 
-Our methodology is public because verification requires transparency. If you disagree with our approach, open an issue.
+Our methodology is public because the value of this dataset depends on transparency and reproducibility. If you disagree with our approach, open an issue.
 
 ---
 
 ## Core Principles
 
-1. **Broker-direct only** — We scrape original broker websites, not aggregators. BizBuySell, BizQuest, and similar aggregators contain duplicates, stale listings, and unverifiable data. Broker-direct is the source of truth.
+1. **Observable facts only** — We record what we observe: listing IDs, prices, dates, locations, descriptions. We do not verify financials, judge quality, or rank listings.
 
-2. **Append-only history** — We never delete records. If a listing disappears, we mark it `removed`. If it reappears, we mark it `relisted`. The full history is always preserved.
+2. **Append-only history** — We never delete records. If a listing disappears, we mark it `removed`. If it reappears, we flag it. The full history is always preserved.
 
-3. **Observable facts only** — We record what we observe: URLs, prices, dates, text. We do not infer intent, verify financials, or judge quality.
+3. **Open data** — All data is published under CC0. Anyone can download, query, and build on it.
 
-4. **Reproducible** — Anyone can run our scrapers and methodology against the same sources and get the same results.
-
----
-
-## Data Collection
-
-### What We Scrape
-
-For each broker website, we extract:
-- Listing URLs
-- Listing titles and descriptions
-- Asking prices
-- Location information
-- Business details (revenue, cash flow, employees, etc.)
-- Deal terms (seller financing, franchise, etc.)
-- Broker contact information
-
-### Scrape Frequency
-
-- **Active brokers**: Daily
-- **Inactive brokers** (no changes in 30 days): Weekly
-- **New broker onboarding**: Manual review, then automated
-
-### Source Verification
-
-A listing is only included if:
-1. It appears on a broker's primary website (not an aggregator)
-2. The URL is accessible and returns valid content
-3. Minimum required fields are present (title, broker, status)
+4. **Reproducible** — The methodology is documented, the code is open source, and the calibration anchors are published. Anyone can verify our results.
 
 ---
 
-## Normalization
+## Two Data Layers
 
-Raw scraper output is normalized to the [standard schema](SCHEMA.md).
-
-### Price Normalization
-
-- All prices converted to USD integers
-- "Contact for Price" → `asking_price: null`, `price_hidden: true`
-- Price ranges → lower bound used, noted in flags
-- Non-USD prices → converted at scrape-time exchange rate
-
-### Location Normalization
-
-- State names → two-letter codes (e.g., "Texas" → "TX")
-- Countries → ISO 3166-1 alpha-2 (e.g., "United States" → "US")
-- "Confidential" locations → `location_hidden: true`
-
-### Vertical Classification
-
-Listings are classified into verticals based on:
-1. Broker's category (if reliable)
-2. Title keywords
-3. Description analysis
-
-When ambiguous, we use `other` and flag for manual review.
+DealLedger collects listings from two complementary sources: **marketplace listings** and **broker-direct listings**. Together they form the most comprehensive open record of small businesses for sale in America.
 
 ---
 
-## Deduplication
+## Layer 1: Marketplace Listings
 
-### Within-Broker Duplicates
+DealLedger ingests listings from BizBuySell, the largest small business marketplace in the United States, owned by CoStar Group. BizBuySell aggregates listings from thousands of business brokers nationwide and represents the broadest cross-section of the market.
 
-Same broker, same listing appearing at multiple URLs:
-- Keep the canonical URL (usually the oldest)
-- Record aliases in metadata
+**What we capture:**
+- Listing ID, title, asking price, cash flow
+- Location (city, state)
+- Broker account identifier
+- Listing URL
+- Price reduced flag
+- Category / business type
 
-### Cross-Broker Duplicates
+**Storage:** Supabase — publicly queryable via REST API.
 
-Same business listed with multiple brokers:
-- **We do not merge these** — each broker's listing is a separate record
-- We flag `duplicate_suspected` when similarity score exceeds threshold
-- Determination of "same business" requires manual verification
+**Scrape frequency:**
+- Daily: New and recently active listings
+- Weekly: Full market sweep across all categories and states
 
-### Similarity Detection
-
-We compute similarity based on:
-- Normalized title (Levenshtein distance)
-- Location match
-- Price within 20%
-- Financial metrics within 25%
-
-Threshold for `duplicate_suspected` flag: 85% similarity score.
+**Current coverage:** 40,552+ listings, updated daily.
 
 ---
 
-## Change Detection
+## Layer 2: Broker-Direct Listings
 
-### Content Hashing
+DealLedger also scrapes listings directly from individual business broker websites — bypassing marketplaces entirely. This captures listings that brokers publish on their own sites but may not syndicate to aggregators, and provides a source of truth independent of marketplace data.
 
-Each listing gets a SHA-256 hash of normalized content:
+**What we capture:**
+- All fields available on the broker's site
+- Direct source URL (broker website, not marketplace)
+- Scrape timestamp
+
+**Storage:** `data/ledger.jsonl` in the GitHub repository — append-only flat file, committed daily.
+
+**Current coverage:** 9,600+ listings across 1,700+ tracked brokers, 50 states.
+
+**Broker inclusion criteria:**
+- Public listings page (no login required)
+- At least 3 active listings
+- Identifiable company name
+
+---
+
+## Listing Timestamp Methodology
+
+Marketplace listings do not expose publication dates through standard interfaces. DealLedger recovers estimated listing dates using a reverse-engineering methodology based on sequential listing IDs.
+
+### How It Works
+
+Every BizBuySell listing is assigned a sequential integer ID embedded in its URL:
+
 ```
-hash = sha256(
-  title + asking_price + revenue + cash_flow + 
-  city + state + description_first_500_chars
-)
+https://www.bizbuysell.com/business-opportunity/[slug]/[LISTING_ID]/
 ```
 
-When hash changes, we record the diff in history.
+These IDs are issued in monotonically increasing order. By measuring the rate at which new IDs appear over time and calibrating against known anchor points, we estimate when any listing was first published.
 
-### Price Changes
+### Calibration Model
 
-Price changes are always recorded with:
-- Previous price
-- New price
-- Timestamp
-- Percent change
+| Parameter | Value |
+|-----------|-------|
+| Anchor listing ID | 2,367,857 |
+| Anchor date | May 14, 2025 |
+| Observed rate | 373.8 new listings per day |
+| Mean error | ±12 days |
 
-### Status Changes
+**Formula:**
 
-Status transitions are tracked:
 ```
-active → removed    (listing disappeared)
-active → sold       (marked sold by broker)
-active → pending    (under contract)
-removed → active    (relisted - triggers flag)
-removed → relisted  (explicit relist status)
+estimated_listed_date = anchor_date + ((listing_id - anchor_id) / rate)
+days_on_market = today - estimated_listed_date
 ```
+
+The model is recalibrated periodically. Calibration history is maintained in the repository.
+
+### DOM Classification
+
+| Bucket | Days | Signal |
+|--------|------|--------|
+| Fresh | 0–30 | Recently listed |
+| Recent | 31–90 | Active market |
+| Aging | 91–180 | Slowing |
+| Stale | 181–365 | Negotiating leverage |
+| Zombie | 365+ | Distressed / long-tail |
+
+### Limitations
+
+- Listings with non-standard IDs (franchise ads, sponsored placements) are excluded
+- Model applies to listing IDs in range 1,000,000–3,500,000
+- Estimated dates reflect first publication, not most recent update
+- Broker-direct listings use `first_seen` (scrape date) as the observed date
 
 ---
 
-## Verification & Confidence
+## Zombie Rate
 
-### Confidence Score
+A **zombie listing** is any listing with `days_on_market > 365` and no confirmed sale signal.
 
-Each listing gets a confidence score (0.0 - 1.0) based on:
+As of March 2026: **28.1% zombie rate** across 40,552 tracked marketplace listings. Median DOM: 256 days.
 
-| Factor | Weight |
-|--------|--------|
-| Source URL accessible | 0.30 |
-| Price present | 0.15 |
-| Location present | 0.15 |
-| Financials present | 0.20 |
-| Broker verified | 0.10 |
-| Recently observed (< 7 days) | 0.10 |
+The zombie rate is published monthly in the DealLedger SMB Liquidity Report.
 
-Score = sum of applicable weights.
+---
 
-### Warning Flags
+## Disappearance Detection
 
-Listings are flagged (not removed) for:
+When a listing present in a previous scrape is absent from a current scrape, it is flagged `removed`. Possible reasons include:
 
-| Flag | Trigger |
-|------|---------|
-| `price_drop_50` | Price dropped >50% from any historical price |
-| `relist_detected` | Listing reappeared after being marked removed/sold |
-| `stale_90` | No changes observed in 90+ days but still "active" |
-| `duplicate_suspected` | >85% similarity to another listing |
-| `source_404` | Source URL returned 404 on most recent scrape |
-| `price_suspicious` | Price/revenue ratio outside normal bounds |
+- Business sold
+- Listing expired or withdrawn
+- Listing relisted under a new ID
+- Broker site restructured
 
-Flags are informational. We don't remove listings based on flags.
+DealLedger records the observable fact (disappearance) without inferring cause. A future verification layer will attempt to distinguish sold vs. expired vs. relisted.
+
+---
+
+## Historical Snapshots
+
+| Snapshot | Date | Listings | Layer |
+|----------|------|----------|-------|
+| State-by-state | May 2025 | 32,012 | Marketplace |
+| Partial market | August 2025 | 10,000 | Marketplace |
+| Partial market | October 2025 | 10,000 | Marketplace |
+| Full market | November 2025 | 41,703 | Marketplace |
+| Broker-direct | Ongoing | 9,600+ | Broker-direct |
+| Cleaning vertical | March 2026 | 1,161 | Marketplace |
 
 ---
 
 ## What We Don't Do
 
-### No Financial Verification
-
-We report what brokers claim. We do not:
-- Verify revenue or cash flow
-- Audit financial statements  
-- Confirm business existence
-
-### No Quality Judgment
-
-We do not rate or rank listings. We report observable facts.
-
-### No Broker Endorsement
-
-Listing a broker does not imply endorsement. We scrape publicly available data.
-
-### No Aggregator Data
-
-We do not scrape BizBuySell, BizQuest, BusinessBroker.net, or similar aggregators. These sources contain:
-- Duplicate listings from multiple brokers
-- Stale listings not updated when sold
-- Listings without verifiable broker sources
-
-Aggregator data pollutes the ledger. Broker-direct only.
+- **No financial verification** — We report what listings claim. We do not audit financials.
+- **No quality ranking** — We do not rate, rank, or recommend listings or brokers.
+- **No broker endorsement** — Scraping a broker does not imply endorsement.
+- **No lead capture** — We do not collect buyer or seller contact information.
+- **No paywalled data** — Everything we publish is from publicly accessible sources.
 
 ---
 
-## Broker Inclusion Criteria
+## Data Access
 
-A broker is included if:
+**Marketplace listings — Supabase REST API:**
+```
+GET https://kqckuedsyyosmccushyd.supabase.co/rest/v1/listings
+Headers: apikey: [anon key — see repository]
+```
 
-1. **Public listings page** — Listings visible without login
-2. **Scrapable** — Standard HTML (JS-rendered is fine)
-3. **Minimum activity** — At least 5 active listings
-4. **Identifiable** — Clear company name and contact info
+**Broker-direct listings — GitHub:**
+```
+https://github.com/jeffsosville/dealledger/blob/main/data/ledger.jsonl
+```
 
-We do not include:
-- Brokers requiring login to view listings
-- Marketplaces without identifiable broker sources
-- Individual FSBO listings (for now)
+**Bulk download:** CSV and JSON exports at dealledger.org
+
+**License:** CC0 — No rights reserved. Use freely for any purpose.
 
 ---
 
 ## Dispute Process
 
-If you believe our data is incorrect:
-
-1. **Open an issue** with evidence
-2. We will investigate within 7 days
-3. If confirmed, we will:
-   - Correct the record (with history preserved)
-   - Document the correction in changelog
-   - Credit the reporter (if desired)
-
-We do not remove listings on request without evidence. The ledger is append-only.
+If you believe our data is incorrect, open a GitHub issue with evidence. We investigate and correct the record with history preserved and the correction documented.
 
 ---
 
-## Methodology Changes
+## Roadmap
 
-Changes to this methodology are:
-- Documented in CHANGELOG.md
-- Announced before implementation (when possible)
-- Applied prospectively (historical data not re-processed unless critical)
-
-Major methodology changes trigger a new data version.
-
----
-
-## Replication
-
-To replicate our results:
-
-1. Clone the repository
-2. Run scrapers against the same broker list
-3. Apply normalization and deduplication
-4. Compare output to published snapshot
-
-Differences may occur due to:
-- Timing (listings change)
-- Scraper version differences
-- Edge cases in normalization
-
-If you find systematic differences, open an issue. We want to know.
+- Merge marketplace and broker-direct into a single unified ledger
+- Relist detection and sell-through rate estimation
+- Monthly SMB Liquidity Report (state, category, price band breakdowns)
+- Broker performance scoring (DOM by broker, sell-through rate)
+- API v2 with filtering by DOM, state, category, price range
 
 ---
 
-*Last updated: 2026-01-23*
-*Methodology version: 1.0.0*
+*Last updated: March 2026 — Methodology version: 2.0.0*
