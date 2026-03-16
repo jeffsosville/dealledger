@@ -5,10 +5,10 @@
   "fields": {
     "title": "h2"
   },
-  "listing_count": 77,
+  "listing_count": 76,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-16T07:12:17.763627+00:00",
+    "generated_at": "2026-03-10T23:20:26.196116+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }

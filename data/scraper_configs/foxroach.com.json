@@ -1,36 +1,16 @@
 {
-  "broker_name": "Fox & Roach / BHHS",
-  "source_url": "https://www.foxroach.com/search-new-listings",
-  "container_selector": "article.int-prop",
+  "broker_name": "foxroach",
+  "source_url": "https://www.foxroach.com/company-listings",
+  "container_selector": "article",
   "fields": {
-    "title": {
-      "selector": "a.link",
-      "attribute": "title"
-    },
-    "price_and_address": {
-      "selector": "a.link",
-      "attribute": "aria-label",
-      "note": "Format: 'ADDRESS - $PRICE'"
-    },
-    "link": {
-      "selector": "a.link",
-      "attribute": "href"
-    },
-    "mls_id": {
-      "selector": "",
-      "attribute": "id",
-      "note": "Extract from article id attribute (format: '5565171-listing')"
-    },
-    "image": {
-      "selector": "div.image",
-      "attribute": "data-lazy"
-    }
+    "title": "h2",
+    "price": ".price",
+    "location": ".address"
   },
-  "pagination_next_selector": "ul.pagination li[data-page], ul.pagination li[data-direction]",
-  "confidence": "medium",
-  "notes": "This is a real estate listings site (Berkshire Hathaway HomeServices Fox & Roach) showing residential properties, not businesses for sale. Site returns 403 Forbidden on automated requests - requires browser headers or Playwright/Selenium. Has 14,718 properties across 1,472 pages. Price and address are combined in aria-label attribute. Pagination uses data-page attributes. May need anti-bot detection handling.",
+  "listing_count": 10,
+  "confidence": "high",
   "_meta": {
-    "generated_at": "2026-02-27T20:05:53.712805+00:00",
-    "generator": "dealledger-scraper-agent-v3"
+    "generated_at": "2026-03-10T23:20:19.992652+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
   }
 }

@@ -5,10 +5,10 @@
   "fields": {
     "title": "a[href*='listing']"
   },
-  "listing_count": 67,
+  "listing_count": 76,
   "confidence": "high",
   "_meta": {
-    "generated_at": "2026-03-16T07:15:06.472127+00:00",
+    "generated_at": "2026-03-10T23:25:28.000105+00:00",
     "generator": "dealledger-scraper-v4-no-api"
   }
 }
