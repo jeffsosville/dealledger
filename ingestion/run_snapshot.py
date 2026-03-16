@@ -64,7 +64,7 @@ def normalize(raw_path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scrape", action="store_true")
-    parser.add_argument("--top-n", type=int, default=200)
+    parser.add_argument("--top-n", type=int, default=9999)
     parser.add_argument("--snapshot-dir")
     args = parser.parse_args()
 

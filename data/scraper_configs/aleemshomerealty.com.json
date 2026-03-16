@@ -1,0 +1,15 @@
+{
+  "broker_name": "aleemshomerealty",
+  "source_url": "http://www.aleemshomerealty.com/results/",
+  "container_selector": "[data-id]",
+  "fields": {
+    "title": "h3",
+    "location": "[class*='location']"
+  },
+  "listing_count": 8,
+  "confidence": "high",
+  "_meta": {
+    "generated_at": "2026-03-10T23:17:14.216874+00:00",
+    "generator": "dealledger-scraper-v4-no-api"
+  }
+}
