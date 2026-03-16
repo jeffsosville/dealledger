@@ -509,11 +509,11 @@
                     </div>
                     <div class="stat">
                         <span class="stat-value" id="broker-direct-count">—</span>
-                        <span class="stat-label">broker-direct</span>
+                        <span class="stat-label">zombie rate</span>
                     </div>
                     <div class="stat">
                         <span class="stat-value" id="broker-count">—</span>
-                        <span class="stat-label">brokers tracked</span>
+                        <span class="stat-label">median DOM</span>
                     </div>
                     <div class="stat">
                         <span class="stat-value" id="state-count">—</span>
@@ -573,11 +573,11 @@
             <table id="listings-table">
                 <thead>
                     <tr>
-                        <th>Observed</th>
+                        <th>Listed</th>
                         <th>Title</th>
-                        <th>Type</th>
                         <th>State</th>
                         <th style="text-align: right">Price</th>
+                        <th style="text-align: right">DOM</th>
                         <th style="text-align: center">Source</th>
                     </tr>
                 </thead>
@@ -704,11 +704,13 @@
     </footer>
 
     <script>
-        // Configuration
-        const DATA_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json';
+        // Configuration — Supabase public API
+        const SUPABASE_URL = 'https://kqckuedsyyosmccushyd.supabase.co';
+        const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.YBqHGaHgBRcXNMBpWpJHHBXPHG3Cq_Pem0bwWG1ZByE';
         const DIFF_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/snapshots/';
         const BROKERS_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/brokers.csv';
         const PER_PAGE = 50;
+        const BATCH = 1000;
 
         // State
         let allListings = [];
@@ -771,17 +773,25 @@
 
             listingsBody.innerHTML = pageListings.map(listing => {
                 const href = listing.source_url || listing.listing_url || '#';
+                const dom = listing.days_on_market;
+                let domColor = '#78716c';
+                if (dom <= 30) domColor = '#166534';
+                else if (dom <= 90) domColor = '#166534';
+                else if (dom <= 180) domColor = '#92400e';
+                else if (dom <= 365) domColor = '#c2410c';
+                else domColor = '#991b1b';
+                const domText = dom ? `<span style="font-family:var(--mono);color:${domColor}">${dom}d</span>` : '—';
                 return `
                 <tr>
-                    <td class="col-date">${formatDate(listing.first_seen || listing.scraped_at)}</td>
+                    <td class="col-date">${listing.estimated_listed_date || formatDate(listing.first_seen) || '—'}</td>
                     <td class="col-title">
                         <a href="${href}" target="_blank" rel="noopener">
                             ${truncate(listing.title || 'Untitled', 60)}
                         </a>
                     </td>
-                    <td class="col-type">${listing.business_type || '—'}</td>
                     <td class="col-state">${listing.state || '—'}</td>
                     <td class="col-price">${formatPrice(listing.price || listing.asking_price)}</td>
+                    <td class="col-price" style="text-align:right">${domText}</td>
                     <td class="col-source">
                         <a href="${href}" target="_blank" rel="noopener" class="source-link">→</a>
                     </td>
@@ -848,12 +858,8 @@
                 return true;
             });
 
-            // Sort by scraped_at oldest first (the anti-shopping default)
-            filteredListings.sort((a, b) => {
-                const dateA = new Date(a.scraped_at || 0);
-                const dateB = new Date(b.scraped_at || 0);
-                return dateA - dateB;
-            });
+            // Sort by days_on_market desc — most stale first (transparency default)
+            filteredListings.sort((a, b) => (b.days_on_market || 0) - (a.days_on_market || 0));
 
             currentPage = 1;
             filteredCountEl.textContent = filteredListings.length.toLocaleString();
@@ -877,20 +883,22 @@
         // Update stats
         function updateStats() {
             totalCountEl.textContent = allListings.length.toLocaleString();
-            brokerCountEl.textContent = brokerCount.toLocaleString();
-            
-            // All current listings are broker-direct (scraped from broker sites)
-            brokerDirectCountEl.textContent = allListings.length.toLocaleString();
-            
+
+            // Zombie rate
+            const withDom = allListings.filter(l => l.days_on_market > 0);
+            const zombies = withDom.filter(l => l.days_on_market > 365);
+            const zombiePct = withDom.length > 0 ? (zombies.length / withDom.length * 100).toFixed(1) + '%' : '—';
+            brokerDirectCountEl.textContent = zombiePct;
+
+            // Median DOM
+            const doms = withDom.map(l => l.days_on_market).sort((a,b) => a-b);
+            const medDom = doms.length > 0 ? doms[Math.floor(doms.length/2)] + 'd' : '—';
+            brokerCountEl.textContent = medDom;
+
             const states = new Set(allListings.map(l => l.state).filter(Boolean));
             stateCountEl.textContent = states.size;
 
-            // Find most recent scraped_at
-            const dates = allListings.map(l => new Date(l.scraped_at || l.first_seen)).filter(d => !isNaN(d));
-            if (dates.length > 0) {
-                const latest = new Date(Math.max(...dates));
-                lastUpdatedEl.textContent = latest.toISOString().split('T')[0];
-            }
+            lastUpdatedEl.textContent = new Date().toISOString().split('T')[0];
         }
 
         // Count brokers from CSV
@@ -928,23 +936,38 @@
             }
         }
 
-        // Load data
+        // Load data from Supabase
         async function loadData() {
             try {
-                // Load broker count first
                 await loadBrokerCount();
 
-                // Load listings
-                const response = await fetch(DATA_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                // Fetch all listings in batches
+                let allRows = [];
+                let from = 0;
+                while (true) {
+                    const res = await fetch(
+                        `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
+                        { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+                    );
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const batch = await res.json();
+                    allRows = allRows.concat(batch);
+                    if (batch.length < BATCH) break;
+                    from += BATCH;
                 }
-                
-                allListings = await response.json();
-                
-                if (!Array.isArray(allListings)) {
-                    allListings = [];
-                }
+
+                // Normalize to match existing field names
+                allListings = allRows.map(r => ({
+                    title: r.header,
+                    state: r.state,
+                    price: r.price,
+                    source_url: r.url,
+                    first_seen: r.first_seen,
+                    estimated_listed_date: r.estimated_listed_date,
+                    days_on_market: r.days_on_market,
+                    business_type: r.category || null,
+                    scraped_at: r.first_seen,
+                }));
 
                 updateStats();
                 populateFilters();
@@ -955,7 +978,7 @@
                 listingsBody.innerHTML = `
                     <tr>
                         <td colspan="6" class="empty-state">
-                            No data available yet. 
+                            Failed to load listings.
                             <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a>
                         </td>
                     </tr>
