@@ -591,6 +591,7 @@
                         <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
                         <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
                         <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">Age (DOM) <span class="sort-arrow"></span></th>
+                        <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
                         <th style="text-align: center">Source</th>
                     </tr>
                 </thead>
@@ -803,10 +804,18 @@
                         <a href="${href}" target="_blank" rel="noopener">
                             ${truncate(listing.title || 'Untitled', 60)}
                         </a>
+                        ${(() => {
+                            const dom = listing.days_on_market || 0;
+                            const views = listing.listing_views || 0;
+                            if (views > 0 && dom <= 90) return '<span style="font-family:var(--mono);font-size:10px;background:#166534;color:#fff;padding:2px 6px;margin-left:6px;border-radius:2px;">gem</span>';
+                            if (views > 2000 && dom > 180) return '<span style="font-family:var(--mono);font-size:10px;background:#92400e;color:#fff;padding:2px 6px;margin-left:6px;border-radius:2px;">overpriced?</span>';
+                            return '';
+                        })()}
                     </td>
                     <td class="col-state">${listing.state || '—'}</td>
                     <td class="col-price">${formatPrice(listing.price || listing.asking_price)}</td>
                     <td class="col-price" style="text-align:right">${domText}</td>
+                    <td class="col-price" style="text-align:right">${listing.listing_views > 0 ? listing.listing_views.toLocaleString() : '—'}</td>
                     <td class="col-source">
                         <a href="${href}" target="_blank" rel="noopener" class="source-link">→</a>
                     </td>
@@ -941,7 +950,8 @@
             const medDom = doms.length > 0 ? doms[Math.floor(doms.length/2)] + 'd' : '—';
             brokerCountEl.textContent = medDom;
 
-            const states = new Set(allListings.map(l => l.state).filter(Boolean));
+            const US_STATES = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
+            const states = new Set(allListings.map(l => l.state).filter(s => s && US_STATES.has(s)));
             stateCountEl.textContent = states.size;
 
             lastUpdatedEl.textContent = new Date().toISOString().split('T')[0];
@@ -992,7 +1002,7 @@
                 let from = 0;
                 while (true) {
                     const res = await fetch(
-                        `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
+                        `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,listing_views,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
                         { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
                     );
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1011,6 +1021,7 @@
                     first_seen: r.first_seen,
                     estimated_listed_date: r.estimated_listed_date,
                     days_on_market: r.days_on_market,
+                    listing_views: r.listing_views || 0,
                     business_type: r.category || null,
                     scraped_at: r.first_seen,
                 }));
