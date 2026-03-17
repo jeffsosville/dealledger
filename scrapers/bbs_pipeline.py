@@ -34,7 +34,7 @@ BATCH_SIZE          = 50
 # listNumber → date model (7 anchors, ±12 day mean error)
 MODEL_BASE_DATE = date(2025, 5, 14)
 MODEL_BASE_NUM  = 2_367_857
-MODEL_RATE      = 357.1  # listings/day (median of 6 intervals)
+MODEL_RATE      = 373.8  # listings/day (median of 6 intervals)
 # ───────────────────────────────────────────────────────────────────────────────
 
 
@@ -102,7 +102,7 @@ class BBSScraper:
         payload_template = {
             "bfsSearchCriteria": {
                 "siteId": 20, "languageId": 10,
-                "categories": [199],          # siteCategoryId 199 = Laundromats & Coin Laundry
+                "categories": None,          # siteCategoryId 199 = Laundromats & Coin Laundry
                 "locations": None, "excludeLocations": None,
                 "askingPriceMax": 0, "askingPriceMin": 0,
                 "pageNumber": 1, "keyword": None,
