@@ -74,7 +74,7 @@
 <div class="stats-bar"><div class="container"><div class="stats-content"><div class="stats">
     <div class="stat"><span class="stat-value">100</span><span class="stat-label">listings ranked</span></div>
     <div class="stat"><span class="stat-value">269,666</span><span class="stat-label">total views tracked</span></div>
-    <div class="stat"><span class="stat-value">89</span><span class="stat-label">FSBO (no broker)</span></div>
+    
     <div class="stat"><span class="stat-value">Mar 2026</span><span class="stat-label">snapshot date</span></div>
 </div></div></div></div>
 
@@ -86,13 +86,13 @@
     <button class="filter-btn" data-filter="vending">Vending</button>
     <button class="filter-btn" data-filter="atm">ATMs</button>
     <button class="filter-btn" data-filter="ecommerce">eCommerce</button>
-    <button class="filter-btn" data-filter="fsbo">FSBO Only</button>
+    
     <span class="results-count" id="results-count">100 results</span>
     <input type="text" class="search-input" id="searchInput" placeholder="Search...">
 </div></div></div>
 
 <main class="container">
-    <div class="notice">Ranked by BizQuest profile views — raw buyer demand signal, not broker spend. DealLedger currently tracks 9,500+ listings across 1,726 brokers — and we're just getting started. <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a></div>
+    <div class="notice">Ranked by listing views — raw buyer demand signal, not broker spend. Updated monthly. <a href="https://dealledger.org/why" target="_blank">Read the full methodology →</a></div>
     <div class="table-container"><table>
         <thead><tr>
             <th>#</th><th>Business</th><th>State</th>
@@ -127,8 +127,8 @@ function render(filter,search){
     if(!visible.length){tbody.innerHTML='<tr><td colspan="7" class="empty-state">No listings match.</td></tr>';return;}
     tbody.innerHTML=visible.map(l=>{
         const bar=Math.round((l.views/maxViews)*100);
-        const fsbo=l.broker==='FSBO';
-        return`<tr><td class="col-rank">${l.rank}</td><td class="col-title"><a href="${l.url}" target="_blank" rel="noopener">${l.title}</a>${fsbo?'<span class="fsbo-tag">FSBO</span>':''}<div class="listing-sub">${l.location}</div></td><td class="col-state">${l.state}</td><td class="col-views">${l.views.toLocaleString()}<div class="views-bar"><div class="views-bar-fill" style="width:${bar}%"></div></div></td><td class="col-price">${fmt(l.price)}</td><td class="col-cf">${fmt(l.cash_flow)}</td><td class="col-source"><a href="${l.url}" target="_blank" rel="noopener" class="source-link">→</a></td></tr>`;
+        
+        return`<tr><td class="col-rank">${l.rank}</td><td class="col-title"><a href="${l.url}" target="_blank" rel="noopener">${l.title}</a><div class="listing-sub">${l.location}</div></td><td class="col-state">${l.state}</td><td class="col-views">${l.views.toLocaleString()}<div class="views-bar"><div class="views-bar-fill" style="width:${bar}%"></div></div></td><td class="col-price">${fmt(l.price)}</td><td class="col-cf">${fmt(l.cash_flow)}</td><td class="col-source"><a href="${l.url}" target="_blank" rel="noopener" class="source-link">→</a></td></tr>`;
     }).join('');
 }
 let cf='all',cs='';
