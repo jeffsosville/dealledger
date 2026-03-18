@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install requests beautifulsoup4 curl_cffi pandas selenium webdriver-manager playwright
-          playwright install chromium
+          playwright install chromium markitdown
 
       - name: Run specialized scrapers (big 8)
         continue-on-error: true
