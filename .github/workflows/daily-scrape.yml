@@ -2,7 +2,7 @@ name: Daily Scrape
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 permissions:
@@ -22,57 +22,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4 curl_cffi pandas selenium webdriver-manager playwright
-          playwright install chromium markitdown
+          pip install requests supabase curl_cffi pandas
 
-      - name: Run specialized scrapers (big 8)
-        continue-on-error: true
+      - name: Run BizBuySell pipeline
         run: |
-          python3 scrapers/specialized_scrapers.py
-
-      - name: Run v4 agent (independent brokers)
-        run: |
-          python agents/scraper_agent_v4.py --batch data/brokers_clean.csv --workers 5
-
-      - name: Build snapshot
-        run: |
-          mkdir -p data/listings data/snapshots
-          python3 - << 'PYEOF'
-          import json, glob, sys
-          from datetime import datetime, timezone
-
-          sys.path.insert(0, '.')
-          from ledger_ingestion import ledger_upsert, build_daily_diff
-
-          today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-          from datetime import timedelta
-          yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime('%Y-%m-%d')
-
-          # Load all listing files
-          all_raw = []
-          for f in glob.glob('data/listings/*.json') + glob.glob('data/listings/*.jsonl'):
-              try:
-                  with open(f) as fh:
-                      data = [json.loads(l) for l in fh] if f.endswith('.jsonl') else json.load(fh)
-                  if isinstance(data, list):
-                      source = f.split('/')[-1].replace('.json','').replace('.jsonl','')
-                      for l in data:
-                          l['raw_source'] = l.get('raw_source') or source
-                      all_raw.extend(data)
-              except Exception as e:
-                  print(f"Error reading {f}: {e}")
-
-          print(f"Total raw listings from files: {len(all_raw)}")
-          stats = ledger_upsert(all_raw, source="daily_scrape")
-          diff = build_daily_diff(today, yesterday)
-          print(f"Diff: {diff}")
-          PYEOF
-
-      - name: Commit results
-        run: |
-          git config user.name "DealLedger Bot"
-          git config user.email "bot@dealledger.org"
-          git add data/snapshots/ data/latest.json data/latest.csv data/ledger.jsonl data/changes.jsonl || true
-          git add data/listings/ data/scraper_configs/ 2>/dev/null || true
-          git commit -m "Daily scrape $(date +%Y-%m-%d)" || echo "No changes"
-          git push || echo "Nothing to push"
+          python3 scrapers/bbs_pipeline.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
