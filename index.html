@@ -706,7 +706,7 @@ function applyFilters() {
     const signal   = document.getElementById('filter-signal').value;
     const priceMin = parseNum(document.getElementById('fPriceMin').value);
     const priceMax = parseNum(document.getElementById('fPriceMax').value);
-    const cfMin    = parseNum(document.getElementById('fCfMin').value);
+    const cfMin    = null;
 
     filteredListings = allListings.filter(l => {
         // Keyword
