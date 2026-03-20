@@ -323,23 +323,7 @@
     </div>
 </header>
 
-<div class="stats-bar">
-    <div class="container">
-        <div class="stats-content">
-            <div class="stats">
-                <div class="stat"><span class="stat-value" id="total-count">—</span><span class="stat-label">listings observed</span></div>
-                <div class="stat"><span class="stat-value" id="broker-direct-count">—</span><span class="stat-label">zombie rate</span></div>
-                <div class="stat"><span class="stat-value" id="broker-count">—</span><span class="stat-label">median DOM</span></div>
-                <div class="stat"><span class="stat-value" id="state-count">—</span><span class="stat-label">states</span></div>
-                <div class="stat"><span class="stat-value" id="last-updated">—</span><span class="stat-label">last updated</span></div>
-            </div>
-            <div class="downloads">
-                <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.csv" class="download-btn" download>↓ CSV</a>
-                <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json" class="download-btn" download>↓ JSON</a>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- diff bar -->
 <div id="diff-bar" style="display:none;border-bottom:1px solid #d4d4d4;padding:10px 0;background:#fff;">
@@ -405,11 +389,6 @@
                 <input type="text" id="fPriceMax" placeholder="max" oninput="debouncedFilter()">
             </div>
 
-            <div class="filter-range">
-                <input type="text" id="fCfMin" placeholder="CF min" oninput="debouncedFilter()">
-                <span>CF</span>
-            </div>
-
             <!-- DOM quick-filter -->
             <div class="dom-btns">
                 <button class="dom-btn active" id="domAll"    onclick="setDOM('all')">All</button>
@@ -458,14 +437,13 @@
                     <th>Title</th>
                     <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
-                    <th class="sortable" style="text-align:right" onclick="setSort('cash_flow')" id="th-cf">Cash Flow <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
                     <th style="text-align:center">Source</th>
                 </tr>
             </thead>
             <tbody id="listings-body">
-                <tr><td colspan="8" class="loading">Loading listings...</td></tr>
+                <tr><td colspan="7" class="loading">Loading listings...</td></tr>
             </tbody>
         </table>
     </div>
@@ -809,7 +787,7 @@ function renderListings() {
     const body  = document.getElementById('listings-body');
 
     if (page.length === 0) {
-        body.innerHTML = `<tr><td colspan="8" class="empty-state">No listings match your filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="7" class="empty-state">No listings match your filters.</td></tr>`;
         return;
     }
 
@@ -825,7 +803,6 @@ function renderListings() {
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
-            <td class="col-price">${l.cash_flow ? formatPrice(l.cash_flow) : '—'}</td>
             <td class="col-price">${domBadge(dom)}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
             <td class="col-source"><a href="${href}" target="_blank" rel="noopener" class="source-link">→</a></td>
@@ -884,7 +861,7 @@ async function loadData() {
         let rows = [], from = 0;
         while (true) {
             const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,cash_flow,url,listing_url,first_seen,estimated_listed_date,days_on_market,listing_views,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
+                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,listing_views,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
                 { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
             );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -898,20 +875,19 @@ async function loadData() {
             title:                r.header,
             state:                r.state,
             price:                r.price,
-            cash_flow:            r.cash_flow,
-            source_url:           r.url || r.listing_url,
+            cash_flow:            null,
+            source_url:           r.url,
             first_seen:           r.first_seen,
             estimated_listed_date: r.estimated_listed_date,
             days_on_market:       r.days_on_market,
             listing_views:        r.listing_views || 0,
         }));
 
-        updateStats();
         populateStates();
         applyFilters();
     } catch(err) {
         console.error(err);
-        document.getElementById('listings-body').innerHTML = `<tr><td colspan="8" class="empty-state">Failed to load listings. <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a></td></tr>`;
+        document.getElementById('listings-body').innerHTML = `<tr><td colspan="7" class="empty-state">Failed to load listings. <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a></td></tr>`;
     }
 }
 
