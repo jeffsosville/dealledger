@@ -365,23 +365,6 @@
                 <option value="">All States</option>
             </select>
 
-            <select id="filter-category" class="filter-select" onchange="applyFilters()">
-                <option value="">All Categories</option>
-                <option value="laundromat">Laundromat</option>
-                <option value="cleaning">Cleaning</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="retail">Retail</option>
-                <option value="vending">Vending</option>
-                <option value="landscaping">Landscaping</option>
-                <option value="automotive">Automotive</option>
-                <option value="atm">ATM</option>
-                <option value="pest control">Pest Control</option>
-                <option value="hvac">HVAC</option>
-                <option value="plumbing">Plumbing</option>
-                <option value="childcare">Childcare</option>
-                <option value="trucking">Trucking</option>
-                <option value="construction">Construction</option>
-            </select>
 
             <div class="filter-range">
                 <input type="text" id="fPriceMin" placeholder="Price min" oninput="debouncedFilter()">
@@ -427,10 +410,7 @@
     <div class="notice" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <span>Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.
         <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a></span>
-        <span style="display:flex;gap:8px;">
-            <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.csv" class="download-btn" download>↓ CSV</a>
-            <a href="https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json" class="download-btn" download>↓ JSON</a>
-        </span>
+        <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
     </div>
 
     <div class="table-container">
@@ -658,7 +638,6 @@ No explanation, only JSON.`,
 
         // Apply to UI
         if (parsed.state)    document.getElementById('filter-state').value    = parsed.state;
-        if (parsed.category) document.getElementById('filter-category').value = parsed.category;
         if (parsed.price_min) document.getElementById('fPriceMin').value = parsed.price_min;
         if (parsed.price_max) document.getElementById('fPriceMax').value = parsed.price_max;
         if (parsed.cf_min)    document.getElementById('fCfMin').value    = parsed.cf_min;
@@ -706,7 +685,6 @@ function debouncedFilter() {
 // ── APPLY FILTERS ────────────────────────────────────────────────────────────
 function applyFilters() {
     const state    = document.getElementById('filter-state').value;
-    const category = document.getElementById('filter-category').value.toLowerCase();
     const signal   = document.getElementById('filter-signal').value;
     const priceMin = parseNum(document.getElementById('fPriceMin').value);
     const priceMax = parseNum(document.getElementById('fPriceMax').value);
@@ -717,8 +695,6 @@ function applyFilters() {
         if (keywordFilter && !(l.title||'').toLowerCase().includes(keywordFilter)) return false;
         // State
         if (state && l.state !== state) return false;
-        // Category (keyword match in title)
-        if (category && !(l.title||'').toLowerCase().includes(category)) return false;
         // Price
         if (priceMin && (l.price||0) < priceMin) return false;
         if (priceMax && (l.price||0) > priceMax) return false;
@@ -929,6 +905,25 @@ document.getElementById('brokerForm').addEventListener('submit', function(e) {
     s.textContent = 'Opening GitHub to create the submission.';
     document.getElementById('brokerUrl').value = '';
 });
+
+// ── DOWNLOAD CSV ─────────────────────────────────────────────────────────────
+function downloadCSV() {
+    const cols = ['estimated_listed_date','title','state','price','days_on_market','listing_views','source_url'];
+    const headers = ['est_listed','title','state','price','days_on_market','views','url'];
+    const rows = [headers.join(',')];
+    filteredListings.forEach(l => {
+        rows.push(cols.map(c => {
+            const v = l[c] == null ? '' : String(l[c]);
+            return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v.replace(/"/g,'""')}"` : v;
+        }).join(','));
+    });
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `dealledger-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 loadData();
