@@ -42,6 +42,7 @@ SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 PROXY                = "2e675ba5977dd3336e3d__cr.us:719577c3bc6fb269@gw.dataimpulse.com:823"
 BATCH_SIZE           = 100
 STATE_FILES_DIR      = Path("state_files")
+STALE_DAYS           = 14  # deactivate listings not seen in this many days
 
 # ── Date model ─────────────────────────────────────────────────────────────────
 ANCHOR_NUM  = 2_367_857
@@ -249,6 +250,28 @@ def upsert_to_supabase(sb, records):
     return ok, err
 
 
+# ── Deactivate stale listings ──────────────────────────────────────────────────
+def deactivate_stale(sb):
+    cutoff = str(TODAY - timedelta(days=STALE_DAYS))
+    print(f"\n{Fore.YELLOW}[*] Deactivating listings not seen since {cutoff}...")
+    try:
+        # Deactivate listings older than cutoff
+        result = sb.table('listings')\
+            .update({'is_active': False})\
+            .eq('is_active', True)\
+            .lt('last_seen', cutoff)\
+            .execute()
+        # Also deactivate nulls — listings that never had last_seen set
+        sb.table('listings')\
+            .update({'is_active': False})\
+            .eq('is_active', True)\
+            .is_('last_seen', 'null')\
+            .execute()
+        print(f"{Fore.GREEN}[+] Stale listings deactivated (cutoff: {cutoff})")
+    except Exception as e:
+        print(f"{Fore.RED}[-] Deactivate error: {e}")
+
+
 # ── State file helpers ─────────────────────────────────────────────────────────
 def get_completed_states():
     STATE_FILES_DIR.mkdir(exist_ok=True)
@@ -295,7 +318,6 @@ def main():
         states_to_run = [(c, r) for c, r in STATE_REGION_IDS.items() if c in specific_states]
     elif mode == 'fresh':
         states_to_run = list(STATE_REGION_IDS.items())
-        # Clear old state files
         for f in STATE_FILES_DIR.glob('bbs_*.json'):
             f.unlink()
     else:
@@ -315,10 +337,7 @@ def main():
             save_state_file(state_code, [])
             continue
 
-        # Normalize
         records = [r for l in listings if (r := normalize(l, state_code))]
-
-        # Upsert to Supabase
         ok, err = upsert_to_supabase(sb, records)
         ok_total += ok
         err_total += err
@@ -327,14 +346,17 @@ def main():
         save_state_file(state_code, listings)
         print(f"  {Fore.GREEN}✓ {state_code}: {len(listings)} scraped → {ok} upserted | Running total: {grand_total}")
 
-    # Final count
-    result = sb.table('listings').select('id', count='exact').execute()
+    # ── Deactivate anything not seen this run ──────────────────────────────────
+    deactivate_stale(sb)
+
+    # ── Final count ───────────────────────────────────────────────────────────
+    result = sb.table('listings').select('id', count='exact').eq('is_active', True).execute()
     print(f"\n{Fore.GREEN}{'='*50}")
     print(f"{Fore.GREEN}  DONE")
-    print(f"{Fore.GREEN}  States scraped: {total}")
-    print(f"{Fore.GREEN}  Listings scraped: {grand_total:,}")
-    print(f"{Fore.GREEN}  Upserted: {ok_total:,} | Errors: {err_total:,}")
-    print(f"{Fore.GREEN}  DealLedger total: {result.count:,}")
+    print(f"{Fore.GREEN}  States scraped:    {total}")
+    print(f"{Fore.GREEN}  Listings scraped:  {grand_total:,}")
+    print(f"{Fore.GREEN}  Upserted:          {ok_total:,} | Errors: {err_total:,}")
+    print(f"{Fore.GREEN}  Active in DB:      {result.count:,}")
     print(f"{Fore.GREEN}{'='*50}")
 
 
