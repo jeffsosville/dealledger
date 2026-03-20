@@ -218,6 +218,17 @@ def normalize(listing, state_code):
 
     contact = listing.get('contactInfo') or {}
 
+    # Extract phone safely from nested object
+    phone_obj = contact.get('contactPhoneNumber') or {}
+    contact_phone = phone_obj.get('telephone') if isinstance(phone_obj, dict) else None
+
+    # bbs_account_id: numeric broker account — null means FSBO
+    raw_account = listing.get('account')
+    try:
+        bbs_account_id = int(raw_account) if raw_account else None
+    except:
+        bbs_account_id = None
+
     return {
         'listing_number':        list_num,
         'source':                'bizbuysell',
@@ -226,6 +237,10 @@ def normalize(listing, state_code):
         'cash_flow':             int(listing['cashFlow']) if listing.get('cashFlow') else None,
         'state':                 state_code,
         'broker_account':        (contact.get('brokerCompany') or listing.get('brokerCompany') or '')[:100] or None,
+        'bbs_account_id':        bbs_account_id,
+        'contact_name':          (contact.get('contactFullName') or listing.get('brokerContactFullName') or '')[:100] or None,
+        'contact_phone':         contact_phone,
+        'listing_views':         int(listing['profileViews']) if listing.get('profileViews') else None,
         'url':                   url[:500],
         'first_seen':            TODAY.isoformat(),
         'last_seen':             TODAY.isoformat(),
@@ -255,13 +270,11 @@ def deactivate_stale(sb):
     cutoff = str(TODAY - timedelta(days=STALE_DAYS))
     print(f"\n{Fore.YELLOW}[*] Deactivating listings not seen since {cutoff}...")
     try:
-        # Deactivate listings older than cutoff
-        result = sb.table('listings')\
+        sb.table('listings')\
             .update({'is_active': False})\
             .eq('is_active', True)\
             .lt('last_seen', cutoff)\
             .execute()
-        # Also deactivate nulls — listings that never had last_seen set
         sb.table('listings')\
             .update({'is_active': False})\
             .eq('is_active', True)\
@@ -286,7 +299,6 @@ def save_state_file(state_code, listings):
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 def main():
-    # Parse args
     mode = 'resume'
     specific_states = []
     if len(sys.argv) > 1:
@@ -346,10 +358,8 @@ def main():
         save_state_file(state_code, listings)
         print(f"  {Fore.GREEN}✓ {state_code}: {len(listings)} scraped → {ok} upserted | Running total: {grand_total}")
 
-    # ── Deactivate anything not seen this run ──────────────────────────────────
     deactivate_stale(sb)
 
-    # ── Final count ───────────────────────────────────────────────────────────
     result = sb.table('listings').select('id', count='exact').eq('is_active', True).execute()
     print(f"\n{Fore.GREEN}{'='*50}")
     print(f"{Fore.GREEN}  DONE")
