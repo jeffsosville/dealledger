@@ -2,117 +2,101 @@ name: DealLedger Daily Pipeline
 
 on:
   schedule:
-    - cron: '0 12 * * *'   # 7am ET every day
-  workflow_dispatch:         # manual trigger anytime
+    - cron: '0 12 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
 
-  # ── Step 1: BizBuySell all-states scrape ─────────────────────────────────
   bbs_scrape:
     name: BizBuySell Scrape
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    outputs:
-      listings_count: ${{ steps.scrape.outputs.listings_count }}
-
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install dependencies
-        run: pip install curl_cffi supabase requests
-
-      - name: Run BBS pipeline
-        id: scrape
+        run: pip install curl_cffi supabase requests colorama
+      - name: Run BBS all-states scraper
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: |
-          python3 scrapers/bbs_pipeline.py
-          echo "listings_count=$(cat /tmp/bbs_count.txt 2>/dev/null || echo 0)" >> $GITHUB_OUTPUT
+        run: python3 scrapers/bbs_allstates.py fresh
 
-  # ── Step 2: Broker direct scrape (all non-RE, 1500+) ─────────────────────
   broker_scrape:
     name: Broker Direct Scrape
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    needs: bbs_scrape       # run after BBS so DB load is staggered
-
+    needs: bbs_scrape
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install dependencies
-        run: pip install curl_cffi supabase requests beautifulsoup4 lxml
-
-      - name: Run broker scraper (all non-RE)
+        run: |
+          pip install curl_cffi supabase requests beautifulsoup4 lxml selenium webdriver-manager pandas openpyxl
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update -q && sudo apt-get install -y google-chrome-stable
+      - name: Run specialized scrapers (Big 8)
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: |
-          python3 scrapers/broker_scraper.py --skip-re --workers 8
+        run: python3 scrapers/run_specialized.py
+      - name: Run v4 agent (independent brokers)
+        continue-on-error: true
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/dealledger_scraper_v4.py --brokers data/brokers.csv --workers 8 --all
 
-  # ── Step 3: Quality scorer (runs after both scrapers finish) ──────────────
   quality_score:
     name: Quality Scoring
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: [bbs_scrape, broker_scrape]
-
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install dependencies
         run: pip install supabase requests
-
       - name: Score all listings
         env:
-          SUPABASE_URL:                ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY:        ${{ secrets.SUPABASE_SERVICE_KEY }}
-          CLEANINGEXITS_ANON_KEY:      ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
-          CLEANINGEXITS_SUPABASE_URL:  ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
-        run: |
-          python3 scrapers/quality_scorer.py
+          SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CLEANINGEXITS_ANON_KEY:     ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
+          CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
+        run: python3 scrapers/quality_scorer.py
 
-  # ── Step 4: Vertical sync (DealLedger → CleaningExits etc.) ──────────────
   vertical_sync:
     name: Vertical Sync
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: quality_score
-
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
-
       - name: Install dependencies
         run: pip install supabase requests
-
       - name: Sync to CleaningExits
         env:
-          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY:      ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
           CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
           CLEANINGEXITS_SERVICE_KEY:  ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
-        run: |
-          python3 scrapers/vertical_sync.py --vertical cleaning
+        run: python3 scrapers/vertical_sync.py --vertical cleaning
