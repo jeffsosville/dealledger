@@ -1,0 +1,116 @@
+name: DealLedger Daily Pipeline
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # 7am ET every day
+  workflow_dispatch:         # manual trigger anytime
+
+permissions:
+  contents: write
+
+jobs:
+
+  # ── Step 1: BizBuySell all-states scrape ─────────────────────────────────
+  bbs_scrape:
+    name: BizBuySell Scrape
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    outputs:
+      listings_count: ${{ steps.scrape.outputs.listings_count }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install curl_cffi supabase requests
+
+      - name: Run BBS pipeline
+        id: scrape
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/bbs_pipeline.py
+          echo "listings_count=$(cat /tmp/bbs_count.txt 2>/dev/null || echo 0)" >> $GITHUB_OUTPUT
+
+  # ── Step 2: Broker direct scrape (all non-RE, 1500+) ─────────────────────
+  broker_scrape:
+    name: Broker Direct Scrape
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    needs: bbs_scrape       # run after BBS so DB load is staggered
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install curl_cffi supabase requests beautifulsoup4 lxml
+
+      - name: Run broker scraper (all non-RE)
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/broker_scraper.py --skip-re --workers 8
+
+  # ── Step 3: Quality scorer (runs after both scrapers finish) ──────────────
+  quality_score:
+    name: Quality Scoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [bbs_scrape, broker_scrape]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install supabase requests
+
+      - name: Score all listings
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/quality_scorer.py --target dealledger
+
+  # ── Step 4: Vertical sync (DealLedger → CleaningExits etc.) ──────────────
+  vertical_sync:
+    name: Vertical Sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: quality_score
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install supabase requests
+
+      - name: Sync to CleaningExits
+        env:
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:      ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
+          CLEANINGEXITS_SERVICE_KEY:  ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
+        run: |
+          python3 scrapers/vertical_sync.py --vertical cleaning
