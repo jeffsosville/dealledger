@@ -83,10 +83,12 @@ jobs:
 
       - name: Score all listings
         env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_URL:                ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:        ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CLEANINGEXITS_ANON_KEY:      ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
+          CLEANINGEXITS_SUPABASE_URL:  ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
         run: |
-          python3 scrapers/quality_scorer.py --target dealledger
+          python3 scrapers/quality_scorer.py
 
   # ── Step 4: Vertical sync (DealLedger → CleaningExits etc.) ──────────────
   vertical_sync:
