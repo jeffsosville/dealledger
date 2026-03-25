@@ -45,11 +45,25 @@ JUNK_DOMAINS = {
 
 # ── UI/nav titles that indicate a bad scrape ─────────────────────────────────
 JUNK_TITLES = {
+    # VestedBB / generic filter UI
     'available', 'add to favorites', 'view details', 'business type',
     'business location', 'asking price', 'contact us', 'login', 'sign in',
     'search results', 'listings', 'home', 'about', 'contact',
     'featured listings', 'all listings', 'browse listings',
     'results', 'filter', 'sort by', 'page', 'next', 'previous',
+    'keyword or listing #', 'owner financed', 'down payment',
+    'cash flow', 'revenue', 'gross revenue', 'net income',
+    'business category', 'business name', 'location', 'state',
+    'price range', 'listing type', 'search', 'submit', 'reset',
+    'show results', 'view listing', 'more details', 'learn more',
+    'click here', 'read more', 'see details', 'get details',
+    'inquire now', 'request info', 'contact broker', 'email broker',
+    'save listing', 'print listing', 'share listing', 'back to results',
+    'franchise', 'opportunity', 'status', 'active', 'sold', 'pending',
+    'new listing', 'price reduced', 'featured', 'sponsored',
+    'employees', 'inventory', 'real estate', 'rent', 'lease',
+    'established', 'years in business', 'year established',
+    'financing available', 'seller financing', 'sba approved',
 }
 
 # ── Online-only broker domains (no physical location expected) ────────────────
@@ -103,10 +117,15 @@ def is_junk_title(title):
     t = title.strip().lower()
     if t in JUNK_TITLES:
         return True
-    if len(t) < 6:
+    if len(t) < 8:
         return True
-    # Single word that looks like a nav element
-    if len(t.split()) == 1 and t.isalpha() and len(t) < 12:
+    # Two words or fewer that look like UI labels (no numbers, no business keywords)
+    words = t.split()
+    if len(words) <= 2 and not any(c.isdigit() for c in t):
+        if not any(kw in t for kw in ['sale', 'business', 'restaurant', 'shop', 'store', 'company', 'inc', 'llc', 'service']):
+            return True
+    # Ends with # or is a form field label pattern
+    if t.endswith('#') or t.startswith('keyword'):
         return True
     return False
 
