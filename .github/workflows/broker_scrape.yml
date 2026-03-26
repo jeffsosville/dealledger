@@ -1,0 +1,42 @@
+name: Daily broker scrape
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # 9am ET daily
+  workflow_dispatch:       # manual trigger from GitHub UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas beautifulsoup4 playwright requests supabase
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/dealledger_scraper_v6.py \
+            --brokers data/brokers.csv \
+            --all \
+            --output data/snapshots
+
+      - name: Commit snapshot
+        run: |
+          git config user.name "dealledger-bot"
+          git config user.email "bot@dealledger.org"
+          git add data/snapshots/
+          git diff --staged --quiet || git commit -m "snapshot: $(date -u +%Y-%m-%d)"
+          git push
