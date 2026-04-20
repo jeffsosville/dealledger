@@ -2,101 +2,57 @@
 
 This document describes how DealLedger collects, timestamps, and publishes small business listing data.
 
-Our methodology is public because the value of this dataset depends on transparency and reproducibility. If you disagree with our approach, open an issue.
+Our methodology is public because the value of this dataset depends on transparency and reproducibility. The calibration mechanics are proprietary and maintained internally.
 
 ---
 
 ## Core Principles
 
-1. **Observable facts only** — We record what we observe: listing IDs, prices, dates, locations, descriptions. We do not verify financials, judge quality, or rank listings.
+1. **Observable facts only** — We record what we observe: listing IDs, prices, dates, locations. We do not verify financials, judge quality, or rank listings.
 
-2. **Append-only history** — We never delete records. If a listing disappears, we mark it `removed`. If it reappears, we flag it. The full history is always preserved.
+2. **Append-only history** — We never delete records. If a listing disappears, we mark it `removed`. The full history is always preserved.
 
 3. **Open data** — All data is published under CC0. Anyone can download, query, and build on it.
 
-4. **Reproducible** — The methodology is documented, the code is open source, and the calibration anchors are published. Anyone can verify our results.
+4. **No opinions** — We do not rate brokers, recommend listings, or capture leads. This is a record, not a marketplace.
 
 ---
 
-## Two Data Layers
+## Data Sources
 
-DealLedger collects listings from two complementary sources: **marketplace listings** and **broker-direct listings**. Together they form the most comprehensive open record of small businesses for sale in America.
-
----
-
-## Layer 1: Marketplace Listings
-
-DealLedger ingests listings from BizBuySell, the largest small business marketplace in the United States, owned by CoStar Group. BizBuySell aggregates listings from thousands of business brokers nationwide and represents the broadest cross-section of the market.
+DealLedger ingests listings from the largest small business marketplace in the United States, owned by CoStar Group. We supplement with buyer interest data from a second CoStar-owned platform.
 
 **What we capture:**
-- Listing ID, title, asking price, cash flow
+- Listing ID, title, asking price, cash flow, revenue
 - Location (city, state)
 - Broker account identifier
-- Listing URL
-- Price reduced flag
-- Category / business type
-
-**Storage:** Supabase — publicly queryable via REST API.
+- Days on market (recovered — see below)
+- Buyer interest signals (view counts)
+- Quality signals
 
 **Scrape frequency:**
 - Daily: New and recently active listings
-- Weekly: Full market sweep across all categories and states
+- Weekly: Full market sweep across all states
 
-**Current coverage:** 40,552+ listings, updated daily.
-
----
-
-## Layer 2: Broker-Direct Listings
-
-DealLedger also scrapes listings directly from individual business broker websites — bypassing marketplaces entirely. This captures listings that brokers publish on their own sites but may not syndicate to aggregators, and provides a source of truth independent of marketplace data.
-
-**What we capture:**
-- All fields available on the broker's site
-- Direct source URL (broker website, not marketplace)
-- Scrape timestamp
-
-**Storage:** `data/ledger.jsonl` in the GitHub repository — append-only flat file, committed daily.
-
-**Current coverage:** 9,600+ listings across 1,700+ tracked brokers, 50 states.
-
-**Broker inclusion criteria:**
-- Public listings page (no login required)
-- At least 3 active listings
-- Identifiable company name
+**Current coverage:** 47,000+ active listings, updated daily.
 
 ---
 
 ## Listing Timestamp Methodology
 
-Marketplace listings do not expose publication dates through standard interfaces. DealLedger recovers estimated listing dates using a reverse-engineering methodology based on sequential listing IDs.
+Marketplace listings do not expose publication dates. DealLedger recovers estimated listing dates using a proprietary reverse-engineering methodology based on sequential listing IDs.
 
-### How It Works
+**What we publish:**
+- `estimated_listed_date` — recovered first publication date
+- `days_on_market` — calculated from estimated listed date to today
+- Mean error: ±12 days
 
-Every BizBuySell listing is assigned a sequential integer ID embedded in its URL:
+**What we don't publish:**
+- Calibration anchor points
+- Rate calculations
+- Internal model parameters
 
-```
-https://www.bizbuysell.com/business-opportunity/[slug]/[LISTING_ID]/
-```
-
-These IDs are issued in monotonically increasing order. By measuring the rate at which new IDs appear over time and calibrating against known anchor points, we estimate when any listing was first published.
-
-### Calibration Model
-
-| Parameter | Value |
-|-----------|-------|
-| Anchor listing ID | 2,367,857 |
-| Anchor date | May 14, 2025 |
-| Observed rate | 373.8 new listings per day |
-| Mean error | ±12 days |
-
-**Formula:**
-
-```
-estimated_listed_date = anchor_date + ((listing_id - anchor_id) / rate)
-days_on_market = today - estimated_listed_date
-```
-
-The model is recalibrated periodically. Calibration history is maintained in the repository.
+The methodology has been validated against known listing dates and maintained since May 2025. Calibration is updated periodically.
 
 ### DOM Classification
 
@@ -104,76 +60,95 @@ The model is recalibrated periodically. Calibration history is maintained in the
 |--------|------|--------|
 | Fresh | 0–30 | Recently listed |
 | Recent | 31–90 | Active market |
-| Aging | 91–180 | Slowing |
-| Stale | 181–365 | Negotiating leverage |
-| Zombie | 365+ | Distressed / long-tail |
-
-### Limitations
-
-- Listings with non-standard IDs (franchise ads, sponsored placements) are excluded
-- Model applies to listing IDs in range 1,000,000–3,500,000
-- Estimated dates reflect first publication, not most recent update
-- Broker-direct listings use `first_seen` (scrape date) as the observed date
+| Aging | 91–365 | Slowing |
+| Stale | 366–730 | Negotiating leverage |
+| Zombie | 730+ | Distressed / long-tail |
 
 ---
 
-## Zombie Rate
+## Buyer Interest Data
 
-A **zombie listing** is any listing with `days_on_market > 365` and no confirmed sale signal.
+DealLedger publishes cumulative view counts sourced from a second major marketplace platform operated by the same parent company. View counts represent profile page visits as reported by that platform.
 
-As of March 2026: **28.1% zombie rate** across 40,552 tracked marketplace listings. Median DOM: 256 days.
+**Coverage:** ~95% of active listings have view count data.
 
-The zombie rate is published monthly in the DealLedger SMB Liquidity Report.
-
----
-
-## Disappearance Detection
-
-When a listing present in a previous scrape is absent from a current scrape, it is flagged `removed`. Possible reasons include:
-
-- Business sold
-- Listing expired or withdrawn
-- Listing relisted under a new ID
-- Broker site restructured
-
-DealLedger records the observable fact (disappearance) without inferring cause. A future verification layer will attempt to distinguish sold vs. expired vs. relisted.
+**What this tells you:**
+- High views + low DOM = Hot listing (moving fast)
+- Low views + low DOM = Hidden Gem (under the radar)
+- High views + high DOM = Overpriced? (interest but no offers)
+- Low views + high DOM = Dead (ignored by market)
 
 ---
 
-## Historical Snapshots
+## Quality Scoring
 
-| Snapshot | Date | Listings | Layer |
-|----------|------|----------|-------|
-| State-by-state | May 2025 | 32,012 | Marketplace |
-| Partial market | August 2025 | 10,000 | Marketplace |
-| Partial market | October 2025 | 10,000 | Marketplace |
-| Full market | November 2025 | 41,703 | Marketplace |
-| Broker-direct | Ongoing | 9,600+ | Broker-direct |
-| Cleaning vertical | March 2026 | 1,161 | Marketplace |
+Every listing receives a quality score (0–100) based on observable signals:
+
+**Positive signals:**
+- Listing comes from a registered broker in our verified broker database
+- Broker has a documented transaction history
+- Cash flow is disclosed
+- Price/cash flow multiple is within normal range (1–5x)
+- Asking price is within normal business range
+- Has buyer interest data
+- Recently listed
+
+**Negative signals:**
+- No broker attribution
+- Asking price below cash flow (data integrity flag)
+- Missing location
+- Extended time on market with no activity
+
+**Quality tiers:**
+- **Verified** — High confidence, registered broker, complete data
+- **Likely Real** — Good signals, minor gaps
+- **Unverified** — Incomplete data, treat with caution
+- **Likely Junk** — Multiple red flags
+
+Quality scores are recalculated with each weekly refresh.
+
+---
+
+## Broker Verification
+
+DealLedger maintains a database of 7,440+ registered business brokers sourced from public broker registries. Listings matched to this database receive higher quality scores.
+
+Broker inclusion is based on:
+- Public registration on major business sale platforms
+- Documented transaction history
+- Active listing presence
+
+**We do not endorse brokers.** Inclusion in our database reflects public registration only.
 
 ---
 
 ## What We Don't Do
 
-- **No financial verification** — We report what listings claim. We do not audit financials.
-- **No quality ranking** — We do not rate, rank, or recommend listings or brokers.
-- **No broker endorsement** — Scraping a broker does not imply endorsement.
+- **No financial verification** — We report what listings claim.
+- **No quality ranking** — Scores reflect data completeness, not business quality.
+- **No broker endorsement** — Our database is not a recommendation.
 - **No lead capture** — We do not collect buyer or seller contact information.
 - **No paywalled data** — Everything we publish is from publicly accessible sources.
 
 ---
 
+## Current Statistics (April 2026)
+
+- **47,000+** active listings tracked
+- **33,484** verified broker listings (Verified + Likely Real tiers)
+- **212 days** average time on market
+- **94%** of verified listings have buyer interest data
+- **172** Hot listings (high demand, moving fast)
+- **2,456** Hidden Gems (fresh, low visibility)
+
+---
+
 ## Data Access
 
-**Marketplace listings — Supabase REST API:**
+**REST API:**
 ```
 GET https://kqckuedsyyosmccushyd.supabase.co/rest/v1/listings
 Headers: apikey: [anon key — see repository]
-```
-
-**Broker-direct listings — GitHub:**
-```
-https://github.com/jeffsosville/dealledger/blob/main/data/ledger.jsonl
 ```
 
 **Bulk download:** CSV and JSON exports at dealledger.org
@@ -184,18 +159,8 @@ https://github.com/jeffsosville/dealledger/blob/main/data/ledger.jsonl
 
 ## Dispute Process
 
-If you believe our data is incorrect, open a GitHub issue with evidence. We investigate and correct the record with history preserved and the correction documented.
+If you believe our data is incorrect, open a GitHub issue with evidence. We investigate and correct the record with history preserved.
 
 ---
 
-## Roadmap
-
-- Merge marketplace and broker-direct into a single unified ledger
-- Relist detection and sell-through rate estimation
-- Monthly SMB Liquidity Report (state, category, price band breakdowns)
-- Broker performance scoring (DOM by broker, sell-through rate)
-- API v2 with filtering by DOM, state, category, price range
-
----
-
-*Last updated: March 2026 — Methodology version: 2.0.0*
+*Last updated: April 2026 — Methodology version: 3.0.0*
