@@ -259,6 +259,7 @@
         .dom-zombie { background: #fee2e2; color: #991b1b; }
 
         /* Signal badge */
+        .sig-relisted { background:#fef3c7; color:#92400e; border:1px solid #f59e0b; font-size:10px; padding:2px 6px; border-radius:3px; font-family:var(--mono); }
         .sig-badge {
             display: inline-block;
             font-family: var(--mono);
@@ -409,6 +410,7 @@
             <div class="legend-item"><span class="sig-badge sig-hot">🔥 Hot</span> Low DOM + high views — moving fast</div>
             <div class="legend-item"><span class="sig-badge sig-overpriced">⚠ Overpriced?</span> High DOM + high views — sitting despite interest</div>
             <div class="legend-item"><span class="sig-badge sig-dead">• Dead</span> High DOM + low views — ignored</div>
+            <div class="legend-item"><span class="sig-relisted">↩ Previously Listed</span> Failed to sell once — relisted with new ID</div>
         </div>
 
     </div>
@@ -788,6 +790,7 @@ function renderListings() {
             <td class="col-title">
                 <a href="${href}" target="_blank" rel="noopener">${truncate(l.title||'Untitled', 60)}</a>
                 ${signalBadge(dom, views)}
+                ${l.relisted ? '<span class="sig-relisted">↩ Previously Listed</span>' : ''}
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
@@ -849,7 +852,7 @@ async function loadData() {
         let rows = [], from = 0;
         while (true) {
             const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,listing_views,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
+                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,listing_views,relisted,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
                 { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
             );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -869,6 +872,7 @@ async function loadData() {
             estimated_listed_date: r.estimated_listed_date,
             days_on_market:       r.days_on_market,
             listing_views:        r.listing_views || 0,
+            relisted:           r.relisted || false,
         }));
 
         populateStates();
