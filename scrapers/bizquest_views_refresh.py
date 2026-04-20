@@ -491,7 +491,11 @@ if __name__ == "__main__":
     print("=" * 60)
     
     # Configuration
+<<<<<<< HEAD
     PROXY = os.environ.get("PROXY_URL", "http://2e675ba5977dd3336e3d__cr.us:719577c3bc6fb269@gw.dataimpulse.com:823")
+=======
+    PROXY = "2e675ba5977dd3336e:1bae40b69a2a37d@gw.dataimpulse.com:823"
+>>>>>>> 9b727ee36a9badb929c299961a323abcb5ea51e9
     MAX_PAGES_PER_STATE = 100
     WORKERS = 5
     ENRICH = True

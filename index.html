@@ -584,7 +584,7 @@ function signalBadge(dom, views) {
 }
 
 function domBadge(dom) {
-    if (!dom) return '<span class="dom-badge dom-normal">—</span>';
+    if (dom === null || dom === undefined) return '<span class="dom-badge dom-normal">—</span>';
     if (dom <= 30)  return `<span class="dom-badge dom-fresh">${dom}d</span>`;
     if (dom <= 90)  return `<span class="dom-badge dom-normal">${dom}d</span>`;
     if (dom <= 180) return `<span class="dom-badge dom-stale">${dom}d</span>`;
