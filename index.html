@@ -397,6 +397,7 @@
                 <option value="hot">🔥 Hot</option>
                 <option value="overpriced">⚠ Overpriced?</option>
                 <option value="dead">• Dead</option>
+                <option value="relisted">↩ Previously Listed</option>
             </select>
 
             <button class="btn-clear" onclick="clearAll()">✕ Clear</button>
@@ -717,7 +718,7 @@ function applyFilters() {
         if (domFilter === 'stale'  && (dom <= 90 || dom > 365)) return false;
         if (domFilter === 'zombie' && dom <= 365) return false;
         // Signal
-        if (signal && getSignal(l.days_on_market, l.listing_views) !== signal) return false;
+        if (signal === "relisted") { if (!l.relisted) return false; } else if (signal && getSignal(l.days_on_market, l.listing_views) !== signal) return false;
         return true;
     });
 
