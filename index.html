@@ -431,7 +431,7 @@
                     <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
-                    <th style="text-align:center">Source</th>
+                    
                 </tr>
             </thead>
             <tbody id="listings-body">
@@ -793,7 +793,7 @@ function renderListings() {
             <td class="col-price">${formatPrice(l.price)}</td>
             <td class="col-price">${domBadge(dom)}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
-            <td class="col-source"><a href="${href}" target="_blank" rel="noopener" class="source-link">→</a></td>
+            
         </tr>`;
     }).join('');
 }
