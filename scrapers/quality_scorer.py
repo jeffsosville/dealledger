@@ -1,180 +1,56 @@
-#!/usr/bin/env python3
 """
-listing_quality_score.py
+quality_scorer.py  —  DealLedger listing quality scoring
+Scores all listings in the DealLedger `listings` table and writes
+quality_score, quality_tier, quality_rules_fired, quality_breakdown back.
 
-Computes a Listing Quality Score (LQS) for every record in
-cleaning_listings_merge and writes results back to Supabase.
-
-Score range: 0–100
-Tier mapping:
-  80–100 → Verified        (direct broker + full financials + unique)
-  60–79  → Likely Real     (strong signals, minor gaps)
-  40–59  → Unverified      (sparse data, no direct match)
-  0–39   → Likely Junk     (spam signals, duplicates, templates)
+Tiers:
+  80–100 → Verified
+  60–79  → Likely Real
+  40–59  → Unverified
+  0–39   → Likely Junk
 
 Usage:
-    python listing_quality_score.py
-    python listing_quality_score.py --dry-run
-    python listing_quality_score.py --sample 500
+  python3 quality_scorer.py
+  python3 quality_scorer.py --dry-run
+  python3 quality_scorer.py --sample 500
 """
 
-import os, re, sys, time, json, argparse, logging
-from collections import defaultdict
+import os, sys, re, json, logging, argparse
+from collections import Counter
+from datetime import datetime
+
 import requests
-from difflib import SequenceMatcher
+from supabase import create_client
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-CLEANING_URL = "https://ctvrauiiskucinibnfaj.supabase.co"
-CLEANING_KEY = os.environ.get("CLEANINGEXITS_ANON_KEY", "")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
-# ── Scoring rules ─────────────────────────────────────────────────────────────
-#
-# POSITIVE signals (real listing indicators)
-RULES_POSITIVE = [
-    {
-        "id":     "direct_broker_url",
-        "label":  "Exists on broker site (direct URL)",
-        "points": 25,
-        "desc":   "Has a direct_broker_url that is not a BizBuySell/BizQuest domain",
-    },
-    {
-        "id":     "has_price",
-        "label":  "Has asking price",
-        "points": 10,
-        "desc":   "price field is populated and > 0",
-    },
-    {
-        "id":     "has_cash_flow",
-        "label":  "Has cash flow / SDE",
-        "points": 10,
-        "desc":   "cash_flow field is populated and > 0",
-    },
-    {
-        "id":     "has_revenue",
-        "label":  "Has revenue figure",
-        "points": 5,
-        "desc":   "revenue field is populated",
-    },
-    {
-        "id":     "has_contact",
-        "label":  "Has contact info",
-        "points": 5,
-        "desc":   "contact_name or contact_phone populated",
-    },
-    {
-        "id":     "unique_description",
-        "label":  "Unique description",
-        "points": 8,
-        "desc":   "notes/description not matching a known template pattern",
-    },
-    {
-        "id":     "reasonable_multiple",
-        "label":  "Reasonable valuation multiple (0.5x–5x)",
-        "points": 7,
-        "desc":   "price/cash_flow between 0.5 and 5.0",
-    },
-    {
-        "id":     "has_location",
-        "label":  "Has city + state",
-        "points": 5,
-        "desc":   "Both city and state populated",
-    },
-]
+BATCH_SIZE = 500
 
-# NEGATIVE signals (junk indicators)
-RULES_NEGATIVE = [
-    {
-        "id":     "duplicate_across_states",
-        "label":  "Duplicate title across 3+ states",
-        "points": -25,
-        "desc":   "Same or near-identical header appearing in many states",
-    },
-    {
-        "id":     "franchise_territory",
-        "label":  "Franchise territory listing",
-        "points": -20,
-        "desc":   "Keywords: territory, franchise opportunity, area developer",
-    },
-    {
-        "id":     "impossible_multiple",
-        "label":  "Impossible multiple (CF > Price or <0.1x)",
-        "points": -20,
-        "desc":   "Cash flow exceeds price, or multiple under 0.1x — lead-gen trap signal",
-    },
-    {
-        "id":     "template_description",
-        "label":  "Template/boilerplate description",
-        "points": -15,
-        "desc":   "Description matches known AI-generated or copy-paste template patterns",
-    },
-    {
-        "id":     "no_financials",
-        "label":  "No price AND no cash flow",
-        "points": -10,
-        "desc":   "Both price and cash_flow are null/zero",
-    },
-    {
-        "id":     "suspiciously_round_price",
-        "label":  "Suspiciously round price with no financials",
-        "points": -5,
-        "desc":   "Price is exact round number (e.g. $50,000) with no supporting financials",
-    },
-    {
-        "id":     "broker_spam_ring",
-        "label":  "Known spam broker account",
-        "points": -30,
-        "desc":   "broker_account matches known spam rings (Carolina Crew, AI Listing Farm, etc.)",
-    },
-]
-
-# ── Known spam broker patterns (from your fraud detection work) ───────────────
-SPAM_BROKER_PATTERNS = [
-    r"carolina.*clean",
-    r"passive.*income.*clean",
-    r"semi.?passive",
-    r"healthy.*vend",
-    r"nationwide.*opportunity",
-    r"absentee.*owner.*clean",
-]
-
-# ── Template description fragments (boilerplate) ──────────────────────────────
 TEMPLATE_FRAGMENTS = [
-    "this is a great opportunity",
-    "motivated seller",
-    "turn-key operation",
-    "turnkey business",
-    "priced to sell",
-    "owner is retiring",
-    "serious inquiries only",
-    "proof of funds required",
-    "this business has been operating",
-    "excellent reputation in the community",
-    "room for growth",
-    "be your own boss",
-    "recession-proof",
-    "multiple revenue streams",
+    "motivated seller", "turn-key", "turnkey", "absentee owner",
+    "recession proof", "easy to operate", "serious inquiries only",
+    "seller financing available", "asset sale", "priced to sell",
 ]
 
-MARKETPLACE_DOMAINS = ["bizbuysell.com", "bizquest.com", "businessbroker.net"]
+SPAM_BROKER_PATTERNS = [
+    r"bizquest\s*network",
+    r"vr\s*business",
+    r"transworld.*franchise",
+]
 
-def is_marketplace_url(url: str) -> bool:
-    return any(d in (url or "") for d in MARKETPLACE_DOMAINS)
+def normalize_title(t):
+    return re.sub(r"\s+", " ", (t or "").lower().strip())
 
-
-def normalize_title(t: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", "", (t or "").lower())).strip()
-
+def is_marketplace_url(u):
+    markets = ["bizbuysell.com", "bizquest.com", "businessesforsale.com",
+               "loopnet.com", "crexi.com"]
+    return any(m in (u or "").lower() for m in markets)
 
 def score_listing(row: dict, duplicate_titles: dict) -> dict:
-    """
-    Returns:
-        score       int  0–100
-        tier        str
-        fired_rules list of rule IDs that fired
-        breakdown   dict rule_id -> points awarded
-    """
     points = 0
     fired  = []
     breakdown = {}
@@ -184,22 +60,21 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
     price     = row.get("price")
     cf        = row.get("cash_flow")
     revenue   = row.get("revenue")
-    city      = row.get("city", "")
-    state     = row.get("state", "")
-    contact_n = row.get("contact_name", "")
-    contact_p = row.get("contact_phone", "")
+    city      = row.get("city", "") or ""
+    state     = row.get("state", "") or ""
+    contact_n = row.get("contact_name", "") or ""
+    contact_p = row.get("contact_phone", "") or ""
     broker_ac = row.get("broker_account", "") or ""
-    d_url     = row.get("direct_broker_url", "") or ""
     url       = row.get("url", "") or ""
     norm_t    = normalize_title(title)
 
     # ── POSITIVE ──────────────────────────────────────────────────────────────
 
     # Direct broker URL (not a marketplace domain)
-    if d_url and not is_marketplace_url(d_url):
+    if url and not is_marketplace_url(url):
         points += 25; fired.append("direct_broker_url"); breakdown["direct_broker_url"] = 25
-    elif url and not is_marketplace_url(url):
-        points += 15; fired.append("direct_broker_url_partial"); breakdown["direct_broker_url"] = 15
+    elif url:
+        points += 5; fired.append("marketplace_url"); breakdown["marketplace_url"] = 5
 
     # Has price
     try:
@@ -225,7 +100,7 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
     if contact_n or contact_p:
         points += 5; fired.append("has_contact"); breakdown["has_contact"] = 5
 
-    # Unique description (not template)
+    # Unique description
     notes_lower = notes.lower()
     template_hits = sum(1 for f in TEMPLATE_FRAGMENTS if f in notes_lower)
     if len(notes) > 100 and template_hits == 0:
@@ -242,6 +117,8 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
     # Has location
     if city and state:
         points += 5; fired.append("has_location"); breakdown["has_location"] = 5
+    elif state:
+        points += 2; fired.append("has_state"); breakdown["has_state"] = 2
 
     # ── NEGATIVE ──────────────────────────────────────────────────────────────
 
@@ -292,7 +169,6 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
             points -= 30; fired.append("broker_spam_ring"); breakdown["broker_spam_ring"] = -30
             break
 
-    # Clamp 0–100
     score = max(0, min(100, points))
 
     if score >= 80:   tier = "Verified"
@@ -303,139 +179,97 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
     return {"score": score, "tier": tier, "fired_rules": fired, "breakdown": breakdown}
 
 
-def build_duplicate_index(rows: list) -> dict:
-    """Count how many times each normalized title appears."""
-    counts = defaultdict(int)
-    for r in rows:
-        t = normalize_title(r.get("header", ""))
-        if t:
-            counts[t] += 1
-    return dict(counts)
-
-
-def sb_get_all(table, params):
-    headers = {"apikey": CLEANING_KEY, "Authorization": f"Bearer {CLEANING_KEY}"}
-    rows, offset = [], 0
+def get_all_listings(sb, sample=None):
+    """Fetch all active listings from DealLedger."""
+    rows = []
+    offset = 0
+    limit = 1000
     while True:
-        p = {**params, "limit": 1000, "offset": offset}
-        r = requests.get(f"{CLEANING_URL}/rest/v1/{table}", headers=headers, params=p, timeout=30)
-        r.raise_for_status()
-        batch = r.json()
+        q = sb.table("listings").select(
+            "listing_number,header,price,cash_flow,revenue,city,state,"
+            "contact_name,contact_phone,broker_account,url,notes"
+        ).eq("is_active", True).range(offset, offset + limit - 1).execute()
+        batch = q.data or []
         rows.extend(batch)
-        if len(batch) < 1000: break
-        offset += 1000
-        time.sleep(0.1)
+        log.info(f"  Fetched {len(rows)} listings so far...")
+        if len(batch) < limit:
+            break
+        offset += limit
+        if sample and len(rows) >= sample:
+            rows = rows[:sample]
+            break
     return rows
 
 
-def sb_upsert_scores(scored_rows):
-    headers = {
-        "apikey": CLEANING_KEY,
-        "Authorization": f"Bearer {CLEANING_KEY}",
-        "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates",
-    }
-    payload = [
+def upsert_scores(sb, scored_rows, dry_run=False):
+    """Write quality scores back to DealLedger listings table."""
+    updates = [
         {
-            "url": r["url"],
-            "quality_score": r["quality_score"],
-            "quality_tier": r["quality_tier"],
+            "listing_number": r["listing_number"],
+            "quality_score":       r["quality_score"],
+            "quality_tier":        r["quality_tier"],
             "quality_rules_fired": json.dumps(r["quality_rules_fired"]),
-            "quality_breakdown": json.dumps(r["quality_breakdown"]),
+            "quality_breakdown":   json.dumps(r["quality_breakdown"]),
         }
-        for r in scored_rows if r.get("url")
+        for r in scored_rows if r.get("listing_number")
     ]
-    for i in range(0, len(payload), 500):
-        batch = payload[i:i+500]
-        r = requests.post(
-            f"{CLEANING_URL}/rest/v1/cleaning_listings_merge",
-            headers=headers, json=batch, timeout=60
-        )
-        if r.status_code not in (200, 201):
-            log.error(f"Upsert error: {r.status_code} {r.text[:200]}")
-        time.sleep(0.1)
-
-
-def print_report(results: list):
-    from collections import Counter
-    tiers = Counter(r["quality_tier"] for r in results)
-    total = len(results)
-    print("\n" + "="*60)
-    print("LISTING QUALITY SCORE — DISTRIBUTION REPORT")
-    print("="*60)
-    for tier in ["Verified", "Likely Real", "Unverified", "Likely Junk"]:
-        count = tiers.get(tier, 0)
-        pct   = count / total * 100 if total else 0
-        bar   = "█" * int(pct / 2)
-        print(f"  {tier:<15} {count:>6}  {pct:>5.1f}%  {bar}")
-    print("-"*60)
-    print(f"  {'TOTAL':<15} {total:>6}")
-
-    # Most common junk rules
-    junk = [r for r in results if r["quality_tier"] == "Likely Junk"]
-    rule_hits = defaultdict(int)
-    for r in junk:
-        for rule in r["quality_rules_fired"]:
-            rule_hits[rule] += 1
-    print(f"\nTop junk signals (in 'Likely Junk' tier):")
-    for rule, count in sorted(rule_hits.items(), key=lambda x: -x[1])[:8]:
-        print(f"  {rule:<35} {count:>5}")
+    if dry_run:
+        log.info(f"[DRY RUN] Would upsert {len(updates)} scores")
+        return
+    ok = err = 0
+    for i in range(0, len(updates), BATCH_SIZE):
+        batch = updates[i:i + BATCH_SIZE]
+        try:
+            sb.table("listings").upsert(batch, on_conflict="listing_number").execute()
+            ok += len(batch)
+        except Exception as e:
+            log.error(f"Upsert error: {e}")
+            err += len(batch)
+    log.info(f"Scores written: {ok} ok, {err} errors")
 
 
 def run(dry_run=False, sample=None):
-    if not CLEANING_KEY:
-        log.error("Set CLEANINGEXITS_ANON_KEY env var")
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        log.error("Set SUPABASE_URL and SUPABASE_SERVICE_KEY env vars")
         sys.exit(1)
 
-    log.info("Fetching listings...")
-    rows = sb_get_all("cleaning_listings_merge", {
-        "select": "id,url,header,price,cash_flow,revenue,city,state,"
-                  "notes,contact_name,contact_phone,broker_account,"
-                  "direct_broker_url,is_verified",
-    })
+    sb = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-    if sample:
-        rows = rows[:sample]
-
+    log.info("Fetching DealLedger listings...")
+    rows = get_all_listings(sb, sample=sample)
     log.info(f"Scoring {len(rows)} listings...")
-    dup_index = build_duplicate_index(rows)
+
+    # Build duplicate title index
+    title_counts = Counter(normalize_title(r.get("header", "")) for r in rows)
 
     results = []
     for r in rows:
-        scored = score_listing(r, dup_index)
+        scored = score_listing(r, title_counts)
         results.append({
-            "url":                 r.get("url"),
+            **r,
             "quality_score":       scored["score"],
             "quality_tier":        scored["tier"],
             "quality_rules_fired": scored["fired_rules"],
             "quality_breakdown":   scored["breakdown"],
         })
 
-    print_report(results)
+    # Summary
+    tiers = Counter(r["quality_tier"] for r in results)
+    total = len(results)
+    log.info("── Quality Score Summary ──────────────────")
+    for tier in ["Verified", "Likely Real", "Unverified", "Likely Junk"]:
+        n = tiers.get(tier, 0)
+        pct = n / total * 100 if total else 0
+        log.info(f"  {tier:<15} {n:>6,}  ({pct:.1f}%)")
+    log.info(f"  {'TOTAL':<15} {total:>6,}")
 
-    if dry_run:
-        log.info("Dry run — not writing to Supabase")
-        # Show a few examples per tier
-        for tier in ["Verified", "Likely Real", "Unverified", "Likely Junk"]:
-            examples = [r for r in results if r["quality_tier"] == tier][:2]
-            for e in examples:
-                print(f"\n[{tier}] score={e['quality_score']} rules={e['quality_rules_fired']}")
-        return
-
-    # Add quality score columns if not present (run once in Supabase SQL editor):
-    # ALTER TABLE cleaning_listings_merge
-    #   ADD COLUMN IF NOT EXISTS quality_score integer,
-    #   ADD COLUMN IF NOT EXISTS quality_tier text,
-    #   ADD COLUMN IF NOT EXISTS quality_rules_fired text,
-    #   ADD COLUMN IF NOT EXISTS quality_breakdown text;
-    log.info("Writing scores to Supabase...")
-    sb_upsert_scores(results)
+    upsert_scores(sb, results, dry_run=dry_run)
     log.info("Done.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--sample", type=int, help="Only score first N rows")
+    parser.add_argument("--sample", type=int, default=None)
     args = parser.parse_args()
     run(dry_run=args.dry_run, sample=args.sample)
