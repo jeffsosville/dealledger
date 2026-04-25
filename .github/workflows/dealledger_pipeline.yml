@@ -28,42 +28,11 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python3 scrapers/bbs_allstates.py fresh
 
-  broker_scrape:
-    name: Broker Direct Scrape
-    runs-on: ubuntu-latest
-    timeout-minutes: 240
-    needs: bbs_scrape
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - name: Install dependencies
-        run: |
-          pip install curl_cffi supabase requests beautifulsoup4 lxml selenium webdriver-manager pandas openpyxl
-      - name: Install Chrome
-        run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update -q && sudo apt-get install -y google-chrome-stable
-      - name: Run specialized scrapers (Big 8)
-        env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python3 scrapers/run_specialized.py
-      - name: Run v4 agent (independent brokers)
-        continue-on-error: true
-        env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python3 scrapers/dealledger_scraper_v4.py --brokers data/brokers.csv --workers 8 --all
-
   quality_score:
     name: Quality Scoring
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [bbs_scrape, broker_scrape]
+    needs: bbs_scrape
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -76,7 +45,7 @@ jobs:
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
-          CLEANINGEXITS_ANON_KEY: ${{ secrets.CLEANINGEXITS_ANON_KEY }}
+          CLEANINGEXITS_ANON_KEY:     ${{ secrets.CLEANINGEXITS_ANON_KEY }}
           CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
         run: python3 scrapers/quality_scorer.py
 
