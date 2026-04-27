@@ -22,6 +22,12 @@ Builds on V5 with three core upgrades:
    Upserts on id so reruns are idempotent.
    Preserves first_seen, always updates last_seen.
 
+4. PROXY SUPPORT (V6.1)
+   Residential proxy via PROXY_URL env var.
+   Automatically used for domains in PROXY_DOMAINS set.
+   Works for both requests and Playwright fetchers.
+   Add domains to PROXY_DOMAINS as you discover 403s.
+
 SELF-CORRECTION LOOP (auto-accept mode per CLAUDE.md)
   --broker mode runs a single broker and outputs a classified result:
   PATTERN_MATCH, HTTP_403, CAPTCHA, or NO_PATTERN.
@@ -40,18 +46,20 @@ Usage:
     # Skip Supabase
     python3 dealledger_scraper_v6.py --brokers data/brokers.csv --top-n 50 --no-supabase
 
-Requirements:
-    pip3 install pandas beautifulsoup4 playwright requests supabase --break-system-packages
-    playwright install chromium
-
 Env vars:
     SUPABASE_URL
     SUPABASE_SERVICE_KEY
+    PROXY_URL          # e.g. http://user:pass@gw.dataimpulse.com:823
+
+Requirements:
+    pip3 install pandas beautifulsoup4 playwright requests supabase --break-system-packages
+    playwright install chromium
 """
 
 import argparse
 import hashlib
 import json
+import math
 import os
 import random
 import re
@@ -149,6 +157,27 @@ VERTICALS = {
     "manufacturing": ["manufacturing", "machining", "fabrication", "production",
                       "factory", "industrial"],
 }
+
+
+# ============================================================
+# PROXY CONFIG
+# ============================================================
+
+# Set PROXY_URL env var — never hardcode credentials
+# Format: http://user:pass@host:port
+PROXY_URL = os.environ.get("PROXY_URL", "")
+
+# Domains that should always use the proxy (403 blockers)
+PROXY_DOMAINS = {
+    "hedgestone.com",
+    # Add more as you discover them
+}
+
+def _needs_proxy(domain: str) -> bool:
+    """Return True if this domain requires proxy routing."""
+    if not PROXY_URL:
+        return False
+    return any(pd in domain for pd in PROXY_DOMAINS)
 
 
 # ============================================================
@@ -554,35 +583,68 @@ class ListingExtractor:
 
 
 # ============================================================
-# PAGE FETCHER
+# PAGE FETCHER (with proxy support)
 # ============================================================
 
 class PageFetcher:
 
     def __init__(self):
         self.session = requests.Session()
-        self.playwright = None
-        self.browser = None
+        self.playwright   = None
+        self.browser_plain = None   # no proxy
+        self.browser_proxy = None   # with proxy
 
-    def fetch_requests(self, url, timeout=15):
+    def _proxy_dict(self):
+        """requests-style proxy dict from PROXY_URL env var."""
+        if not PROXY_URL:
+            return None
+        return {"http": PROXY_URL, "https": PROXY_URL}
+
+    def _playwright_proxy(self):
+        """Playwright proxy config from PROXY_URL env var."""
+        if not PROXY_URL:
+            return None
+        return {"server": PROXY_URL}
+
+    def _ensure_playwright(self):
+        if not self.playwright:
+            self.playwright = sync_playwright().start()
+
+    def _get_browser(self, use_proxy: bool):
+        self._ensure_playwright()
+        if use_proxy:
+            if not self.browser_proxy:
+                proxy_conf = self._playwright_proxy()
+                self.browser_proxy = self.playwright.chromium.launch(
+                    headless=True,
+                    proxy=proxy_conf,
+                )
+            return self.browser_proxy
+        else:
+            if not self.browser_plain:
+                self.browser_plain = self.playwright.chromium.launch(headless=True)
+            return self.browser_plain
+
+    def fetch_requests(self, url, timeout=15, use_proxy=False):
         headers = {
-            "User-Agent": random.choice(USER_AGENTS),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "User-Agent":      random.choice(USER_AGENTS),
+            "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
-            "Referer": "https://www.google.com/",
+            "Referer":         "https://www.google.com/",
         }
-        resp = self.session.get(url, headers=headers, timeout=timeout,
-                                allow_redirects=True)
+        resp = self.session.get(
+            url, headers=headers, timeout=timeout,
+            allow_redirects=True,
+            proxies=self._proxy_dict() if use_proxy else None,
+        )
         resp.raise_for_status()
         return resp.text
 
-    def fetch_playwright(self, url, timeout=20000):
+    def fetch_playwright(self, url, timeout=20000, use_proxy=False):
         if not HAS_PLAYWRIGHT:
             raise RuntimeError("Playwright not installed")
-        if not self.browser:
-            self.playwright = sync_playwright().start()
-            self.browser = self.playwright.chromium.launch(headless=True)
-        page = self.browser.new_page(user_agent=random.choice(USER_AGENTS))
+        browser = self._get_browser(use_proxy)
+        page = browser.new_page(user_agent=random.choice(USER_AGENTS))
         try:
             page.goto(url, timeout=timeout, wait_until="networkidle")
             page.wait_for_timeout(2000)
@@ -590,9 +652,9 @@ class PageFetcher:
         finally:
             page.close()
 
-    def fetch(self, url, use_playwright=False):
+    def fetch(self, url, use_proxy=False):
         try:
-            html = self.fetch_requests(url)
+            html = self.fetch_requests(url, use_proxy=use_proxy)
             if len(html) > 3000:
                 return html, "requests"
         except requests.HTTPError as e:
@@ -603,15 +665,17 @@ class PageFetcher:
 
         if HAS_PLAYWRIGHT:
             try:
-                return self.fetch_playwright(url), "playwright"
+                return self.fetch_playwright(url, use_proxy=use_proxy), "playwright"
             except Exception:
                 pass
 
-        return self.fetch_requests(url, timeout=25), "requests"
+        return self.fetch_requests(url, timeout=25, use_proxy=use_proxy), "requests"
 
     def close(self):
-        if self.browser:
-            self.browser.close()
+        if self.browser_plain:
+            self.browser_plain.close()
+        if self.browser_proxy:
+            self.browser_proxy.close()
         if self.playwright:
             self.playwright.stop()
 
@@ -715,6 +779,11 @@ class DealLedgerScraper:
             except Exception as e:
                 print(f"⚠️  Supabase unavailable: {e} — local files only")
 
+        if PROXY_URL:
+            print(f"🔀 Proxy enabled — {len(PROXY_DOMAINS)} domain(s) routed through proxy")
+        else:
+            print("ℹ️  No proxy configured (set PROXY_URL env var to enable)")
+
         self.stats = {
             "started": datetime.now(timezone.utc).isoformat(),
             "brokers_attempted": 0,
@@ -785,19 +854,21 @@ class DealLedgerScraper:
         return "FETCH_ERROR"
 
     def scrape_broker(self, broker: dict) -> list[dict]:
-        name   = broker["name"]
-        url    = broker["url"]
-        domain = broker["domain"]
+        name      = broker["name"]
+        url       = broker["url"]
+        domain    = broker["domain"]
+        use_proxy = _needs_proxy(domain)
 
         print(f"\n{'='*60}")
-        print(f"🔍 [{self.stats['brokers_attempted']+1}] {name}")
+        print(f"🔍 [{self.stats['brokers_attempted']+1}] {name}"
+              + (" 🔀" if use_proxy else ""))
         print(f"   {url}")
         self.stats["brokers_attempted"] += 1
 
         try:
             # ── Fetch list page ───────────────────────────────────────────
             try:
-                html, method = self.fetcher.fetch(url)
+                html, method = self.fetcher.fetch(url, use_proxy=use_proxy)
             except requests.HTTPError as e:
                 code = e.response.status_code if e.response else None
                 ftype = self._classify_failure(e, code)
@@ -847,7 +918,7 @@ class DealLedgerScraper:
                 if page_num > 1:
                     time.sleep(random.uniform(1, 3))
                     try:
-                        html, _ = self.fetcher.fetch(current_url)
+                        html, _ = self.fetcher.fetch(current_url, use_proxy=use_proxy)
                     except Exception:
                         break
 
@@ -908,10 +979,9 @@ class DealLedgerScraper:
                 detail_url = listing.pop("_detail_url")
                 try:
                     time.sleep(random.uniform(*DETAIL_DELAY))
-                    detail_html, _ = self.fetcher.fetch(detail_url)
+                    detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
                     had_state = bool(listing.get("state"))
                     listing = ListingExtractor.enrich_from_detail(listing, detail_html)
-                    # Restore correct URL (the detail page URL is more specific)
                     listing["url"] = detail_url
                     enriched += 1
                     self.stats["detail_pages_fetched"] += 1
@@ -997,7 +1067,6 @@ class DealLedgerScraper:
 
     def _print_summary(self):
         s = self.stats
-        t = max(s["brokers_attempted"], 1)
         print(f"\n{'='*60}")
         print(f"DEALLEDGER V6 COMPLETE")
         print(f"{'='*60}")
@@ -1057,12 +1126,8 @@ def main():
                         "domain": urlparse(args.broker).netloc}]
         else:
             brokers = scraper._load_brokers(args.brokers)
-            skip = ["murphy", "transworld", "sunbelt",
-                    "vr business", "first choice", "hedgestone"]
             if args.test:
-                brokers = ([b for b in brokers
-                            if not any(s in b["name"].lower() for s in skip)][:5]
-                           or brokers[:5])
+                brokers = brokers[:5]
                 print(f"\n🧪 TEST MODE: {len(brokers)} brokers")
             elif args.top_n:
                 brokers = brokers[:args.top_n]
