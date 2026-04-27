@@ -186,8 +186,8 @@ def get_all_listings(sb, sample=None):
     limit = 1000
     while True:
         q = sb.table("listings").select(
-            "listing_number,header,price,cash_flow,revenue,city,state,"
-            "contact_name,contact_phone,broker_account,url,notes"
+            "listing_number,header,price,cash_flow,city,state,"
+            "contact_name,contact_phone,broker_account,url"
         ).eq("is_active", True).range(offset, offset + limit - 1).execute()
         batch = q.data or []
         rows.extend(batch)
