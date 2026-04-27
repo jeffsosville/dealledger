@@ -95,8 +95,8 @@ def sb_get_broker_list() -> list[dict]:
             f"{SUPABASE_URL}/rest/v1/brokers",
             headers=sb_headers(),
             params={
-                "select": "id,name,website,is_active",
-                "is_active": "eq.true",
+                "select": "id,name,url,account",
+                
                 "limit": 1000,
                 "offset": offset,
             },
@@ -240,7 +240,7 @@ def extract_listings_from_html(html: str, broker_url: str, broker_name: str) -> 
 def scrape_broker(broker: dict, session) -> list[dict]:
     """Scrape a single broker site. Returns list of listings."""
     name = broker.get("name", "")
-    url  = broker.get("website", "")
+    url  = broker.get("url", "")
 
     if not url:
         return []
@@ -285,7 +285,7 @@ def run(args):
     # Filter RE brokers
     if args.skip_re:
         before = len(brokers)
-        brokers = [b for b in brokers if not is_re_broker(b.get("name",""), b.get("website",""))]
+        brokers = [b for b in brokers if not is_re_broker(b.get("name",""), b.get("url",""))]
         log.info(f"After RE filter: {len(brokers)} (removed {before - len(brokers)} RE brokers)")
 
     # Filter to specific broker
