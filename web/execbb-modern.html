@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Business Brokers — Businesses For Sale in NJ, NY, CT, PA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0d;
+    --paper: #f7f4ef;
+    --cream: #ede9e1;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --green: #2a4a3e;
+    --green-mid: #3d6b5c;
+    --red: #c0392b;
+    --muted: #7a7168;
+    --border: #d4cfc6;
+    --card-bg: #ffffff;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--green);
+    color: #fff;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .logo-abbr {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.01em;
+  }
+  .logo-full {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  nav { display: flex; gap: 0.25rem; align-items: center; }
+  nav a {
+    color: rgba(255,255,255,0.82);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.02em;
+  }
+  nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  nav .cta-nav {
+    background: var(--gold);
+    color: var(--green);
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+  nav .cta-nav:hover { background: var(--gold-light); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--green);
+    color: #fff;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 85% 50%, rgba(201,168,76,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 15% 80%, rgba(255,255,255,0.04) 0%, transparent 50%);
+  }
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(201,168,76,0.18);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold-light);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
+  }
+  .hero-tag::before { content: '●'; font-size: 0.45rem; }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.72);
+    max-width: 520px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.2rem;
+    display: block;
+  }
+
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-gold { background: var(--gold); color: var(--green); }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.35); }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.35); }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.08); }
+
+  /* Search card */
+  .search-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    color: var(--ink);
+  }
+  .search-card h3 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--green);
+  }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .form-group select,
+  .form-group input {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--paper);
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .form-group select:focus,
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .price-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .search-btn {
+    width: 100%;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0.85rem;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .search-btn:hover { background: var(--green-mid); }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    background: var(--gold);
+    overflow: hidden;
+    height: 36px;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-label {
+    background: var(--green);
+    color: var(--gold);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 1.25rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .ticker-track {
+    display: flex;
+    animation: ticker 35s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  .ticker-item {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--green);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ticker-item::after {
+    content: '·';
+    font-size: 1.2rem;
+    opacity: 0.4;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section { padding: 4.5rem 2rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .section-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1.15;
+  }
+  .view-all {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--green-mid);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-bottom: 1.5px solid var(--green-mid);
+    padding-bottom: 1px;
+    transition: gap 0.15s;
+    white-space: nowrap;
+  }
+  .view-all:hover { gap: 0.7rem; }
+
+  /* ── LISTING CARDS ── */
+  .listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .listing-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  .listing-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  }
+
+  .card-header {
+    padding: 1.25rem 1.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .category-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.28rem 0.65rem;
+    border-radius: 100px;
+  }
+  .badge-food { background: #fff3e0; color: #e65100; }
+  .badge-services { background: #e8f5e9; color: #2e7d32; }
+  .badge-retail { background: #e3f2fd; color: #1565c0; }
+  .badge-auto { background: #fce4ec; color: #c62828; }
+  .badge-wholesale { background: #f3e5f5; color: #6a1b9a; }
+  .badge-medical { background: #e0f7fa; color: #006064; }
+
+  .listing-id {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    background: var(--cream);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .card-body { padding: 1rem 1.25rem; flex: 1; }
+  .listing-title {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+  }
+  .listing-location {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+  .listing-desc {
+    font-size: 0.85rem;
+    color: #4a4540;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+  }
+  .metric { }
+  .metric-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .metric-value {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: var(--sans);
+    margin-top: 0.1rem;
+  }
+  .metric-value.asking { color: var(--green); }
+
+  .card-footer {
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .broker-name {
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .broker-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--gold);
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .inquire-btn {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--green-mid);
+    text-decoration: none;
+    border: 1.5px solid var(--green-mid);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    transition: all 0.15s;
+  }
+  .inquire-btn:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* ── FEATURED / HIGHLIGHT ── */
+  .featured-card {
+    background: var(--green);
+    color: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (max-width: 720px) { .featured-card { grid-column: span 1; grid-template-columns: 1fr; } }
+  .featured-card::before {
+    content: 'FEATURED';
+    position: absolute;
+    top: 1.25rem;
+    right: -2.5rem;
+    background: var(--gold);
+    color: var(--green);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 3rem;
+    transform: rotate(45deg);
+  }
+  .featured-eyebrow {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .featured-title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+  .featured-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.6;
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+  }
+  .featured-metrics {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+  }
+  .featured-metric .metric-label { color: rgba(255,255,255,0.5); }
+  .featured-metric .metric-value { color: var(--gold-light); font-size: 1.2rem; }
+  .featured-side { text-align: right; }
+  .asking-price-large {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .asking-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── CATEGORIES ── */
+  .section-alt { background: var(--cream); }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .category-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .category-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(42,74,62,0.1);
+  }
+  .category-icon {
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .category-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--green);
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .category-count {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* ── WHY EBB ── */
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  .trust-item {
+    padding: 1.75rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+  }
+  .trust-num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .trust-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 0.5rem;
+  }
+  .trust-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── SOLD TICKER ── */
+  .sold-section { background: var(--green); color: #fff; padding: 4rem 2rem; }
+  .sold-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .sold-item {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .sold-tag {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(201,168,76,0.15);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+  }
+  .sold-name {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .sold-detail {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    background: var(--paper);
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+  .cta-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .cta-inner .section-eyebrow { text-align: center; margin-bottom: 0.6rem; }
+  .cta-inner .section-title { text-align: center; margin-bottom: 1rem; }
+  .cta-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+  .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: var(--green-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(42,74,62,0.25); }
+  .btn-border { background: transparent; color: var(--green); border: 2px solid var(--green); }
+  .btn-border:hover { background: var(--green); color: #fff; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.65);
+    padding: 3rem 2rem 2rem;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .footer-brand .logo-abbr { font-size: 1.8rem; }
+  .footer-brand p {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin-top: 0.75rem;
+    color: rgba(255,255,255,0.45);
+    max-width: 260px;
+  }
+  .footer-col h4 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .footer-col a {
+    display: block;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    transition: color 0.15s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .footer-badge {
+    font-size: 0.7rem;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .search-card { max-width: 400px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .masthead { }
+    nav .logo-full { display: none; }
+    nav a:not(.cta-nav) { display: none; }
+    .hero-stats { gap: 1.25rem; }
+    .footer-inner { grid-template-columns: 1fr; }
+    .featured-card { grid-column: span 1; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.55s ease both; }
+  .fade-up:nth-child(2) { animation-delay: 0.08s; }
+  .fade-up:nth-child(3) { animation-delay: 0.16s; }
+  .fade-up:nth-child(4) { animation-delay: 0.24s; }
+  .fade-up:nth-child(5) { animation-delay: 0.32s; }
+  .fade-up:nth-child(6) { animation-delay: 0.40s; }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <a class="logo" href="#">
+    <span class="logo-abbr">EBB</span>
+    <span class="logo-full">Executive Business Brokers</span>
+  </a>
+  <nav>
+    <a href="#">Browse Listings</a>
+    <a href="#">Sell a Business</a>
+    <a href="#">Services</a>
+    <a href="#">About</a>
+    <a href="#" class="cta-nav">Get a Valuation</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag fade-up">Since 1985 · NJ · NY · CT · PA</div>
+      <h1 class="fade-up">Find the <em>right business.</em><br>Sell at the right price.</h1>
+      <p class="hero-sub fade-up">Executive Business Brokers has closed over 1,000 transactions across the tri-state area. From family restaurants to distribution companies — we know this market.</p>
+      <div class="hero-stats fade-up">
+        <div class="stat-item">
+          <span class="stat-num">1,000+</span>
+          <span class="stat-label">Deals Closed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">20,000+</span>
+          <span class="stat-label">Buyer Network</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">40yr</span>
+          <span class="stat-label">Track Record</span>
+        </div>
+      </div>
+      <div class="hero-actions fade-up">
+        <a href="#listings" class="btn btn-gold">Browse Listings →</a>
+        <a href="#sell" class="btn btn-outline">List Your Business</a>
+      </div>
+    </div>
+
+    <!-- SEARCH WIDGET -->
+    <div class="search-card fade-up">
+      <h3>Search Businesses</h3>
+      <div class="form-group">
+        <label>State</label>
+        <select>
+          <option>New Jersey</option>
+          <option>New York</option>
+          <option>Connecticut</option>
+          <option>Pennsylvania</option>
+          <option>— All States —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select>
+          <option>All Categories</option>
+          <option>Food &amp; Liquor</option>
+          <option>General Services</option>
+          <option>General Retail</option>
+          <option>Automotive &amp; Transportation</option>
+          <option>Wholesale / Manufacturing</option>
+          <option>Medical &amp; Dental</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Asking Price Range</label>
+        <div class="price-row">
+          <select>
+            <option>Min Price</option>
+            <option>$100,000</option>
+            <option>$250,000</option>
+            <option>$500,000</option>
+            <option>$1,000,000</option>
+          </select>
+          <select>
+            <option>Max Price</option>
+            <option>$250,000</option>
+            <option>$500,000</option>
+            <option>$1,000,000</option>
+            <option>No Limit</option>
+          </select>
+        </div>
+      </div>
+      <button class="search-btn">Search Available Businesses →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-label">Just Listed</div>
+  <div class="ticker-track">
+    <div class="ticker-item">NJ Liquor Store · $425K</div>
+    <div class="ticker-item">Bergen Co. Auto Body · $780K</div>
+    <div class="ticker-item">Essex Co. Day Care · $310K</div>
+    <div class="ticker-item">NYC Deli &amp; Catering · $195K</div>
+    <div class="ticker-item">Morris Co. HVAC Contractor · $1.2M</div>
+    <div class="ticker-item">CT Medical Practice · $850K</div>
+    <div class="ticker-item">PA Distribution Co. · $2.1M</div>
+    <div class="ticker-item">Monmouth Co. Dry Cleaner · $225K</div>
+    <div class="ticker-item">NJ Printing Company · $495K</div>
+    <div class="ticker-item">Hudson Co. Restaurant · $340K</div>
+    <!-- repeat for seamless loop -->
+    <div class="ticker-item">NJ Liquor Store · $425K</div>
+    <div class="ticker-item">Bergen Co. Auto Body · $780K</div>
+    <div class="ticker-item">Essex Co. Day Care · $310K</div>
+    <div class="ticker-item">NYC Deli &amp; Catering · $195K</div>
+    <div class="ticker-item">Morris Co. HVAC Contractor · $1.2M</div>
+    <div class="ticker-item">CT Medical Practice · $850K</div>
+    <div class="ticker-item">PA Distribution Co. · $2.1M</div>
+    <div class="ticker-item">Monmouth Co. Dry Cleaner · $225K</div>
+    <div class="ticker-item">NJ Printing Company · $495K</div>
+    <div class="ticker-item">Hudson Co. Restaurant · $340K</div>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<section class="section" id="listings">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Active Listings</div>
+        <div class="section-title">Businesses For Sale</div>
+      </div>
+      <a href="#" class="view-all">View all listings →</a>
+    </div>
+
+    <div class="listings-grid">
+
+      <!-- FEATURED -->
+      <div class="featured-card">
+        <div>
+          <div class="featured-eyebrow">⭐ Featured Listing · NJ-2847</div>
+          <div class="featured-title">Established HVAC &amp; Plumbing Contractor<br>Morris County, NJ</div>
+          <p class="featured-desc">Profitable 22-year-old mechanical contractor with $3.2M in annual revenue. Loyal commercial and residential client base. Seller will train. Motivated by retirement.</p>
+          <div class="featured-metrics">
+            <div class="featured-metric">
+              <div class="metric-label">Annual Revenue</div>
+              <div class="metric-value">$3.2M</div>
+            </div>
+            <div class="featured-metric">
+              <div class="metric-label">Cash Flow</div>
+              <div class="metric-value">$480K</div>
+            </div>
+            <div class="featured-metric">
+              <div class="metric-label">Employees</div>
+              <div class="metric-value">14 FT</div>
+            </div>
+            <div class="featured-metric">
+              <div class="metric-label">Years Est.</div>
+              <div class="metric-value">22 yrs</div>
+            </div>
+          </div>
+          <a href="#" class="btn btn-gold">Request Information →</a>
+        </div>
+        <div class="featured-side">
+          <div class="asking-price-large">$1.85M</div>
+          <div class="asking-label">Asking Price</div>
+          <a href="#" class="btn btn-outline" style="font-size:0.8rem; padding:0.65rem 1.25rem;">Schedule Call</a>
+        </div>
+      </div>
+
+      <!-- CARD 1 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-food">Food &amp; Liquor</span>
+          <span class="listing-id">NJ-3012</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Bergen County Liquor Store — High-Volume Corner Location</div>
+          <div class="listing-location">📍 Bergen County, NJ</div>
+          <p class="listing-desc">Well-established package store with strong foot traffic, loyal customer base, and favorable long-term lease. Owner retiring after 18 years.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$425,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$130,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$1.1M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$95,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">RK</div>
+            R. Kaplan
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-auto">Automotive</span>
+          <span class="listing-id">NJ-2991</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Full-Service Auto Body &amp; Collision Repair Shop</div>
+          <div class="listing-location">📍 Union County, NJ</div>
+          <p class="listing-desc">DRP-approved shop with three major insurance carrier relationships. Turnkey operation with experienced staff in place, modern equipment.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$780,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$200,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$1.9M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$185,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">MF</div>
+            M. Ferraro
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-services">General Services</span>
+          <span class="listing-id">NJ-3041</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Licensed Day Care Center — 60-Child Capacity, Essex County</div>
+          <div class="listing-location">📍 Essex County, NJ</div>
+          <p class="listing-desc">State-licensed childcare facility with strong enrollment waitlist. Trained staff, fully equipped classrooms. Ideal for existing operator or educator.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$310,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$85,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$620,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$88,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">DL</div>
+            D. Liebowitz
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-food">Food &amp; Liquor</span>
+          <span class="listing-id">NY-1188</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Manhattan Deli &amp; Catering — Midtown Office Building</div>
+          <div class="listing-location">📍 New York County, NY</div>
+          <p class="listing-desc">High-volume deli in prime Midtown office tower location. Corporate catering contracts in place. Lease through 2029 with renewal options.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$195,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$65,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$890,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$72,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">RK</div>
+            R. Kaplan
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-wholesale">Wholesale / Mfg</span>
+          <span class="listing-id">PA-0441</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Regional Food Distribution Company — Philadelphia Metro</div>
+          <div class="listing-location">📍 Montgomery County, PA</div>
+          <p class="listing-desc">Established distributor serving 200+ restaurant and institutional accounts across PA, NJ, and DE. Strong contracts, modern refrigerated fleet.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$2,100,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$600,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$6.8M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$390,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">MF</div>
+            M. Ferraro
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="listing-card fade-up">
+        <div class="card-header">
+          <span class="category-badge badge-medical">Medical / Dental</span>
+          <span class="listing-id">CT-0229</span>
+        </div>
+        <div class="card-body">
+          <div class="listing-title">Established General Dental Practice — Fairfield County</div>
+          <div class="listing-location">📍 Fairfield County, CT</div>
+          <p class="listing-desc">Well-run dental practice with 1,400+ active patients, 3 operatories, and digital X-ray system. Owner transitioning out over 18-month period.</p>
+        </div>
+        <div class="card-metrics">
+          <div class="metric">
+            <div class="metric-label">Asking</div>
+            <div class="metric-value asking">$850,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Down Payment</div>
+            <div class="metric-value">$250,000</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Annual Revenue</div>
+            <div class="metric-value">$1.4M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Cash Flow</div>
+            <div class="metric-value">$310,000</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="broker-name">
+            <div class="broker-avatar">DL</div>
+            D. Liebowitz
+          </div>
+          <a href="#" class="inquire-btn">Inquire</a>
+        </div>
+      </div>
+
+    </div><!-- /listings-grid -->
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Browse by Type</div>
+        <div class="section-title">Business Categories</div>
+      </div>
+    </div>
+    <div class="categories-grid">
+      <a class="category-card" href="#">
+        <span class="category-icon">🍺</span>
+        <span class="category-name">Food &amp; Liquor</span>
+        <span class="category-count">42 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🔧</span>
+        <span class="category-name">General Services</span>
+        <span class="category-count">61 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🚗</span>
+        <span class="category-name">Automotive</span>
+        <span class="category-count">18 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🛍️</span>
+        <span class="category-name">General Retail</span>
+        <span class="category-count">29 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🏭</span>
+        <span class="category-name">Wholesale / Mfg</span>
+        <span class="category-count">24 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🦷</span>
+        <span class="category-name">Medical &amp; Dental</span>
+        <span class="category-count">11 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">🏠</span>
+        <span class="category-name">Real Estate</span>
+        <span class="category-count">8 listings</span>
+      </a>
+      <a class="category-card" href="#">
+        <span class="category-icon">📦</span>
+        <span class="category-name">Asset Sales</span>
+        <span class="category-count">15 listings</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY EBB -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Why EBB</div>
+        <div class="section-title">The Tri-State Standard Since 1985</div>
+      </div>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-num">1,000+</div>
+        <div class="trust-title">Transactions Closed</div>
+        <div class="trust-desc">Four decades of brokering businesses across NJ, NY, CT, and PA. We've seen every deal structure, every industry, every complication.</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">20K+</div>
+        <div class="trust-title">Qualified Buyer Network</div>
+        <div class="trust-desc">Our proprietary buyer database is one of the largest in the region. When you list with EBB, your business gets in front of pre-screened, motivated buyers.</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">100%</div>
+        <div class="trust-title">Confidential Process</div>
+        <div class="trust-desc">We protect your identity and your business's reputation throughout every stage — from valuation to closing. Employees, competitors, and suppliers never find out.</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num">Free</div>
+        <div class="trust-title">Business Valuation</div>
+        <div class="trust-desc">Not sure what your business is worth? Our brokers will provide a no-obligation market valuation based on real comparable transactions in your industry.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECENTLY SOLD -->
+<section class="sold-section">
+  <div class="container">
+    <div class="section-eyebrow" style="color:var(--gold)">Recently Closed</div>
+    <div class="section-title" style="color:#fff; margin-top:0.3rem;">Transactions Completed by EBB</div>
+    <div class="sold-grid">
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">NJ Printing &amp; Mailing Services</div>
+        <div class="sold-detail">Bergen County · $495,000 · General Services</div>
+      </div>
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">Hudson County Restaurant</div>
+        <div class="sold-detail">Jersey City, NJ · $340,000 · Food</div>
+      </div>
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">Monmouth Dry Cleaning Chain</div>
+        <div class="sold-detail">Monmouth County · $225,000 · Retail</div>
+      </div>
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">CT Pediatric Dental Group</div>
+        <div class="sold-detail">Hartford, CT · $1,100,000 · Medical</div>
+      </div>
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">PA Electrical Contractor</div>
+        <div class="sold-detail">Bucks County · $870,000 · Services</div>
+      </div>
+      <div class="sold-item">
+        <span class="sold-tag">Closed</span>
+        <div class="sold-name">NYC Hair Salon — Midtown</div>
+        <div class="sold-detail">Manhattan · $155,000 · Retail Services</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="sell">
+  <div class="cta-inner">
+    <div class="section-eyebrow">Ready to Move?</div>
+    <div class="section-title">Sell Your Business the Right Way</div>
+    <p class="cta-sub">Whether you're thinking about selling in 6 months or 3 years, the first step is a confidential conversation with one of our brokers. No obligation. No pressure.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn btn-green">Get a Free Valuation →</a>
+      <a href="#" class="btn btn-border">Meet Our Brokers</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-abbr">EBB</span>
+      </div>
+      <p>Executive Business Brokers has been the trusted name in tri-state business sales since 1985. Our brokers have the experience, network, and discretion to get your deal done.</p>
+    </div>
+    <div class="footer-col">
+      <h4>For Buyers</h4>
+      <a href="#">Browse Listings</a>
+      <a href="#">Register as Buyer</a>
+      <a href="#">Preferred Buyer Program</a>
+      <a href="#">Financing Options</a>
+      <a href="#">Buying Guide</a>
+    </div>
+    <div class="footer-col">
+      <h4>For Sellers</h4>
+      <a href="#">List Your Business</a>
+      <a href="#">Free Valuation</a>
+      <a href="#">Selling Process</a>
+      <a href="#">Success Stories</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About EBB</a>
+      <a href="#">Our Brokers</a>
+      <a href="#">Services</a>
+      <a href="#">Join Our Team</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Executive Business Brokers. All Rights Reserved. · NJ, NY, CT, PA Licensed</span>
+    <span class="footer-badge">40 Years in Business</span>
+  </div>
+</footer>
+
+</body>
+</html>
