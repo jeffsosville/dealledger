@@ -243,7 +243,7 @@ class MurphyScraper:
                 
                 if not new:
                     consecutive_dupes += 1
-                    if consecutive_dupes >= 5:
+                    if consecutive_dupes >= 3:
                         break
                 else:
                     consecutive_dupes = 0
@@ -262,16 +262,35 @@ class MurphyScraper:
                             cash_flow=parse_money(item['sde_text'])
                         ))
                 
-                # Navigate to next page
+                # Navigate to next page — handles sliding window pagination
+                next_page = page_num + 1
                 try:
-                    next_btn = driver.find_element(By.CSS_SELECTOR, f"a.page_number[data-page='{page_num + 1}']")
+                    # First try direct page button
+                    next_btn = driver.find_element(By.CSS_SELECTOR, f"a.page_number[data-page='{next_page}']")
                     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_btn)
                     time.sleep(0.5)
                     driver.execute_script("arguments[0].click();", next_btn)
                     time.sleep(4)
                     page_num += 1
                 except:
-                    break
+                    # Page button not visible — click >> to slide window forward
+                    try:
+                        next_arrow = driver.find_element(
+                            By.XPATH, "//a[contains(@class,'page_number') and contains(text(),'>>')]"
+                        )
+                        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_arrow)
+                        time.sleep(0.5)
+                        driver.execute_script("arguments[0].click();", next_arrow)
+                        time.sleep(4)
+                        try:
+                            next_btn = driver.find_element(By.CSS_SELECTOR, f"a.page_number[data-page='{next_page}']")
+                            driver.execute_script("arguments[0].click();", next_btn)
+                            time.sleep(4)
+                        except:
+                            pass
+                        page_num += 1
+                    except:
+                        break
         
         finally:
             driver.quit()
@@ -415,50 +434,56 @@ class TransworldScraper:
     """
     Transworld Business Advisors
     https://www.tworld.com
-    
-    Has an internal API endpoint - fast parallel scraping.
-    ~2000+ listings.
+
+    Uses Playwright for bootstrap (Cloudflare cf_clearance required),
+    then curl_cffi for fast parallel API fetching.
+    ~3,465 listings across 385 pages (9 per page).
     """
-    
+
     BASE = "https://www.tworld.com"
     API_URL = f"{BASE}/api/listings"
-    META_CSRF_RE = re.compile(r'<meta\s+name=["\']csrf-token["\']\s+content=["\']([^"\']+)["\']', re.I)
+    SEARCH_URL = f"{BASE}/buy-a-business/business-listing-search"
 
     def __init__(self):
-        self.session = requests.Session(impersonate="chrome120")
+        self.session = requests.Session(impersonate="chrome124")
         self.api_headers = {
             "Accept": "application/json, text/plain, */*",
             "Content-Type": "application/json;charset=UTF-8",
             "Origin": self.BASE,
-            "Referer": f"{self.BASE}/listings/",
-            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.SEARCH_URL,
+            "sec-ch-ua": '"Chromium";v="124", "Not-A.Brand";v="24", "Google Chrome";v="124"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
         }
         self.lock = Lock()
         self.seen = set()
         self._bootstrap()
 
     def _bootstrap(self):
-        """Visit site to get CSRF tokens."""
+        """Bootstrap using curl_cffi requests — works without Playwright."""
+        self._bootstrap_requests()
+
+    def _bootstrap_requests(self):
+        """Fallback bootstrap without Playwright."""
         try:
             self.session.get(self.BASE, timeout=30)
-            r = self.session.get(f"{self.BASE}/listings/", timeout=30)
-            
-            m = self.META_CSRF_RE.search(r.text)
-            if m:
-                self.api_headers["X-CSRF-TOKEN"] = m.group(1)
-            
+            r = self.session.get(self.SEARCH_URL, timeout=30)
             xsrf = self.session.cookies.get("XSRF-TOKEN")
             if xsrf:
                 from urllib.parse import unquote
                 self.api_headers["X-XSRF-TOKEN"] = unquote(xsrf)
+                print(f"[Transworld] Got XSRF (requests fallback) ✓")
         except Exception as e:
-            print(f"[Transworld] Bootstrap warning: {e}")
+            print(f"[Transworld] Requests bootstrap warning: {e}")
 
     def _fetch_page(self, page_num: int) -> List[Dict]:
         """Fetch a single page from the API."""
         payload = {
             "page": page_num,
-            "per_page": 24,
+            "per_page": 9,
             "country": {"value": 4, "name": "United States"},
             "state": None,
             "region": None,
@@ -466,53 +491,64 @@ class TransworldScraper:
             "categories": None,
             "sort": {"value": "-c_listing_price__c", "name": "Price ($$$ to $)"},
         }
-        
+
         for attempt in range(3):
             try:
                 r = self.session.post(
                     self.API_URL,
                     headers=self.api_headers,
-                    data=json.dumps(payload),
+                    json=payload,
                     timeout=45
                 )
-                
+
                 if r.status_code == 419:
+                    print(f"[Transworld] 419 on page {page_num} — re-bootstrapping")
                     self._bootstrap()
                     continue
-                
+
+                if r.status_code == 403:
+                    print(f"[Transworld] 403 on page {page_num} — Cloudflare blocked")
+                    return []
+
                 r.raise_for_status()
                 data = r.json()
-                arr = data.get("results") or data.get("data") or []
-                
+
+                # API returns "data" array and "pagination" object
+                arr = data.get("data") or []
+
                 out = []
                 with self.lock:
                     for item in arr:
-                        key = item.get("id") or item.get("slug")
+                        key = item.get("slug")
                         if key and key not in self.seen:
                             self.seen.add(key)
                             out.append(item)
                 return out
-                
+
             except Exception as e:
                 if attempt == 2:
                     return []
                 time.sleep(1 + attempt)
         return []
 
-    def scrape(self, broker_account: str, max_pages: int = 150, workers: int = 8, verbose: bool = True) -> List[Dict]:
+    def scrape(self, broker_account: str, max_pages: int = 385, workers: int = 6, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("Transworld Business Advisors")
             print('='*60)
-        
+
         all_items = []
-        
-        # First page
+
+        # First page to verify it works
         first = self._fetch_page(1)
         all_items.extend(first)
         if verbose:
             print(f"[Transworld] Page 1: {len(first)} listings")
-        
+
+        if not first:
+            print("[Transworld] Page 1 returned 0 — check bootstrap/Cloudflare")
+            return []
+
         # Parallel fetch remaining pages
         if max_pages > 1:
             with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -525,24 +561,31 @@ class TransworldScraper:
                     completed += 1
                     if verbose and completed % 20 == 0:
                         print(f"[Transworld] {completed}/{max_pages-1} pages done | {len(all_items)} total")
-                    time.sleep(0.3)
-        
+                    time.sleep(0.2)
+
         # Convert to standard format
         listings = []
         for item in all_items:
-            location = item.get("location") or item.get("city_state")
-            city, state = extract_city_state(location)
-            
-            price = item.get("c_listing_price__c") or item.get("price")
-            cash_flow = item.get("c_discretionary_earnings__c")
-            
+            location = item.get("location")
+            city, state = extract_city_state(location or "")
+
+            price = item.get("price")
+            cash_flow = item.get("seller_discretionary_earnings")
             slug = item.get("slug", "")
-            url = item.get("url") or f"{self.BASE}/listings/{slug}"
-            
+            tribe = item.get("tribe_slug", "")
+
+            # Build canonical URL
+            if tribe and slug:
+                url = f"{self.BASE}/{tribe}/listing/{slug}"
+            elif slug:
+                url = f"{self.BASE}/listings/{slug}"
+            else:
+                url = self.BASE
+
             listings.append(format_listing(
                 url=url,
                 broker_account=broker_account,
-                title=item.get("name") or item.get("title"),
+                title=item.get("heading"),
                 price=float(price) if price else None,
                 price_text=f"${price:,.0f}" if price else None,
                 location=location,
@@ -550,11 +593,11 @@ class TransworldScraper:
                 state=state,
                 cash_flow=float(cash_flow) if cash_flow else None
             ))
-        
+
         if verbose:
             with_price = sum(1 for l in listings if l.get('price'))
             print(f"\n✓ {len(listings)} Transworld listings ({with_price} with price)")
-        
+
         return listings
 
 
@@ -734,10 +777,10 @@ class VRScraper:
     """
     VR Business Brokers
     https://www.vrbusinessbrokers.com
-    
-    Simple URL-based pagination.
+
+    Simple URL-based pagination. ~408 listings across 17 pages (24 per page).
     """
-    
+
     BASE = "https://www.vrbusinessbrokers.com"
     LIST_URL = f"{BASE}/businesses-for-sale/"
 
@@ -747,10 +790,16 @@ class VRScraper:
     def _fetch_page(self, page_num: int) -> str:
         params = {
             'wpv_view_count': '35524',
+            'wpv-wpcf-pretty-industry': '',
             'wpv-wpcf-price': '1000000000000000',
             'wpv-wpcf-cash-flow': '0',
+            'wpv_post_search': '',
+            'wpv-wpcf-type-of-location': '',
+            'wpv-wpcf-year-established': '',
             'wpv_sort_orderby': 'field-wpcf-price',
             'wpv_sort_order': 'desc',
+            'wpv-wpcf-listing-id': '',
+            'wpv-relationship-filter': '0',
             'wpv_paged': str(page_num)
         }
         r = self.session.get(self.LIST_URL, params=params, timeout=30)
@@ -760,31 +809,31 @@ class VRScraper:
     def _parse_html(self, html: str) -> List[Dict]:
         soup = BeautifulSoup(html, 'html.parser')
         listings = []
-        
+
         for box in soup.find_all('div', class_='vrbb-listing-box'):
             try:
                 link = box.parent if box.parent and box.parent.name == 'a' else None
                 if not link:
                     continue
-                
+
                 url = link.get('href')
                 if not url:
                     continue
                 if url.startswith('/'):
                     url = self.BASE + url
-                
+
                 title = box.find('div', class_='vrbb-listing-title')
                 title = title.get_text(strip=True) if title else None
-                
+
                 price = box.find('div', class_='vrbb-listing-pretty-price')
                 price_text = price.get_text(strip=True) if price else None
-                
+
                 loc = box.find('div', class_='vrbb-listing-loc')
                 location = loc.get_text(strip=True) if loc else None
-                
+
                 industry = box.find('div', class_='vrbb-listing-pretty-industry-name')
                 industry = industry.get_text(strip=True) if industry else None
-                
+
                 city, state = None, None
                 if location:
                     if ',' in location:
@@ -793,7 +842,7 @@ class VRScraper:
                         state = parts[1].strip()
                     else:
                         state = location.strip()
-                
+
                 listings.append({
                     'url': url,
                     'title': title,
@@ -805,42 +854,42 @@ class VRScraper:
                 })
             except:
                 continue
-        
+
         return listings
 
-    def scrape(self, broker_account: str, max_pages: int = 15, verbose: bool = True) -> List[Dict]:
+    def scrape(self, broker_account: str, max_pages: int = 20, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("VR Business Brokers")
             print('='*60)
-        
+
         all_items = []
         seen_urls = set()
-        
+
         for page_num in range(1, max_pages + 1):
             try:
                 html = self._fetch_page(page_num)
                 page_items = self._parse_html(html)
-                
+
                 new = [l for l in page_items if l['url'] not in seen_urls]
                 for l in new:
                     seen_urls.add(l['url'])
-                
+
                 if verbose:
-                    print(f"[VR] Page {page_num}: {len(new)} new | Total: {len(all_items) + len(new)}")
-                
+                    print(f"[VR] Page {page_num}: {len(page_items)} found, {len(new)} new | Total: {len(all_items) + len(new)}")
+
                 all_items.extend(new)
-                
+
                 if not page_items or not new:
                     break
-                
+
                 time.sleep(random.uniform(1, 2))
-                
+
             except Exception as e:
                 if verbose:
                     print(f"[VR] Error page {page_num}: {e}")
                 break
-        
+
         listings = []
         for item in all_items:
             listings.append(format_listing(
@@ -854,12 +903,12 @@ class VRScraper:
                 state=item['state'],
                 business_type=item['industry']
             ))
-        
-        if verbose:
-            print(f"\n✓ {len(listings)} VR listings")
-        
-        return listings
 
+        if verbose:
+            with_price = sum(1 for l in listings if l.get('price'))
+            print(f"\n✓ {len(listings)} VR listings ({with_price} with price)")
+
+        return listings
 
 # ============================================================================
 # FCBB (FIRST CHOICE BUSINESS BROKERS) SCRAPER
@@ -972,139 +1021,144 @@ class FCBBScraper:
 # LINK BUSINESS SCRAPER
 # HTML pagination with "Refer to Broker" filtering
 # ============================================================================
-
 class LinkBusinessScraper:
     """
     Link Business
     https://linkbusiness.com
-    
-    Filters out "Refer to Broker" listings (no useful data).
+
+    Standard URL pagination: /businesses-for-sale?page=N
+    ~483 listings across ~50 pages.
     """
-    
+
     BASE = "https://linkbusiness.com"
-    LIST_URL = f"{BASE}/businesses-for-sale/"
+    LIST_URL = f"{BASE}/businesses-for-sale"
 
     def __init__(self):
         self.session = requests.Session(impersonate="chrome120")
+        self.session.headers.update({
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+        })
 
     def _fetch_page(self, page_num: int) -> str:
-        url = self.LIST_URL if page_num == 1 else f"{self.LIST_URL}page/{page_num}/"
-        r = self.session.get(url, timeout=30)
+        params = {'page': page_num} if page_num > 1 else {}
+        r = self.session.get(self.LIST_URL, params=params, timeout=30)
         r.raise_for_status()
         return r.text
 
     def _parse_html(self, html: str) -> List[Dict]:
         soup = BeautifulSoup(html, 'html.parser')
         listings = []
-        
-        cards = soup.find_all('div', class_='featured-listing-item')
-        
+
+        # Each listing card is inside a div with id starting with 'bcid_'
+        cards = soup.find_all('div', id=re.compile(r'^bcid_'))
+
         for card in cards:
             try:
-                title_tag = card.find('h3')
-                if not title_tag:
+                # Title and URL
+                listing_div = card.find('div', class_='vertical-listing')
+                if not listing_div:
                     continue
-                title = title_tag.get_text(strip=True)
-                
-                link = card.find('a', href=True)
+
+                h3 = listing_div.find('h3')
+                if not h3:
+                    continue
+
+                link = h3.find('a')
                 if not link:
                     continue
-                url = link.get('href')
-                if url.startswith('/'):
-                    url = self.BASE + url
-                
-                # Extract price - skip "Refer to Broker"
+
+                title = link.get_text(strip=True)
+                href = link.get('href', '')
+                url = href if href.startswith('http') else f"{self.BASE}{href}"
+
+                if not title or not url:
+                    continue
+
+                # Price — first p.price
                 price_text = None
-                price_elem = card.find('p', class_='price')
-                if price_elem:
-                    txt = price_elem.get_text(strip=True)
+                price_elems = listing_div.find_all('p', class_='price')
+                for pe in price_elems:
+                    txt = pe.get_text(strip=True)
+                    txt = re.sub(r"^Price:\s*", "", txt).strip()
+                    if txt and 'refer to broker' not in txt.lower() and '$' in txt:
+                        price_text = txt
+                        break
+
+                # Sub-prices (profit/sales) — p.sub-price elements
+                sub_prices = listing_div.find_all('p', class_='sub-price')
+                cf_text = None
+                revenue_text = None
+                for sp in sub_prices:
+                    txt = sp.get_text(strip=True)
                     if 'refer to broker' in txt.lower():
                         continue
-                    match = re.search(r'\$[\d,]+', txt)
-                    if match:
-                        price_text = match.group(0)
-                
-                if not price_text:
-                    continue
-                
-                # Revenue
-                revenue_text = None
-                sales = card.find(string=re.compile(r'Sales:', re.I))
-                if sales:
-                    txt = sales.parent.get_text()
-                    if 'refer to broker' not in txt.lower():
-                        match = re.search(r'\$[\d,]+', txt)
-                        if match:
-                            revenue_text = match.group(0)
-                
-                # Cash flow
-                cf_text = None
-                profit = card.find(string=re.compile(r'Profit', re.I))
-                if profit:
-                    txt = profit.parent.get_text()
-                    if 'refer to broker' not in txt.lower():
-                        match = re.search(r'\$[\d,]+', txt)
-                        if match:
-                            cf_text = match.group(0)
-                
+                    if 'profit' in txt.lower() and '$' in txt:
+                        m = re.search(r'\$[\d,]+', txt)
+                        if m:
+                            cf_text = m.group(0)
+                    elif 'sales' in txt.lower() and '$' in txt:
+                        m = re.search(r'\$[\d,]+', txt)
+                        if m:
+                            revenue_text = m.group(0)
+
                 # Location
                 location = None
-                loc_elem = card.find(string=re.compile(r'Location:', re.I))
+                loc_elem = listing_div.find('p', class_='location')
                 if loc_elem:
-                    match = re.search(r'Location:\s*(.+)', loc_elem.parent.get_text(strip=True))
-                    if match:
-                        location = match.group(1).strip()
-                
-                city, state = extract_city_state(location)
-                
+                    location = re.sub(r"^Location:\s*", "", loc_elem.get_text(strip=True)).strip()
+
+                city, state = extract_city_state(location or '')
+
                 listings.append({
                     'url': url,
                     'title': title,
                     'price_text': price_text,
-                    'revenue_text': revenue_text,
                     'cf_text': cf_text,
+                    'revenue_text': revenue_text,
                     'location': location,
                     'city': city,
                     'state': state
                 })
-            except:
+
+            except Exception:
                 continue
-        
+
         return listings
 
-    def scrape(self, broker_account: str, max_pages: int = 20, verbose: bool = True) -> List[Dict]:
+    def scrape(self, broker_account: str, max_pages: int = 60, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("Link Business")
             print('='*60)
-        
+
         all_items = []
         seen_urls = set()
-        
+
         for page_num in range(1, max_pages + 1):
             try:
                 html = self._fetch_page(page_num)
                 page_items = self._parse_html(html)
-                
+
                 new = [l for l in page_items if l['url'] not in seen_urls]
                 for l in new:
                     seen_urls.add(l['url'])
-                
+
                 if verbose:
-                    print(f"[Link Business] Page {page_num:2d}/{max_pages}: {len(page_items):2d} found, {len(new):2d} new | Total: {len(all_items) + len(new)}")
-                
+                    print(f"[Link] Page {page_num}: {len(page_items)} found, {len(new)} new | Total: {len(all_items) + len(new)}")
+
                 all_items.extend(new)
-                
+
                 if not page_items or not new:
                     break
-                
+
                 time.sleep(random.uniform(1, 2))
-                
+
             except Exception as e:
                 if verbose:
-                    print(f"[Link Business] Error page {page_num}: {e}")
+                    print(f"[Link] Error page {page_num}: {e}")
                 break
-        
+
         listings = []
         for item in all_items:
             listings.append(format_listing(
@@ -1119,13 +1173,12 @@ class LinkBusinessScraper:
                 revenue=parse_money(item['revenue_text']),
                 cash_flow=parse_money(item['cf_text'])
             ))
-        
+
         if verbose:
             with_price = sum(1 for l in listings if l.get('price'))
             print(f"\n✓ {len(listings)} Link Business listings ({with_price} with price)")
-        
-        return listings
 
+        return listings
 
 # ============================================================================
 # LARRY BODNER / EXECUTIVE BUSINESS BROKERS SCRAPER
@@ -1136,98 +1189,128 @@ class LarryBodnerScraper:
     """
     Executive Business Brokers (Larry Bodner)
     https://execbb.com
-    
-    800+ NJ listings. Requires Selenium for session cookies.
+
+    POSTs search form and parses HTML table directly. No Selenium needed.
+    ~1,000+ listings across NJ and other states.
     """
-    
+
     BASE = "https://execbb.com"
     SEARCH_URL = f"{BASE}/buyer/sub/search.asp"
+    RESULTS_URL = f"{BASE}/Buyer/sub/results.asp?searchtype=incsearch"
+
+    STATES = ['NJ', 'NY', 'CT', 'PA', 'al', 'AZ', 'CA', 'co', 'fl',
+              'ga', 'il', 'in', 'md', 'ma', 'mi', 'mn', 'mo', 'nc',
+              'oh', 'or', 'pa', 'sc', 'tn', 'tx', 'va', 'wa', 'wi']
+
+    def __init__(self):
+        self.session = requests.Session(impersonate="chrome120")
+        try:
+            self.session.get(self.SEARCH_URL, timeout=15)
+        except Exception as e:
+            print(f"[Bodner] Session init warning: {e}")
+
+    def _fetch_state(self, state: str) -> List[Dict]:
+        data = {
+            'Category': 'all',
+            'State': state,
+            'County': '0',
+            'AllListings': 'ON',
+            'searchtype': 'IncSearch'
+        }
+        try:
+            r = self.session.post(self.RESULTS_URL, data=data, timeout=30)
+            r.raise_for_status()
+        except Exception as e:
+            print(f"[Bodner] Error fetching {state}: {e}")
+            return []
+
+        soup = BeautifulSoup(r.text, 'html.parser')
+        listing_links = [a for a in soup.find_all('a', href=True) if 'listingdetail' in a.get('href', '')]
+        listings = []
+
+        for link in listing_links:
+            try:
+                href = link.get('href', '')
+                title = link.get_text(strip=True)
+                if not title or not href:
+                    continue
+                url = href if href.startswith('http') else f"{self.BASE}/Buyer/sub/{href.lstrip('/')}"
+                title_row = link.find_parent('tr')
+                if not title_row:
+                    continue
+                next_row = title_row.find_next_sibling('tr')
+                cells = next_row.find_all('td') if next_row else []
+                price_text = None
+                revenue_text = None
+                location = None
+                description = cells[0].get_text(strip=True) if len(cells) >= 1 else None
+                if len(cells) >= 3:
+                    revenue_text = cells[2].get_text(strip=True)
+                    if revenue_text in ['', chr(160), 'Undisclosed']:
+                        revenue_text = None
+                if len(cells) >= 4:
+                    price_text = cells[3].get_text(strip=True)
+                    if price_text in ['', chr(160)]:
+                        price_text = None
+                if len(cells) >= 5:
+                    location = cells[4].get_text(strip=True)
+                    if location in ['', chr(160)]:
+                        location = None
+                city, st = extract_city_state(location or f", {state}")
+                if not st:
+                    st = state
+                listings.append({
+                    'url': url, 'title': title, 'price_text': price_text,
+                    'revenue_text': revenue_text, 'location': location,
+                    'city': city, 'state': st, 'description': description
+                })
+            except Exception:
+                continue
+        return listings
 
     def scrape(self, broker_account: str, headless: bool = True, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("Executive Business Brokers (Larry Bodner)")
             print('='*60)
-        
-        driver = create_chrome_driver(headless)
-        listings = []
-        
-        try:
-            # Must visit search page first to establish session
-            driver.get(self.SEARCH_URL)
-            time.sleep(2)
-            
-            # Submit search form
+
+        all_items = []
+        seen_urls = set()
+
+        for state in self.STATES:
             try:
-                submit = driver.find_element(By.CSS_SELECTOR, "input[type='submit'], input[type='image']")
-                submit.click()
-            except:
-                driver.execute_script("document.forms[0].submit();")
-            
-            time.sleep(4)
-            
-            # Parse listings
-            links = driver.find_elements(By.CSS_SELECTOR, "a[href*='listingdetail.asp']")
-            
-            if verbose:
-                print(f"[Larry Bodner] Found {len(links)} listing links")
-            
-            for link in links:
-                try:
-                    url = link.get_attribute('href')
-                    title = link.text.strip()
-                    if not url or not title:
-                        continue
-                    
-                    # Get detail row
-                    title_row = link.find_element(By.XPATH, "./ancestor::tr")
-                    detail_row = title_row.find_element(By.XPATH, "./following-sibling::tr[1]")
-                    cells = detail_row.find_elements(By.TAG_NAME, "td")
-                    
-                    if len(cells) < 4:
-                        continue
-                    
-                    revenue_text = cells[2].text.strip() if len(cells) > 2 else None
-                    price_text = cells[3].text.strip() if len(cells) > 3 else None
-                    location = cells[4].text.strip() if len(cells) > 4 else None
-                    
-                    # Clean up
-                    if revenue_text in ['', 'Undisclosed', '\xa0']:
-                        revenue_text = None
-                    if price_text in ['', '\xa0']:
-                        price_text = None
-                    if location:
-                        location = ' '.join(location.split())
-                    
-                    city, state = extract_city_state(location)
-                    
-                    # Business type from title
-                    parts = title.split(' ', 1)
-                    business_type = parts[1] if len(parts) > 1 else None
-                    
-                    listings.append(format_listing(
-                        url=url,
-                        broker_account=broker_account,
-                        title=title,
-                        price=parse_money(price_text),
-                        price_text=price_text,
-                        location=location,
-                        city=city,
-                        state=state,
-                        business_type=business_type,
-                        cash_flow=parse_money(revenue_text)
-                    ))
-                except:
-                    continue
-            
-            if verbose:
-                with_price = sum(1 for l in listings if l.get('price'))
-                print(f"\n✓ {len(listings)} Larry Bodner listings ({with_price} with price)")
-            
-            return listings
-            
-        finally:
-            driver.quit()
+                state_items = self._fetch_state(state)
+                new = [l for l in state_items if l['url'] not in seen_urls]
+                for l in new:
+                    seen_urls.add(l['url'])
+                all_items.extend(new)
+                if verbose and new:
+                    print(f"[Bodner] {state}: {len(new)} new listings | Total: {len(all_items)}")
+                time.sleep(0.5)
+            except Exception as e:
+                if verbose:
+                    print(f"[Bodner] Error on {state}: {e}")
+
+        listings = []
+        for item in all_items:
+            listings.append(format_listing(
+                url=item['url'],
+                broker_account=broker_account,
+                title=item['title'],
+                price=parse_money(item['price_text']),
+                price_text=item['price_text'],
+                location=item['location'],
+                city=item['city'],
+                state=item['state'],
+                description=item['description'],
+                revenue=parse_money(item['revenue_text'])
+            ))
+
+        if verbose:
+            with_price = sum(1 for l in listings if l.get('price'))
+            print(f"\n✓ {len(listings)} Larry Bodner listings ({with_price} with price)")
+
+        return listings
 
 
 # ============================================================================
@@ -1316,13 +1399,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     scrapers = {
-        'murphy': lambda: MurphyScraper.scrape(args.account, max_pages=5),
-        'hedgestone': lambda: HedgestoneScraper().scrape(args.account, max_pages=3),
-        'transworld': lambda: TransworldScraper().scrape(args.account, max_pages=10),
-        'sunbelt': lambda: SunbeltScraper().scrape(args.account, max_pages=10),
-        'vr': lambda: VRScraper().scrape(args.account, max_pages=5),
-        'fcbb': lambda: FCBBScraper().scrape(args.account, max_pages=10),
-        'link': lambda: LinkBusinessScraper().scrape(args.account, max_pages=5),
+        'murphy': lambda: MurphyScraper.scrape(args.account, max_pages=50),
+        'hedgestone': lambda: HedgestoneScraper().scrape(args.account, max_pages=15),
+        'transworld': lambda: TransworldScraper().scrape(args.account, max_pages=385),
+        'sunbelt': lambda: SunbeltScraper().scrape(args.account, max_pages=130),
+        'vr': lambda: VRScraper().scrape(args.account, max_pages=15),
+        'fcbb': lambda: FCBBScraper().scrape(args.account, max_pages=79),
+        'link': lambda: LinkBusinessScraper().scrape(args.account, max_pages=20),
         'bodner': lambda: LarryBodnerScraper().scrape(args.account),
     }
     
