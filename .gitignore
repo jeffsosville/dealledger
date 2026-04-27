@@ -1,41 +1,47 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
+*.egg-info/
+.venv/
 venv/
 env/
-.venv/
+
+# Environment
 .env
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Data (keep snapshots, ignore raw/intermediate)
-data/raw/
-data/normalized/
-!data/snapshots/
+.env.local
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Secrets (never commit)
-*.env
-.env.*
-secrets.json
-credentials.json
-data/latest.json
-data/listings/*.json
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Data — large scrape outputs, never commit
+data/snapshots/
+scrapers/bizquest_states/
+scrapers/bizquest_raw.csv
+scrapers/bizquest_raw.json
+scrapers/bizquest_enriched.csv
+scrapers/bizquest_enriched.json
+data/pattern_cache.json
+
+# Local SQL migrations (kept for reference, not for active dev)
+*_updates.sql
+*_fixes.sql
+clean_*.sql
+rollback_*.sql
+
+# Scraper output directories — daily snapshots, never commit
+state_files/
+data/listings/
+data/snapshots/
 data/listings_clean.jsonl
 data/listings_clean2.jsonl
-data/listings/*.jsonl
+data/pattern_cache.json
+bizquest_combined.json
