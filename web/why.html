@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Market Has No Memory — DealLedger</title>
+    <meta name="description" content="Information asymmetry, the lemons problem, and why the small business transaction market needs a public ledger.">
+    <meta property="og:title" content="The Market Has No Memory">
+    <meta property="og:description" content="Information asymmetry, the lemons problem, and why the small business transaction market needs a public ledger.">
+    <meta property="og:url" content="https://dealledger.org/why">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #d4d4d4;
+            --accent: #c2410c;
+            --link: #0c4a6e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Georgia, serif; background: var(--bg); color: var(--text); font-size: 19px; line-height: 1.8; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; }
+        .header-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--text); }
+        .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; }
+        .back-link:hover { color: var(--text); }
+        article { max-width: 680px; margin: 0 auto; padding: 80px 24px 120px; }
+        .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        h1 { font-size: 42px; font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 20px; }
+        .subtitle { font-size: 20px; color: var(--muted); font-style: italic; line-height: 1.5; margin-bottom: 32px; }
+        .byline { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); padding-bottom: 40px; border-bottom: 1px solid var(--border); margin-bottom: 56px; }
+        h2 { font-size: 24px; font-weight: 700; color: var(--text); margin-top: 64px; margin-bottom: 24px; line-height: 1.3; }
+        p { margin-bottom: 28px; color: var(--text); }
+        p strong { font-weight: 700; }
+        p em { font-style: italic; }
+        .lede { font-size: 22px; font-weight: 700; margin-bottom: 28px; }
+        .callout { border-left: 3px solid var(--accent); padding: 20px 24px; margin: 40px 0; background: #f5f5f4; }
+        .callout p { margin: 0; font-size: 17px; color: var(--muted); }
+        .data-block { border: 1px solid var(--border); padding: 24px 28px; margin: 40px 0; background: #fff; }
+        .data-block .data-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        .data-block p { margin-bottom: 8px; font-size: 16px; }
+        .data-block p:last-child { margin-bottom: 0; }
+        footer-note { display: block; border-top: 1px solid var(--border); padding-top: 40px; margin-top: 80px; font-size: 15px; color: var(--muted); font-style: italic; }
+        a { color: var(--link); }
+        a:hover { text-decoration: underline; }
+        @media (max-width: 600px) { h1 { font-size: 30px; } body { font-size: 17px; } article { padding: 48px 20px 80px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">DealLedger</a>
+            <a href="/" class="back-link">← Back to ledger</a>
+        </div>
+    </header>
+
+    <article>
+        <div class="label">Essay — March 2026</div>
+        <h1>The Market Has No Memory</h1>
+        <p class="subtitle">Information asymmetry, the lemons problem, and why the small business transaction market needs a public ledger</p>
+        <div class="byline">Jeff Sosville &nbsp;·&nbsp; March 2026 &nbsp;·&nbsp; dealledger.org</div>
+
+        <p class="lede">The small business market has no memory.</p>
+
+        <p>Listings appear, sit for months or years, disappear, and relist with new IDs. Prices change. Deals fail. Brokers refresh listings to make them look recent. And when a listing finally vanishes — sold, expired, or withdrawn — the history vanishes with it. The market forgets.</p>
+
+        <p>This is not a minor data problem. It is the central structural failure of the small business transaction market. And it is why we have spent the last several years building a public ledger to fix it.</p>
+
+        <h2>I. Where This Started</h2>
+
+        <p>In 2007 I helped my brother Greg launch a business brokerage in Denver. It still operates today. That experience gave me the basic mechanics — how deals get sourced, how buyers and sellers find each other, how much depends on relationships rather than data.</p>
+
+        <p>In 2012 my brother John and I started ATM Brokerage. Not venture-backed. Main Street businesses — ATM routes, the kind nobody writes Medium posts about. We had spent years in ATM deployment and put out roughly 300 machines. We knew the economics and saw that nobody was serving the buy-sell side of the market systematically.</p>
+
+        <p>The way we grew was through transparency. We gave buyers more data than anyone else. We explained how routes worked, what to look for, what could go wrong. We became dominant in the market — not through superior inventory but through information. Buyers trusted us because we did not hide things.</p>
+
+        <p>That experience planted a question we have been turning over ever since: why does the broader business-for-sale market operate on the opposite principle?</p>
+
+        <h2>II. The Study Years</h2>
+
+        <p>From 2017 to 2020 we studied the business-for-sale marketplace obsessively. I taught myself Python and started scraping. We read widely about systems that had solved information asymmetry — Zillow, Carfax, Wikipedia, OpenStreetMap, EDGAR — and thought hard about what they had in common.</p>
+
+        <p>Zillow did not beat incumbent real estate brokerages by being a better brokerage. They built the memory layer — price history, listing dates, days on market, relists — that the industry had decided buyers did not need. Once that history was visible, the market changed.</p>
+
+        <p>With business brokerage, the information is not exactly hidden. It is simply never provided. We have always called it the wild west. Nothing stops anyone — and we mean anyone — from posting a business for sale on most of the large marketplaces. No standard definitions. SDE, EBITDA, revenue, gross sales — all used interchangeably, all meaning different things. And no dates. No listing history. Flying blind.</p>
+
+        <p>In 2020 we tried building DealRanker — a Product Hunt style ranking system for listings. The idea was to surface signal through community votes. It never worked. The concept was wrong. Ranking assumes the underlying data is roughly honest. It is not.</p>
+
+        <p>We kept pushing. More scraping, more Python, more studying. We built CleaningExits, a vertical marketplace for cleaning businesses. Each of these was useful but none solved the core problem. They were cuts, not a cure. The cure required a different frame. We found it in a 1970 economics paper.</p>
+
+        <h2>III. Akerlof and the Lemon Market</h2>
+
+        <p>We stumbled on Akerlof while researching used cars and Carfax — places where information asymmetry is visible and where someone had tried to fix it. The paper is called <em>"The Market for Lemons: Quality Uncertainty and the Market Mechanism."</em> It earned him the Nobel Prize in 2001.</p>
+
+        <p>The argument is simple and devastating. In a used car market, sellers know whether their car is good or bad. Buyers do not. Since buyers cannot tell the difference, they offer a price reflecting the average quality of cars in the market. But that average price is too low for owners of good cars. So owners of good cars leave. Average quality drops. Buyers lower their expectations. More good cars leave. Eventually the market fills with lemons.</p>
+
+        <p><em>Reading that, we saw the small business transaction market exactly.</em></p>
+
+        <p>A business that has been sitting unsold for two years looks identical to one listed last week. A listing with fabricated cash flow numbers sits next to one with audited financials. Lead generation traps masquerade as real opportunities. Brokers relist failed deals with new photos and reset prices. Franchise ads fill the inventory with listings that are not really for sale.</p>
+
+        <p>Buyers, unable to distinguish signal from noise, discount everything. The good businesses — the ones where sellers have realistic expectations and real documentation — are underserved. The market selects for lemons.</p>
+
+        <p>Akerlof also identified the fix: credible signals that survive in equilibrium. Warranties. Licensing. Certification. Carfax. MLS history. EDGAR. Things that make the history of an asset visible and verifiable, at low cost, to anyone who wants to look.</p>
+
+        <p>The small business transaction market has none of these.</p>
+
+        <h2>IV. The Listing Date Problem</h2>
+
+        <p><strong>The most important missing signal is the simplest one: how long has this business been listed?</strong></p>
+
+        <p>In real estate, days on market is standard. Every serious buyer knows what it means. A listing at 200 days is a different negotiation than one at 14 days. Zillow built significant early credibility by surfacing this history that incumbent brokerages preferred to hide.</p>
+
+        <p>BizBuySell — the largest small business marketplace, owned by CoStar Group — does not show listing dates. They sell an EDGE subscription for $24.95 per month. It includes demographic data available free from the Census Bureau, industry benchmarks derived from their own listings, and a "Listing Last Updated" date. That updated date resets whenever a broker edits the listing — a photo swap, a description tweak, anything. Brokers use this to keep listings appearing fresh. After reviewing more than twenty listings — including our own — "Listing Last Updated" tells you absolutely nothing. The opacity is not accidental. It is the product.</p>
+
+        <p>We scraped and analyzed 40,552 listings from BizBuySell. BizBuySell assigns each listing a sequential ID number — the way a DMV assigns license plate numbers in order. By measuring how fast those ID numbers were being issued over time and cross-referencing with a handful of listings where we knew the exact date, we were able to work backward and estimate when every listing in the database first went live.</p>
+
+        <div class="data-block">
+            <div class="data-label">What we found — 40,552 listings, November 2025</div>
+            <p><strong>28.1%</strong> of active listings have been on the market for over a year</p>
+            <p><strong>256 days</strong> median days on market</p>
+            <p><strong>46.9%</strong> of listings are over 6 months old</p>
+            <p><strong>7.6%</strong> are genuinely fresh — listed in the last 30 days</p>
+            <p><strong>2,038 days</strong> — the oldest active listing. A $2.2M laundromat in the Bronx, listed since August 2020. Still active today.</p>
+        </div>
+
+        <p><em>None of this is visible on the marketplace. Every listing looks the same age.</em></p>
+
+        <h2>V. Why a New Marketplace Will Not Fix This</h2>
+
+        <p>The obvious response to a broken marketplace is to build a better one. We spent years thinking this way. But vertical marketplaces are a cut, not a cure. They improve the buyer experience within a niche but do not solve the information problem at the market level.</p>
+
+        <p>CoStar owns BizBuySell, BizQuest, and LoopNet. Their moat is not better listings — it is accumulated inventory and SEO dominance built over decades. No new marketplace beats that by trying to out-marketplace it.</p>
+
+        <p>There is a newer approach where brokers build buy-side demand markets — listing deals free but charging buyers for premium access to the best opportunities. The Glengarry leads model. It can work at small scale but it monetizes the information asymmetry rather than eliminating it.</p>
+
+        <p><strong>The problem is not too few marketplaces. The problem is that the market has no memory. No one is keeping the record.</strong></p>
+
+        <h2>VI. Getting Useful Data Out of a System That Wasn't Designed to Give It</h2>
+
+        <p>Luis Von Ahn, a computer scientist at Carnegie Mellon, invented reCAPTCHA — those distorted words websites ask you to type to prove you are not a bot. What most people did not know is that the words were not random. They were scanned pages from old books and newspapers that computers could not read automatically. Every time a person decoded one of those words, they were incidentally helping digitize the entire archive of the New York Times. Nobody was doing anything altruistic. The public good was a byproduct of something people were already doing anyway.</p>
+
+        <p>The SMB transaction market works the same way. It is full of participants with private information that would improve a public ledger. A broker who knows a listing sold six months ago. A buyer who can see that a listing is fraudulent. A seller who knows their competitor's business has been relisted three times. That information exists but there is no mechanism to surface it.</p>
+
+        <p>The design question is: what is the equivalent mechanism for this market? What are participants already doing that incidentally produces the signal we need? We think it lives in the natural competitive dynamics of brokerage — brokers have strong incentives to flag inaccurate listings from competitors, buyers have strong incentives to report listings that wasted their time. The challenge is building the mechanism that captures those signals without requiring altruism. We are still working on this.</p>
+
+        <h2>VII. Why It Has to Be Open</h2>
+
+        <p>Wikipedia works because no single entity owns it. OpenStreetMap works because no single entity owns it. Linux works because no single entity owns it. When the goal is a canonical public record rather than a commercial product, open wins.</p>
+
+        <p>A privately owned ledger of small business transactions would face the same incentive problem as the marketplaces it is trying to replace. The owner would eventually monetize the information asymmetry — charge for premium data, partner with incumbents, become CoStar. It has happened in every adjacent market.</p>
+
+        <p>The only sustainable solution is a ledger that no one can close. Open source code. Data under CC0 — no rights reserved, use it for anything. A methodology that is public and reproducible so anyone can verify the numbers. An architecture where the historical record persists even if the original builder walks away.</p>
+
+        <p>EDGAR did not make the SEC rich. It made the capital markets more efficient. The beneficiaries were diffuse — investors, analysts, journalists, regulators — and the costs were concentrated on the companies that had previously profited from opacity. That is the correct model.</p>
+
+        <p>If DealLedger succeeds, the beneficiaries will be buyers who can see how long a business has been sitting, sellers of good businesses who can finally signal quality, brokers who compete on execution rather than information hoarding, and lenders who can underwrite deals with actual market data. The cost will be borne by whoever currently profits from the opacity.</p>
+
+        <h2>VIII. The Ledger</h2>
+
+        <p>DealLedger is an open public ledger for small business transactions. Not a marketplace. Not a lead tool. Not a ranking system. A record.</p>
+
+        <p>Two data layers. Marketplace data — scraped from BizBuySell daily, listing dates recovered through our sequential ID methodology, published through a public API. Broker-direct data — scraped from 1,700+ individual broker websites, committed to GitHub daily. Every record has an estimated listed date. Every record has days on market. When a listing disappears we record it. When it reappears we flag it. Nothing is deleted.</p>
+
+        <p>The methodology is public. The code is MIT licensed. The data is CC0. The database is queryable by anyone without authentication. We publish a monthly SMB Liquidity Report — zombie rates by state, median days on market by category, disappearance rates. The things that were not available before because no one was keeping the record.</p>
+
+        <h2>IX. Markets Work Better When History Is Visible</h2>
+
+        <p>Akerlof showed that information asymmetry destroys markets. He also showed that the fix is not more regulation or better intentions — it is credible signals that let buyers distinguish good assets from bad ones.</p>
+
+        <p>Tens of billions of dollars change hands each year in small business transactions where buyers are flying blind, good sellers cannot compete against lemons they cannot distinguish themselves from, and brokers compete on information hoarding rather than execution quality.</p>
+
+        <p>The fix is not a better marketplace. It is a public memory. A ledger that records what the market shows each day, preserves that history permanently, and makes it available to anyone who wants to look.</p>
+
+        <p>We are building that. The historical depth is what makes it valuable and the historical depth only comes from time. Every day the scraper runs, the dataset becomes harder to replicate. We started.</p>
+
+        <p>If you are a buyer, broker, lender, journalist, or researcher who cares about this market — the data is at <a href="https://dealledger.org">dealledger.org</a>. The code is at <a href="https://github.com/jeffsosville/dealledger">github.com/jeffsosville/dealledger</a>. Everything is open. Use it.</p>
+
+        <footer-note>
+            Jeff Sosville is the co-founder of ATM Brokerage and Sosville Group. DealLedger is at dealledger.org.
+        </footer-note>
+    </article>
+</body>
+</html>

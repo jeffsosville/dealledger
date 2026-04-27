@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DealLedger — Removed Listings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --removed: #991b1b;
+            --removed-bg: #fff5f5;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            background: var(--bg);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .tagline { font-size: 13px; color: var(--text-muted); }
+
+        nav { display: flex; gap: 24px; }
+
+        nav a {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover { color: var(--text); }
+        nav a.active { color: var(--removed); }
+
+        /* Stats bar */
+        .stats-bar {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            background: var(--removed-bg);
+            border-top: 2px solid var(--removed);
+        }
+
+        .stats-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .stats { display: flex; gap: 32px; flex-wrap: wrap; }
+
+        .stat { font-family: var(--mono); font-size: 13px; }
+
+        .stat-value { font-weight: 600; color: var(--removed); }
+
+        .stat-label { color: var(--text-muted); margin-left: 4px; }
+
+        /* Explanation bar */
+        .explain-bar {
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+            background: var(--bg-alt);
+        }
+
+        .explain-text {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .explain-text strong { color: var(--text); }
+
+        /* Filters */
+        .filters {
+            border-bottom: 1px solid var(--border);
+            padding: 12px 0;
+        }
+
+        .filters-content {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .filter-select {
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 6px 28px 6px 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2378716c' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+
+        .results-count {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Table */
+        .table-container { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+        th {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            background: var(--bg-alt);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:hover td { background: var(--removed-bg); }
+
+        .col-date {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .col-removed {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--removed);
+            white-space: nowrap;
+        }
+
+        .col-title { max-width: 300px; }
+
+        .col-title a { color: var(--text); text-decoration: none; }
+        .col-title a:hover { text-decoration: underline; }
+
+        .col-title .removed-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--removed);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 6px;
+            opacity: 0.7;
+        }
+
+        .col-broker { font-size: 12px; color: var(--text-muted); }
+
+        .col-state { font-family: var(--mono); font-size: 12px; }
+
+        .col-price {
+            font-family: var(--mono);
+            font-size: 12px;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .col-days {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .page-btn {
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .page-btn:hover { background: var(--bg-alt); }
+        .page-btn.active { background: var(--removed); color: #fff; border-color: var(--removed); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Loading / empty */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 13px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+
+        .footer-links { display: flex; gap: 20px; }
+
+        .footer-links a {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .stats { gap: 16px; }
+            .filters-content { flex-direction: column; align-items: flex-start; }
+            .results-count { margin-left: 0; }
+            th, td { padding: 8px 10px; }
+            .col-title { max-width: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <a href="/" class="logo">DealLedger</a>
+                    <span class="tagline">— An open ledger of every business for sale in America</span>
+                </div>
+                <nav>
+                    <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
+                    <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Methodology</a>
+                    <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank">Snapshots</a>
+                    <a href="/">Active</a>
+                    <a href="/removed.html" class="active">Removed</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="container">
+            <div class="stats-content">
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-value" id="total-removed">—</span>
+                        <span class="stat-label">removed in last 30 days</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="last-7">—</span>
+                        <span class="stat-label">last 7 days</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="relisted-count">—</span>
+                        <span class="stat-label">relisted</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="snapshot-date">—</span>
+                        <span class="stat-label">snapshot</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="explain-bar">
+        <div class="container">
+            <p class="explain-text">
+                <strong>Removed listings</strong> — businesses no longer observed on broker sites. Not deleted from the ledger. Last known price and date recorded.
+                Removals may indicate a sale, withdrawal, or expiry. Source links may be dead.
+            </p>
+        </div>
+    </div>
+
+    <div class="filters">
+        <div class="container">
+            <div class="filters-content">
+                <span class="filter-label">Filter:</span>
+                <select id="filter-days" class="filter-select">
+                    <option value="30">Last 30 days</option>
+                    <option value="7">Last 7 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="0">All time</option>
+                </select>
+                <select id="filter-state" class="filter-select">
+                    <option value="">All States</option>
+                </select>
+                <select id="filter-broker" class="filter-select">
+                    <option value="">All Brokers</option>
+                </select>
+                <span class="results-count"><span id="filtered-count">—</span> results</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="table-container">
+            <table id="listings-table">
+                <thead>
+                    <tr>
+                        <th>First Seen</th>
+                        <th>Last Seen</th>
+                        <th>Title</th>
+                        <th>Broker</th>
+                        <th>State</th>
+                        <th style="text-align:right">Last Price</th>
+                        <th style="text-align:right">Days Listed</th>
+                    </tr>
+                </thead>
+                <tbody id="listings-body">
+                    <tr><td colspan="7" class="loading">Loading removed listings...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    DealLedger observes and publishes. Removals are recorded, not deleted.<br>
+                    Code: MIT License. Data: CC-BY 4.0.
+                </div>
+                <div class="footer-links">
+                    <a href="/">← Active Listings</a>
+                    <a href="https://github.com/jeffsosville/dealledger" target="_blank">Source</a>
+                    <a href="https://github.com/jeffsosville/dealledger/issues" target="_blank">Report Issue</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const LEDGER_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/latest.json';
+        const PER_PAGE = 50;
+
+        let allRemoved = [];
+        let filtered = [];
+        let currentPage = 1;
+
+        function formatPrice(p) {
+            if (!p) return '—';
+            const n = parseInt(p);
+            if (isNaN(n) || n === 0) return '—';
+            if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+            if (n >= 1000) return '$' + Math.round(n/1000) + 'K';
+            return '$' + n.toLocaleString();
+        }
+
+        function formatDate(s) {
+            if (!s) return '—';
+            return String(s).slice(0, 10);
+        }
+
+        function daysBetween(a, b) {
+            if (!a || !b) return null;
+            const d1 = new Date(a), d2 = new Date(b);
+            return Math.round((d2 - d1) / 86400000);
+        }
+
+        function daysAgo(s) {
+            if (!s) return 9999;
+            return Math.round((Date.now() - new Date(s)) / 86400000);
+        }
+
+        function truncate(t, n) {
+            if (!t) return '—';
+            return t.length <= n ? t : t.slice(0, n) + '…';
+        }
+
+        function renderListings() {
+            const start = (currentPage - 1) * PER_PAGE;
+            const page = filtered.slice(start, start + PER_PAGE);
+
+            if (!page.length) {
+                document.getElementById('listings-body').innerHTML =
+                    '<tr><td colspan="7" class="empty-state">No removed listings found for this filter.</td></tr>';
+                return;
+            }
+
+            document.getElementById('listings-body').innerHTML = page.map(l => {
+                const days = daysBetween(l.first_seen, l.last_seen);
+                const href = l.source_url || '#';
+                return `<tr>
+                    <td class="col-date">${formatDate(l.first_seen)}</td>
+                    <td class="col-removed">${formatDate(l.last_seen)}</td>
+                    <td class="col-title">
+                        <a href="${href}" target="_blank" rel="noopener">${truncate(l.title, 55)}</a>
+                        <span class="removed-label">removed</span>
+                    </td>
+                    <td class="col-broker">${truncate(l.broker_name, 30)}</td>
+                    <td class="col-state">${l.state || '—'}</td>
+                    <td class="col-price">${formatPrice(l.asking_price)}</td>
+                    <td class="col-days">${days !== null ? days + 'd' : '—'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filtered.length / PER_PAGE);
+            if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+
+            let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="goToPage(${currentPage-1})">← Prev</button>`;
+            const start = Math.max(1, currentPage - 3);
+            const end = Math.min(totalPages, start + 6);
+            for (let i = start; i <= end; i++) {
+                html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="goToPage(${currentPage+1})">Next →</button>`;
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        window.goToPage = function(p) {
+            currentPage = p;
+            renderListings();
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function applyFilters() {
+            const days = parseInt(document.getElementById('filter-days').value);
+            const state = document.getElementById('filter-state').value;
+            const broker = document.getElementById('filter-broker').value;
+
+            filtered = allRemoved.filter(l => {
+                if (days > 0 && daysAgo(l.last_seen) > days) return false;
+                if (state && l.state !== state) return false;
+                if (broker && l.broker_name !== broker) return false;
+                return true;
+            });
+
+            filtered.sort((a, b) => new Date(b.last_seen) - new Date(a.last_seen));
+            currentPage = 1;
+            document.getElementById('filtered-count').textContent = filtered.length.toLocaleString();
+            renderListings();
+            renderPagination();
+        }
+
+        function populateFilters() {
+            const states = [...new Set(allRemoved.map(l => l.state).filter(Boolean))].sort();
+            document.getElementById('filter-state').innerHTML =
+                '<option value="">All States</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+
+            const brokers = [...new Set(allRemoved.map(l => l.broker_name).filter(Boolean))].sort();
+            document.getElementById('filter-broker').innerHTML =
+                '<option value="">All Brokers</option>' + brokers.map(b => `<option value="${b}">${b}</option>`).join('');
+        }
+
+        function updateStats() {
+            const last7 = allRemoved.filter(l => daysAgo(l.last_seen) <= 7).length;
+            // Relisted = disappeared but also appears in active (approximation: first_seen much earlier than last_seen)
+            const relisted = allRemoved.filter(l => {
+                const days = daysBetween(l.first_seen, l.last_seen);
+                return days !== null && days > 60;
+            }).length;
+
+            document.getElementById('total-removed').textContent = allRemoved.length.toLocaleString();
+            document.getElementById('last-7').textContent = last7.toLocaleString();
+            document.getElementById('relisted-count').textContent = relisted.toLocaleString();
+
+            const dates = allRemoved.map(l => l.last_seen).filter(Boolean).sort().reverse();
+            document.getElementById('snapshot-date').textContent = dates[0] ? formatDate(dates[0]) : '—';
+        }
+
+        async function loadData() {
+            try {
+                const r = await fetch(LEDGER_URL);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const all = await r.json();
+
+                // For now, show listings where last_seen is older than first_seen by >1 day
+                // (true disappeared listings will have status=disappeared once ledger is running)
+                const today = new Date().toISOString().slice(0, 10);
+                allRemoved = all.filter(l => {
+                    if (l.status === 'disappeared') return true;
+                    // Fallback: last_seen significantly before today
+                    if (l.last_seen && l.last_seen.slice(0, 10) < today) {
+                        const ago = daysAgo(l.last_seen);
+                        return ago > 3;
+                    }
+                    return false;
+                });
+
+                if (!allRemoved.length) {
+                    document.getElementById('listings-body').innerHTML =
+                        '<tr><td colspan="7" class="empty-state">No removed listings yet. Check back after the ledger has been running for a few days.</td></tr>';
+                    document.getElementById('total-removed').textContent = '0';
+                    document.getElementById('last-7').textContent = '0';
+                    document.getElementById('relisted-count').textContent = '0';
+                    document.getElementById('snapshot-date').textContent = today;
+                    document.getElementById('filtered-count').textContent = '0';
+                    return;
+                }
+
+                updateStats();
+                populateFilters();
+                applyFilters();
+
+            } catch(e) {
+                console.error(e);
+                document.getElementById('listings-body').innerHTML =
+                    '<tr><td colspan="7" class="empty-state">Failed to load data. <a href="https://github.com/jeffsosville/dealledger">View on GitHub →</a></td></tr>';
+            }
+        }
+
+        document.getElementById('filter-days').addEventListener('change', applyFilters);
+        document.getElementById('filter-state').addEventListener('change', applyFilters);
+        document.getElementById('filter-broker').addEventListener('change', applyFilters);
+
+        loadData();
+    </script>
+</body>
+</html>
