@@ -27,5 +27,5 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-                PROXY_URL: ${{ secrets.PROXY_URL }}
+                      PROXY_URL: ${{ secrets.PROXY_URL }}
         run: python3 scrapers/bizquest_views_refresh.py
