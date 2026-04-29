@@ -479,86 +479,6 @@
   .badge-regional { background: #d8d2c4; color: #1a1816; }
   .badge-multi { background: #c4baa3; color: #1a1816; }
   
-  /* ── TWEET CARDS ───────────────────────────────────────── */
-  .tweet-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-top: 32px;
-  }
-  
-  .tweet-card {
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    padding: 24px 28px;
-    position: relative;
-  }
-  
-  .tweet-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--rule-faint);
-  }
-  
-  .tweet-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-  }
-  
-  .tweet-char {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-faint);
-  }
-  
-  .tweet-card .tweet-body {
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--ink);
-    white-space: pre-wrap;
-  }
-  
-  .tweet-actions {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--rule-faint);
-    display: flex;
-    gap: 12px;
-  }
-  
-  .copy-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid var(--rule);
-    color: var(--ink-light);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  
-  .copy-btn:hover {
-    background: var(--ink);
-    color: var(--bg);
-    border-color: var(--ink);
-  }
-  
-  .copy-btn.copied {
-    background: var(--good);
-    color: white;
-    border-color: var(--good);
-  }
-  
   /* ── METHODOLOGY ───────────────────────────────────────── */
   .methodology {
     background: var(--paper);
@@ -886,134 +806,18 @@
 <!-- METHODOLOGY -->
 <section>
   <div class="section-label">Methodology</div>
-  <h2>How the data was built.</h2>
+  <h2>How we approach the data.</h2>
   
-  <p class="body-text">DealLedger is a publicly-derived dataset. Every number on this page can be reproduced from public BBS listings using the open methodology below. No proprietary feeds. No paid data partnerships. No special access.</p>
+  <p class="body-text">DealLedger is a publicly-derived dataset. Every number on this page is computed from public BBS listings. No proprietary feeds. No paid data partnerships. No special access.</p>
 
   <div class="methodology">
     <dl>
-      <dt>Source data</dt>
-      <dd>74,151 BBS broker-direct listings scraped from public profile pages, going back to 2016. Listings are matched to canonical brokers via account ID. 32,312 active listings successfully matched to one of 2,354 verified brokers in our broker master registry.</dd>
-
-      <dt>Days on market</dt>
-      <dd>Computed from estimated listed date, recovered via sequential listing-ID methodology. Listings before 2016 are not included. Median DOM is the percentile_cont(0.5) across each broker's currently-active listings.</dd>
-
-      <dt>Listings over 1 year</dt>
-      <dd>Count of currently-active listings where (current date − estimated listed date) exceeds 365 days. Percentage is calculated as a fraction of that broker's currently-active listings, not their lifetime book.</dd>
-
-      <dt>Broker classification</dt>
-      <dd>Each BBS account is categorized by behavior: <em>local_broker</em> (in master, 1 state), <em>regional_broker</em> (in master, 2–5 states), <em>multi_regional_broker</em> (in master, 6+ states), or one of several "warning" categories for accounts without a verified company name in our master registry.</dd>
-
-      <dt>Lifetime sold</dt>
-      <dd>April 2025 baseline figure from the original master CSV. Current lifetime sold figures are pending refresh; readings of "0" generally indicate the field was missing in the April 2025 scrape, not a literal zero. Velocity figures (12-month closes) will be added when the current scrape refreshes.</dd>
-
-      <dt>License</dt>
-      <dd>Dataset published under <strong>CC0 1.0 Universal</strong>. Anyone may use this data for any purpose, including commercial use. Attribution to dealledger.org is appreciated but not required.</dd>
-
       <dt>Right to respond</dt>
       <dd>Any broker on this list who believes their fingerprint is inaccurate can submit a correction. Corrections are published alongside the original metric. Methodology updates are versioned. EDGAR posture: we publish what's true and let people respond to it, rather than removing data because it's uncomfortable.</dd>
 
       <dt>Coming next</dt>
       <dd>Refreshed sold-count scrape (expanding velocity calculations to all 2,859 brokers); structural-difficulty tags on individual listings (regulated industries, real estate inclusion, specialty licenses) so honest brokers with hard categories aren't unfairly characterized; warning cards for the 39 national aggregators identified in our classifier; embeddable broker fingerprint cards for honest brokers to display on their own websites.</dd>
     </dl>
-  </div>
-</section>
-
-<!-- TWEETS -->
-<section>
-  <div class="section-label">Distribution · Tweet Drafts</div>
-  <h2>Ready to publish.</h2>
-
-  <p class="body-text">A short thread, ordered for cumulative impact: lead with the dataset (asset), then the disciplined firms (positive), then the variance (the killer story), then the methodology link.</p>
-
-  <div class="tweet-grid">
-
-    <div class="tweet-card">
-      <div class="tweet-meta">
-        <span class="tweet-num">Tweet 1 / Lead</span>
-        <span class="tweet-char" data-len="261">261 chars</span>
-      </div>
-      <div class="tweet-body">Recovered Days-On-Market history back to 2016 across 74,151 BBS broker listings.
-
-No public source has had this data before.
-
-First analysis: median DOM in lower middle market M&amp;A is roughly 200 days. Some firms run 50% under that. Others run 200%+ over.
-
-Methodology open. CC0.</div>
-      <div class="tweet-actions">
-        <button class="copy-btn" data-tweet="1">Copy text</button>
-      </div>
-    </div>
-
-    <div class="tweet-card">
-      <div class="tweet-meta">
-        <span class="tweet-num">Tweet 2 / The disciplined firms</span>
-        <span class="tweet-char" data-len="271">271 chars</span>
-      </div>
-      <div class="tweet-body">A handful of firms run books of 200+ active listings with zero stale inventory.
-
-Vested Business Brokers: 550 active · 82-day median · 0% over 1 year.
-East Coast Business Brokers: 265 active · 22-day median · 0%.
-FXG Management: 216 active · 0%.
-
-Not luck. Operational discipline.</div>
-      <div class="tweet-actions">
-        <button class="copy-btn" data-tweet="2">Copy text</button>
-      </div>
-    </div>
-
-    <div class="tweet-card">
-      <div class="tweet-meta">
-        <span class="tweet-num">Tweet 3 / The franchise variance</span>
-        <span class="tweet-char" data-len="278">278 chars</span>
-      </div>
-      <div class="tweet-body">Same broker brand. Same franchise system. Two cities. Two different operational realities.
-
-Transworld Upper Bergen NJ: 1.4% of listings over 1 year.
-Transworld Brooklyn NY: 59.4%.
-
-The sign on the door is the brand promise. The data is the actual operation.</div>
-      <div class="tweet-actions">
-        <button class="copy-btn" data-tweet="3">Copy text</button>
-      </div>
-    </div>
-
-    <div class="tweet-card">
-      <div class="tweet-meta">
-        <span class="tweet-num">Tweet 4 / The extreme finding</span>
-        <span class="tweet-char" data-len="248">248 chars</span>
-      </div>
-      <div class="tweet-body">Found one firm with 39 active BBS listings.
-
-Median time on market: 1,108 days (~3 years).
-
-100% of their inventory has been listed for over 1 year.
-
-The data doesn't lie. We're publishing all of it.</div>
-      <div class="tweet-actions">
-        <button class="copy-btn" data-tweet="4">Copy text</button>
-      </div>
-    </div>
-
-    <div class="tweet-card">
-      <div class="tweet-meta">
-        <span class="tweet-num">Tweet 5 / Methodology + close</span>
-        <span class="tweet-char" data-len="282">282 chars</span>
-      </div>
-      <div class="tweet-body">EDGAR exists for public companies.
-Carfax exists for used cars.
-Zillow shows DOM for real estate.
-
-Lower middle market business brokerage has had nothing — until today.
-
-DealLedger publishes the first public broker behavior dataset. Free. CC0. Methodology open.
-
-dealledger.org</div>
-      <div class="tweet-actions">
-        <button class="copy-btn" data-tweet="5">Copy text</button>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -1339,25 +1143,6 @@ document.getElementById('tableSearch').addEventListener('input', e => {
 });
 
 render();
-
-// ── COPY TWEET ─────────────────────────────────────────
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const card = btn.closest('.tweet-card');
-    const text = card.querySelector('.tweet-body').textContent;
-    try {
-      await navigator.clipboard.writeText(text);
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'Copy text';
-        btn.classList.remove('copied');
-      }, 2000);
-    } catch (err) {
-      btn.textContent = 'Copy failed';
-    }
-  });
-});
 </script>
 
 </body>
