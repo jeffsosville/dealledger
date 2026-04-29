@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The First Broker Fingerprints — DealLedger</title>
-<meta name="description" content="The first publicly-derived broker behavior dataset for lower middle market M&A. Computed from public BBS listing data. CC0 license, methodology open.">
+<title>Broker Leaderboard — DealLedger</title>
+<meta name="description" content="200+ verified business brokers ranked by behavior. Days on market, listings over one year, and geographic reach computed from public BBS data. CC0.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -24,7 +24,7 @@
     --good-light: #e6f0e9;
     --warn: #8a6d1a;
     --warn-light: #f5edd5;
-    --serif: 'Fraunces', Georgia, serif;
+    --serif: 'Lora', Georgia, serif;
     --sans: 'Inter', -apple-system, sans-serif;
     --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
   }
@@ -56,11 +56,6 @@
     font-weight: 600;
     font-size: 18px;
     letter-spacing: -0.01em;
-  }
-  
-  .nameplate em {
-    font-style: italic;
-    font-weight: 400;
   }
   
   .masthead-meta {
@@ -109,8 +104,7 @@
   }
   
   .hero h1 em {
-    font-style: italic;
-    font-weight: 300;
+    font-style: normal;
   }
   
   .deck {
@@ -212,11 +206,10 @@
   }
   
   .section-label::before {
-    content: "§";
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 18px;
-    color: var(--accent);
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
   }
   
   h2 {
@@ -230,8 +223,7 @@
   }
   
   h2 em {
-    font-style: italic;
-    font-weight: 300;
+    font-style: normal;
   }
   
   h3 {
@@ -271,7 +263,7 @@
   }
   
   p.body-text em {
-    font-style: italic;
+    font-style: normal;
   }
   
   /* ── CALLOUT BOXES ─────────────────────────────────────── */
@@ -520,7 +512,7 @@
   
   .colophon-mark {
     font-family: var(--serif);
-    font-style: italic;
+    font-weight: 500;
     font-size: 28px;
     color: var(--ink);
     margin-bottom: 24px;
@@ -547,7 +539,6 @@
     text-align: center;
     margin: 60px 0 40px;
     font-family: var(--serif);
-    font-style: italic;
     color: var(--rule);
     font-size: 24px;
     letter-spacing: 0.5em;
@@ -572,21 +563,21 @@
 <body>
 
 <header class="masthead">
-  <div class="nameplate">DealLedger <em>· an open broker registry</em></div>
-  <div class="masthead-meta">Vol. I · No. 1 · April 29, 2026</div>
+  <div class="nameplate">DealLedger</div>
+  <div class="masthead-meta">An open broker registry</div>
 </header>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="kicker">First Edition · Public Launch Preview</div>
-  <h1>The first <em>broker fingerprints</em> for lower middle market M&A.</h1>
-  <p class="deck">200+ verified business brokers, ranked by behavior. Days on market, listings over one year, geographic reach — computed from public BBS data going back to 2016. Methodology open. Data CC0.</p>
+  <div class="kicker">DealLedger</div>
+  <h1>Broker Leaderboard</h1>
+  <p class="deck">200+ verified business brokers, ranked by behavior. Days on market, listings over one year, and geographic reach — computed from public BBS listing data.</p>
   <div class="byline">
-    <span>By <strong>Jeff Sosville</strong></span>
-    <span>·</span>
-    <span>ATM Brokerage / Sosville Group</span>
-    <span>·</span>
     <span><strong>dealledger.org</strong></span>
+    <span>·</span>
+    <span>Data CC0</span>
+    <span>·</span>
+    <span>Updated April 29, 2026</span>
   </div>
 </div>
 
@@ -620,7 +611,7 @@
 
 <!-- LEDE -->
 <section>
-  <div class="section-label">Editor's Note</div>
+  <div class="section-label">Overview</div>
   <h2>Same listings, different reality.</h2>
   
   <p class="lede">For forty years, the lower middle market business brokerage industry has operated without a public reputation layer. EDGAR exists for public companies. Carfax exists for used cars. Zillow shows days-on-market for residential real estate. Main Street has had nothing.</p>
@@ -632,8 +623,8 @@
 
 <!-- THE 0% FIRMS -->
 <section>
-  <div class="section-label">Finding I · The Disciplined Books</div>
-  <h2>Some firms run <em>spotless</em> books.</h2>
+  <div class="section-label">The Disciplined Books</div>
+  <h2>Some firms run spotless books.</h2>
   
   <p class="body-text">Across 200+ verified brokers, a small group maintains zero stale inventory — no listing on their book has been actively marketed for more than a year. This is not luck. It reflects active inventory management: withdrawing listings that aren't selling, declining mandates the broker can't actually move, and refusing to use stale listings as SEO bait.</p>
 
@@ -660,8 +651,8 @@
 
 <!-- THE EXTREME ZOMBIES -->
 <section>
-  <div class="section-label">Finding II · The Stale Inventory</div>
-  <h2>Other firms maintain <em>portfolios</em> of year-plus listings.</h2>
+  <div class="section-label">The Stale Inventory</div>
+  <h2>Other firms maintain portfolios of year-plus listings.</h2>
   
   <p class="body-text">At the opposite end of the dataset, several brokers maintain books where the majority — and in one case, all — of their listings have been on the market for over 365 days. The longest-marketed listings in the dataset go back to 2021. This pattern raises questions about whether listings are actively being marketed or whether they're maintained for SEO and lead capture after the underlying mandate has gone cold.</p>
   
@@ -688,8 +679,8 @@
 
 <!-- BRAND VARIANCE -->
 <section>
-  <div class="section-label">Finding III · The Franchise Variance</div>
-  <h2>Same brand. Same playbook. <em>Different reality.</em></h2>
+  <div class="section-label">The Franchise Variance</div>
+  <h2>Same brand. Same playbook. Different reality.</h2>
   
   <p class="body-text">Multi-office franchise systems show enormous variance in operational discipline across their offices. Buyers reading a Transworld listing in one city are evaluating an entirely different operation than buyers reading a Transworld listing in another. The brand sign on the door means very little about how a particular office runs its book.</p>
 
