@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 
 # ── Config ────────────────────────────────────────────────────────────────────
 SUPABASE_URL  = os.environ.get("SUPABASE_URL",  "https://kqckuedsyyosmccushyd.supabase.co")
-SUPABASE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
+SUPABASE_SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
 PROXY         = "2e675ba5977dd3336e3d__cr.us:719577c3bc6fb269@gw.dataimpulse.com:823"
 PROXY_URL     = f"http://{PROXY}"
 
@@ -81,8 +81,8 @@ SPECIALIZED = {
 # ── Supabase helpers ──────────────────────────────────────────────────────────
 def sb_headers():
     return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "apikey": SUPABASE_SERVICE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
         "Content-Type": "application/json",
         "Prefer": "resolution=merge-duplicates",
     }
@@ -274,7 +274,7 @@ def scrape_broker(broker: dict, session) -> list[dict]:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def run(args):
-    if not SUPABASE_KEY:
+    if not SUPABASE_SERVICE_KEY:
         log.error("Set SUPABASE_SERVICE_KEY env var")
         sys.exit(1)
 
