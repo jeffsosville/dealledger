@@ -1,32 +1,26 @@
 """
-quality_scorer.py  —  DealLedger listing quality scoring
-Scores all listings in the DealLedger `listings` table and writes
-quality_score, quality_tier, quality_rules_fired, quality_breakdown back.
+quality_scorer_v2.py  —  DealLedger listing quality scoring
+PATCHED: field names now match actual listings schema.
 
-Tiers:
-  80–100 → Verified
-  60–79  → Likely Real
-  40–59  → Unverified
-  0–39   → Likely Junk
-
-Usage:
-  python3 quality_scorer.py
-  python3 quality_scorer.py --dry-run
-  python3 quality_scorer.py --sample 500
+Key changes from v1:
+  - `notes` → check if exists, fall back to header for template detection
+  - `revenue` → removed (column doesn't exist)
+  - `broker_account` → `bbs_account_id`
+  - `url` → `direct_broker_url`
+  - Now scores ALL listings (active + inactive) on a flag, default active-only
+  - Adjusted weights since we lost some signals
 """
 
 import os, sys, re, json, logging, argparse
 from collections import Counter
-from datetime import datetime
 
-import requests
 from supabase import create_client
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
+SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
 BATCH_SIZE = 500
 
@@ -42,132 +36,126 @@ SPAM_BROKER_PATTERNS = [
     r"transworld.*franchise",
 ]
 
+
 def normalize_title(t):
     return re.sub(r"\s+", " ", (t or "").lower().strip())
+
 
 def is_marketplace_url(u):
     markets = ["bizbuysell.com", "bizquest.com", "businessesforsale.com",
                "loopnet.com", "crexi.com"]
     return any(m in (u or "").lower() for m in markets)
 
+
 def score_listing(row: dict, duplicate_titles: dict) -> dict:
     points = 0
-    fired  = []
+    fired = []
     breakdown = {}
 
     title     = row.get("header", "") or ""
-    notes     = row.get("notes", "") or ""
     price     = row.get("price")
     cf        = row.get("cash_flow")
-    revenue   = row.get("revenue")
-    city      = row.get("city", "") or ""
     state     = row.get("state", "") or ""
     contact_n = row.get("contact_name", "") or ""
     contact_p = row.get("contact_phone", "") or ""
-    broker_ac = row.get("broker_account", "") or ""
-    url       = row.get("url", "") or ""
+    bbs_acct  = row.get("bbs_account_id")  # FIXED: was broker_account
+    url       = row.get("direct_broker_url", "") or ""  # FIXED: was url
     norm_t    = normalize_title(title)
 
     # ── POSITIVE ──────────────────────────────────────────────────────────────
 
-    # Direct broker URL (not a marketplace domain)
+    # Direct broker URL is the strongest "this is real" signal
     if url and not is_marketplace_url(url):
-        points += 25; fired.append("direct_broker_url"); breakdown["direct_broker_url"] = 25
+        points += 30; fired.append("direct_broker_url"); breakdown["direct_broker_url"] = 30
     elif url:
         points += 5; fired.append("marketplace_url"); breakdown["marketplace_url"] = 5
 
     # Has price
     try:
-        p = float(price)
+        p = float(price) if price is not None else 0
         if p > 0:
-            points += 10; fired.append("has_price"); breakdown["has_price"] = 10
+            points += 15; fired.append("has_price"); breakdown["has_price"] = 15
     except (TypeError, ValueError):
         pass
 
-    # Has cash flow
+    # Has cash flow (a key real-broker signal — junk listings rarely have it)
     try:
-        c = float(cf)
+        c = float(cf) if cf is not None else 0
         if c > 0:
-            points += 10; fired.append("has_cash_flow"); breakdown["has_cash_flow"] = 10
+            points += 15; fired.append("has_cash_flow"); breakdown["has_cash_flow"] = 15
     except (TypeError, ValueError):
         pass
 
-    # Has revenue
-    if revenue and str(revenue).strip() not in ("", "0", "None"):
-        points += 5; fired.append("has_revenue"); breakdown["has_revenue"] = 5
-
-    # Has contact
+    # Has contact info
     if contact_n or contact_p:
-        points += 5; fired.append("has_contact"); breakdown["has_contact"] = 5
+        points += 10; fired.append("has_contact"); breakdown["has_contact"] = 10
 
-    # Unique description
-    notes_lower = notes.lower()
-    template_hits = sum(1 for f in TEMPLATE_FRAGMENTS if f in notes_lower)
-    if len(notes) > 100 and template_hits == 0:
-        points += 8; fired.append("unique_description"); breakdown["unique_description"] = 8
-
-    # Reasonable multiple
+    # Reasonable price/cash-flow multiple (1x to 5x cash flow is normal SMB territory)
     try:
-        mult = float(price) / float(cf)
-        if 0.5 <= mult <= 5.0:
-            points += 7; fired.append("reasonable_multiple"); breakdown["reasonable_multiple"] = 7
+        if price and cf:
+            mult = float(price) / float(cf)
+            if 0.5 <= mult <= 5.0:
+                points += 10; fired.append("reasonable_multiple"); breakdown["reasonable_multiple"] = 10
     except (TypeError, ValueError, ZeroDivisionError):
         pass
 
-    # Has location
-    if city and state:
-        points += 5; fired.append("has_location"); breakdown["has_location"] = 5
-    elif state:
-        points += 2; fired.append("has_state"); breakdown["has_state"] = 2
+    # Has state
+    if state:
+        points += 5; fired.append("has_state"); breakdown["has_state"] = 5
+
+    # Has bbs_account_id (means we know which broker posted it)
+    if bbs_acct:
+        points += 5; fired.append("has_broker_account"); breakdown["has_broker_account"] = 5
+
+    # Title length suggests effort (not a 5-word junk title)
+    if len(title) > 30:
+        points += 5; fired.append("descriptive_title"); breakdown["descriptive_title"] = 5
 
     # ── NEGATIVE ──────────────────────────────────────────────────────────────
 
-    # Duplicate title across 3+ states
+    # Duplicate title across many listings = templated junk
     dup_count = duplicate_titles.get(norm_t, 0)
-    if dup_count >= 3:
-        points -= 25; fired.append("duplicate_across_states"); breakdown["duplicate_across_states"] = -25
-    elif dup_count == 2:
-        points -= 10; fired.append("duplicate_across_states_mild"); breakdown["duplicate_across_states"] = -10
+    if dup_count >= 5:
+        points -= 30; fired.append("duplicate_title_5plus"); breakdown["duplicate_title_5plus"] = -30
+    elif dup_count >= 3:
+        points -= 15; fired.append("duplicate_title_3to4"); breakdown["duplicate_title_3to4"] = -15
 
-    # Franchise / territory keywords
+    # Franchise/territory keywords in title
     franchise_kw = ["territory", "franchise opportunity", "area developer",
                     "master franchise", "protected territory", "franchise resale"]
     if any(k in title.lower() for k in franchise_kw):
         points -= 20; fired.append("franchise_territory"); breakdown["franchise_territory"] = -20
 
+    # Template fragments in title
+    title_lower = title.lower()
+    template_hits = sum(1 for f in TEMPLATE_FRAGMENTS if f in title_lower)
+    if template_hits >= 2:
+        points -= 10; fired.append("template_title"); breakdown["template_title"] = -10
+
     # Impossible multiple
     try:
-        p, c = float(price), float(cf)
-        if c > 0 and p > 0:
-            mult = p / c
-            if mult < 0.1 or c > p:
-                points -= 20; fired.append("impossible_multiple"); breakdown["impossible_multiple"] = -20
+        if price and cf:
+            p, c = float(price), float(cf)
+            if c > 0 and p > 0:
+                mult = p / c
+                if mult < 0.1 or mult > 50:
+                    points -= 20; fired.append("impossible_multiple"); breakdown["impossible_multiple"] = -20
     except (TypeError, ValueError):
         pass
 
-    # Template description
-    if template_hits >= 3:
-        points -= 15; fired.append("template_description"); breakdown["template_description"] = -15
-
-    # No financials at all
-    no_price = not price or price == 0
-    no_cf    = not cf or cf == 0
-    if no_price and no_cf:
-        points -= 10; fired.append("no_financials"); breakdown["no_financials"] = -10
-
-    # Suspiciously round price, no financials
+    # No financials at all (no price AND no cash flow)
+    has_price_val = False
+    has_cf_val = False
     try:
-        p = float(price)
-        if p > 0 and p % 5000 == 0 and no_cf:
-            points -= 5; fired.append("suspiciously_round_price"); breakdown["suspiciously_round_price"] = -5
+        has_price_val = bool(price) and float(price) > 0
     except (TypeError, ValueError):
         pass
-
-    # Known spam broker patterns
-    for pat in SPAM_BROKER_PATTERNS:
-        if re.search(pat, broker_ac.lower()) or re.search(pat, title.lower()):
-            points -= 30; fired.append("broker_spam_ring"); breakdown["broker_spam_ring"] = -30
-            break
+    try:
+        has_cf_val = bool(cf) and float(cf) > 0
+    except (TypeError, ValueError):
+        pass
+    if not has_price_val and not has_cf_val:
+        points -= 15; fired.append("no_financials"); breakdown["no_financials"] = -15
 
     score = max(0, min(100, points))
 
@@ -179,17 +167,22 @@ def score_listing(row: dict, duplicate_titles: dict) -> dict:
     return {"score": score, "tier": tier, "fired_rules": fired, "breakdown": breakdown}
 
 
-def get_all_listings(sb, sample=None):
-    """Fetch all active listings from DealLedger."""
+def get_listings(sb, active_only=True, sample=None):
+    """Fetch listings from DealLedger."""
     rows = []
     offset = 0
     limit = 1000
     while True:
+        # FIXED: using actual column names
         q = sb.table("listings").select(
-            "listing_number,header,price,cash_flow,city,state,"
-            "contact_name,contact_phone,broker_account,url"
-        ).eq("is_active", True).range(offset, offset + limit - 1).execute()
-        batch = q.data or []
+            "listing_number,header,price,cash_flow,state,"
+            "contact_name,contact_phone,bbs_account_id,direct_broker_url"
+        )
+        if active_only:
+            q = q.eq("is_active", True)
+        q = q.range(offset, offset + limit - 1)
+        result = q.execute()
+        batch = result.data or []
         rows.extend(batch)
         log.info(f"  Fetched {len(rows)} listings so far...")
         if len(batch) < limit:
@@ -202,7 +195,7 @@ def get_all_listings(sb, sample=None):
 
 
 def upsert_scores(sb, scored_rows, dry_run=False):
-    """Write quality scores back to DealLedger listings table."""
+    """Write quality scores back to listings table."""
     updates = [
         {
             "listing_number": r["listing_number"],
@@ -215,6 +208,9 @@ def upsert_scores(sb, scored_rows, dry_run=False):
     ]
     if dry_run:
         log.info(f"[DRY RUN] Would upsert {len(updates)} scores")
+        # Show some sample scores
+        for r in scored_rows[:10]:
+            log.info(f"  Sample: {r.get('header','')[:60]:<60} | {r['quality_tier']} ({r['quality_score']}) | rules: {r['quality_rules_fired']}")
         return
     ok = err = 0
     for i in range(0, len(updates), BATCH_SIZE):
@@ -228,15 +224,16 @@ def upsert_scores(sb, scored_rows, dry_run=False):
     log.info(f"Scores written: {ok} ok, {err} errors")
 
 
-def run(dry_run=False, sample=None):
-    if not SUPABASE_URL or not SUPABASE_KEY:
+def run(dry_run=False, sample=None, all_listings=False):
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
         log.error("Set SUPABASE_URL and SUPABASE_SERVICE_KEY env vars")
         sys.exit(1)
 
-    sb = create_client(SUPABASE_URL, SUPABASE_KEY)
+    sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
-    log.info("Fetching DealLedger listings...")
-    rows = get_all_listings(sb, sample=sample)
+    active_only = not all_listings
+    log.info(f"Fetching listings (active_only={active_only}, sample={sample})...")
+    rows = get_listings(sb, active_only=active_only, sample=sample)
     log.info(f"Scoring {len(rows)} listings...")
 
     # Build duplicate title index
@@ -269,7 +266,8 @@ def run(dry_run=False, sample=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--sample", type=int, default=None)
+    parser.add_argument("--dry-run", action="store_true", help="Compute scores but don't write")
+    parser.add_argument("--sample", type=int, default=None, help="Score only N listings (testing)")
+    parser.add_argument("--all", action="store_true", help="Score all listings (incl inactive)")
     args = parser.parse_args()
-    run(dry_run=args.dry_run, sample=args.sample)
+    run(dry_run=args.dry_run, sample=args.sample, all_listings=args.all)

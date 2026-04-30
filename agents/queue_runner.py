@@ -11,7 +11,7 @@ Run:
   python3 queue_runner.py --workers 4         # threaded (4 workers)
 
 Env vars:
-  SUPABASE_URL, SUPABASE_KEY
+  SUPABASE_URL, SUPABASE_SERVICE_KEY
   QUEUE_BATCH_SIZE     (default 20)
   QUEUE_POLL_SECONDS   (default 10)
   QUEUE_LOCK_MINUTES   (default 10)
@@ -38,7 +38,7 @@ from scraper_agent_v5 import scrape_url as run_scrape
 
 # ── Config ───────────────────────────────────────────────────────────────────
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")
 
 BATCH_SIZE   = int(os.environ.get("QUEUE_BATCH_SIZE", "20"))
 POLL_SECONDS = int(os.environ.get("QUEUE_POLL_SECONDS", "10"))
@@ -51,9 +51,9 @@ BACKOFF_MINUTES = [2, 5, 15, 60, 240, 1440]
 
 # ── Supabase ─────────────────────────────────────────────────────────────────
 def get_sb():
-    if not (SUPABASE_URL and SUPABASE_KEY):
-        raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY env vars")
-    return create_client(SUPABASE_URL, SUPABASE_KEY)
+    if not (SUPABASE_URL and SUPABASE_SERVICE_KEY):
+        raise RuntimeError("Missing SUPABASE_URL or SUPABASE_SERVICE_KEY env vars")
+    return create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 
 def now_iso():
