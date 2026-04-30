@@ -39,7 +39,7 @@ except ImportError:
 # ── Config ────────────────────────────────────────────────────────────────────
 SUPABASE_URL         = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
-PROXY = "2e675ba5977dd3336e3d__cr.us:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
+PROXY = "2e675ba5977dd3336e3d:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
 BATCH_SIZE           = 100
 STATE_FILES_DIR      = Path("state_files")
 STALE_DAYS           = 14  # deactivate listings not seen in this many days
