@@ -2,7 +2,7 @@
 //
 // DealLedger listing detail page — /listing/{listing_number}
 
-import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
 
@@ -58,11 +58,7 @@ type PageProps = {
 };
 
 // ─── DATA FETCHING ─────────────────────────────────────────────────────────
-export const getStaticPaths: GetStaticPaths = async () => {
-  return { paths: [], fallback: 'blocking' };
-};
-
-export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ params }) => {
   const idParam = params?.id;
   const listingNumber = typeof idParam === 'string' ? parseInt(idParam, 10) : NaN;
 
@@ -145,7 +141,6 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
   return {
     props: { listing, history, broker, domPercentile },
-    revalidate: 60 * 60 * 6,
   };
 };
 
@@ -215,7 +210,7 @@ export default function ListingPage({
   history,
   broker,
   domPercentile,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   if (!listing) return null;
 
   const observations = buildObservations(history, listing.price);
