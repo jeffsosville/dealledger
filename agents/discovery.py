@@ -769,7 +769,7 @@ def get_supabase():
     global _sb
     if _sb is None and HAS_SUPABASE:
         url = os.environ.get("SUPABASE_URL")
-        key = os.environ.get("SUPABASE_KEY")
+        key = os.environ.get("SUPABASE_SERVICE_KEY")
         if url and key:
             _sb = create_client(url, key)
     return _sb

@@ -789,9 +789,10 @@ function renderListings() {
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
             <td class="col-title">
-                <a href="${href}" target="_blank" rel="noopener">${truncate(l.title||'Untitled', 60)}</a>
+                <a href="/listing/${l.listing_number}">${truncate(l.title||'Untitled', 60)}</a>
                 ${signalBadge(dom, views)}
                 ${l.relisted ? '<span class="sig-relisted">↩ Previously Listed</span>' : ''}
+                ${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener" class="source-link" title="View on BizBuySell" style="margin-left:6px">↗</a>` : ''}
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
@@ -864,6 +865,7 @@ async function loadData() {
         }
 
         allListings = rows.map(r => ({
+            listing_number:       r.listing_number,
             title:                r.header,
             state:                r.state,
             price:                r.price,
@@ -873,7 +875,7 @@ async function loadData() {
             estimated_listed_date: r.estimated_listed_date,
             days_on_market:       r.days_on_market,
             listing_views:        r.listing_views || 0,
-            relisted:           r.relisted || false,
+            relisted:             r.relisted || false,
         }));
 
         populateStates();

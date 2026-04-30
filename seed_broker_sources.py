@@ -15,10 +15,10 @@ import pandas as pd
 from urllib.parse import urlparse
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 HEADERS = {
-    "apikey": SUPABASE_KEY,
-    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "apikey": SUPABASE_SERVICE_KEY,
+    "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
     "Content-Type": "application/json",
     "Prefer": "resolution=merge-duplicates",
 }
@@ -195,7 +195,7 @@ def main():
     parser.add_argument("--min-listings", type=int, default=0)
     args = parser.parse_args()
 
-    if not SUPABASE_URL or not SUPABASE_KEY:
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
         print("ERROR: Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY")
         sys.exit(1)
 

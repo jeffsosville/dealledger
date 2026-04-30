@@ -499,9 +499,9 @@ class DealLedgerScraper:
     
     def __init__(self):
         url = os.getenv("SUPABASE_URL")
-        key = os.getenv("SUPABASE_KEY")
+        key = os.getenv("SUPABASE_SERVICE_KEY")
         if not url or not key:
-            raise ValueError("Set SUPABASE_URL and SUPABASE_KEY environment variables")
+            raise ValueError("Set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables")
         
         self.supabase = create_client(url, key)
         self.pattern_db = PatternDatabase(self.supabase)

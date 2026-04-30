@@ -8,7 +8,7 @@ Usage:
   python3 seed_queue.py data/brokers_clean.csv --skip-discovered
 
 Env:
-  SUPABASE_URL, SUPABASE_KEY
+  SUPABASE_URL, SUPABASE_SERVICE_KEY
 """
 
 import os
@@ -21,7 +21,7 @@ from urllib.parse import urlparse
 from supabase import create_client
 
 SUPABASE_URL = os.environ["SUPABASE_URL"]
-SUPABASE_KEY = os.environ["SUPABASE_KEY"]
+SUPABASE_SERVICE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
 
 
 def now_iso():
@@ -41,7 +41,7 @@ def main():
                         help="Skip domains already in broker_discovery with status=ok")
     args = parser.parse_args()
 
-    sb = create_client(SUPABASE_URL, SUPABASE_KEY)
+    sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
     # Load URLs from CSV
     urls = []

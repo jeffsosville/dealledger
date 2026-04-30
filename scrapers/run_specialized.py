@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger(__name__)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
+SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
 # ── Broker registry ───────────────────────────────────────────────────────────
 # Each entry has:
@@ -170,8 +170,8 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
     listings = deduped
 
     headers = {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "apikey": SUPABASE_SERVICE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
         "Content-Type": "application/json",
         "Prefer": "resolution=merge-duplicates",
     }
@@ -234,7 +234,7 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def run(broker_filter: list[str] | None, dry_run: bool):
-    if not SUPABASE_KEY and not dry_run:
+    if not SUPABASE_SERVICE_KEY and not dry_run:
         log.error("Set SUPABASE_SERVICE_KEY env var")
         sys.exit(1)
 

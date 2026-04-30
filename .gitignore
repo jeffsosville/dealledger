@@ -45,3 +45,16 @@ data/listings_clean.jsonl
 data/listings_clean2.jsonl
 data/pattern_cache.json
 bizquest_combined.json
+
+# Next.js
+.next/
+node_modules/
+next-env.d.ts
+.env.local
+
+# OS
+.DS_Store
+
+# Cookies and debug artifacts
+scrapers/bbs_cookies*
+scrapers/debug_*.html
