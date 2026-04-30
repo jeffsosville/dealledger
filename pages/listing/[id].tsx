@@ -2,7 +2,7 @@
 //
 // DealLedger listing detail page — /listing/{listing_number}
 
-import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
 
@@ -58,7 +58,11 @@ type PageProps = {
 };
 
 // ─── DATA FETCHING ─────────────────────────────────────────────────────────
-export const getServerSideProps: GetServerSideProps<PageProps> = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  return { paths: [], fallback: 'blocking' };
+};
+
+export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   const idParam = params?.id;
   const listingNumber = typeof idParam === 'string' ? parseInt(idParam, 10) : NaN;
 
@@ -141,6 +145,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ params
 
   return {
     props: { listing, history, broker, domPercentile },
+    revalidate: 60 * 60 * 6,
   };
 };
 
@@ -210,7 +215,7 @@ export default function ListingPage({
   history,
   broker,
   domPercentile,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!listing) return null;
 
   const observations = buildObservations(history, listing.price);
@@ -278,7 +283,7 @@ export default function ListingPage({
   if (listing.estimated_listed_date) {
     changeLog.push({
       date: listing.estimated_listed_date.slice(0, 10),
-      description: 'Estimated original listing date (BBS sequence)',
+      description: 'Estimated original listing date',
     });
   }
 
@@ -299,7 +304,7 @@ export default function ListingPage({
     <>
       <Head>
         <title>{pageTitle}</title>
-        <meta name="description" content={`Public record of BBS listing ${listing.listing_number}`} />
+        <meta name="description" content={`Public record of listing ${listing.listing_number}`} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -464,24 +469,20 @@ export default function ListingPage({
           <Section title="METHODOLOGY" subtitle="What we observe">
             <div className="prose">
               <p>
-                DealLedger publishes what BizBuySell publicly displays. Days on
-                market is reverse-engineered from the BBS sequential listing ID.
-                View counts come from BizQuest&rsquo;s public listing data.
-                Price observations are recorded each time the listing is
-                scraped.
+                DealLedger publishes what is publicly displayed. Price
+                observations are recorded each time the listing is scraped.
               </p>
               {listing.quality_tier && listing.quality_tier !== 'Verified' && (
                 <p>
                   Listing quality:{' '}
                   <span className="quality-tier">{listing.quality_tier}</span>{' '}
                   ({listing.quality_score}/100). This reflects metadata
-                  completeness, not whether the listing exists. See{' '}
-                  <a href="/why.html">methodology</a> for scoring details.
+                  completeness, not whether the listing exists.
                 </p>
               )}
               <p>
                 <a href={listing.url || '#'} target="_blank" rel="noopener noreferrer">
-                  View original listing on BizBuySell →
+                  See listing →
                 </a>
               </p>
             </div>
