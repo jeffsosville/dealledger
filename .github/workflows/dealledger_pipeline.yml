@@ -21,7 +21,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - name: Install dependencies
-        run: pip install curl_cffi supabase requests colorama
+        run: pip install "curl_cffi==0.6.2" supabase requests colorama
       - name: Run BBS all-states scraper
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
