@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DealLedger — Public Record of Businesses for Sale</title>
-    <!-- Google tag (gtag.js) -->
+    <meta name="description" content="An open public ledger of every business for sale in America.">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -27,25 +27,12 @@
             --mono: 'IBM Plex Mono', monospace;
             --sans: 'IBM Plex Sans', sans-serif;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         th.sortable { cursor: pointer; user-select: none; }
         th.sortable:hover { color: #0c4a6e; }
         .sort-arrow { font-size: 11px; margin-left: 3px; color: #c2410c; }
-
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        /* Header */
         header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
         .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
         .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
@@ -53,181 +40,33 @@
         nav { display: flex; gap: 24px; }
         nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
         nav a:hover { color: var(--text); }
-
-        /* Stats bar */
         .stats-bar { border-bottom: 1px solid var(--border); padding: 16px 0; background: var(--bg-alt); }
-        .stats-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        .stats { display: flex; gap: 32px; flex-wrap: wrap; }
-        .stat { font-family: var(--mono); font-size: 13px; }
-        .stat-value { font-weight: 600; color: var(--text); }
-        .stat-label { color: var(--text-muted); margin-left: 4px; }
-        .downloads { display: flex; gap: 12px; }
-        .download-btn { font-family: var(--mono); font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .download-btn { font-family: var(--mono); font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; }
         .download-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
-
-        /* ── SEARCH SECTION ─────────────────────────────────────────────── */
-        .search-section {
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0 0;
-            background: var(--bg);
-        }
-
-        /* AI search bar */
-        .search-bar-wrap {
-            position: relative;
-            margin-bottom: 14px;
-        }
-        .search-bar {
-            width: 100%;
-            font-family: var(--sans);
-            font-size: 15px;
-            padding: 12px 130px 12px 16px;
-            border: 2px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            outline: none;
-            transition: border-color 0.15s;
-        }
+        .search-section { border-bottom: 1px solid var(--border); padding: 20px 0 0; background: var(--bg); }
+        .search-bar-wrap { position: relative; margin-bottom: 14px; }
+        .search-bar { width: 100%; font-family: var(--sans); font-size: 15px; padding: 12px 90px 12px 16px; border: 2px solid var(--border); background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
         .search-bar:focus { border-color: var(--text); }
         .search-bar::placeholder { color: #a8a29e; }
-
-        .search-actions {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 6px;
-        }
-        .btn-search {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 6px 14px;
-            border: 1px solid var(--border);
-            background: var(--bg-alt);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
+        .search-actions { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
+        .btn-search { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 14px; border: 1px solid var(--border); background: var(--bg-alt); color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
         .btn-search:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .btn-ai {
-            font-family: var(--mono);
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 6px 14px;
-            border: 1px solid var(--accent);
-            background: var(--accent);
-            color: #fff;
-            cursor: pointer;
-            transition: opacity 0.15s;
-        }
-        .btn-ai:hover { opacity: 0.85; }
-        .btn-ai:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        /* AI status */
-        .ai-status {
-            display: none;
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--accent);
-            margin-bottom: 10px;
-            letter-spacing: 0.03em;
-        }
-        .ai-status.visible { display: block; }
-
-        /* Filter strip */
-        .filter-strip {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            padding-bottom: 14px;
-        }
-
+        .filter-strip { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding-bottom: 14px; }
         .filter-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
-
-        .filter-select {
-            font-family: var(--mono);
-            font-size: 12px;
-            padding: 6px 28px 6px 10px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2378716c' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-        }
-        .filter-select:focus { outline: 2px solid var(--text); outline-offset: 1px; }
-
-        .filter-range {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            padding: 0 8px;
-        }
-        .filter-range input {
-            font-family: var(--mono);
-            font-size: 12px;
-            width: 80px;
-            padding: 6px 0;
-            border: none;
-            background: transparent;
-            color: var(--text);
-            outline: none;
-        }
+        .filter-select { font-family: var(--mono); font-size: 12px; padding: 6px 28px 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2378716c' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+        .filter-range { display: flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: var(--bg); padding: 0 8px; }
+        .filter-range input { font-family: var(--mono); font-size: 12px; width: 80px; padding: 6px 0; border: none; background: transparent; color: var(--text); outline: none; }
         .filter-range input::placeholder { color: #a8a29e; }
         .filter-range span { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-
-        /* DOM quick buttons */
         .dom-btns { display: flex; gap: 4px; }
-        .dom-btn {
-            font-family: var(--mono);
-            font-size: 11px;
-            padding: 6px 10px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-muted);
-            cursor: pointer;
-            letter-spacing: 0.03em;
-            transition: all 0.12s;
-            white-space: nowrap;
-        }
+        .dom-btn { font-family: var(--mono); font-size: 11px; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; letter-spacing: 0.03em; transition: all 0.12s; white-space: nowrap; }
         .dom-btn:hover { border-color: var(--text); color: var(--text); }
         .dom-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-
         .results-count { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
-
-        .btn-clear {
-            font-family: var(--mono);
-            font-size: 11px;
-            padding: 6px 10px;
-            border: 1px solid var(--border);
-            background: none;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
+        .btn-clear { font-family: var(--mono); font-size: 11px; padding: 6px 10px; border: 1px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; }
         .btn-clear:hover { color: var(--text); }
-
-        /* Signal legend */
-        .signal-legend {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            padding: 8px 0 14px;
-            border-top: 1px solid var(--border);
-        }
+        .signal-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 0 14px; border-top: 1px solid var(--border); }
         .legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
-
-        /* ── TABLE ─────────────────────────────────────────────────────── */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border); background: var(--bg-alt); white-space: nowrap; }
@@ -239,50 +78,23 @@
         .col-title a:hover { text-decoration: underline; }
         .col-state { font-family: var(--mono); font-size: 12px; }
         .col-price { font-family: var(--mono); font-size: 12px; text-align: right; white-space: nowrap; }
-        .col-source { text-align: center; }
-        .source-link { font-family: var(--mono); font-size: 11px; color: var(--link); text-decoration: none; }
-        .source-link:hover { text-decoration: underline; }
-
-        /* DOM badge */
-        .dom-badge {
-            display: inline-block;
-            font-family: var(--mono);
-            font-size: 10px;
-            font-weight: 500;
-            padding: 2px 6px;
-            border-radius: 2px;
-        }
+        .dom-badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 2px; }
         .dom-fresh  { background: #dcfce7; color: #166534; }
         .dom-normal { background: #f5f5f4; color: #78716c; }
         .dom-stale  { background: #fef3c7; color: #92400e; }
         .dom-hot    { background: #ffedd5; color: #c2410c; }
         .dom-zombie { background: #fee2e2; color: #991b1b; }
-
-        /* Signal badge */
         .sig-relisted { background:#fef3c7; color:#92400e; border:1px solid #f59e0b; font-size:10px; padding:2px 6px; border-radius:3px; font-family:var(--mono); }
-        .sig-badge {
-            display: inline-block;
-            font-family: var(--mono);
-            font-size: 10px;
-            font-weight: 500;
-            padding: 2px 6px;
-            border-radius: 2px;
-            margin-left: 5px;
-            white-space: nowrap;
-        }
+        .sig-badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 2px; margin-left: 5px; white-space: nowrap; }
         .sig-gem        { background: #d1fae5; color: #065f46; }
         .sig-hot        { background: #fee2e2; color: #991b1b; }
         .sig-overpriced { background: #fef3c7; color: #92400e; }
         .sig-dead       { background: #f5f5f4; color: #a8a29e; }
-
-        /* Pagination */
         .pagination { padding: 20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .page-btn { font-family: var(--mono); font-size: 12px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; text-decoration: none; }
         .page-btn:hover { background: var(--bg-alt); }
         .page-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Footer / sections */
         footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; }
         .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
         .footer-text { font-size: 12px; color: var(--text-muted); }
@@ -301,15 +113,12 @@
         .about-links { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
         .about-link { font-family: var(--mono); font-size: 12px; color: var(--link); text-decoration: none; }
         .about-link:hover { text-decoration: underline; }
-
         @media (max-width: 768px) {
             .header-content { flex-direction: column; align-items: flex-start; }
-            .stats { gap: 16px; }
             .filter-strip { flex-direction: column; align-items: flex-start; }
             .results-count { margin-left: 0; }
             th, td { padding: 8px 10px; }
             .col-title { max-width: 180px; }
-            .search-bar { font-size: 14px; padding-right: 100px; }
         }
     </style>
 </head>
@@ -332,9 +141,6 @@
     </div>
 </header>
 
-
-
-<!-- diff bar -->
 <div id="diff-bar" style="display:none;border-bottom:1px solid #d4d4d4;padding:10px 0;background:#fff;">
     <div class="container">
         <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
@@ -346,42 +152,24 @@
     </div>
 </div>
 
-<!-- ── SEARCH + FILTERS ─────────────────────────────────────────────── -->
 <div class="search-section">
     <div class="container">
-
-        <!-- AI / keyword search bar -->
         <div class="search-bar-wrap">
-            <input
-                type="text"
-                class="search-bar"
-                id="searchInput"
-                placeholder='Search by keyword — or try AI: "absentee laundromat Texas under $500k"'
-                autocomplete="off"
-            >
+            <input type="text" class="search-bar" id="searchInput" placeholder="Search by keyword, category, or location..." autocomplete="off">
             <div class="search-actions">
                 <button class="btn-search" onclick="runKeywordSearch()">Search</button>
-                <button class="btn-ai" id="aiBtn" onclick="runAISearch()">AI ✦</button>
             </div>
         </div>
-        <div class="ai-status" id="aiStatus">⬡ Parsing query with AI...</div>
-
-        <!-- Filter strip -->
         <div class="filter-strip">
             <span class="filter-label">Filter:</span>
-
             <select id="filter-state" class="filter-select" onchange="applyFilters()">
                 <option value="">All States</option>
             </select>
-
-
             <div class="filter-range">
                 <input type="text" id="fPriceMin" placeholder="Price min" oninput="debouncedFilter()">
                 <span>–</span>
                 <input type="text" id="fPriceMax" placeholder="max" oninput="debouncedFilter()">
             </div>
-
-            <!-- DOM quick-filter -->
             <div class="dom-btns">
                 <button class="dom-btn active" id="domAll"    onclick="setDOM('all')">All</button>
                 <button class="dom-btn"        id="domFresh"  onclick="setDOM('fresh')"  title="≤30 days">Fresh</button>
@@ -389,8 +177,6 @@
                 <button class="dom-btn"        id="domStale"  onclick="setDOM('stale')"  title="90–365 days">Stale</button>
                 <button class="dom-btn"        id="domZombie" onclick="setDOM('zombie')" title="365+ days">Zombie</button>
             </div>
-
-            <!-- Signal filter -->
             <select id="filter-signal" class="filter-select" onchange="applyFilters()">
                 <option value="">Any Signal</option>
                 <option value="gem">★ Hidden Gem</option>
@@ -399,21 +185,16 @@
                 <option value="dead">• Dead</option>
                 <option value="relisted">↩ Previously Listed</option>
             </select>
-
             <button class="btn-clear" onclick="clearAll()">✕ Clear</button>
-
             <span class="results-count"><span id="filtered-count">—</span> results</span>
         </div>
-
-        <!-- Signal legend -->
         <div class="signal-legend">
             <div class="legend-item"><span class="sig-badge sig-gem">★ Hidden Gem</span> Low DOM + low views — under the radar</div>
             <div class="legend-item"><span class="sig-badge sig-hot">🔥 Hot</span> Low DOM + high views — moving fast</div>
             <div class="legend-item"><span class="sig-badge sig-overpriced">⚠ Overpriced?</span> High DOM + high views — sitting despite interest</div>
             <div class="legend-item"><span class="sig-badge sig-dead">• Dead</span> High DOM + low views — ignored</div>
-            <div class="legend-item"><span class="sig-relisted">↩ Previously Listed</span> Failed to sell once — relisted with new ID</div>
+            <div class="legend-item"><span class="sig-relisted">↩ Previously Listed</span> Previously listed with a different ID</div>
         </div>
-
     </div>
 </div>
 
@@ -423,7 +204,6 @@
         <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a></span>
         <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
     </div>
-
     <div class="table-container">
         <table id="listings-table">
             <thead>
@@ -434,15 +214,13 @@
                     <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
-                    
                 </tr>
             </thead>
             <tbody id="listings-body">
-                <tr><td colspan="7" class="loading">Loading listings...</td></tr>
+                <tr><td colspan="6" class="loading">Loading listings...</td></tr>
             </tbody>
         </table>
     </div>
-
     <div class="pagination" id="pagination"></div>
 </main>
 
@@ -450,7 +228,7 @@
 <section id="submit" style="border-top:1px solid #d4d4d4;padding:48px 0;background:#fff7ed;">
     <div class="container"><div style="max-width:680px;">
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Submit a Broker</h2>
-        <p style="font-size:14px;color:#78716c;margin-bottom:20px;line-height:1.6;">Know a business broker with listings online? Submit their URL. Our AI agent analyzes the page, generates a scraper, and adds them to the ledger.</p>
+        <p style="font-size:14px;color:#78716c;margin-bottom:20px;line-height:1.6;">Know a business broker with listings online? Submit their URL and we'll add them to the ledger.</p>
         <form id="brokerForm" style="display:flex;gap:10px;margin-bottom:10px;">
             <input type="url" id="brokerUrl" placeholder="https://broker-website.com/listings" required style="flex:1;padding:10px 14px;font-family:var(--mono);font-size:13px;border:1px solid #d4d4d4;background:#fafaf9;color:#1c1917;">
             <button type="submit" style="padding:10px 20px;font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;white-space:nowrap;">Submit URL</button>
@@ -465,10 +243,26 @@
     <div class="container">
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:24px;">How It Works</h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 — OBSERVE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Scrape marketplaces + brokers</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Daily scrapes from BizBuySell (40,000+ marketplace listings) and 1,700+ individual broker websites. Two sources, one ledger.</p></div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 — TIMESTAMP</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Recover listing dates</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We reverse-engineer them from sequential listing IDs calibrated against known anchors. Mean error: ±12 days.</p></div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — PUBLISH</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open API + GitHub</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplace data in a public Supabase database — queryable by anyone. Broker-direct data committed to GitHub daily. All CC0.</p></div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;"><div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 — MEASURE</div><h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Liquidity intelligence</h3><p style="font-size:13px;color:#78716c;line-height:1.5;">Days on market, zombie rate, disappearance detection, state-level liquidity index. Published monthly in the SMB Liquidity Report.</p></div>
+            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
+                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 — OBSERVE</div>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Collect + normalize</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">Listings collected daily from major business marketplaces and 1,700+ individual broker websites. Two sources, one ledger.</p>
+            </div>
+            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
+                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 — TIMESTAMP</div>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Recover listing dates</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We recover estimated listing dates using a proprietary methodology. Mean error: ±12 days.</p>
+            </div>
+            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
+                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — PUBLISH</div>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open API + GitHub</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">All data in a public Supabase database — queryable by anyone. Broker-direct data committed to GitHub daily. All CC0.</p>
+            </div>
+            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
+                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 — MEASURE</div>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Liquidity intelligence</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">Days on market, zombie rate, disappearance detection, state-level liquidity index. Published monthly in the SMB Liquidity Report.</p>
+            </div>
         </div>
     </div>
 </section>
@@ -477,7 +271,7 @@
 <section style="border-top:1px solid #d4d4d4;padding:48px 0;background:#f5f5f4;">
     <div class="container"><div style="max-width:680px;">
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">Principles</h2>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record traces back to its original broker page.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record links back to its original source listing.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Timestamped.</strong> <span style="color:#78716c;">First seen, last seen, and every change in between.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Reproducible.</strong> <span style="color:#78716c;">The code is open. The methodology is documented. Run it yourself.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Append-only.</strong> <span style="color:#78716c;">We do not edit history. Removals are recorded, not deleted.</span></p>
@@ -494,7 +288,7 @@
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ A public record</div>
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">Lead generation</div>
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ Market intelligence</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">BizBuySell competitor</div>
+            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A marketplace competitor</div>
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ EDGAR for Main Street</div>
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A product</div>
             <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ Infrastructure</div>
@@ -519,9 +313,9 @@
         <h2 class="about-title">About DealLedger</h2>
         <div class="about-text">
             <p><strong>The problem:</strong> There is no public registry for small business transactions. The same listing appears across multiple sites, listing dates are hidden, and inventory numbers are inflated by stale and zombie listings. The market is opaque by design.</p>
-            <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from marketplaces and broker websites, recover listing dates through our sequential ID methodology, and publish everything as open data.</p>
+            <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from major marketplaces and broker websites, recover listing dates through our proprietary methodology, and publish everything as open data.</p>
             <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
-            <p><strong>How it works:</strong> Two data layers — marketplace listings (BizBuySell, 40k+ records, daily updates via Supabase API) and broker-direct listings (1,700+ broker sites, 9,600+ records, committed to GitHub daily). The methodology is documented. The code is open. Anyone can verify and build on it.</p>
+            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates via Supabase API) and broker-direct listings (1,700+ broker sites, committed to GitHub daily). The methodology is documented. The code is open. Anyone can verify and build on it.</p>
         </div>
         <div class="about-links">
             <a href="https://github.com/jeffsosville/dealledger" target="_blank" class="about-link">→ View source on GitHub</a>
@@ -545,15 +339,12 @@
 </footer>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
-const DIFF_URL      = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/snapshots/';
-const BROKERS_URL   = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/brokers.csv';
+const DIFF_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/snapshots/';
 const PER_PAGE = 50;
 const BATCH    = 1000;
 
-// ── STATE ────────────────────────────────────────────────────────────────────
 let allListings      = [];
 let filteredListings = [];
 let currentPage      = 1;
@@ -563,11 +354,10 @@ let domFilter        = 'all';
 let keywordFilter    = '';
 let debounceTimer    = null;
 
-// ── SIGNAL LOGIC ─────────────────────────────────────────────────────────────
 function getSignal(dom, views) {
     if (!dom) return null;
-    const lowDOM   = dom <= 90;
-    const highDOM  = dom > 180;
+    const lowDOM    = dom <= 90;
+    const highDOM   = dom > 180;
     const highViews = views && views > 200;
     const lowViews  = !views || views < 50;
     if (lowDOM  && lowViews)  return 'gem';
@@ -595,130 +385,52 @@ function domBadge(dom) {
     return `<span class="dom-badge dom-zombie">${dom}d</span>`;
 }
 
-// ── DOM FILTER BUTTONS ───────────────────────────────────────────────────────
 function setDOM(val) {
     domFilter = val;
-    ['domAll','domFresh','domNew','domStale','domZombie'].forEach(id => {
-        document.getElementById(id).classList.remove('active');
-    });
+    ['domAll','domFresh','domNew','domStale','domZombie'].forEach(id => document.getElementById(id).classList.remove('active'));
     const map = { all:'domAll', fresh:'domFresh', new:'domNew', stale:'domStale', zombie:'domZombie' };
     document.getElementById(map[val]).classList.add('active');
     applyFilters();
 }
 
-// ── KEYWORD SEARCH ───────────────────────────────────────────────────────────
 function runKeywordSearch() {
     keywordFilter = document.getElementById('searchInput').value.trim().toLowerCase();
     applyFilters();
 }
 
-// ── AI SEARCH ────────────────────────────────────────────────────────────────
-async function runAISearch() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) return;
-
-    const btn = document.getElementById('aiBtn');
-    btn.disabled = true;
-    btn.textContent = '...';
-    document.getElementById('aiStatus').classList.add('visible');
-    document.getElementById('aiStatus').textContent = '⬡ Parsing query with AI...';
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 300,
-                system: `Parse a natural language business-for-sale search query into JSON filters.
-Return ONLY a JSON object with these optional fields:
-- keyword: string
-- state: 2-letter US state code
-- category: one of: laundromat, cleaning, restaurant, retail, vending, landscaping, automotive, atm, pest control, hvac, plumbing, childcare, trucking, construction
-- price_max: number
-- price_min: number
-- cf_min: number
-- dom_filter: one of: fresh, new, stale, zombie
-No explanation, only JSON.`,
-                messages: [{ role: 'user', content: query }]
-            })
-        });
-        const data = await res.json();
-        const text = data.content?.[0]?.text || '{}';
-        const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-
-        // Apply to UI
-        if (parsed.state)    document.getElementById('filter-state').value    = parsed.state;
-        if (parsed.price_min) document.getElementById('fPriceMin').value = parsed.price_min;
-        if (parsed.price_max) document.getElementById('fPriceMax').value = parsed.price_max;
-        if (parsed.cf_min)    document.getElementById('fCfMin').value    = parsed.cf_min;
-        if (parsed.dom_filter) setDOM(parsed.dom_filter);
-        if (parsed.keyword) {
-            document.getElementById('searchInput').value = parsed.keyword;
-            keywordFilter = parsed.keyword.toLowerCase();
-        } else {
-            keywordFilter = '';
-        }
-
-        document.getElementById('aiStatus').textContent = '✓ Filters applied';
-        setTimeout(() => document.getElementById('aiStatus').classList.remove('visible'), 2000);
-
-    } catch(e) {
-        document.getElementById('aiStatus').textContent = '✗ AI unavailable — running keyword search';
-        setTimeout(() => document.getElementById('aiStatus').classList.remove('visible'), 2000);
-        keywordFilter = query.toLowerCase();
-    }
-
-    applyFilters();
-    btn.disabled = false;
-    btn.textContent = 'AI ✦';
-}
-
-// ── CLEAR ALL ────────────────────────────────────────────────────────────────
 function clearAll() {
-    document.getElementById('searchInput').value    = '';
-    document.getElementById('filter-state').value   = '';
-    document.getElementById('filter-category').value = '';
-    document.getElementById('filter-signal').value  = '';
+    document.getElementById('searchInput').value   = '';
+    document.getElementById('filter-state').value  = '';
+    document.getElementById('filter-signal').value = '';
     document.getElementById('fPriceMin').value = '';
     document.getElementById('fPriceMax').value = '';
-    document.getElementById('fCfMin').value    = '';
     keywordFilter = '';
     setDOM('all');
 }
 
-// ── DEBOUNCE ─────────────────────────────────────────────────────────────────
 function debouncedFilter() {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(applyFilters, 350);
 }
 
-// ── APPLY FILTERS ────────────────────────────────────────────────────────────
 function applyFilters() {
     const state    = document.getElementById('filter-state').value;
     const signal   = document.getElementById('filter-signal').value;
     const priceMin = parseNum(document.getElementById('fPriceMin').value);
     const priceMax = parseNum(document.getElementById('fPriceMax').value);
-    const cfMin    = null;
 
     filteredListings = allListings.filter(l => {
-        // Keyword
         if (keywordFilter && !(l.title||'').toLowerCase().includes(keywordFilter)) return false;
-        // State
         if (state && l.state !== state) return false;
-        // Price
         if (priceMin && (l.price||0) < priceMin) return false;
         if (priceMax && (l.price||0) > priceMax) return false;
-        // Cash flow
-        if (cfMin && (l.cash_flow||0) < cfMin) return false;
-        // DOM
         const dom = l.days_on_market || 0;
         if (domFilter === 'fresh'  && dom > 30)  return false;
         if (domFilter === 'new'    && dom > 90)  return false;
         if (domFilter === 'stale'  && (dom <= 90 || dom > 365)) return false;
         if (domFilter === 'zombie' && dom <= 365) return false;
-        // Signal
-        if (signal === "relisted") { if (!l.relisted) return false; } else if (signal && getSignal(l.days_on_market, l.listing_views) !== signal) return false;
+        if (signal === 'relisted') { if (!l.relisted) return false; }
+        else if (signal && getSignal(l.days_on_market, l.listing_views) !== signal) return false;
         return true;
     });
 
@@ -734,7 +446,6 @@ function parseNum(val) {
     return parseInt(val.toString().replace(/,/g,'')) || null;
 }
 
-// ── SORT ─────────────────────────────────────────────────────────────────────
 function sortListings() {
     filteredListings.sort((a, b) => {
         let va = a[sortField], vb = b[sortField];
@@ -749,9 +460,8 @@ function setSort(field) {
     if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = -1; }
     document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
     const arrow = sortDir === -1 ? '↓' : '↑';
-    const thMap = { estimated_listed_date:'listed', state:'state', price:'price', cash_flow:'cf', days_on_market:'dom', listing_views:'views' };
-    const thId = 'th-' + (thMap[field] || field);
-    const th = document.getElementById(thId);
+    const thMap = { estimated_listed_date:'listed', state:'state', price:'price', days_on_market:'dom', listing_views:'views' };
+    const th = document.getElementById('th-' + (thMap[field] || field));
     if (th) th.querySelector('.sort-arrow').textContent = arrow;
     sortListings();
     currentPage = 1;
@@ -759,7 +469,6 @@ function setSort(field) {
     renderPagination();
 }
 
-// ── RENDER ───────────────────────────────────────────────────────────────────
 function formatPrice(p) {
     if (!p) return '—';
     if (p >= 1000000) return '$' + (p/1000000).toFixed(1) + 'M';
@@ -776,15 +485,13 @@ function renderListings() {
     const start = (currentPage - 1) * PER_PAGE;
     const page  = filteredListings.slice(start, start + PER_PAGE);
     const body  = document.getElementById('listings-body');
-
     if (page.length === 0) {
-        body.innerHTML = `<tr><td colspan="7" class="empty-state">No listings match your filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="6" class="empty-state">No listings match your filters.</td></tr>`;
         return;
     }
-
     body.innerHTML = page.map(l => {
-        const href = l.source_url || '#';
-        const dom  = l.days_on_market;
+        const href  = l.source_url || '#';
+        const dom   = l.days_on_market;
         const views = l.listing_views || 0;
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
@@ -792,23 +499,20 @@ function renderListings() {
                 <a href="/listing/${l.listing_number}">${truncate(l.title||'Untitled', 60)}</a>
                 ${signalBadge(dom, views)}
                 ${l.relisted ? '<span class="sig-relisted">↩ Previously Listed</span>' : ''}
-                ${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener" class="source-link" title="View on BizBuySell" style="margin-left:6px">↗</a>` : ''}
+                ${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener" class="source-link" title="View source listing" style="margin-left:6px">↗</a>` : ''}
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
             <td class="col-price">${domBadge(dom)}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
-            
         </tr>`;
     }).join('');
 }
 
-// ── PAGINATION ───────────────────────────────────────────────────────────────
 function renderPagination() {
     const totalPages = Math.ceil(filteredListings.length / PER_PAGE);
     const el = document.getElementById('pagination');
     if (totalPages <= 1) { el.innerHTML = ''; return; }
-
     let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="goToPage(${currentPage-1})">← Prev</button>`;
     const maxShow = 7;
     let s = Math.max(1, currentPage-3), e = Math.min(totalPages, s+maxShow-1);
@@ -828,27 +532,12 @@ function goToPage(p) {
 }
 window.goToPage = goToPage;
 
-// ── STATS ────────────────────────────────────────────────────────────────────
-function updateStats() {
-    document.getElementById('total-count').textContent = allListings.length.toLocaleString();
-    const withDom  = allListings.filter(l => l.days_on_market > 0);
-    const zombies  = withDom.filter(l => l.days_on_market > 365);
-    document.getElementById('broker-direct-count').textContent = withDom.length ? (zombies.length/withDom.length*100).toFixed(1)+'%' : '—';
-    const doms = withDom.map(l => l.days_on_market).sort((a,b)=>a-b);
-    document.getElementById('broker-count').textContent = doms.length ? doms[Math.floor(doms.length/2)]+'d' : '—';
-    const US = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
-    const states = new Set(allListings.map(l=>l.state).filter(s=>s&&US.has(s)));
-    document.getElementById('state-count').textContent = states.size;
-    document.getElementById('last-updated').textContent = new Date().toISOString().split('T')[0];
-}
-
 function populateStates() {
     const states = [...new Set(allListings.map(l=>l.state).filter(Boolean))].sort();
     const sel = document.getElementById('filter-state');
     sel.innerHTML = '<option value="">All States</option>' + states.map(s=>`<option value="${s}">${s}</option>`).join('');
 }
 
-// ── LOAD DATA ────────────────────────────────────────────────────────────────
 async function loadData() {
     try {
         let rows = [], from = 0;
@@ -863,26 +552,23 @@ async function loadData() {
             if (batch.length < BATCH) break;
             from += BATCH;
         }
-
         allListings = rows.map(r => ({
-            listing_number:       r.listing_number,
-            title:                r.header,
-            state:                r.state,
-            price:                r.price,
-            cash_flow:            null,
-            source_url:           r.url,
-            first_seen:           r.first_seen,
+            listing_number:        r.listing_number,
+            title:                 r.header,
+            state:                 r.state,
+            price:                 r.price,
+            source_url:            r.url,
+            first_seen:            r.first_seen,
             estimated_listed_date: r.estimated_listed_date,
-            days_on_market:       r.days_on_market,
-            listing_views:        r.listing_views || 0,
-            relisted:             r.relisted || false,
+            days_on_market:        r.days_on_market,
+            listing_views:         r.listing_views || 0,
+            relisted:              r.relisted || false,
         }));
-
         populateStates();
         applyFilters();
     } catch(err) {
         console.error(err);
-        document.getElementById('listings-body').innerHTML = `<tr><td colspan="7" class="empty-state">Failed to load listings. <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a></td></tr>`;
+        document.getElementById('listings-body').innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load listings. <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a></td></tr>`;
     }
 }
 
@@ -901,27 +587,6 @@ async function loadDiff() {
     } catch(e) {}
 }
 
-// ── KEYBOARD SHORTCUT ────────────────────────────────────────────────────────
-document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); runKeywordSearch(); }
-});
-
-// ── BROKER SUBMIT ────────────────────────────────────────────────────────────
-document.getElementById('brokerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const url = document.getElementById('brokerUrl').value;
-    if (!url) return;
-    const host  = new URL(url).hostname;
-    const title = encodeURIComponent('New broker submission: ' + host);
-    const body  = encodeURIComponent('## Broker URL\n' + url + '\n\nSubmitted via dealledger.org.');
-    window.open('https://github.com/jeffsosville/dealledger/issues/new?title=' + title + '&body=' + body + '&labels=broker-submission', '_blank');
-    const s = document.getElementById('submitStatus');
-    s.style.display = 'block';
-    s.textContent = 'Opening GitHub to create the submission.';
-    document.getElementById('brokerUrl').value = '';
-});
-
-// ── DOWNLOAD CSV ─────────────────────────────────────────────────────────────
 function downloadCSV() {
     const cols = ['estimated_listed_date','title','state','price','days_on_market','listing_views','source_url'];
     const headers = ['est_listed','title','state','price','days_on_market','views','url'];
@@ -940,7 +605,24 @@ function downloadCSV() {
     URL.revokeObjectURL(a.href);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); runKeywordSearch(); }
+});
+
+document.getElementById('brokerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const url = document.getElementById('brokerUrl').value;
+    if (!url) return;
+    const host  = new URL(url).hostname;
+    const title = encodeURIComponent('New broker submission: ' + host);
+    const body  = encodeURIComponent('## Broker URL\n' + url + '\n\nSubmitted via dealledger.org.');
+    window.open('https://github.com/jeffsosville/dealledger/issues/new?title=' + title + '&body=' + body + '&labels=broker-submission', '_blank');
+    const s = document.getElementById('submitStatus');
+    s.style.display = 'block';
+    s.textContent = 'Opening GitHub to create the submission.';
+    document.getElementById('brokerUrl').value = '';
+});
+
 loadData();
 loadDiff();
 </script>
