@@ -19,17 +19,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas beautifulsoup4 playwright requests supabase
+          pip install pandas beautifulsoup4 playwright requests supabase colorama
           playwright install chromium
           playwright install-deps chromium
 
-      - name: Run scraper
+      - name: Run V6 scraper (reads from broker_sources table)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           python3 scrapers/dealledger_scraper_v6.py \
-            --brokers data/brokers.csv \
+            --source supabase \
             --top-n 100 \
             --output data/snapshots
 
@@ -37,6 +37,6 @@ jobs:
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
-          git add data/snapshots/
+          git add -f data/snapshots/
           git diff --staged --quiet || git commit -m "snapshot: $(date -u +%Y-%m-%d)"
-          git push
+          git push || echo "Nothing to push"
