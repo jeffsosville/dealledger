@@ -80,7 +80,7 @@
 
         <h2>II. The Study Years</h2>
 
-        <p>From 2017 to 2020 we studied the business-for-sale marketplace obsessively. I taught myself Python and started scraping. We read widely about systems that had solved information asymmetry — Zillow, Carfax, Wikipedia, OpenStreetMap, EDGAR — and thought hard about what they had in common.</p>
+        <p>From 2017 to 2020 we studied the business-for-sale marketplace obsessively. I taught myself Python and started building data infrastructure. We read widely about systems that had solved information asymmetry — Zillow, Carfax, Wikipedia, OpenStreetMap, EDGAR — and thought hard about what they had in common.</p>
 
         <p>Zillow did not beat incumbent real estate brokerages by being a better brokerage. They built the memory layer — price history, listing dates, days on market, relists — that the industry had decided buyers did not need. Once that history was visible, the market changed.</p>
 
@@ -88,7 +88,7 @@
 
         <p>In 2020 we tried building DealRanker — a Product Hunt style ranking system for listings. The idea was to surface signal through community votes. It never worked. The concept was wrong. Ranking assumes the underlying data is roughly honest. It is not.</p>
 
-        <p>We kept pushing. More scraping, more Python, more studying. We built CleaningExits, a vertical marketplace for cleaning businesses. Each of these was useful but none solved the core problem. They were cuts, not a cure. The cure required a different frame. We found it in a 1970 economics paper.</p>
+        <p>We kept pushing. More data infrastructure, more Python, more studying. We built CleaningExits, a vertical marketplace for cleaning businesses. Each of these was useful but none solved the core problem. They were cuts, not a cure. The cure required a different frame. We found it in a 1970 economics paper.</p>
 
         <h2>III. Akerlof and the Lemon Market</h2>
 
@@ -112,9 +112,9 @@
 
         <p>In real estate, days on market is standard. Every serious buyer knows what it means. A listing at 200 days is a different negotiation than one at 14 days. Zillow built significant early credibility by surfacing this history that incumbent brokerages preferred to hide.</p>
 
-        <p>BizBuySell — the largest small business marketplace, owned by CoStar Group — does not show listing dates. They sell an EDGE subscription for $24.95 per month. It includes demographic data available free from the Census Bureau, industry benchmarks derived from their own listings, and a "Listing Last Updated" date. That updated date resets whenever a broker edits the listing — a photo swap, a description tweak, anything. Brokers use this to keep listings appearing fresh. After reviewing more than twenty listings — including our own — "Listing Last Updated" tells you absolutely nothing. The opacity is not accidental. It is the product.</p>
+        <p>The largest small business marketplace in the United States — owned by CoStar Group — does not show listing dates. Enhanced subscription tiers offer a "Listing Last Updated" date, but this resets whenever a broker makes any edit: a photo swap, a description tweak, anything. After reviewing dozens of listings, this date reflects editorial activity, not original listing date. Brokers use this routinely to keep listings appearing fresh.</p>
 
-        <p>We scraped and analyzed 40,552 listings from BizBuySell. BizBuySell assigns each listing a sequential ID number — the way a DMV assigns license plate numbers in order. By measuring how fast those ID numbers were being issued over time and cross-referencing with a handful of listings where we knew the exact date, we were able to work backward and estimate when every listing in the database first went live.</p>
+        <p>DealLedger analyzed over 40,000 active listings using a proprietary methodology to recover estimated listing dates. What we found was not surprising — but seeing the numbers made it concrete.</p>
 
         <div class="data-block">
             <div class="data-label">What we found — 40,552 listings, November 2025</div>
@@ -161,7 +161,7 @@
 
         <p>DealLedger is an open public ledger for small business transactions. Not a marketplace. Not a lead tool. Not a ranking system. A record.</p>
 
-        <p>Two data layers. Marketplace data — scraped from BizBuySell daily, listing dates recovered through our sequential ID methodology, published through a public API. Broker-direct data — scraped from 1,700+ individual broker websites, committed to GitHub daily. Every record has an estimated listed date. Every record has days on market. When a listing disappears we record it. When it reappears we flag it. Nothing is deleted.</p>
+        <p>Two data layers. Marketplace data — sourced from major business listing platforms, attributed to source, listing dates recovered through our proprietary methodology, published through a public API. Broker-direct data — sourced from 1,700+ individual broker websites, committed to GitHub daily. Every record has an estimated listed date. Every record has days on market. When a listing disappears we record it. When it reappears we flag it. Nothing is deleted.</p>
 
         <p>The methodology is public. The code is MIT licensed. The data is CC0. The database is queryable by anyone without authentication. We publish a monthly SMB Liquidity Report — zombie rates by state, median days on market by category, disappearance rates. The things that were not available before because no one was keeping the record.</p>
 
@@ -173,7 +173,7 @@
 
         <p>The fix is not a better marketplace. It is a public memory. A ledger that records what the market shows each day, preserves that history permanently, and makes it available to anyone who wants to look.</p>
 
-        <p>We are building that. The historical depth is what makes it valuable and the historical depth only comes from time. Every day the scraper runs, the dataset becomes harder to replicate. We started.</p>
+        <p>We are building that. The historical depth is what makes it valuable and the historical depth only comes from time. Every day the pipeline runs, the dataset becomes harder to replicate. We started.</p>
 
         <p>If you are a buyer, broker, lender, journalist, or researcher who cares about this market — the data is at <a href="https://dealledger.org">dealledger.org</a>. The code is at <a href="https://github.com/jeffsosville/dealledger">github.com/jeffsosville/dealledger</a>. Everything is open. Use it.</p>
 
