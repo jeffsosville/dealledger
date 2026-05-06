@@ -132,8 +132,7 @@
                 <span class="tagline">— An open ledger of every business for sale in America</span>
             </div>
             <nav>
-                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
-                <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Methodology</a>
+                <a href="/methodology.html">Methodology</a>
                 <a href="#about">About</a>
                 <a href="/pulse.html">Market Pulse</a>
                 <a href="/brokers">Brokers</a>
@@ -201,17 +200,13 @@
 
 <main class="container">
     <div class="notice" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-    <span>Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.
-    <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a></span>
-    <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">Get the weekly data report →</span>
-        <a href="/pulse.html" style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;padding:6px 14px;background:var(--text);color:var(--bg);text-decoration:none;border:1px solid var(--text);">Market Pulse</a>
-        <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
-    </div>
-</div>
         <span>Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.
-        <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank">Read methodology →</a></span>
-        <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
+        <a href="/methodology.html">Read methodology →</a></span>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">Get the weekly data report →</span>
+            <a href="/pulse.html" style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;padding:6px 14px;background:var(--text);color:var(--bg);text-decoration:none;border:1px solid var(--text);">Market Pulse</a>
+            <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
+        </div>
     </div>
     <div class="table-container">
         <table id="listings-table">
@@ -242,7 +237,7 @@
             <input type="url" id="brokerUrl" placeholder="https://broker-website.com/listings" required style="flex:1;padding:10px 14px;font-family:var(--mono);font-size:13px;border:1px solid #d4d4d4;background:#fafaf9;color:#1c1917;">
             <button type="submit" style="padding:10px 20px;font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;white-space:nowrap;">Submit URL</button>
         </form>
-        <div style="font-family:var(--mono);font-size:11px;color:#78716c;">Opens a GitHub issue for review.</div>
+        <div style="font-family:var(--mono);font-size:11px;color:#78716c;">We review submissions weekly.</div>
         <div id="submitStatus" style="font-family:var(--mono);font-size:12px;margin-top:10px;display:none;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;"></div>
     </div></div>
 </section>
@@ -264,8 +259,8 @@
             </div>
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
                 <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — PUBLISH</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open API + GitHub</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">All data in a public Supabase database — queryable by anyone. Broker-direct data committed to GitHub daily. All CC0.</p>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open data, daily</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">All data in a public Supabase database — queryable by anyone. Daily snapshots downloadable as CSV. All CC0.</p>
             </div>
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
                 <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 — MEASURE</div>
@@ -282,7 +277,7 @@
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">Principles</h2>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record links back to its original source listing.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Timestamped.</strong> <span style="color:#78716c;">First seen, last seen, and every change in between.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Reproducible.</strong> <span style="color:#78716c;">The code is open. The methodology is documented. Run it yourself.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Reproducible.</strong> <span style="color:#78716c;">The methodology is documented. The data is downloadable. Verify it yourself.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Append-only.</strong> <span style="color:#78716c;">We do not edit history. Removals are recorded, not deleted.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>No opinions.</strong> <span style="color:#78716c;">We do not rank brokers. We publish what we observe.</span></p>
     </div></div>
@@ -308,11 +303,11 @@
 <!-- CTA -->
 <section style="border-top:1px solid #d4d4d4;padding:48px 0;text-align:center;">
     <div class="container">
-        <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;">Build on the Ledger</h2>
-        <p style="font-size:14px;color:#78716c;margin-bottom:24px;">DealLedger is open source. Fork it. Extend it. Add a vertical. Challenge the methodology.</p>
+        <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;">Use the Ledger</h2>
+        <p style="font-size:14px;color:#78716c;margin-bottom:24px;">All data is CC0. Download the latest snapshot, query the live API, or read the methodology.</p>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-            <a href="https://github.com/jeffsosville/dealledger" target="_blank" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;">View on GitHub</a>
-            <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#fafaf9;color:#1c1917;border:1px solid #d4d4d4;">Browse Snapshots</a>
+            <button onclick="downloadCSV()" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;">↓ Download CSV</button>
+            <a href="/methodology.html" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#fafaf9;color:#1c1917;border:1px solid #d4d4d4;">Read Methodology</a>
         </div>
     </div>
 </section>
@@ -324,13 +319,13 @@
             <p><strong>The problem:</strong> There is no public registry for small business transactions. The same listing appears across multiple sites, listing dates are hidden, and inventory numbers are inflated by stale and zombie listings. The market is opaque by design.</p>
             <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from major marketplaces and broker websites, recover listing dates through our proprietary methodology, and publish everything as open data.</p>
             <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
-            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates via Supabase API) and broker-direct listings (1,700+ broker sites, committed to GitHub daily). The methodology is documented. The code is open. Anyone can verify and build on it.</p>
+            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates via Supabase API) and broker-direct listings from 1,700+ broker sites. The methodology is documented. The data is downloadable. Anyone can verify and build on it.</p>
         </div>
         <div class="about-links">
-            <a href="https://github.com/jeffsosville/dealledger" target="_blank" class="about-link">→ View source on GitHub</a>
-            <a href="https://github.com/jeffsosville/dealledger/blob/main/docs/METHODOLOGY.md" target="_blank" class="about-link">→ Read the methodology</a>
-            <a href="https://github.com/jeffsosville/dealledger/blob/main/data/brokers.csv" target="_blank" class="about-link">→ See all tracked brokers</a>
-            <a href="https://github.com/jeffsosville/dealledger/tree/main/data/snapshots" target="_blank" class="about-link">→ Archive (daily snapshots)</a>
+            <a href="/methodology.html" class="about-link">→ Read the methodology</a>
+            <a href="/brokers" class="about-link">→ See all tracked brokers</a>
+            <a href="#" onclick="downloadCSV(); return false;" class="about-link">→ Download the latest snapshot</a>
+            <a href="/pulse.html" class="about-link">→ Market Pulse (weekly report)</a>
         </div>
     </div></div>
 </section>
@@ -338,10 +333,10 @@
 <footer>
     <div class="container">
         <div class="footer-content">
-            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Code: MIT License. Data: CC0.</div>
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
             <div class="footer-links">
-                <a href="https://github.com/jeffsosville/dealledger" target="_blank">Source</a>
-                <a href="https://github.com/jeffsosville/dealledger/issues" target="_blank">Report Issue</a>
+                <a href="/methodology.html">Methodology</a>
+                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
             </div>
         </div>
     </div>
@@ -350,7 +345,6 @@
 <script>
 const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
-const DIFF_URL = 'https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/snapshots/';
 const PER_PAGE = 50;
 const BATCH    = 1000;
 
@@ -577,23 +571,8 @@ async function loadData() {
         applyFilters();
     } catch(err) {
         console.error(err);
-        document.getElementById('listings-body').innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load listings. <a href="https://github.com/jeffsosville/dealledger" target="_blank">View on GitHub →</a></td></tr>`;
+        document.getElementById('listings-body').innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load listings. Please try again later.</td></tr>`;
     }
-}
-
-async function loadDiff() {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const r = await fetch(DIFF_URL + today + '/diff.json');
-        if (!r.ok) return;
-        const diff = await r.json();
-        if (!diff) return;
-        document.getElementById('diff-bar').style.display = 'block';
-        document.getElementById('diff-date').textContent = 'Today ' + diff.date + ':';
-        document.getElementById('diff-new').textContent = diff.new > 0 ? '+' + diff.new + ' new' : '';
-        document.getElementById('diff-removed').textContent = diff.removed > 0 ? '−' + diff.removed + ' removed' : '';
-        document.getElementById('diff-relisted').textContent = diff.relisted > 0 ? diff.relisted + ' relisted' : '';
-    } catch(e) {}
 }
 
 function downloadCSV() {
@@ -618,22 +597,28 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); runKeywordSearch(); }
 });
 
+// TEMPORARY: mailto fallback for broker submissions.
+// Replace this whole handler with your chosen backend (Supabase insert,
+// Formspree, Tally, etc.) once decided.
 document.getElementById('brokerForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const url = document.getElementById('brokerUrl').value;
     if (!url) return;
-    const host  = new URL(url).hostname;
-    const title = encodeURIComponent('New broker submission: ' + host);
-    const body  = encodeURIComponent('## Broker URL\n' + url + '\n\nSubmitted via dealledger.org.');
-    window.open('https://github.com/jeffsosville/dealledger/issues/new?title=' + title + '&body=' + body + '&labels=broker-submission', '_blank');
+    let host = url;
+    try { host = new URL(url).hostname; } catch(err) {}
+    const subject = encodeURIComponent('Broker submission: ' + host);
+    const body    = encodeURIComponent('Broker URL:\n' + url + '\n\nSubmitted via dealledger.org.');
+    window.location.href = 'mailto:info@dealledger.org?subject=' + subject + '&body=' + body;
     const s = document.getElementById('submitStatus');
     s.style.display = 'block';
-    s.textContent = 'Opening GitHub to create the submission.';
+    s.textContent = 'Opening your email client to send the submission.';
     document.getElementById('brokerUrl').value = '';
 });
 
 loadData();
-loadDiff();
+// Diff bar removed - depended on raw.githubusercontent.com.
+// To re-enable: serve diff.json from /data/snapshots/ on your own domain
+// or expose it via a Supabase view.
 </script>
 </body>
 </html>
