@@ -253,7 +253,7 @@ async function handleSubscribe() {
             body: JSON.stringify({ email: email.toLowerCase() })
         });
 
-        if (res.ok || res.status === 201) {
+        if (res.ok || res.status === 201 || res.status === 409) {
             document.getElementById('form-container').style.display = 'none';
             document.getElementById('formSuccess').style.display = 'block';
         } else {
