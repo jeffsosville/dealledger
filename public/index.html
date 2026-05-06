@@ -41,8 +41,6 @@
         nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
         nav a:hover { color: var(--text); }
         .stats-bar { border-bottom: 1px solid var(--border); padding: 16px 0; background: var(--bg-alt); }
-        .download-btn { font-family: var(--mono); font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; }
-        .download-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
         .search-section { border-bottom: 1px solid var(--border); padding: 20px 0 0; background: var(--bg); }
         .search-bar-wrap { position: relative; margin-bottom: 14px; }
         .search-bar { width: 100%; font-family: var(--sans); font-size: 15px; padding: 12px 90px 12px 16px; border: 2px solid var(--border); background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
@@ -141,17 +139,6 @@
     </div>
 </header>
 
-<div id="diff-bar" style="display:none;border-bottom:1px solid #d4d4d4;padding:10px 0;background:#fff;">
-    <div class="container">
-        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;">
-            <span style="font-family:var(--mono);font-size:11px;color:#78716c;text-transform:uppercase;letter-spacing:0.5px;" id="diff-date"></span>
-            <span style="font-family:var(--mono);font-size:12px;color:#166534;" id="diff-new"></span>
-            <span style="font-family:var(--mono);font-size:12px;color:#991b1b;" id="diff-removed"></span>
-            <span style="font-family:var(--mono);font-size:12px;color:#92400e;" id="diff-relisted"></span>
-        </div>
-    </div>
-</div>
-
 <div class="search-section">
     <div class="container">
         <div class="search-bar-wrap">
@@ -205,7 +192,6 @@
         <div style="display:flex;align-items:center;gap:8px;">
             <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">Get the weekly data report →</span>
             <a href="/pulse.html" style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;padding:6px 14px;background:var(--text);color:var(--bg);text-decoration:none;border:1px solid var(--text);">Market Pulse</a>
-            <button class="download-btn" onclick="downloadCSV()">↓ Download CSV</button>
         </div>
     </div>
     <div class="table-container">
@@ -258,9 +244,9 @@
                 <p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We recover estimated listing dates using a proprietary methodology. Mean error: ±12 days.</p>
             </div>
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
-                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — PUBLISH</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Open data, daily</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">All data in a public Supabase database — queryable by anyone. Daily snapshots downloadable as CSV. All CC0.</p>
+                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — TRACK</div>
+                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Append-only history</h3>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">Every listing change is recorded. Removals, relists, price changes — nothing is overwritten or deleted.</p>
             </div>
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
                 <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 — MEASURE</div>
@@ -277,7 +263,7 @@
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">Principles</h2>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record links back to its original source listing.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Timestamped.</strong> <span style="color:#78716c;">First seen, last seen, and every change in between.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Reproducible.</strong> <span style="color:#78716c;">The methodology is documented. The data is downloadable. Verify it yourself.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Documented.</strong> <span style="color:#78716c;">The methodology is public. Every field is defined.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Append-only.</strong> <span style="color:#78716c;">We do not edit history. Removals are recorded, not deleted.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>No opinions.</strong> <span style="color:#78716c;">We do not rank brokers. We publish what we observe.</span></p>
     </div></div>
@@ -300,18 +286,6 @@
     </div>
 </section>
 
-<!-- CTA -->
-<section style="border-top:1px solid #d4d4d4;padding:48px 0;text-align:center;">
-    <div class="container">
-        <h2 style="font-size:20px;font-weight:600;margin-bottom:8px;">Use the Ledger</h2>
-        <p style="font-size:14px;color:#78716c;margin-bottom:24px;">All data is CC0. Download the latest snapshot, query the live API, or read the methodology.</p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-            <button onclick="downloadCSV()" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;">↓ Download CSV</button>
-            <a href="/methodology.html" style="font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 24px;text-decoration:none;text-transform:uppercase;letter-spacing:0.5px;background:#fafaf9;color:#1c1917;border:1px solid #d4d4d4;">Read Methodology</a>
-        </div>
-    </div>
-</section>
-
 <section id="about" class="about-section">
     <div class="container"><div class="about-content">
         <h2 class="about-title">About DealLedger</h2>
@@ -319,12 +293,11 @@
             <p><strong>The problem:</strong> There is no public registry for small business transactions. The same listing appears across multiple sites, listing dates are hidden, and inventory numbers are inflated by stale and zombie listings. The market is opaque by design.</p>
             <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from major marketplaces and broker websites, recover listing dates through our proprietary methodology, and publish everything as open data.</p>
             <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
-            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates via Supabase API) and broker-direct listings from 1,700+ broker sites. The methodology is documented. The data is downloadable. Anyone can verify and build on it.</p>
+            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates) and broker-direct listings from 1,700+ broker sites. The methodology is documented. Anyone can verify what we observe.</p>
         </div>
         <div class="about-links">
             <a href="/methodology.html" class="about-link">→ Read the methodology</a>
             <a href="/brokers" class="about-link">→ See all tracked brokers</a>
-            <a href="#" onclick="downloadCSV(); return false;" class="about-link">→ Download the latest snapshot</a>
             <a href="/pulse.html" class="about-link">→ Market Pulse (weekly report)</a>
         </div>
     </div></div>
@@ -575,31 +548,12 @@ async function loadData() {
     }
 }
 
-function downloadCSV() {
-    const cols = ['estimated_listed_date','title','state','price','days_on_market','listing_views','source_url'];
-    const headers = ['est_listed','title','state','price','days_on_market','views','url'];
-    const rows = [headers.join(',')];
-    filteredListings.forEach(l => {
-        rows.push(cols.map(c => {
-            const v = l[c] == null ? '' : String(l[c]);
-            return v.includes(',') || v.includes('"') || v.includes('\n') ? `"${v.replace(/"/g,'""')}"` : v;
-        }).join(','));
-    });
-    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `dealledger-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-}
-
 document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); runKeywordSearch(); }
 });
 
 // TEMPORARY: mailto fallback for broker submissions.
-// Replace this whole handler with your chosen backend (Supabase insert,
-// Formspree, Tally, etc.) once decided.
+// Replace with your chosen backend (Supabase insert, Formspree, etc.) when ready.
 document.getElementById('brokerForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const url = document.getElementById('brokerUrl').value;
@@ -616,9 +570,6 @@ document.getElementById('brokerForm').addEventListener('submit', function(e) {
 });
 
 loadData();
-// Diff bar removed - depended on raw.githubusercontent.com.
-// To re-enable: serve diff.json from /data/snapshots/ on your own domain
-// or expose it via a Supabase view.
 </script>
 </body>
 </html>
