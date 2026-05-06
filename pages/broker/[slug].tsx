@@ -75,23 +75,9 @@ type PageProps = {
 
 // ─── DATA FETCHING ─────────────────────────────────────────────────────────
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Pre-render only firms that have at least one listing in our data.
-  // Solo firms with no observed listings aren't worth pre-building; they
-  // resolve via fallback if anyone visits.
-  const sb = getSupabase();
-  const { data } = await sb
-    .from('broker_firms')
-    .select('slug, sum_active_per_agent, sum_sold_per_agent')
-    .not('slug', 'is', null);
-
-  const paths = (data || [])
-    .filter(
-      (r: any) =>
-        (r.sum_active_per_agent ?? 0) > 0 || (r.sum_sold_per_agent ?? 0) > 0
-    )
-    .map((r: any) => ({ params: { slug: r.slug } }));
-
-  return { paths, fallback: 'blocking' };
+  // Pre-build nothing. fallback: 'blocking' resolves every URL on demand.
+  // Faster deploys, no thin-page worry — every firm gets a real page.
+  return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
@@ -115,7 +101,8 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   if (firmErr || !firmRow) return { notFound: true };
   const firm = firmRow as Firm;
 
-  // Pull active listings linked to this firm
+  // Pull ALL active listings linked to this firm (no truncation)
+  // .range(0, 9999) overrides Supabase's default 1000-row cap
   const { data: activeRows } = await sb
     .from('listings')
     .select(
@@ -124,18 +111,18 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .eq('firm_key', firm.firm_key)
     .eq('is_active', true)
     .order('days_on_market', { ascending: false, nullsFirst: false })
-    .limit(50);
+    .range(0, 9999);
 
-  // Pull recently inactive listings (treated as sold/closed)
+  // Pull ALL inactive/no-longer-observed listings (no truncation)
   const { data: soldRows } = await sb
     .from('listings')
     .select('id, listing_number, header, price, state, city, category, last_seen')
     .eq('firm_key', firm.firm_key)
     .eq('is_active', false)
     .order('last_seen', { ascending: false, nullsFirst: false })
-    .limit(25);
+    .range(0, 9999);
 
-  // Roster — principals first, then by sold count
+  // ALL roster — principals first, then by sold count
   const { data: rosterRows } = await sb
     .from('broker_master')
     .select(
@@ -143,7 +130,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     )
     .eq('firm_key', firm.firm_key)
     .order('soldListingsCount', { ascending: false, nullsFirst: false })
-    .limit(20);
+    .range(0, 9999);
 
   // Real counts (ground truth from listings table, not broker_master sums)
   const { count: realActive } = await sb
@@ -254,7 +241,7 @@ export default function BrokerPage({
   const eyebrow = isSolo ? 'BROKER' : isMultiState ? 'BROKERAGE FIRM' : 'BROKERAGE';
 
   const pageTitle = `${firm.companyname || 'Broker'} — DealLedger`;
-  const metaDescription = `Public record of ${firm.companyname || 'broker'}: ${realActiveCount} active listings, ${realSoldCount} closed listings observed.`;
+  const metaDescription = `Public record of ${firm.companyname || 'broker'}: ${realActiveCount} active listings, ${realSoldCount} previously observed listings.`;
 
   return (
     <>
@@ -336,12 +323,12 @@ export default function BrokerPage({
               }
             />
             <Stat
-              label="Closes (6mo)"
+              label="Last 6mo Activity"
               value={fmtNum(recentSoldCount)}
               sub={
                 recentSoldCount > 0
-                  ? 'Listings gone inactive'
-                  : 'No recent closes'
+                  ? 'No longer observed'
+                  : 'No recent change'
               }
             />
             <Stat
@@ -408,11 +395,7 @@ export default function BrokerPage({
           {activeListings.length > 0 && (
             <Section
               title="ACTIVE LISTINGS"
-              subtitle={
-                realActiveCount > activeListings.length
-                  ? `Showing ${activeListings.length} of ${fmtNum(realActiveCount)}`
-                  : `${activeListings.length} listing${activeListings.length === 1 ? '' : 's'}`
-              }
+              subtitle={`${fmtNum(activeListings.length)} listing${activeListings.length === 1 ? '' : 's'}`}
             >
               <ListingTable rows={activeListings} kind="active" />
             </Section>
@@ -422,23 +405,24 @@ export default function BrokerPage({
           {!isSolo && roster.length > 0 && (
             <Section
               title="BROKERS AT THIS FIRM"
-              subtitle={`Top ${Math.min(roster.length, 20)} by closed deals observed`}
+              subtitle={`${roster.length} ${roster.length === 1 ? 'broker' : 'brokers'} on record`}
             >
               <RosterTable rows={roster} />
             </Section>
           )}
 
-          {/* ─── RECENT SOLD ───────────────────────────────────────── */}
+          {/* ─── PREVIOUSLY OBSERVED ───────────────────────────────── */}
           {soldListings.length > 0 && (
             <Section
-              title="RECENT INACTIVE"
-              subtitle={
-                realSoldCount > soldListings.length
-                  ? `Showing ${soldListings.length} of ${fmtNum(realSoldCount)} no-longer-active listings`
-                  : `${soldListings.length} no-longer-active listing${soldListings.length === 1 ? '' : 's'}`
-              }
+              title="PREVIOUSLY OBSERVED"
+              subtitle={`${fmtNum(soldListings.length)} listing${soldListings.length === 1 ? '' : 's'} no longer in latest scrape`}
             >
               <SoldTable rows={soldListings} />
+              <p className="caveat">
+                These listings appeared in past scrapes and were not present in
+                our most recent refresh. They may still be active elsewhere;
+                "no longer observed" is not the same as "sold."
+              </p>
             </Section>
           )}
 
@@ -452,9 +436,12 @@ export default function BrokerPage({
                 closed transactions confirmed by the broker.
               </p>
               <p>
-                "Closes (6mo)" means listings that have gone inactive in the
-                trailing 180 days. Some of these are sold; some are withdrawn,
-                price-reset, or relisted. We do not distinguish.
+                We do not have direct visibility into which listings sold. When
+                a listing stops appearing in our scrapes, we mark it as no
+                longer observed — but we do not claim it sold. Some close;
+                some withdraw; some are re-listed under a new ID; some are
+                simply missed by our scraper. We surface the observation; you
+                draw the conclusion.
               </p>
             </div>
           </Section>
@@ -591,6 +578,15 @@ export default function BrokerPage({
         .cred-text {
           color: var(--ink-soft);
           white-space: pre-wrap;
+        }
+
+        .caveat {
+          font-size: 13px;
+          color: var(--ink-mute);
+          margin-top: 16px;
+          margin-bottom: 0;
+          max-width: 64ch;
+          line-height: 1.6;
         }
 
         .respond {
