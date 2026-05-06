@@ -411,20 +411,6 @@ export default function BrokerPage({
             </Section>
           )}
 
-          {/* ─── PREVIOUSLY OBSERVED ───────────────────────────────── */}
-          {soldListings.length > 0 && (
-            <Section
-              title="PREVIOUSLY OBSERVED"
-              subtitle={`${fmtNum(soldListings.length)} listing${soldListings.length === 1 ? '' : 's'} no longer in latest scrape`}
-            >
-              <SoldTable rows={soldListings} />
-              <p className="caveat">
-                These listings appeared in past scrapes and were not present in
-                our most recent refresh. They may still be active elsewhere;
-                "no longer observed" is not the same as "sold."
-              </p>
-            </Section>
-          )}
 
           {/* ─── METHODOLOGY ───────────────────────────────────────── */}
           <Section title="METHODOLOGY" subtitle="What we observe">
