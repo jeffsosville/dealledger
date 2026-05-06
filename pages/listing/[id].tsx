@@ -464,6 +464,15 @@ export default function ListingPage({
                 )}
               </div>
             </Section>
+      <Section title="ACQUISITION FINANCING" subtitle="">
+  <div style={{ background: 'var(--bg-card)', border: '1px solid var(--rule)', padding: '22px 24px' }}>
+    <p style={{ margin: 0, color: 'var(--ink-soft)', maxWidth: '64ch' }}>
+      Most SBA-eligible businesses on this ledger qualify for 7(a) acquisition
+      financing at approximately 10% buyer equity. DealLedger maintains relationships
+      with SBA lender partners. <a href="/sba">See SBA options →</a>
+    </p>
+  </div>
+</Section>
           )}
 
           <Section title="METHODOLOGY" subtitle="What we observe">
