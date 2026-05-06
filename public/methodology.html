@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodology — DealLedger</title>
+    <meta name="description" content="How DealLedger collects, normalizes, and publishes business-for-sale listings.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P8PBL3LPF2');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --accent: #c2410c;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+        .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+        .container-wide { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
+        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        nav a:hover { color: var(--text); }
+        nav a.active { color: var(--text); }
+        main { padding: 48px 0 64px; }
+        h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .lead { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; }
+        h2 { font-family: var(--mono); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text); margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+        h2:first-of-type { border-top: none; padding-top: 0; }
+        h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+        p { margin-bottom: 16px; color: var(--text); }
+        ul { margin: 0 0 16px 20px; }
+        li { margin-bottom: 8px; }
+        strong { font-weight: 600; }
+        .mono { font-family: var(--mono); font-size: 13px; }
+        .callout { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 24px 0; font-size: 14px; }
+        .callout strong { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 6px; }
+        .field-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+        .field-table th, .field-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .field-table th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 500; background: var(--bg-alt); }
+        .field-table td.f { font-family: var(--mono); white-space: nowrap; }
+        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 64px; background: var(--bg-alt); }
+        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: var(--text); }
+        a.inline { color: var(--link); text-decoration: underline; }
+        a.inline:hover { color: var(--accent); }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container-wide">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline">— An open ledger of every business for sale in America</span>
+            </div>
+            <nav>
+                <a href="/methodology.html" class="active">Methodology</a>
+                <a href="/#about">About</a>
+                <a href="/pulse.html">Market Pulse</a>
+                <a href="/brokers">Brokers</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Methodology</h1>
+        <p class="lead">How DealLedger collects, normalizes, and publishes listings of businesses for sale in the United States.</p>
+
+        <h2>What we observe</h2>
+        <p>DealLedger maintains a continuously updated record of business-for-sale listings drawn from two source layers:</p>
+        <ul>
+            <li><strong>Marketplace listings.</strong> Listings indexed by major business-for-sale marketplaces. These are the listings most buyers see.</li>
+            <li><strong>Broker-direct listings.</strong> Listings published directly on individual business-broker websites. We track over 1,700 broker sites, the majority of which are not comprehensively indexed by any single marketplace.</li>
+        </ul>
+        <p>Both sources are collected from publicly accessible web pages. We do not access private or login-gated systems, and we do not pay for marketplace data feeds.</p>
+
+        <h2>What we publish</h2>
+        <p>For each listing in the ledger, we publish a normalized record containing:</p>
+        <table class="field-table">
+            <thead>
+                <tr><th>Field</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="f">listing_number</td><td>Stable identifier used to track the listing over time.</td></tr>
+                <tr><td class="f">title / header</td><td>Listing headline as published by the source.</td></tr>
+                <tr><td class="f">state</td><td>U.S. state where the business is located, normalized to two-letter codes.</td></tr>
+                <tr><td class="f">price</td><td>Asking price in USD where disclosed.</td></tr>
+                <tr><td class="f">source_url</td><td>Direct link back to the original listing page.</td></tr>
+                <tr><td class="f">first_seen</td><td>Date DealLedger first observed the listing.</td></tr>
+                <tr><td class="f">estimated_listed_date</td><td>Estimated date the listing went live (see "Date recovery" below).</td></tr>
+                <tr><td class="f">days_on_market</td><td>Days elapsed since estimated_listed_date.</td></tr>
+                <tr><td class="f">listing_views</td><td>View count where the source publishes one.</td></tr>
+                <tr><td class="f">relisted</td><td>True if the listing matches a prior listing that was removed.</td></tr>
+                <tr><td class="f">is_active</td><td>True if the listing was observed in the most recent collection cycle.</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Collection cadence</h2>
+        <p>Marketplace data is refreshed daily. Broker-direct data is refreshed on a rolling schedule, with high-volume brokers checked daily and lower-volume brokers checked weekly. Every collection cycle is recorded — we never overwrite history. When a listing disappears from its source, we record the disappearance rather than deleting the row.</p>
+
+        <h2>Normalization</h2>
+        <p>Raw listings vary widely in format. We apply a normalization pass to make records comparable across sources:</p>
+        <ul>
+            <li>State names mapped to standard two-letter codes.</li>
+            <li>Prices parsed from strings ("$1.2M", "1,200,000", etc.) into integers.</li>
+            <li>Categories mapped to a controlled vocabulary where possible.</li>
+            <li>Duplicate listings — the same business appearing on multiple sources — are detected and linked, not collapsed. Each source record is preserved.</li>
+        </ul>
+
+        <h2>Date recovery</h2>
+        <p>Most marketplaces and brokers do not publish the original date a listing was created. To approximate it, DealLedger uses a proprietary methodology that combines listing identifiers, observed appearance dates across collection cycles, and source-specific patterns to estimate when each listing first went live.</p>
+        <p>Estimated listing dates carry a mean error of approximately ±12 days against ground-truth listings where the original date is known. They are intended for relative comparisons (which listing is older, how stale is this inventory) rather than legal or regulatory use.</p>
+        <div class="callout">
+            <strong>Note</strong>
+            We do not publish the full date-recovery algorithm. The methodology is proprietary, but the resulting estimates are visible in every record as the <span class="mono">estimated_listed_date</span> field.
+        </div>
+
+        <h2>Relist detection</h2>
+        <p>When a listing disappears and a new listing for what appears to be the same business appears later, DealLedger flags the new listing as relisted. Detection is based on a combination of broker identity, geography, price band, category, and content fingerprinting. Relisting is meaningful — it indicates that a business returned to market, often at a different price, after failing to sell the first time.</p>
+
+        <h2>Quality signals</h2>
+        <p>DealLedger assigns each active listing one of four quality signals based on the relationship between days on market and view count:</p>
+        <ul>
+            <li><strong>Hidden Gem</strong> — low days on market, low views. Recently listed and not yet getting attention.</li>
+            <li><strong>Hot</strong> — low days on market, high views. Recently listed and moving fast.</li>
+            <li><strong>Overpriced</strong> — high days on market, high views. Sitting despite buyer interest, suggesting price resistance.</li>
+            <li><strong>Dead</strong> — high days on market, low views. Ignored.</li>
+        </ul>
+        <p>Thresholds: low DOM = ≤90 days, high DOM = &gt;180 days, high views = &gt;200, low views = &lt;50. These thresholds are calibrated against the full active inventory and are revised periodically as the ledger grows.</p>
+
+        <h2>What we do not do</h2>
+        <ul>
+            <li>We do not rank brokers or listings.</li>
+            <li>We do not recommend businesses to buyers.</li>
+            <li>We do not capture leads on behalf of brokers or marketplaces.</li>
+            <li>We do not broker transactions ourselves.</li>
+            <li>We do not edit history. Errors are corrected by appending a new record, not by overwriting.</li>
+        </ul>
+
+        <h2>Data access</h2>
+        <p>Active listings are queryable in real time through the ledger interface on the <a href="/" class="inline">home page</a>. Aggregate market statistics are published weekly in <a href="/pulse.html" class="inline">Market Pulse</a>. The full broker source list is available at <a href="/brokers" class="inline">/brokers</a>.</p>
+        <p>All published data is released under a CC0 (public domain) dedication. You may use, redistribute, or build on it without attribution, though attribution is appreciated.</p>
+
+        <h2>Corrections</h2>
+        <p>If you spot an error in a listing — wrong state, wrong price, wrong status — email <a href="mailto:info@dealledger.org" class="inline">info@dealledger.org</a> with the listing identifier and what's wrong. We review corrections weekly and append the corrected record without deleting the original.</p>
+
+        <h2>Limitations</h2>
+        <p>DealLedger is a best-effort observational record, not an authoritative registry. Specifically:</p>
+        <ul>
+            <li>Coverage is incomplete. Brokers not yet in our source list, off-market deals, and listings on social media or in private networks are not captured.</li>
+            <li>Estimated listing dates carry meaningful error and should not be relied on for legal, regulatory, or transactional purposes.</li>
+            <li>Marketplace listings can be reposted, refreshed, or boosted in ways that affect apparent listing age. We attempt to detect these but do not catch all of them.</li>
+            <li>Listing content (price, headline, category) reflects what the source publishes. If a broker publishes inflated or stale information, we record what we observe.</li>
+        </ul>
+
+        <p style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted);">
+            Last updated: <span class="mono">May 2026</span>.
+            Questions: <a href="mailto:info@dealledger.org" class="inline">info@dealledger.org</a>.
+        </p>
+    </div>
+</main>
+
+<footer>
+    <div class="container-wide">
+        <div class="footer-content">
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
+            <div class="footer-links">
+                <a href="/methodology.html">Methodology</a>
+                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
