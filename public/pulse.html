@@ -37,6 +37,7 @@
         nav { display: flex; gap: 24px; }
         nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
         nav a:hover { color: var(--text); }
+        nav a.active { color: var(--text); }
         footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; }
         .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
         .footer-text { font-size: 12px; color: var(--text-muted); }
@@ -101,9 +102,10 @@
                 <span class="tagline"> — Market Pulse</span>
             </div>
             <nav>
-                <a href="/">Browse Ledger</a>
-                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
-                <a href="/hot.html">Hot 100</a>
+                <a href="/methodology.html">Methodology</a>
+                <a href="/#about">About</a>
+                <a href="/pulse.html" class="active">Market Pulse</a>
+                <a href="/brokers">Brokers</a>
             </nav>
         </div>
     </div>
@@ -205,7 +207,7 @@
         <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">What this is</h2>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Real data.</strong> <span style="color:var(--text-muted);">Every number comes directly from DealLedger's live database.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>No opinions.</strong> <span style="color:var(--text-muted);">We don't rank brokers. We don't recommend listings. We publish what we observe.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Free forever.</strong> <span style="color:var(--text-muted);">DealLedger is CC0. The newsletter is free. No paywalls, ever.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Free forever.</strong> <span style="color:var(--text-muted);">DealLedger data is CC0. The newsletter is free. No paywalls, ever.</span></p>
         <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Weekly cadence.</strong> <span style="color:var(--text-muted);">Every Monday morning. One email. Five sections. Done.</span></p>
     </div></div>
 </section>
@@ -213,10 +215,10 @@
 <footer>
     <div class="container">
         <div class="footer-content">
-            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Code: MIT License. Data: CC0.</div>
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
             <div class="footer-links">
-                <a href="/">Ledger</a>
-                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
+                <a href="/methodology.html">Methodology</a>
+                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
             </div>
         </div>
     </div>
