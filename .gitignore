@@ -58,3 +58,5 @@ next-env.d.ts
 # Cookies and debug artifacts
 scrapers/bbs_cookies*
 scrapers/debug_*.html
+DEALLEDGER_INTERNAL_METHODOLOGY.md
+RUNBOOK.md
