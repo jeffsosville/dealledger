@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Pulse — DealLedger</title>
+    <meta name="description" content="The weekly data report on the US small business market. Free. From DealLedger.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P8PBL3LPF2');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --accent: #c2410c;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
+        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        nav a:hover { color: var(--text); }
+        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; }
+        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: var(--text); }
+
+        /* ── Pulse-specific ── */
+        .pulse-hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); }
+        .pulse-kicker { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 16px; }
+        .pulse-title { font-family: var(--mono); font-size: clamp(28px, 5vw, 48px); font-weight: 600; letter-spacing: -1px; color: var(--text); margin-bottom: 16px; line-height: 1.1; }
+        .pulse-deck { font-size: 15px; color: var(--text-muted); max-width: 560px; line-height: 1.7; margin-bottom: 0; border-left: 3px solid var(--border); padding-left: 16px; }
+
+        /* ── What's inside ── */
+        .features-section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+        .section-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 20px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+        .feature-item { background: var(--bg); padding: 20px; }
+        .feature-num { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+        .feature-title { font-family: var(--mono); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+        /* ── Form ── */
+        .form-section { padding: 48px 0; border-bottom: 1px solid var(--border); background: var(--bg-alt); }
+        .form-wrap { max-width: 520px; }
+        .form-title { font-family: var(--mono); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .form-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+        .form-row { display: flex; gap: 0; margin-bottom: 8px; }
+        .form-input { flex: 1; font-family: var(--mono); font-size: 13px; padding: 10px 14px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; border-right: none; }
+        .form-input:focus { border-color: var(--text); }
+        .form-input::placeholder { color: #a8a29e; }
+        .form-btn { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 20px; background: var(--text); color: var(--bg); border: 1px solid var(--text); cursor: pointer; white-space: nowrap; }
+        .form-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .form-note { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+        .form-success { font-family: var(--mono); font-size: 12px; color: #166534; padding: 10px 14px; background: #f0fdf4; border: 1px solid #bbf7d0; display: none; }
+        .form-error { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-top: 6px; display: none; }
+
+        /* ── Data samples ── */
+        .samples-section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+        .samples-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+        .sample-card { border: 1px solid var(--border); padding: 20px; background: var(--bg); }
+        .sample-tag { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 8px; }
+        .sample-stat { font-family: var(--mono); font-size: 32px; font-weight: 600; letter-spacing: -1px; color: var(--text); margin-bottom: 8px; line-height: 1; }
+        .sample-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+        @media (max-width: 600px) {
+            .pulse-hero { padding: 40px 0 32px; }
+            .form-row { flex-direction: column; }
+            .form-input { border-right: 1px solid var(--border); border-bottom: none; }
+            .form-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline"> — Market Pulse</span>
+            </div>
+            <nav>
+                <a href="/">Browse Ledger</a>
+                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
+                <a href="/hot.html">Hot 100</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="pulse-hero">
+    <div class="container">
+        <div class="pulse-kicker">Weekly Market Intelligence · Free Forever</div>
+        <h1 class="pulse-title">Market Pulse</h1>
+        <p class="pulse-deck">
+            Every week, one data-driven look at the US small business market. DOM trends. Relist rates. What's moving, what's sitting, what nobody else can see. From the team behind DealLedger — the open public record of every business for sale in America.
+        </p>
+    </div>
+</section>
+
+<!-- What's inside -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-label">What's inside each issue</div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-num">01 — THE NUMBER</div>
+                <div class="feature-title">One striking stat</div>
+                <div class="feature-desc">From 33,000+ active listings — something the market doesn't know yet.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">02 — THE TREND</div>
+                <div class="feature-title">DOM by category</div>
+                <div class="feature-desc">Days-on-market movement by category and state. Who's moving, who's sitting.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">03 — THE FIND</div>
+                <div class="feature-title">Hidden gem</div>
+                <div class="feature-desc">One under-the-radar listing surfaced by the algorithm. Fresh. Low views. Real.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">04 — THE SIGNAL</div>
+                <div class="feature-title">Relist & zombie rates</div>
+                <div class="feature-desc">How many businesses are back on the market under a new ID. Liquidity shifts.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-num">05 — BOTTOM LINE</div>
+                <div class="feature-title">One sentence</div>
+                <div class="feature-desc">What all of it means for buyers and brokers. No fluff.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Subscribe form -->
+<section class="form-section">
+    <div class="container">
+        <div class="form-wrap">
+            <h2 class="form-title">Subscribe — Free</h2>
+            <p class="form-sub">Published every Monday. No spam. No paywalls. No lead capture. Just the data.</p>
+            <div id="form-container">
+                <div class="form-row">
+                    <input type="email" id="emailInput" class="form-input" placeholder="your@email.com" autocomplete="email">
+                    <button class="form-btn" id="submitBtn" onclick="handleSubscribe()">Subscribe →</button>
+                </div>
+                <div class="form-error" id="formError">Something went wrong. Please try again.</div>
+                <p class="form-note">Unsubscribe any time. Published every Monday morning.</p>
+            </div>
+            <div class="form-success" id="formSuccess">
+                ✓ &nbsp; You're on the list. First issue arrives Monday.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sample data -->
+<section class="samples-section">
+    <div class="container">
+        <div class="section-label">A taste of the data</div>
+        <div class="samples-grid">
+            <div class="sample-card">
+                <div class="sample-tag">The Number</div>
+                <div class="sample-stat">1,212</div>
+                <div class="sample-desc">Active listings that were previously listed under a different ID. Same business. Same price. 3.6% of all verified listings — invisible to most buyers.</div>
+            </div>
+            <div class="sample-card">
+                <div class="sample-tag">The Trend · Median DOM</div>
+                <div class="sample-stat">147d</div>
+                <div class="sample-desc">Median days on market across all active US listings. Service businesses move at 89 days. Restaurants sit at 218. The gap is widening.</div>
+            </div>
+            <div class="sample-card">
+                <div class="sample-tag">The Signal · Coverage</div>
+                <div class="sample-stat">94%</div>
+                <div class="sample-desc">Of verified listings now carry public view counts from BizQuest — the closest thing to a demand signal this market has ever had.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Principles -->
+<section style="border-top:1px solid var(--border);padding:48px 0;background:var(--bg-alt);">
+    <div class="container"><div style="max-width:600px;">
+        <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">What this is</h2>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Real data.</strong> <span style="color:var(--text-muted);">Every number comes directly from DealLedger's live database.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>No opinions.</strong> <span style="color:var(--text-muted);">We don't rank brokers. We don't recommend listings. We publish what we observe.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Free forever.</strong> <span style="color:var(--text-muted);">DealLedger is CC0. The newsletter is free. No paywalls, ever.</span></p>
+        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:var(--accent);">→</span> <strong>Weekly cadence.</strong> <span style="color:var(--text-muted);">Every Monday morning. One email. Five sections. Done.</span></p>
+    </div></div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Code: MIT License. Data: CC0.</div>
+            <div class="footer-links">
+                <a href="/">Ledger</a>
+                <a href="https://github.com/jeffsosville/dealledger" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
+
+async function handleSubscribe() {
+    const email = document.getElementById('emailInput').value.trim();
+    const btn   = document.getElementById('submitBtn');
+    const err   = document.getElementById('formError');
+
+    err.style.display = 'none';
+    if (!email || !email.includes('@')) {
+        err.textContent = 'Please enter a valid email address.';
+        err.style.display = 'block';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/pulse_subscribers`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON,
+                'Authorization': `Bearer ${SUPABASE_ANON}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=ignore-duplicates'
+            },
+            body: JSON.stringify({ email: email.toLowerCase() })
+        });
+
+        if (res.ok || res.status === 201) {
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
+        } else {
+            throw new Error('Server error');
+        }
+    } catch(e) {
+        btn.disabled = false;
+        btn.textContent = 'Subscribe →';
+        err.textContent = 'Something went wrong. Please try again.';
+        err.style.display = 'block';
+    }
+}
+
+document.getElementById('emailInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSubscribe();
+});
+</script>
+
+</body>
+</html>
