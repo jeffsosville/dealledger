@@ -253,9 +253,33 @@ def normalize(listing, state_code):
 
 # ── Supabase upsert ────────────────────────────────────────────────────────────
 def upsert_to_supabase(sb, records):
+    """
+    Upsert listings while preserving first_seen for existing rows.
+    For each batch:
+      1. Look up existing first_seen values for these listing_numbers
+      2. Override the new record's first_seen with the existing one if found
+      3. Upsert the merged batch
+    """
     ok = err = 0
     for i in range(0, len(records), BATCH_SIZE):
         batch = records[i:i+BATCH_SIZE]
+
+        listing_nums = [r['listing_number'] for r in batch if r.get('listing_number')]
+        try:
+            existing = sb.table('listings') \
+                .select('listing_number,first_seen') \
+                .in_('listing_number', listing_nums) \
+                .execute()
+            existing_map = {row['listing_number']: row['first_seen'] for row in (existing.data or [])}
+        except Exception as e:
+            print(f"  {Fore.YELLOW}Warning: first_seen lookup failed: {e}")
+            existing_map = {}
+
+        for r in batch:
+            ln = r.get('listing_number')
+            if ln in existing_map and existing_map[ln]:
+                r['first_seen'] = existing_map[ln]
+
         try:
             sb.table('listings').upsert(batch, on_conflict='listing_number').execute()
             ok += len(batch)
