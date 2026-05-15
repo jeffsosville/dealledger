@@ -1,5 +1,4 @@
 name: Daily broker scrape
-
 on:
   schedule:
     - cron: '0 14 * * *'  # 9am ET daily
@@ -9,10 +8,8 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 350
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -23,13 +20,14 @@ jobs:
           playwright install chromium
           playwright install-deps chromium
 
-      - name: Run V6 scraper (reads from broker_sources table)
+      - name: Run V6 scraper
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
         run: |
           python3 scrapers/dealledger_scraper_v6.py \
-            --source supabase \
+            --brokers data/brokers_clean.csv \
             --top-n 100 \
             --output data/snapshots
 
