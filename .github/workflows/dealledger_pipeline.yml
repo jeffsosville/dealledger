@@ -49,11 +49,30 @@ jobs:
           CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
         run: python3 scrapers/quality_scorer.py
 
+  relist_refresh:
+    name: Relist Refresh
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality_score
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install supabase
+      - name: Refresh relist flags (sticky)
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/relist_refresh.py
+
   vertical_sync:
     name: Vertical Sync
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: quality_score
+    needs: relist_refresh
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
