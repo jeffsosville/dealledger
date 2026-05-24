@@ -37,10 +37,10 @@ VERTICALS = {
         "exclude":      ["real estate", "realty", "property"],
     },
     "vending": {
-        "supabase_url": os.environ.get("VENDINGEXITS_SUPABASE_URL", ""),
+        "supabase_url": os.environ.get("VENDINGEXITS_SUPABASE_URL") or os.environ.get("CLEANINGEXITS_SUPABASE_URL") or "https://ctvrauiiskucinibnfaj.supabase.co",
         "supabase_key": os.environ.get("VENDINGEXITS_SERVICE_KEY", os.environ.get("CLEANINGEXITS_SERVICE_KEY", "")),
         "table":        "vending_listings_merge",
-        "keywords":     ["vending", "vend machine", "ATM", "coin-op", "amusement"],
+        "keywords":     ["vending", "vend machine", "coin-op", "amusement"],
         "exclude":      ["real estate"],
     },
 }
