@@ -38,8 +38,8 @@ VERTICALS = {
     },
     "vending": {
         "supabase_url": os.environ.get("VENDINGEXITS_SUPABASE_URL", ""),
-        "supabase_key": os.environ.get("VENDINGEXITS_SERVICE_KEY", ""),
-        "table":        "vending_listings",
+        "supabase_key": os.environ.get("VENDINGEXITS_SERVICE_KEY", os.environ.get("CLEANINGEXITS_SERVICE_KEY", "")),
+        "table":        "vending_listings_merge",
         "keywords":     ["vending", "vend machine", "ATM", "coin-op", "amusement"],
         "exclude":      ["real estate"],
     },
@@ -59,12 +59,7 @@ def dl_fetch_scored(min_score: int = 0) -> list[dict]:
     log.info(f"Fetching scored listings from DealLedger (min_score={min_score})...")
     rows, offset = [], 0
     params_base = {
-        "select": "id,header,price,cash_flow,revenue,location,state,city,"
-                  "broker_name,broker_url,listing_url,direct_broker_url,"
-                  "contact_name,contact_phone,notes,scraped_at,first_seen,"
-                  "bbs_listing_number,listing_views,days_on_market,"
-                  "quality_score,quality_tier,quality_rules_fired,"
-                  "bbs_account_id,is_active",
+        "select": "*",
         "is_active": "eq.true",
         "quality_tier": "not.is.null",
         "order": "quality_score.desc",
@@ -147,6 +142,37 @@ def transform_for_vertical(row: dict, vertical: str) -> dict:
             est_date = date.fromordinal(int(anchor_ord + days))
             dom = (date.today() - est_date).days
 
+    # --- vending: map to vending_listings_merge real columns ---
+    if vertical == "vending":
+        _title = row.get("header") or row.get("title", "")
+        _url   = row.get("url") or row.get("listing_url", "")
+        _loc   = ", ".join([x for x in [row.get("city"), row.get("state")] if x])
+        _active = bool(row.get("is_active", True))
+        return {
+            "listing_id":    row.get("id") or _url[-40:],
+            "title":         _title,
+            "listing_url":   _url,
+            "location":      _loc,
+            "city":          row.get("city", ""),
+            "state":         row.get("state", ""),
+            "price":         row.get("price"),
+            "cash_flow":     row.get("cash_flow"),
+            "revenue":       str(row.get("revenue", "") or ""),
+            "description":   "",
+            "broker_account": row.get("broker_account", ""),
+            "contact_name":  row.get("contact_name", ""),
+            "contact_phone": row.get("contact_phone", ""),
+            "status":        "active" if _active else "removed",
+            "is_active":     _active,
+            "relist_count":  row.get("relist_count") or 0,
+            "first_seen":    row.get("first_seen"),
+            "last_seen":     row.get("last_seen"),
+            "quality_score": row.get("quality_score"),
+            "quality_tier":  row.get("quality_tier") or "Unverified",
+            "scraped_at":    row.get("first_seen") or now,
+            "synced_at":     now,
+        }
+
     return {
         # Core identity
         "id":              row.get("id") or row.get("listing_url", "")[-40:],
@@ -190,6 +216,41 @@ def transform_for_vertical(row: dict, vertical: str) -> dict:
     }
 
 
+
+def drop_spam_clones(rows, min_cluster=4):
+    """Drop templated mass-posted listings: same price AND same title
+    skeleton (city collapsed) across >= min_cluster listings."""
+    import re as _re
+    from collections import defaultdict as _dd
+    def _norm(t):
+        t = (t or "").lower()
+        t = _re.sub(r"throughout .*$", "throughout <city>", t)
+        t = _re.sub(r"[^a-z0-9 ]", "", t).strip()
+        return t
+    buckets = _dd(list)
+    for i, row in enumerate(rows):
+        buckets[(row.get("price"), _norm(row.get("header") or row.get("title")))].append(i)
+    drop = set()
+    for key, idxs in buckets.items():
+        if len(idxs) >= min_cluster and key[0] is not None:
+            drop.update(idxs)
+    kept = [r for i, r in enumerate(rows) if i not in drop]
+    return kept, len(drop)
+
+
+
+def live_columns(base_url, key, table):
+    """Return the set of columns PostgREST currently exposes for `table`."""
+    import requests as _rq
+    try:
+        r=_rq.get(f"{base_url}/rest/v1/",
+            headers={"apikey":key,"Authorization":f"Bearer {key}"}, timeout=30)
+        props=r.json().get("definitions",{}).get(table,{}).get("properties",{})
+        return set(props.keys())
+    except Exception as _e:
+        return set()
+
+
 def sync_vertical(vertical: str, config: dict, min_score: int, dry_run: bool):
     if not config.get("supabase_url") or not config.get("supabase_key"):
         log.warning(f"Skipping {vertical} — missing Supabase URL or key")
@@ -200,6 +261,10 @@ def sync_vertical(vertical: str, config: dict, min_score: int, dry_run: bool):
     # Filter to vertical
     vertical_listings = [r for r in all_listings if matches_vertical(r, config)]
     log.info(f"[{vertical}] {len(vertical_listings)} listings match vertical keywords")
+
+    vertical_listings, n_spam = drop_spam_clones(vertical_listings)
+    if n_spam:
+        log.info(f"[{vertical}] Dropped {n_spam} templated spam clones")
 
     if not vertical_listings:
         log.info(f"[{vertical}] Nothing to sync")
@@ -222,6 +287,12 @@ def sync_vertical(vertical: str, config: dict, min_score: int, dry_run: bool):
         return
 
     # Upsert
+    _cols = live_columns(config["supabase_url"], config["supabase_key"], config["table"])
+    if _cols:
+        before = len(transformed[0]) if transformed else 0
+        transformed = [{k:v for k,v in r.items() if k in _cols} for r in transformed]
+        log.info(f"[{vertical}] Filtered rows to {len(_cols)} live table columns "
+                 f"(dropped {before-len(transformed[0]) if transformed else 0} unknown fields)")
     log.info(f"[{vertical}] Upserting {len(transformed)} rows to {config['table']}...")
     vurl, vkey = config["supabase_url"], config["supabase_key"]
     for i in range(0, len(transformed), 500):
