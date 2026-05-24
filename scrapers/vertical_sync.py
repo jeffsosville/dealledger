@@ -37,10 +37,18 @@ VERTICALS = {
         "exclude":      ["real estate", "realty", "property"],
     },
     "vending": {
-        "supabase_url": os.environ.get("VENDINGEXITS_SUPABASE_URL", ""),
-        "supabase_key": os.environ.get("VENDINGEXITS_SERVICE_KEY", ""),
-        "table":        "vending_listings",
-        "keywords":     ["vending", "vend machine", "ATM", "coin-op", "amusement"],
+        # Vending lives in the SAME Supabase project as cleaning
+        # (ctvrauiiskucinibnfaj). Share its URL/key so vending no longer
+        # silently skips for missing env. Same fallbacks as cleaning.
+        "supabase_url": os.environ.get("VENDINGEXITS_SUPABASE_URL",
+                                       os.environ.get("CLEANINGEXITS_SUPABASE_URL",
+                                                      "https://ctvrauiiskucinibnfaj.supabase.co")),
+        "supabase_key": os.environ.get("VENDINGEXITS_SERVICE_KEY",
+                                       os.environ.get("CLEANINGEXITS_SERVICE_KEY", "")),
+        "table":        "vending_listings_merge",
+        # NOTE: 'ATM' removed — ATM is its own vertical (ATMExits). Leaving it
+        # here pulled ATM-business listings into VendingExits.
+        "keywords":     ["vending", "vend machine", "coin-op", "amusement"],
         "exclude":      ["real estate"],
     },
 }
@@ -130,7 +138,13 @@ def matches_vertical(row: dict, config: dict) -> bool:
 
 
 def transform_for_vertical(row: dict, vertical: str) -> dict:
-    """Map DealLedger fields to vertical table schema."""
+    """Map DealLedger fields to vertical table schema.
+
+    Two verticals, two target schemas:
+      - cleaning_listings_merge: header / url / notes / is_verified
+      - vending_listings_merge:  title / listing_url / description / is_active
+        (the columns the VendingExits site code actually reads)
+    """
     now = datetime.now(timezone.utc).isoformat()
 
     # DOM: use days_on_market if available, else estimate from bbs_listing_number
@@ -147,46 +161,60 @@ def transform_for_vertical(row: dict, vertical: str) -> dict:
             est_date = date.fromordinal(int(anchor_ord + days))
             dom = (date.today() - est_date).days
 
-    return {
-        # Core identity
-        "id":              row.get("id") or row.get("listing_url", "")[-40:],
-        "source":          "dealledger",
-        "source_id":       str(row.get("id", "")),
-        "url":             row.get("listing_url") or row.get("url", ""),
-        "direct_broker_url": row.get("direct_broker_url") or row.get("broker_url"),
+    title    = row.get("header") or row.get("title", "")
+    url      = row.get("listing_url") or row.get("url", "")
+    is_active = bool(row.get("is_active", True))
 
-        # Listing content
-        "header":          row.get("header") or row.get("title", ""),
+    common = {
         "price":           row.get("price"),
         "cash_flow":       row.get("cash_flow"),
         "revenue":         str(row.get("revenue", "") or ""),
-        "notes":           row.get("notes") or row.get("description", ""),
         "location":        row.get("location") or row.get("location_raw", ""),
         "city":            row.get("city") or row.get("location_city", ""),
         "state":           row.get("state") or row.get("location_state", ""),
-
-        # Broker / contact
         "broker_account":  row.get("broker_name", ""),
         "contact_name":    row.get("contact_name", ""),
         "contact_phone":   row.get("contact_phone", ""),
-
-        # Quality signals
         "quality_score":   row.get("quality_score"),
         "quality_tier":    row.get("quality_tier") or row.get("trust_tier", "Unverified"),
+        "scraped_at":      row.get("scraped_at") or now,
+        "synced_at":       now,
+    }
+
+    if vertical == "vending":
+        # Match vending_listings_merge / the VendingExits site code.
+        return {
+            **common,
+            "listing_id":  row.get("id") or url[-40:],
+            "title":       title,
+            "listing_url": url,
+            "description": row.get("notes") or row.get("description", ""),
+            "status":      "active" if is_active else "removed",
+            "is_active":   is_active,
+            "relist_count": row.get("relist_count") or 0,
+            "first_seen":  row.get("first_seen"),
+            "last_seen":   row.get("last_seen"),
+        }
+
+    # cleaning (unchanged original schema)
+    return {
+        **common,
+        "id":              row.get("id") or url[-40:],
+        "source":          "dealledger",
+        "source_id":       str(row.get("id", "")),
+        "url":             url,
+        "direct_broker_url": row.get("direct_broker_url") or row.get("broker_url"),
+        "header":          title,
+        "notes":           row.get("notes") or row.get("description", ""),
         "days_on_market":  dom,
         "listing_views":   row.get("listing_views") or row.get("bbs_views"),
         "bbs_account_id":  row.get("bbs_account_id"),
         "is_verified":     row.get("quality_tier") == "Verified",
-
-        # Computed
         "calculated_multiple": (
             round(float(row["price"]) / float(row["cash_flow"]), 2)
             if row.get("price") and row.get("cash_flow") and float(row.get("cash_flow", 0)) > 0
             else None
         ),
-
-        # Timestamps
-        "scraped_at":     row.get("scraped_at") or now,
     }
 
 
@@ -218,7 +246,8 @@ def sync_vertical(vertical: str, config: dict, min_score: int, dry_run: bool):
     if dry_run:
         log.info(f"[{vertical}] Dry run — not writing to Supabase")
         for r in transformed[:3]:
-            log.info(f"  Sample: {r['header'][:60]} | ${r.get('price','?')} | {r['quality_tier']}")
+            disp = r.get("header") or r.get("title", "")
+            log.info(f"  Sample: {disp[:60]} | ${r.get('price','?')} | {r['quality_tier']}")
         return
 
     # Upsert
