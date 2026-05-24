@@ -87,4 +87,4 @@ jobs:
           SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
           CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
           CLEANINGEXITS_SERVICE_KEY:  ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
-        run: python3 scrapers/vertical_sync.py --vertical cleaning
+        run: python3 scrapers/vertical_sync.py --vertical all
