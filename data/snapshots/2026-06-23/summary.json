@@ -1,0 +1,37 @@
+{
+  "started": "2026-06-23T16:20:44.141536+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 55,
+  "brokers_failed": 45,
+  "total_listings": 3155,
+  "listings_with_price": 2996,
+  "listings_with_cashflow": 1113,
+  "listings_with_state": 1990,
+  "detail_pages_fetched": 1184,
+  "patterns_cached": 320,
+  "patterns_learned": 55,
+  "verticals": {
+    "automotive": 132,
+    "other": 917,
+    "restaurant": 647,
+    "construction": 86,
+    "retail": 347,
+    "cleaning": 43,
+    "technology": 650,
+    "landscaping": 18,
+    "healthcare": 149,
+    "electrical": 29,
+    "hvac": 35,
+    "manufacturing": 58,
+    "plumbing": 23,
+    "roofing": 7,
+    "vending": 11,
+    "pest_control": 3
+  },
+  "failure_types": {
+    "HTTP_403": 8,
+    "NO_PATTERN": 35,
+    "FETCH_ERROR": 2
+  },
+  "completed": "2026-06-23T17:19:54.347080+00:00"
+}
