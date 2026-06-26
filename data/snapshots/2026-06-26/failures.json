@@ -1,0 +1,323 @@
+[
+  {
+    "broker": "hedgestone advisors",
+    "url": "https://www.hedgestone.com/businesses-for-sale/",
+    "error": "403 Client Error: Forbidden for url: https://www.hedgestone.com/businesses-for-sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "ron matheson",
+    "url": "https://www.websiteclosers.com/businesses-for-sale/",
+    "error": "403 Client Error: Forbidden for url: https://www.websiteclosers.com/businesses-for-sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "route consultant",
+    "url": "https://listings.routeconsultant.com/route-search-results/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 98806
+  },
+  {
+    "broker": "alex beringer",
+    "url": "https://fxgcorp.com/buyers",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 17370
+  },
+  {
+    "broker": "national pool route sales lic re broker ca#01899885 fl#bk33740409",
+    "url": "https://poolroutesales.com/pool-routes-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 86030
+  },
+  {
+    "broker": "ubi business brokers",
+    "url": "https://www.ubibusinessbrokersarizona.com/all-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 178456
+  },
+  {
+    "broker": "eric gagnon",
+    "url": "https://www.wesellrestaurants.com/restaurant-for-sale-near-me/All",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 41541
+  },
+  {
+    "broker": "larry bodner",
+    "url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 27735
+  },
+  {
+    "broker": "tom traina",
+    "url": "https://eatz-associates.com/listings/?fwp_status=for-sale%2Cnew-listing%2Cunder-contract%2Cfor-lease",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 4380
+  },
+  {
+    "broker": "eric espinoza",
+    "url": "https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
+    "error": "403 Client Error: Forbidden for url: https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "henry galasso",
+    "url": "https://www.eastcoastbusinessbrokers.com/index.php?p=search-result",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 174964
+  },
+  {
+    "broker": "steven d zimmerman, cbb,\u00a0m&ami, cbi, fibba",
+    "url": "https://www.restaurantrealty.com/?ct_ct_status=active&search-listings=true",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 140797
+  },
+  {
+    "broker": "nidal saleh",
+    "url": "https://salehgroup.com/business-directory/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39
+  },
+  {
+    "broker": "ian maclachlan",
+    "url": "https://www.business-team.com/buy-a-business/search-Results.aspx",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 6068
+  },
+  {
+    "broker": "rich deluca",
+    "url": "https://prime100businessbrokers.com/search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 96361
+  },
+  {
+    "broker": "darlene ragone",
+    "url": "https://www.moxiebrokeragegroup.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 41416
+  },
+  {
+    "broker": "todd smith",
+    "url": "https://corbettrestaurantgroup.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 662385
+  },
+  {
+    "broker": "troy duffan, ceo",
+    "url": "https://sofrankoadvisors.com/for-sale/",
+    "error": "403 Client Error: Forbidden for url: https://sofrankoadvisors.com/for-sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "steve schneider",
+    "url": "https://franchiseusa.net/franchises/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1952
+  },
+  {
+    "broker": "russell cohen",
+    "url": "https://bizmls.com/listings/bbf-1287002/bus-chg7day.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 722
+  },
+  {
+    "broker": "sam saa",
+    "url": "https://www.buysellarestaurant.com/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 667760
+  },
+  {
+    "broker": "robert hughes",
+    "url": "https://hughesproperties.com/#",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "trevin rasmussen",
+    "url": "https://bristolgrouponline.com/buy-a-business/#search",
+    "error": "403 Client Error: Forbidden for url: https://bristolgrouponline.com/buy-a-business/#search",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "corbin yaldoo",
+    "url": "https://c3cre.com/property-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 123701
+  },
+  {
+    "broker": "alpine business brokers",
+    "url": "https://www.alpinebusinessbrokers.com/utah-businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 230502
+  },
+  {
+    "broker": "chuck harvey",
+    "url": "https://www.ibexbeyond.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 270381
+  },
+  {
+    "broker": "julie sandoval",
+    "url": "https://www.dealforce.com/buying-a-business/ -- Limited list. Wants a sign in to view all listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 183426
+  },
+  {
+    "broker": "nrp charlotte",
+    "url": "https://www.nationalrestaurantproperties.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11867
+  },
+  {
+    "broker": "erten musa",
+    "url": "https://www.prolevelbusiness.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 354
+  },
+  {
+    "broker": "mac thelen",
+    "url": "https://oibmn.com/listing_status/current/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 15635
+  },
+  {
+    "broker": "rod ross",
+    "url": "https://mycarwashbroker.com/new-york-car-wash-listings/",
+    "error": "403 Client Error: Forbidden for url: https://mycarwashbroker.com/new-york-car-wash-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "felizardo gaxiola",
+    "url": "https://www.excellencebusinessbrokers.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 841946
+  },
+  {
+    "broker": "shawn baek",
+    "url": "https://www.thecanvasapts.com/?rcstdid=MQ%3d%3d-WOzw8Oa5P2c%3d&gad_source=5&gad_campaignid=22511196942&gclid=EAIaIQobChMI6oyw0pO1jQMVktI8Ah0PiyvWEAAYASAAEgLWKfD_BwE",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 186036
+  },
+  {
+    "broker": "carter asefi",
+    "url": "https://www.franbiznetwork.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11853
+  },
+  {
+    "broker": "joshua d. sagman",
+    "url": "https://bizmls.com/cgi-bin/a-bus2.asp?folder=bbf-1282&src=bus-all",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 24374
+  },
+  {
+    "broker": "michael wildeveld, cbb, cbi, cm&ap, m&ami, cepa",
+    "url": "https://theveldgroup.com/main-street-businesses-for-sale/#\nhttps://veldma.com/listing/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11920
+  },
+  {
+    "broker": "daniel hauer",
+    "url": "https://link.flexmls.com/x2oeawuasrr,5",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 3439
+  },
+  {
+    "broker": "thomas zengen",
+    "url": "https://northeastbusinessbrokers.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 157465
+  },
+  {
+    "broker": "jerome thissen",
+    "url": "https://www.nationalfranchisesales.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 131889
+  },
+  {
+    "broker": "randy bernard",
+    "url": "https://proformapartners.com/current-listings/\n** full list needs log in",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 73150
+  },
+  {
+    "broker": "bill vanden eynden",
+    "url": "https://bcvcommercialrealty.com/businesses-for-sale/",
+    "error": "403 Client Error: Forbidden for url: https://bcvcommercialrealty.com/businesses-for-sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "joe tinpan",
+    "url": "https://newmichiganrealty.com/search-result/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 44644
+  },
+  {
+    "broker": "michael nuanes",
+    "url": "https://denverbbs.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 299556
+  },
+  {
+    "broker": "shane torres",
+    "url": "https://krbb.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2644
+  },
+  {
+    "broker": "best biz to buy llc texas",
+    "url": "https://www.bestbiztobuy.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 109769
+  },
+  {
+    "broker": "liliane tietjen",
+    "url": "https://www.patriotbusinessadvisors.com/Listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 30249
+  },
+  {
+    "broker": "harry sidhu",
+    "url": "https://missionpeakbrokers.com/current-listings/",
+    "error": "403 Client Error: Forbidden for url: https://missionpeakbrokers.com/current-listings/",
+    "type": "HTTP_403"
+  }
+]
