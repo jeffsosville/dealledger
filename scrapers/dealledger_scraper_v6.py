@@ -28,6 +28,14 @@ Builds on V5 with three core upgrades:
    Works for both requests and Playwright fetchers.
    Add domains to PROXY_DOMAINS as you discover 403s.
 
+5. STALENESS ROTATION (V6.2)
+   --stale-first orders brokers by least-recently-scraped BEFORE --top-n
+   slices the batch. Reads max(last_seen) per broker_domain from
+   listings_direct; never-scraped brokers sort to the front. This makes
+   the daily batch rotate through the whole registry instead of re-scraping
+   the same first-N rows of the CSV every day. Falls back to CSV order if
+   the ordering query fails — never blocks a run.
+
 SELF-CORRECTION LOOP (auto-accept mode per CLAUDE.md)
   --broker mode runs a single broker and outputs a classified result:
   PATTERN_MATCH, HTTP_403, CAPTCHA, or NO_PATTERN.
@@ -42,6 +50,9 @@ Usage:
     python3 dealledger_scraper_v6.py --brokers data/brokers.csv --test
     python3 dealledger_scraper_v6.py --brokers data/brokers.csv --top-n 50
     python3 dealledger_scraper_v6.py --brokers data/brokers.csv --all
+
+    # Rotating batch (recommended for daily cron)
+    python3 dealledger_scraper_v6.py --brokers data/brokers.csv --stale-first --top-n 250
 
     # Skip Supabase
     python3 dealledger_scraper_v6.py --brokers data/brokers.csv --top-n 50 --no-supabase
@@ -839,6 +850,56 @@ class DealLedgerScraper:
         print(f"📋 Loaded {len(brokers)} brokers from {csv_path}")
         return brokers
 
+    def _order_by_staleness(self, brokers: list[dict]) -> list[dict]:
+        """
+        Sort brokers so the least-recently-scraped come first.
+
+        Reads max(last_seen) per broker_domain from listings_direct.
+        Brokers with no rows there (never scraped) get an empty-string key,
+        which sorts to the very front — so dark brokers are picked up first.
+
+        This is READ-ONLY against listings_direct and never touches the
+        BizBuySell `listings` table. If anything fails, we fall back to the
+        original CSV order and the run proceeds unchanged.
+        """
+        if not self.supabase_writer:
+            print("ℹ️  --stale-first requested but Supabase unavailable — keeping CSV order")
+            return brokers
+
+        try:
+            latest: dict[str, str] = {}
+            # Page through listings_direct in chunks (PostgREST caps rows/req)
+            page_size = 1000
+            start = 0
+            while True:
+                resp = (self.supabase_writer.client
+                        .table("listings_direct")
+                        .select("broker_domain,last_seen")
+                        .range(start, start + page_size - 1)
+                        .execute())
+                rows = resp.data or []
+                if not rows:
+                    break
+                for row in rows:
+                    d = row.get("broker_domain")
+                    ls = row.get("last_seen") or ""
+                    if not d:
+                        continue
+                    if d not in latest or ls > latest[d]:
+                        latest[d] = ls
+                if len(rows) < page_size:
+                    break
+                start += page_size
+
+            # Empty string sorts before any ISO timestamp => never-scraped first
+            brokers.sort(key=lambda b: latest.get(b["domain"], ""))
+            never = sum(1 for b in brokers if b["domain"] not in latest)
+            print(f"🔄 Ordered by staleness — {len(latest)} known domains, "
+                  f"{never} never-scraped brokers moved to front")
+        except Exception as e:
+            print(f"⚠️  Staleness ordering failed ({e}) — falling back to CSV order")
+        return brokers
+
     @staticmethod
     def _classify_failure(error: Exception,
                           status_code: int | None = None) -> str:
@@ -1106,6 +1167,10 @@ def main():
     parser.add_argument("--test",        action="store_true")
     parser.add_argument("--top-n",       type=int)
     parser.add_argument("--all",         action="store_true")
+    parser.add_argument("--stale-first", action="store_true",
+                        help="Order brokers by least-recently-scraped (reads "
+                             "listings_direct) BEFORE applying --top-n, so the "
+                             "daily batch rotates through the whole registry")
     parser.add_argument("--output",      default="data/snapshots")
     parser.add_argument("--no-supabase", action="store_true")
     args = parser.parse_args()
@@ -1126,12 +1191,19 @@ def main():
                         "domain": urlparse(args.broker).netloc}]
         else:
             brokers = scraper._load_brokers(args.brokers)
+
+            # Order by staleness BEFORE slicing, so --top-n takes the most
+            # stale / never-scraped brokers rather than the same first N rows.
+            if args.stale_first:
+                brokers = scraper._order_by_staleness(brokers)
+
             if args.test:
                 brokers = brokers[:5]
                 print(f"\n🧪 TEST MODE: {len(brokers)} brokers")
             elif args.top_n:
                 brokers = brokers[:args.top_n]
-                print(f"\n📊 TOP {len(brokers)} brokers")
+                print(f"\n📊 TOP {len(brokers)} brokers"
+                      + (" (stale-first)" if args.stale_first else ""))
             elif args.all:
                 print(f"\n🚀 ALL {len(brokers)} brokers")
             else:
