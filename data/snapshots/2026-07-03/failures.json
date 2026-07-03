@@ -18,7 +18,7 @@
     "url": "https://poolroutesales.com/pool-routes-for-sale/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 86025
+    "html_size": 86008
   },
   {
     "broker": "ubi business brokers",
@@ -35,19 +35,6 @@
     "html_size": 41541
   },
   {
-    "broker": "larry bodner",
-    "url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 27735
-  },
-  {
-    "broker": "eric espinoza",
-    "url": "https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
-    "error": "403 Client Error: Forbidden for url: https://greenlifebusiness.com/search-result/?keyword=&location-1=&status%5B%5D=for-sale&status%5B%5D=pending&status%5B%5D=sold&sortby=d_date",
-    "type": "HTTP_403"
-  },
-  {
     "broker": "henry galasso",
     "url": "https://www.eastcoastbusinessbrokers.com/index.php?p=search-result",
     "error": "No listing pattern detected",
@@ -62,20 +49,6 @@
     "html_size": 140797
   },
   {
-    "broker": "nidal saleh",
-    "url": "https://salehgroup.com/business-directory/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 39
-  },
-  {
-    "broker": "ian maclachlan",
-    "url": "https://www.business-team.com/buy-a-business/search-Results.aspx",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 6068
-  },
-  {
     "broker": "rich deluca",
     "url": "https://prime100businessbrokers.com/search/",
     "error": "No listing pattern detected",
@@ -88,12 +61,6 @@
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
     "html_size": 41416
-  },
-  {
-    "broker": "ben strake",
-    "url": "https://premierbb.com/listings/",
-    "error": "403 Client Error: Forbidden for url: https://premierbb.com/listings/",
-    "type": "HTTP_403"
   },
   {
     "broker": "todd smith",
@@ -111,9 +78,9 @@
   {
     "broker": "steve schneider",
     "url": "https://franchiseusa.net/franchises/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 1952
+    "error": "HTTPSConnectionPool(host='franchiseusa.net', port=443): Read timed out. (read timeout=25)",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/sessions.py\", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 742, in send\n    raise ReadTimeout(e, request=request)\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='franchiseusa.net', port=443): Read timed out. (read timeout=25)\n"
   },
   {
     "broker": "russell cohen",
@@ -140,14 +107,14 @@
     "url": "https://c3cre.com/property-listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 123665
+    "html_size": 123666
   },
   {
     "broker": "alpine business brokers",
     "url": "https://www.alpinebusinessbrokers.com/utah-businesses-for-sale/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 228779
+    "html_size": 228685
   },
   {
     "broker": "chuck harvey",
@@ -161,34 +128,7 @@
     "url": "https://www.dealforce.com/buying-a-business/ -- Limited list. Wants a sign in to view all listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 183544
-  },
-  {
-    "broker": "nrp charlotte",
-    "url": "https://www.nationalrestaurantproperties.com/listings/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 11866
-  },
-  {
-    "broker": "erten musa",
-    "url": "https://www.prolevelbusiness.com/business-for-sale",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 354
-  },
-  {
-    "broker": "mac thelen",
-    "url": "https://oibmn.com/listing_status/current/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 15635
-  },
-  {
-    "broker": "rod ross",
-    "url": "https://mycarwashbroker.com/new-york-car-wash-listings/",
-    "error": "403 Client Error: Forbidden for url: https://mycarwashbroker.com/new-york-car-wash-listings/",
-    "type": "HTTP_403"
+    "html_size": 183508
   },
   {
     "broker": "felizardo gaxiola",
@@ -202,14 +142,7 @@
     "url": "https://www.thecanvasapts.com/?rcstdid=MQ%3d%3d-WOzw8Oa5P2c%3d&gad_source=5&gad_campaignid=22511196942&gclid=EAIaIQobChMI6oyw0pO1jQMVktI8Ah0PiyvWEAAYASAAEgLWKfD_BwE",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 186019
-  },
-  {
-    "broker": "carter asefi",
-    "url": "https://www.franbiznetwork.com/listings/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 11852
+    "html_size": 197621
   },
   {
     "broker": "joshua d. sagman",
@@ -217,20 +150,6 @@
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
     "html_size": 24374
-  },
-  {
-    "broker": "neil bostick",
-    "url": "https://fih.com/marketplace",
-    "error": "HTTPSConnectionPool(host='fih.com', port=443): Read timed out. (read timeout=25)",
-    "type": "FETCH_ERROR",
-    "traceback": "^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/sessions.py\", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 742, in send\n    raise ReadTimeout(e, request=request)\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='fih.com', port=443): Read timed out. (read timeout=25)\n"
-  },
-  {
-    "broker": "michael wildeveld, cbb, cbi, cm&ap, m&ami, cepa",
-    "url": "https://theveldgroup.com/main-street-businesses-for-sale/#\nhttps://veldma.com/listing/",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 21206
   },
   {
     "broker": "daniel hauer",
@@ -258,14 +177,14 @@
     "url": "https://proformapartners.com/current-listings/\n** full list needs log in",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 73156
+    "html_size": 73197
   },
   {
     "broker": "bill vanden eynden",
     "url": "https://bcvcommercialrealty.com/businesses-for-sale/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 80671
+    "html_size": 255054
   },
   {
     "broker": "joe tinpan",
@@ -303,9 +222,1194 @@
     "html_size": 30249
   },
   {
-    "broker": "harry sidhu",
-    "url": "https://missionpeakbrokers.com/current-listings/",
-    "error": "403 Client Error: Forbidden for url: https://missionpeakbrokers.com/current-listings/",
+    "broker": "lisa ludwig",
+    "url": "https://usapoolroutesales.com/listings/# - Need to choose location",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 84586
+  },
+  {
+    "broker": "raj golee",
+    "url": "https://biz-depot.co/properties-standard-list/",
+    "error": "403 Client Error: Forbidden for url: https://biz-depot.co/properties-standard-list/",
     "type": "HTTP_403"
+  },
+  {
+    "broker": "sarah grossman",
+    "url": "https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+    "error": "403 Client Error: Forbidden for url: https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "arica andreatta",
+    "url": "https://cotwrealestate.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 767875
+  },
+  {
+    "broker": "chris pramber",
+    "url": "https://businessesforsale.nuwireinvestor.com/business-broker/chris-pramber/prambernow/38206/",
+    "error": "HTTPSConnectionPool(host='businessesforsale.nuwireinvestor.com', port=443): Max retries exceeded with url: /business-broker/chris-pramber/prambernow/38206/ (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')))",
+    "type": "FETCH_ERROR",
+    "traceback": "rgs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 727, in send\n    raise SSLError(e, request=request)\nrequests.exceptions.SSLError: HTTPSConnectionPool(host='businessesforsale.nuwireinvestor.com', port=443): Max retries exceeded with url: /business-broker/chris-pramber/prambernow/38206/ (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')))\n"
+  },
+  {
+    "broker": "school investment properties, inc.",
+    "url": "https://www.childcaresales.com/active-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 38516
+  },
+  {
+    "broker": "sasa milosevic",
+    "url": "https://www.manhattan.biz/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 47883
+  },
+  {
+    "broker": "alfredo gonzalez",
+    "url": "https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/",
+    "error": "HTTPSConnectionPool(host='en.negociosenflorida.com', port=443): Max retries exceeded with url: /compre-un-negocio/negocios-destacados-2/ (Caused by NameResolutionError(\"HTTPSConnection(host='en.negociosenflorida.com', port=443): Failed to resolve 'en.negociosenflorida.com' ([Errno -2] Name or servic",
+    "type": "FETCH_ERROR",
+    "traceback": "edtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='en.negociosenflorida.com', port=443): Max retries exceeded with url: /compre-un-negocio/negocios-destacados-2/ (Caused by NameResolutionError(\"HTTPSConnection(host='en.negociosenflorida.com', port=443): Failed to resolve 'en.negociosenflorida.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "eric owens",
+    "url": "https://www.appbusinessbrokers.com/buy/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 106033
+  },
+  {
+    "broker": "ralph santos",
+    "url": "https://healthcarebizbrokers.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5149
+  },
+  {
+    "broker": "robert marcarelli",
+    "url": "https://ctbusinessforsale.com/our-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 423958
+  },
+  {
+    "broker": "tom brubaker",
+    "url": "https://www.tambaymergers.com/ - under buying a business tab",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2652
+  },
+  {
+    "broker": "vantage partners",
+    "url": "https://www.commercialmls.com/People/AgentListings/19393\n\nhttps://www.commercialmls.com/People/AgentBusOps/19393",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 3248
+  },
+  {
+    "broker": "bay area business brokers",
+    "url": "https://bayareabizbrokers.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 104726
+  },
+  {
+    "broker": "james felthammer",
+    "url": "https://www.loopnet.com/biz/business-opportunity/profitable-home-based-real-estate-firm-in-hunstville/2285686/",
+    "error": "403 Client Error: Forbidden for url: https://www.loopnet.com/biz/business-opportunity/profitable-home-based-real-estate-firm-in-hunstville/2285686/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "sanjay wadhwani",
+    "url": "https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20",
+    "error": "403 Client Error: Forbidden for url: https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "rick recckio",
+    "url": "https://recckio.com/commercial-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 205516
+  },
+  {
+    "broker": "brian zoberg",
+    "url": "https://suncoastbiz.net/search-businesses/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 60267
+  },
+  {
+    "broker": "indiana business advisors",
+    "url": "https://indianabusinessadvisors.com/businesses-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.acadp-footer.acadp-flex.acadp-items-center.acadp-mt-auto.acadp-border-0.acadp-border-t.acadp-border-gray-100.acadp-p-4.md:acadp-p-0.md:acadp-pt-4"
+  },
+  {
+    "broker": "sunny gandhi",
+    "url": "https://kwcommercial.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 45418
+  },
+  {
+    "broker": "anthony rigney",
+    "url": "https://qbusinessadvisors.com/new-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 106653
+  },
+  {
+    "broker": "john hawke",
+    "url": "https://sbpoolroutes.com/route-listings/ -- Need to input locaiton to view listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "brett post",
+    "url": "https://3cre.com/property-listings/\n\nhttps://3cre.com/business-listings-columbus/",
+    "error": "404 Client Error: Not Found for url: https://3cre.com/property-listings/%0A%0Ahttps:/3cre.com/business-listings-columbus/",
+    "type": "FETCH_ERROR"
+  },
+  {
+    "broker": "jerry hasanovic, cpa, mst",
+    "url": "https://www.dhbrokerage.com/listings.php",
+    "error": "HTTPSConnectionPool(host='www.dhbrokerage.com', port=443): Max retries exceeded with url: /listings.php (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.dhbrokerage.com', port=443) at 0x7f22c8bdc990>, 'Connection to www.dhbrokerage.com timed out. (connect timeout=25)'))",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 717, in send\n    raise ConnectTimeout(e, request=request)\nrequests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='www.dhbrokerage.com', port=443): Max retries exceeded with url: /listings.php (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.dhbrokerage.com', port=443) at 0x7f22c8bdc990>, 'Connection to www.dhbrokerage.com timed out. (connect timeout=25)'))\n"
+  },
+  {
+    "broker": "rocky didonna",
+    "url": "https://www.bizmls.com/business-search.asp -- Need to choose State",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 4932
+  },
+  {
+    "broker": "monika page",
+    "url": "https://www.biz-match.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 35738
+  },
+  {
+    "broker": "jeff sullivan",
+    "url": "https://sullivanbusinessbrokers.com/category/uncategorized/ - Appears all SOLD",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 30165
+  },
+  {
+    "broker": "paranee judd",
+    "url": "https://paraneejudd.com/basic-search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 99741
+  },
+  {
+    "broker": "susan m barnes",
+    "url": "https://www.flbusinesses.com/all-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 385564
+  },
+  {
+    "broker": "john lin",
+    "url": "https://www.capstarco.com/search-business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 520729
+  },
+  {
+    "broker": "pablo fonseca, mba",
+    "url": "https://1800bizbroker.com/business-for-sale/?statuses=ACTIVE",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 91716
+  },
+  {
+    "broker": "frank rubin",
+    "url": "https://bbms.biz/listings/bbf-134/bus-own.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 220
+  },
+  {
+    "broker": "andy rumph",
+    "url": "https://thedecaingroup.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 91452
+  },
+  {
+    "broker": "toby barker",
+    "url": "https://www.bizbrokersuccess.com/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 941843
+  },
+  {
+    "broker": "florida business opportunities, inc.",
+    "url": "https://bbms.biz/cgi-bin/a-bus2ff.asp?forsale=go",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 126
+  },
+  {
+    "broker": "mark johns",
+    "url": "https://kelleher-sadowsky.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 137774
+  },
+  {
+    "broker": "malone brokers inc",
+    "url": "https://www.malonecb.com/search-listings#/search/grid/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 121080
+  },
+  {
+    "broker": "milt flinn",
+    "url": "https://www.dealforce.com/opportunities/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 97109
+  },
+  {
+    "broker": "nai excel",
+    "url": "https://excelcres.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 97505
+  },
+  {
+    "broker": "richard kim",
+    "url": "https://www.usarealty-mn.com/listings - Need to choose location",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 16479
+  },
+  {
+    "broker": "jeremiah baron",
+    "url": "https://treasurecoastcommercialrealestate.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 123651
+  },
+  {
+    "broker": "bill corley - bottomline business brokers",
+    "url": "https://www.blbrokers.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 188628
+  },
+  {
+    "broker": "ned malley",
+    "url": "https://www.rentalbeast.com/infinitipropertiesil/apartments/for_rent/Chicago-Illinois#!/search/general",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 58785
+  },
+  {
+    "broker": "alexis roberts",
+    "url": "https://svnchicago.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 169189
+  },
+  {
+    "broker": "alan mehrez",
+    "url": "https://businessteamusa.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 73011
+  },
+  {
+    "broker": "joseph latina",
+    "url": "https://lmtcre.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 33447
+  },
+  {
+    "broker": "michael dukhovny",
+    "url": "https://search.unitednationalrealty.com/idx/results/listings?ccz=city&city%5B0%5D=",
+    "error": "HTTPSConnectionPool(host='search.unitednationalrealty.com', port=443): Max retries exceeded with url: /idx/results/listings?ccz=city&city%5B0%5D= (Caused by NameResolutionError(\"HTTPSConnection(host='search.unitednationalrealty.com', port=443): Failed to resolve 'search.unitednationalrealty.com' ([E",
+    "type": "FETCH_ERROR",
+    "traceback": ".15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='search.unitednationalrealty.com', port=443): Max retries exceeded with url: /idx/results/listings?ccz=city&city%5B0%5D= (Caused by NameResolutionError(\"HTTPSConnection(host='search.unitednationalrealty.com', port=443): Failed to resolve 'search.unitednationalrealty.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "luis gutierrez",
+    "url": "https://gutierbrokers.com/search-businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 109962
+  },
+  {
+    "broker": "lisa nguyen",
+    "url": "https://www.remax.com/homes-for-sale -- Needs to fill out a form for listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2451
+  },
+  {
+    "broker": "sandra boucher",
+    "url": "https://sebusinessalliance.com/buy-a-business/ -- Needs to fill out NDA",
+    "error": "404 Client Error: Not Found for url: https://sebusinessalliance.com/buy-a-business/%20--%20Needs%20to%20fill%20out%20NDA",
+    "type": "FETCH_ERROR"
+  },
+  {
+    "broker": "james sullivan foster",
+    "url": "https://businessbrokersoforegon.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 279631
+  },
+  {
+    "broker": "janice lee",
+    "url": "https://koamrealty.com/2022/category/listing/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 26111
+  },
+  {
+    "broker": "ming dong",
+    "url": "https://leebrokers.com/business-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 114060
+  },
+  {
+    "broker": "dennis serpone",
+    "url": "https://www.nerestaurantbrokers.com/full-service-restaurants\n\nhttps://www.nerestaurantbrokers.com/fast-food-restaurants\n\nhttps://www.nerestaurantbrokers.com/liquor-businesses",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2673
+  },
+  {
+    "broker": "brian stephens",
+    "url": "https://buybizusa.com/all-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 260850
+  },
+  {
+    "broker": "jon sheklow",
+    "url": "https://number1businessbroker.com/search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 116388
+  },
+  {
+    "broker": "sam griffin, cbi",
+    "url": "https://www.gilezanglobal.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 17060
+  },
+  {
+    "broker": "soo paik",
+    "url": "https://www.equityoregon.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 437
+  },
+  {
+    "broker": "celine zeidan",
+    "url": "https://mainsourcerealty.com/mls-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 61324
+  },
+  {
+    "broker": "helen liu",
+    "url": "https://accelvalue.com/current-listing-2/?statuses=ACTIVE",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 172351
+  },
+  {
+    "broker": "frank & rose stabler",
+    "url": "https://certifiedbb.com/listings/",
+    "error": "403 Client Error: Forbidden for url: https://certifiedbb.com/listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "colliers & acquisitions",
+    "url": "https://businessbrokerage.colliers.com/listing/",
+    "error": "HTTPSConnectionPool(host='businessbrokerage.colliers.com', port=443): Max retries exceeded with url: /listing/ (Caused by NameResolutionError(\"HTTPSConnection(host='businessbrokerage.colliers.com', port=443): Failed to resolve 'businessbrokerage.colliers.com' ([Errno -2] Name or service not known)\")",
+    "type": "FETCH_ERROR",
+    "traceback": "ile \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='businessbrokerage.colliers.com', port=443): Max retries exceeded with url: /listing/ (Caused by NameResolutionError(\"HTTPSConnection(host='businessbrokerage.colliers.com', port=443): Failed to resolve 'businessbrokerage.colliers.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "j&e business group",
+    "url": "https://jebizsales.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39
+  },
+  {
+    "broker": "shaun rudgear, mcbi, m&ami, cbi, cbb",
+    "url": "https://strategicmedicalbrokers.com/listing/",
+    "error": "403 Client Error: Forbidden for url: https://strategicmedicalbrokers.com/listing/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "kyle rohner",
+    "url": "https://www.deliveryroutesforsale.com/routes/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.route.flex.p-3.md:p-4.w-full.md:max-w-1/2"
+  },
+  {
+    "broker": "billy winkie",
+    "url": "https://southeasternbb.com/search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 82137
+  },
+  {
+    "broker": "rick ziff",
+    "url": "https://actionbusinessbrokerage.com/commercial-real-estate-for-sale-3/",
+    "error": "404 Client Error: Not Found for url: https://actionbusinessbrokerage.com/commercial-real-estate-for-sale-3/",
+    "type": "FETCH_ERROR"
+  },
+  {
+    "broker": "shifang sun",
+    "url": "https://alliancebayrealty.com/lss \n\nhttps://alliancebayrealty.com/OfficeListings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1805
+  },
+  {
+    "broker": "h winston hines",
+    "url": "https://adultclubbroker.net/current-listings/additional-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 147525
+  },
+  {
+    "broker": "jacob seo",
+    "url": "http://www.aleemshomerealty.com/results/",
+    "error": "403 Client Error: Forbidden for url: http://www.aleemshomerealty.com/shared/human/index.php?return=http%3A%2F%2Fwww.aleemshomerealty.com%2Fresults%2F&ref=https%3A%2F%2Fwww.google.com%2F",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "james moring",
+    "url": "https://restaurantbrokers.info/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 106341
+  },
+  {
+    "broker": "bruce lee",
+    "url": "https://alliancebayrealty.com/OfficeListings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 148792
+  },
+  {
+    "broker": "denis mezheritskiy",
+    "url": "https://list.roibusinessbrokers.com/featured-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 78165
+  },
+  {
+    "broker": "penny papaioannou",
+    "url": "https://www.atlanticbusinessbroker.com/our-business-for-sale-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1051990
+  },
+  {
+    "broker": "gary l. weston",
+    "url": "https://www.cbcworldwide.com/search/properties?location=United+States&country=United+States&place_id=ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 204638
+  },
+  {
+    "broker": "james lee",
+    "url": "https://www.nestfully.com/Listing/ListingSearch.aspx",
+    "error": "403 Client Error: Forbidden for url: https://www.nestfully.com/Listing/ListingSearch.aspx",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "denise houghtaling",
+    "url": "https://scbizadvisors.com/sci-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 131531
+  },
+  {
+    "broker": "david blatteis",
+    "url": "https://www.blatteisrealty.com/commercial-real-estate-for-sale-and-lease -- Needs input",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 27600
+  },
+  {
+    "broker": "doug miller",
+    "url": "https://goexio.com/marketplace/private-sellers",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 6772
+  },
+  {
+    "broker": "cheryl maloney",
+    "url": "https://www.maloneybusinessbrokers.com/properties\n\nhttps://www.maloneybusinessbrokers.com/copy-of-commercial-listings-1",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2673
+  },
+  {
+    "broker": "shawn reilly",
+    "url": "https://www.lmmre.com/apartment-search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 138143
+  },
+  {
+    "broker": "darren hall",
+    "url": "https://brockandgrey.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 114683
+  },
+  {
+    "broker": "jack beraha",
+    "url": "https://ameriteambusinessbrokers.com/search-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 247
+  },
+  {
+    "broker": "daniel baldwin",
+    "url": "https://baldwinrealestateenterprises.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39
+  },
+  {
+    "broker": "apex commercial real estate",
+    "url": "https://www.apex-cre.com/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 303324
+  },
+  {
+    "broker": "mike finkel",
+    "url": "https://www.newhomesource.com/ - Need to choose location",
+    "error": "403 Client Error: Forbidden for url: https://www.newhomesource.com/%20-%20Need%20to%20choose%20location",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "j.c. kapas real estate company",
+    "url": "https://www.jckapas.com/listings -- Needing a form filled out",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 81245
+  },
+  {
+    "broker": "bryan baese",
+    "url": "https://www.rpmshopsales.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 134682
+  },
+  {
+    "broker": "mike sirounis",
+    "url": "https://www.harborbiz.com/alllistings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5350
+  },
+  {
+    "broker": "peter saejin park",
+    "url": "https://www.ratemyagent.com/real-estate-agency/the-millionaire-realtors-group-llc-id148/sales/properties",
+    "error": "403 Client Error: HTTP Forbidden for url: https://www.ratemyagent.com/real-estate-agency/the-millionaire-realtors-group-llc-id148/sales/properties",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "sean linch",
+    "url": "https://www.paragonacquisitionsintl.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 192145
+  },
+  {
+    "broker": "mary keller wynn",
+    "url": "https://twgcommercial.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 178675
+  },
+  {
+    "broker": "mike jani",
+    "url": "https://www.fortunebizness.com/listing",
+    "error": "HTTPSConnectionPool(host='www.fortunebizness.com', port=443): Max retries exceeded with url: /listing (Caused by NameResolutionError(\"HTTPSConnection(host='www.fortunebizness.com', port=443): Failed to resolve 'www.fortunebizness.com' ([Errno -2] Name or service not known)\"))",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.fortunebizness.com', port=443): Max retries exceeded with url: /listing (Caused by NameResolutionError(\"HTTPSConnection(host='www.fortunebizness.com', port=443): Failed to resolve 'www.fortunebizness.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "william yoo",
+    "url": "https://skyrei.com/available-spaces/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 68104
+  },
+  {
+    "broker": "harold mcgee",
+    "url": "https://wesell.group/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39422
+  },
+  {
+    "broker": "teri craft",
+    "url": "https://craftbusinesssales.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 211744
+  },
+  {
+    "broker": "steve lyle",
+    "url": "https://cbclyle.com/properties/for-sale/?saleOrLease=sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 17210
+  },
+  {
+    "broker": "paul ahern",
+    "url": "https://nextwavecommercial.com/listings/",
+    "error": "403 Client Error: Forbidden for url: https://nextwavecommercial.com/listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "al lorenzen",
+    "url": "https://businessbrokersinc.com/our-listings/",
+    "error": "403 Client Error: Forbidden for url: https://businessbrokersinc.com/our-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "john benoit",
+    "url": "https://vantagepointretail.com/exclusive-property-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 156508
+  },
+  {
+    "broker": "dashka altanbasan",
+    "url": "https://westgatebusinessgroup.com/current-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 93521
+  },
+  {
+    "broker": "julie negovan",
+    "url": "https://www.patburnsiderealty.com/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 225723
+  },
+  {
+    "broker": "christina lazuric",
+    "url": "https://www.californiabusinessbrokers.com/for-sale-2/",
+    "error": "403 Client Error: Forbidden for url: https://www.californiabusinessbrokers.com/for-sale-2/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "ronnie tarulli",
+    "url": "https://moxbiz.com/search/",
+    "error": "HTTPSConnectionPool(host='moxbiz.com', port=443): Max retries exceeded with url: /search/ (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')))",
+    "type": "FETCH_ERROR",
+    "traceback": "essions.py\", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 727, in send\n    raise SSLError(e, request=request)\nrequests.exceptions.SSLError: HTTPSConnectionPool(host='moxbiz.com', port=443): Max retries exceeded with url: /search/ (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')))\n"
+  },
+  {
+    "broker": "steve sink lifetime cbi&m&ami",
+    "url": "https://phxaffiliates.com/our-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 60463
+  },
+  {
+    "broker": "aaron evans",
+    "url": "https://www.texasrestaurantadvisors.com/portfolio",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 160867
+  },
+  {
+    "broker": "m. stephen guidry",
+    "url": "https://the321agent.com/property-search/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11970
+  },
+  {
+    "broker": "bob young",
+    "url": "https://acquisitionsdirect.com/buy/",
+    "error": "403 Client Error: Forbidden for url: https://acquisitionsdirect.com/buy/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "trevor thielke",
+    "url": "https://meritus.group/businesses-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.et_pb_heading_container"
+  },
+  {
+    "broker": "randy sokol",
+    "url": "https://businessesforsale.nebba.com/ohio/franklin-county/retail-business-real-estate/",
+    "error": "403 Client Error: Forbidden for url: https://businessesforsale.nebba.com/ohio/franklin-county/retail-business-real-estate/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "ken richardson",
+    "url": "https://www.vantageres.com/commercial-properties-sale-lease/",
+    "error": "403 Client Error: Forbidden for url: https://www.vantageres.com/commercial-properties-sale-lease/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "south florida realty group, inc.",
+    "url": "https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 126
+  },
+  {
+    "broker": "jim conway",
+    "url": "https://www.conwaycommercial.com/business-opportunities/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8570
+  },
+  {
+    "broker": "jim myers",
+    "url": "https://myersba.com/my-listings/",
+    "error": "403 Client Error: Forbidden for url: https://myersba.com/my-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "zach lemke",
+    "url": "https://www.remaxmarketforce.com/index.php?showagency=1#rslt",
+    "error": "HTTPSConnectionPool(host='www.remaxmarketforce.com', port=443): Max retries exceeded with url: /index.php?showagency=1 (Caused by NameResolutionError(\"HTTPSConnection(host='www.remaxmarketforce.com', port=443): Failed to resolve 'www.remaxmarketforce.com' ([Errno -2] Name or service not known)\"))",
+    "type": "FETCH_ERROR",
+    "traceback": "\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.remaxmarketforce.com', port=443): Max retries exceeded with url: /index.php?showagency=1 (Caused by NameResolutionError(\"HTTPSConnection(host='www.remaxmarketforce.com', port=443): Failed to resolve 'www.remaxmarketforce.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "van rinn",
+    "url": "https://www.rrgcre.com/marketplace",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2646
+  },
+  {
+    "broker": "mike shakeri",
+    "url": "https://americanbussales.net/full-inventory/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 246836
+  },
+  {
+    "broker": "gateway mergers & acquisitions",
+    "url": "https://www.gatewayma.com/available-listings",
+    "error": "403 Client Error: Forbidden for url: https://www.gatewayma.com/available-listings",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "carl knickerbocker",
+    "url": "https://eca-ba.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 104626
+  },
+  {
+    "broker": "jorge deleon",
+    "url": "https://www.c21everest.com/search?location=2#?q_limit=36&mlsId=425|590|498&status=1|3&q_sort=createdAt-&q_offset=0",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 190094
+  },
+  {
+    "broker": "keith mackenzie",
+    "url": "https://app.dealbuilder.co/listings?country=CA&region=BC",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 563
+  },
+  {
+    "broker": "andrew stokely",
+    "url": "https://www.franchisebrokergroup.com/franchise-search/",
+    "error": "403 Client Error: Forbidden for url: https://www.franchisebrokergroup.com/franchise-search/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "brian godin",
+    "url": "https://godinpropertybrokers.com/ - List is per category",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 85039
+  },
+  {
+    "broker": "ernesto martinez",
+    "url": "https://jmrealtyservicescorp.squarespace.com/available-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 68144
+  },
+  {
+    "broker": "kevin t riordan p.a.",
+    "url": "http://gomerritt.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 56225
+  },
+  {
+    "broker": "business sale",
+    "url": "https://dwellwashington.com/recent-properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 113593
+  },
+  {
+    "broker": "din sharma",
+    "url": "https://ddsrealty.net/commercial-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 151
+  },
+  {
+    "broker": "jim mayfield, mba",
+    "url": "https://www.islandbusinessbrokers.com/all-listings/",
+    "error": "403 Client Error: Forbidden for url: https://www.islandbusinessbrokers.com/all-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "bart d. natoli",
+    "url": "https://www.remax.com/homes-for-sale - Need address",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "a.d-link.popular-searches-link"
+  },
+  {
+    "broker": "mike feinman, managing partner",
+    "url": "https://texasbusinessbrokers.com/our-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 176258
+  },
+  {
+    "broker": "pete harrison",
+    "url": "https://tampabusinessbroker.com/hot-listings/",
+    "error": "403 Client Error: Forbidden for url: https://tampabusinessbroker.com/hot-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "george gourousis",
+    "url": "https://www.massrestaurantbroker.com/listings/",
+    "error": "HTTPSConnectionPool(host='www.massrestaurantbroker.com', port=443): Max retries exceeded with url: /listings/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1016)')))",
+    "type": "FETCH_ERROR",
+    "traceback": ", **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 727, in send\n    raise SSLError(e, request=request)\nrequests.exceptions.SSLError: HTTPSConnectionPool(host='www.massrestaurantbroker.com', port=443): Max retries exceeded with url: /listings/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1016)')))\n"
+  },
+  {
+    "broker": "nicole wright-neumiller",
+    "url": "https://danforth-federalway-wa.cbcworldwide.com/search/properties?",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 153474
+  },
+  {
+    "broker": "joe liang",
+    "url": "https://www.gabusinessbrokers.com/businesses-for-sale/",
+    "error": "403 Client Error: Forbidden for url: https://www.gabusinessbrokers.com/businesses-for-sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "michael sumiyoshi",
+    "url": "https://www.ohanarealtylv.com/vacancies",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 210048
+  },
+  {
+    "broker": "fred canada",
+    "url": "https://thequincygroup.net/businesses_for_sale/",
+    "error": "403 Client Error: Forbidden for url: https://thequincygroup.net/businesses_for_sale/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "matt uhler",
+    "url": "https://wcibusinessbrokers.com/business-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 89039
+  },
+  {
+    "broker": "larry blevins",
+    "url": "http://www.americanbusinessbrokers.com/display-national.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 42840
+  },
+  {
+    "broker": "steve cbi cfc",
+    "url": "https://www.radcommercial.com/services/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 20608
+  },
+  {
+    "broker": "javid owji",
+    "url": "https://doctorsbroker.com/ - Have their listing per category",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 13538
+  },
+  {
+    "broker": "jerry diza",
+    "url": "https://pacificrb.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 189879
+  },
+  {
+    "broker": "michael migliore",
+    "url": "https://atlantahomes.us/business-sales/",
+    "error": "403 Client Error: Forbidden for url: https://atlantahomes.us/business-sales/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "angie nolan",
+    "url": "https://www.alaskaunlimitedrealty.com/featured-listings",
+    "error": "HTTPSConnectionPool(host='www.alaskaunlimitedrealty.com', port=443): Max retries exceeded with url: /featured-listings (Caused by NameResolutionError(\"HTTPSConnection(host='www.alaskaunlimitedrealty.com', port=443): Failed to resolve 'www.alaskaunlimitedrealty.com' ([Errno -3] Temporary failure in n",
+    "type": "FETCH_ERROR",
+    "traceback": "oolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.alaskaunlimitedrealty.com', port=443): Max retries exceeded with url: /featured-listings (Caused by NameResolutionError(\"HTTPSConnection(host='www.alaskaunlimitedrealty.com', port=443): Failed to resolve 'www.alaskaunlimitedrealty.com' ([Errno -3] Temporary failure in name resolution)\"))\n"
+  },
+  {
+    "broker": "autobizbrokers sales team",
+    "url": "https://autobizbrokers.com/search-results/?status%5B%5D=&type%5B%5D=&states%5B%5D=",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "li.item-price"
+  },
+  {
+    "broker": "charles maimone",
+    "url": "https://c21reilly.idxbroker.com/idx/featured",
+    "error": "403 Client Error: Forbidden for url: https://c21reilly.idxbroker.com/idx/featured",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "lee ossin",
+    "url": "https://www.crowneatlantic.com/premier-listings/",
+    "error": "403 Client Error: Forbidden for url: https://www.crowneatlantic.com/premier-listings/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "ahmedali saiyed",
+    "url": "https://www.lamonrealestate.com/listing/listingsearch.aspx",
+    "error": "403 Client Error: Forbidden for url: https://www.lamonrealestate.com/listing/listingsearch.aspx",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "michael song",
+    "url": "https://www.mscommercialgroup.com/businesslistings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 81438
+  },
+  {
+    "broker": "curtis skomp",
+    "url": "https://www.remax.com/homes-for-sale -- Need location input",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "a.d-link.popular-searches-link"
+  },
+  {
+    "broker": "bill navarra",
+    "url": "https://www.loopnet.com/company/realty-pros-commercial/ormond-beach-fl/sqynrj6l/",
+    "error": "403 Client Error: Forbidden for url: https://www.loopnet.com/company/realty-pros-commercial/ormond-beach-fl/sqynrj6l/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "david amarando",
+    "url": "https://advancedlaundrysystems.com/laundromat-brokerage/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 83263
+  },
+  {
+    "broker": "frank passantino",
+    "url": "https://www.poolroutebrokers.com/routes.php - Need to choose State",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 237
+  },
+  {
+    "broker": "tricia bernhardt",
+    "url": "https://www.restx.com/avail.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 18063
+  },
+  {
+    "broker": "gulambasir nagpuria",
+    "url": "https://www.greenstarrealty.biz/biz4sell/",
+    "error": "403 Client Error: Forbidden for url: https://www.greenstarrealty.biz/biz4sell/",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "the-trinh nguyen",
+    "url": "https://www.therealtytexas.com/search-results/?keyword=&location%5B%5D=",
+    "error": "403 Client Error: Forbidden for url: https://www.therealtytexas.com/search-results/?keyword=&location%5B%5D=",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "jeannie randolph",
+    "url": "https://www.briobrokers.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 656001
+  },
+  {
+    "broker": "carlos cardenas",
+    "url": "https://www.tcgbusiness.com/featured-listings",
+    "error": "HTTPSConnectionPool(host='www.tcgbusiness.com', port=443): Max retries exceeded with url: /featured-listings (Caused by NameResolutionError(\"HTTPSConnection(host='www.tcgbusiness.com', port=443): Failed to resolve 'www.tcgbusiness.com' ([Errno -2] Name or service not known)\"))",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send\n    raise ConnectionError(e, request=request)\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.tcgbusiness.com', port=443): Max retries exceeded with url: /featured-listings (Caused by NameResolutionError(\"HTTPSConnection(host='www.tcgbusiness.com', port=443): Failed to resolve 'www.tcgbusiness.com' ([Errno -2] Name or service not known)\"))\n"
+  },
+  {
+    "broker": "dean vacheresse (vash-er-es)",
+    "url": "https://www.vachergroup.com/buybizsell/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 60761
+  },
+  {
+    "broker": "paul mcnally",
+    "url": "https://cfbb.biz/our-featured-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 116228
+  },
+  {
+    "broker": "steve alexander",
+    "url": "https://abbexinc.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 119572
+  },
+  {
+    "broker": "tony alqam",
+    "url": "https://www.stlbroker.net/index.php/listing/for-sale-properties",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 102666
+  },
+  {
+    "broker": "stefan lagmark",
+    "url": "https://alamobrokersoftexas.com/properties-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 389580
+  },
+  {
+    "broker": "mani jacob",
+    "url": "https://www.beamrealestate.com/pages/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7285
+  },
+  {
+    "broker": "country business inc.",
+    "url": "https://www.countrybusiness.net/currentopportunities",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 214905
+  },
+  {
+    "broker": "bj delhamer",
+    "url": "https://insiterei.com/properties/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 175682
+  },
+  {
+    "broker": "j jensen",
+    "url": "https://jensmartconsulting.com/franchises.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 37267
+  },
+  {
+    "broker": "liberty exchange.com various brokers",
+    "url": "https://libertyexchange.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 34350
+  },
+  {
+    "broker": "eric lim",
+    "url": "http://www.megarealtyusa.com/listing/listingsearchresultsonly.aspx?Search=a5f97d56-716c-443e-991b-50913ad979a2&SearchType=AgentHome&InternalAgentCd=&OfficeCds=&AgentHomePageSearchType=AllMyOfficeListings&ListingType=&ListingDistrictTypeID=&PriorSales=&Sort=6",
+    "error": "403 Client Error: Forbidden for url: https://www.megarealtyusa.com/listing/listingsearchresultsonly.aspx?Search=a5f97d56-716c-443e-991b-50913ad979a2&SearchType=AgentHome&InternalAgentCd=&OfficeCds=&AgentHomePageSearchType=AllMyOfficeListings&ListingType=&ListingDistrictTypeID=&PriorSales=&Sort=6",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "noman khan",
+    "url": "https://nacommercialrealestate.com/# -- Need to choose category",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 190136
+  },
+  {
+    "broker": "eugenio lopez negrete",
+    "url": "https://bizmls.com/cgi-bin/a-bus2.asp?forsale=go",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 126
+  },
+  {
+    "broker": "sy sebastianelli",
+    "url": "https://broker.businessmart.com/scrantonbusinessbrokers?owner=1",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 13808
+  },
+  {
+    "broker": "marlene sundquist behlman",
+    "url": "https://thetorchteam.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80436
+  },
+  {
+    "broker": "andy kumar",
+    "url": "https://ubbusa.com/city-neighborhood-street/ - Not showing the listing",
+    "error": "HTTPSConnectionPool(host='ubbusa.com', port=443): Max retries exceeded with url: /city-neighborhood-street/%20-%20Not%20showing%20the%20listing (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)')))",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 727, in send\n    raise SSLError(e, request=request)\nrequests.exceptions.SSLError: HTTPSConnectionPool(host='ubbusa.com', port=443): Max retries exceeded with url: /city-neighborhood-street/%20-%20Not%20showing%20the%20listing (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)')))\n"
+  },
+  {
+    "broker": "yorixela hurtado-gentile",
+    "url": "https://bfsglobalgroup.com/en/business-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 94668
+  },
+  {
+    "broker": "gregory dicristina",
+    "url": "https://chasegroup.us/listings/",
+    "error": "HTTPSConnectionPool(host='chasegroup.us', port=443): Read timed out. (read timeout=25)",
+    "type": "FETCH_ERROR",
+    "traceback": "^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/sessions.py\", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/requests/adapters.py\", line 742, in send\n    raise ReadTimeout(e, request=request)\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='chasegroup.us', port=443): Read timed out. (read timeout=25)\n"
   }
 ]
