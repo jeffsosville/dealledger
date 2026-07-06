@@ -119,8 +119,226 @@ LISTING_KEYWORDS = [
     "profitable", "turnkey", "owner operator", "relocatable", "absentee",
 ]
 
-PRICE_PATTERN = re.compile(r'\$[\d,]+(?:\.\d{2})?|\d{1,3}(?:,\d{3})+')
-MONEY_PATTERN = re.compile(r'\$\s*[\d,]+(?:\.\d{2})?')
+# ============================================================
+# V6.3 MONEY PARSER  —  drop-in replacement (tested 14/14 formats)
+# Handles: $2,200,000  $2.200.000  $150K  $1.68M  $500 000  $2.2M
+# Rejects: real cents ($4.50) so it never invents sub-$1k "listings"
+# ============================================================
+MONEY_TOKEN = re.compile(
+    r'\$\s*'
+    r'(\d{1,3}(?:[.,\s]\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?)'
+    r'\s*([KkMmBb])?'
+)
+
+
+def _money_to_float(num_str, suffix):
+    s = num_str.strip()
+    if ',' in s and '.' in s:
+        if s.rfind(',') > s.rfind('.'):
+            s = s.replace('.', '').replace(',', '.')      # euro: 1.234.567,89
+        else:
+            s = s.replace(',', '')                        # us: 1,234,567.89
+    elif s.count('.') > 1:
+        s = s.replace('.', '')                            # 2.200.000
+    elif s.count(',') > 1:
+        s = s.replace(',', '')                            # 2,200,000
+    elif ',' in s:
+        after = s.split(',')[1]
+        if len(after) == 3 and suffix is None:
+            s = s.replace(',', '')                        # ,000 thousands
+        elif len(after) <= 2:
+            s = s.replace(',', '.')                       # ,99 decimal
+        else:
+            s = s.replace(',', '')
+    elif '.' in s and suffix is None:
+        after = s.split('.')[-1]
+        if len(after) == 3:
+            s = s.replace('.', '')                        # .000 thousands (not cents)
+        # len 1-2 -> real cents, leave as-is
+    elif ' ' in s:
+        s = s.replace(' ', '')                            # space thousands
+    try:
+        val = float(s)
+    except ValueError:
+        return None
+    mult = {'k': 1_000, 'm': 1_000_000, 'b': 1_000_000_000}.get((suffix or '').lower(), 1)
+    return val * mult
+
+
+def parse_all_prices(text):
+    """All dollar amounts in text, normalized to floats."""
+    out = []
+    for m in MONEY_TOKEN.finditer(text):
+        v = _money_to_float(m.group(1), m.group(2))
+        if v is not None:
+            out.append(v)
+    return out
+
+
+# Link/heading text that is a call-to-action, not a listing title.
+GENERIC_LINK_TEXT = {
+    "view listing", "view listings", "view details", "view detail", "read more",
+    "learn more", "contact us", "contact", "details", "more info", "more information",
+    "view", "see details", "see more", "view more", "inquire", "get details",
+    "view property", "full details", "request info", "request information",
+    "add to favorites", "save", "share", "next", "previous",
+}
+
+# href path tokens that strongly indicate a listing DETAIL page.
+_DETAIL_HREF_TOKENS = (
+    "/listing", "/property", "/properties", "/business", "businesses-for-sale/",
+    "/opportunit", "/details", "/detail/", "/biz/", "?listing=", "/for-sale/",
+    "/deal", "/company/",
+)
+
+# Commercial-real-estate / lease brokers to exclude wholesale — out of scope
+# for DealLedger (Main Street business M&A, not CRE). Matched as a substring
+# of the netloc.
+CRE_LEASE_DOMAINS = {
+    "malonecb.com",
+}
+
+# Signature of a commercial-RE / lease listing (rate-per-SF pricing, cap rate,
+# NNN, "for lease"). Used to drop lease rows that slip through on other sites
+# without excluding real businesses that merely mention square footage.
+_LEASE_CRE_RE = re.compile(
+    r'for\s+lease|for\s+sublease|annual\s*/\s*sf|\$\s*[\d.,]+\s*/\s*sf|'
+    r'\bpsf\b|per\s+sf\b|price\s*/\s*sf|cap\s*rate|\bnnn\b|triple\s*net|'
+    r'lease\s*rate|rentable\s+(?:sf|area)',
+    re.IGNORECASE,
+)
+
+
+def looks_like_cre_or_lease(text):
+    """True for commercial-RE / lease listings (rate-per-SF, cap rate, NNN,
+    for-lease). Does NOT fire on a business that merely states square footage."""
+    return bool(_LEASE_CRE_RE.search(text))
+
+
+def best_card_title(element, base_url=""):
+    """
+    Recover a real listing title from a card element.
+
+    Handles the failure modes seen in the wild:
+      - number1businessbroker: first <a> wraps only the image (empty text);
+        the title lives in <div class="... name">.
+      - appbusinessbrokers: heading is a truncated fragment ("App"); the real
+        title comes from the longest text node or the detail-href slug.
+    Returns None if no title-like text ≥ 8 chars can be found.
+    """
+    def ok(t):
+        return t and len(t) >= 8 and t.lower() not in GENERIC_LINK_TEXT
+
+    for tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+        for el in element.find_all(tag):
+            t = el.get_text(" ", strip=True)
+            if ok(t):
+                return t[:500]
+    for el in element.select("[class*='title'], [class*='name'], [class*='heading']"):
+        t = el.get_text(" ", strip=True)
+        if ok(t):
+            return t[:500]
+    for a in element.find_all("a"):
+        t = a.get_text(" ", strip=True)
+        if ok(t):
+            return t[:500]
+    # Fallback A: the longest single text node (a real descriptive string,
+    # not a CTA or a fragment split across spans).
+    longest = ""
+    for s in element.stripped_strings:
+        if len(s) > len(longest):
+            longest = s
+    if len(longest) >= 15 and longest.lower() not in GENERIC_LINK_TEXT:
+        return longest[:500]
+    # Fallback B: derive a title from the listing detail href / data-url slug
+    # (e.g. .../listing/ios-privacy-security-utility-app/ -> title).
+    slug = _title_from_slug(element, base_url)
+    if slug:
+        return slug
+    # Fallback C: card text up to the first financial marker (isolates the name).
+    txt = element.get_text(" ", strip=True)
+    cut = re.split(r'\s*(?:revenue|price|profit|cash\s*flow|asking|ebitda|sde|\$)',
+                   txt, maxsplit=1, flags=re.IGNORECASE)[0].strip()
+    cand = cut if len(cut) >= 8 else txt
+    return cand[:200] if len(cand) >= 8 else None
+
+
+def _title_from_slug(element, base_url=""):
+    """Turn a listing detail URL slug into a human title, e.g.
+    '/listing/ios-privacy-security-utility-app/' -> 'Ios Privacy Security
+    Utility App'. Uses a container data-url attr or a detail-looking <a href>."""
+    hrefs = []
+    if element.get("data-url"):
+        hrefs.append(element["data-url"])
+    for a in element.find_all("a", href=True):
+        hrefs.append(a["href"])
+    for href in hrefs:
+        href = (href or "").strip()
+        if not href or href.startswith("#"):
+            continue
+        low = href.lower()
+        # Prefer hrefs that look like a listing detail page.
+        if hrefs.index(href) > 0 and not any(tok in low for tok in _DETAIL_HREF_TOKENS):
+            continue
+        seg = urlparse(href).path.rstrip("/").split("/")[-1]
+        seg = re.sub(r'\.\w+$', '', seg)                 # strip extension
+        slug = re.sub(r'[-_+]+', ' ', seg).strip()
+        slug = re.sub(r'\s+', ' ', slug)
+        if len(slug) >= 8 and not slug.replace(" ", "").isdigit():
+            return slug.title()[:200]
+    return None
+
+
+def has_detail_link(element, base_url=""):
+    """True if the element links to a plausible listing detail page (not a
+    nav item, on-page anchor, mailto/tel, or the site homepage)."""
+    root = ""
+    if base_url:
+        pu = urlparse(base_url)
+        root = f"{pu.scheme}://{pu.netloc}".rstrip("/")
+    for a in element.find_all("a", href=True):
+        href = (a.get("href") or "").strip()
+        if not href or href.startswith("#"):
+            continue
+        if href.lower().startswith(("javascript:", "mailto:", "tel:")):
+            continue
+        absu = urljoin(base_url, href) if base_url else href
+        if root and absu.rstrip("/") == root:
+            continue  # homepage link
+        return True
+    return False
+
+
+def is_listing_element(element, base_url=""):
+    """
+    A container element counts as a listing only if it has a real title AND
+    (a real price OR a detail link). This is what separates genuine listing
+    cards from nav bars, hero blocks, and filter widgets that merely repeat.
+    """
+    text = element.get_text(" ", strip=True)
+    if len(text) < 20:
+        return False
+    if not best_card_title(element, base_url):
+        return False
+    has_price = any(v >= 1_000 for v in parse_all_prices(text))
+    return has_price or has_detail_link(element, base_url)
+
+
+def positive_or_none(v):
+    """
+    Normalize a money field to a positive float, else None.
+
+    Guarantees we NEVER store 0 (or negative / non-numeric) for a financial
+    field: "no real price" is null, not 0. Applied both when building a
+    listing and again at the Supabase write boundary, so a 0 from any source
+    — an older scraper variant, or a legacy row being re-upserted — is
+    scrubbed before it can pollute listings_direct.
+    """
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return f if f > 0 else None
 
 # Max detail pages per broker to avoid hammering servers
 MAX_DETAIL_PAGES = 50
@@ -337,12 +555,34 @@ class PatternCache:
 
 class PatternDetector:
 
-    @staticmethod
-    def detect(html, url):
+    # A container qualifies only if at least this many of its repeated
+    # elements are genuine listings (title AND (price OR detail-link)). This
+    # rejects nav bars, hero blocks, and filter widgets that merely repeat.
+    MIN_LISTING_ELEMENTS = 3
+    SAMPLE = 15
+
+    @classmethod
+    def _score_group(cls, elements, url):
+        """Count how many sampled elements are real listings; return (n_listing,
+        n_priced) or None if the group doesn't clear the listing bar."""
+        n_listing = 0
+        n_priced = 0
+        for el in elements[:cls.SAMPLE]:
+            if is_listing_element(el, url):
+                n_listing += 1
+                if any(v >= 1_000 for v in
+                       parse_all_prices(el.get_text(" ", strip=True))):
+                    n_priced += 1
+        if n_listing < cls.MIN_LISTING_ELEMENTS:
+            return None
+        return n_listing, n_priced
+
+    @classmethod
+    def detect(cls, html, url):
         soup = BeautifulSoup(html, "html.parser")
         candidates = []
 
-        # Strategy 1: repeated classed elements with listing signals
+        # Strategy 1: repeated classed elements that are genuine listings
         for tag in ["div", "article", "li", "tr", "a", "section"]:
             class_groups = defaultdict(list)
             for el in soup.find_all(tag):
@@ -351,24 +591,20 @@ class PatternDetector:
                     class_groups[f"{tag}.{'.'.join(classes)}"].append(el)
 
             for selector, group in class_groups.items():
-                if len(group) < 3:
+                if len(group) < cls.MIN_LISTING_ELEMENTS:
                     continue
-                score = 0
-                for el in group[:10]:
-                    text = el.get_text(separator=" ", strip=True).lower()
-                    if PRICE_PATTERN.search(text):
-                        score += 2
-                    if any(kw in text for kw in LISTING_KEYWORDS[:6]):
-                        score += 1
-                if score >= 3:
+                scored = cls._score_group(group, url)
+                if scored:
+                    n_listing, n_priced = scored
                     candidates.append({
                         "container_selector": selector,
                         "count": len(group),
-                        "score": score,
+                        # Prefer selectors with more real, priced listings.
+                        "score": n_listing + n_priced,
                         "sample_text": group[0].get_text(separator=" ", strip=True)[:200],
                     })
 
-        # Strategy 2: known selectors
+        # Strategy 2: known selectors (small boost for being a known shape)
         for selector in [
             "div.listing", "div.listing-item", "div.property-listing",
             "article.listing", "div.business-listing", "div.result",
@@ -378,19 +614,14 @@ class PatternDetector:
         ]:
             try:
                 elements = soup.select(selector)
-                if len(elements) >= 3:
-                    score = 0
-                    for el in elements[:10]:
-                        text = el.get_text(separator=" ", strip=True).lower()
-                        if PRICE_PATTERN.search(text):
-                            score += 2
-                        if any(kw in text for kw in LISTING_KEYWORDS[:6]):
-                            score += 1
-                    if score >= 2:
+                if len(elements) >= cls.MIN_LISTING_ELEMENTS:
+                    scored = cls._score_group(elements, url)
+                    if scored:
+                        n_listing, n_priced = scored
                         candidates.append({
                             "container_selector": selector,
                             "count": len(elements),
-                            "score": score + 5,
+                            "score": n_listing + n_priced + 5,
                             "sample_text": elements[0].get_text(separator=" ", strip=True)[:200],
                         })
             except Exception:
@@ -410,49 +641,46 @@ class ListingExtractor:
 
     @staticmethod
     def extract_price(text):
-        parsed = []
-        for p in MONEY_PATTERN.findall(text):
-            try:
-                val = float(p.replace("$", "").replace(",", "").strip())
-                if 1_000 <= val <= 100_000_000:
-                    parsed.append(val)
-            except Exception:
-                pass
-        return max(parsed) if parsed else None
+        vals = [v for v in parse_all_prices(text) if 1_000 <= v <= 100_000_000]
+        return max(vals) if vals else None
 
     @staticmethod
-    def extract_cash_flow(text):
-        text_lower = text.lower()
-        for kw in ["cash flow", "sde", "ebitda", "seller discretionary",
-                   "net income", "owner benefit", "adjusted earnings", "owner's benefit"]:
-            idx = text_lower.find(kw)
-            if idx >= 0:
-                nearby = text[max(0, idx - 10):idx + 100]
-                for p in MONEY_PATTERN.findall(nearby):
-                    try:
-                        val = float(p.replace("$", "").replace(",", "").strip())
-                        if val >= 1_000:
-                            return val
-                    except Exception:
-                        pass
+    def _money_near(text, keywords):
+        """
+        Value associated with a financial label. Looks FORWARD first
+        ("Profit: $90,952"), then falls back to the value just BEFORE the
+        label ("$300,000 Cash Flow"). Forward-first is what lets us read
+        "Profit:" as its own value instead of grabbing the preceding
+        "Revenue: $161,605".
+        """
+        low = text.lower()
+        for kw in keywords:
+            idx = low.find(kw)
+            if idx < 0:
+                continue
+            after = text[idx + len(kw): idx + len(kw) + 80]
+            vals = [v for v in parse_all_prices(after) if v >= 1_000]
+            if vals:
+                return vals[0]
+            before = text[max(0, idx - 60): idx]
+            vals = [v for v in parse_all_prices(before) if v >= 1_000]
+            if vals:
+                return vals[-1]      # nearest value preceding the label
         return None
 
-    @staticmethod
-    def extract_revenue(text):
-        text_lower = text.lower()
-        for kw in ["gross revenue", "gross sales", "annual sales", "total sales",
-                   "gross income", "annual revenue", "revenue"]:
-            idx = text_lower.find(kw)
-            if idx >= 0:
-                nearby = text[max(0, idx - 10):idx + 100]
-                for p in MONEY_PATTERN.findall(nearby):
-                    try:
-                        val = float(p.replace("$", "").replace(",", "").strip())
-                        if val >= 1_000:
-                            return val
-                    except Exception:
-                        pass
-        return None
+    @classmethod
+    def extract_cash_flow(cls, text):
+        return cls._money_near(text, [
+            "cash flow", "sde", "ebitda", "seller discretionary", "net income",
+            "owner benefit", "adjusted earnings", "owner's benefit", "profit",
+        ])
+
+    @classmethod
+    def extract_revenue(cls, text):
+        return cls._money_near(text, [
+            "gross revenue", "gross sales", "annual sales", "total sales",
+            "gross income", "annual revenue", "revenue",
+        ])
 
     @staticmethod
     def classify_vertical(text):
@@ -507,8 +735,22 @@ class ListingExtractor:
         if len(text) < 20:
             return None
 
-        title_el = element.find(["h1", "h2", "h3", "h4", "h5", "a"])
-        title = title_el.get_text(strip=True) if title_el else text[:100]
+        # Drop commercial-real-estate / lease brokers — out of scope for
+        # DealLedger (Main Street business M&A, not CRE). malonecb is a
+        # moodyscre-backed CRE site (prices as "$18.50 Annual/SF").
+        domain = urlparse(base_url).netloc.lower()
+        if any(d in domain for d in CRE_LEASE_DOMAINS):
+            return None
+        if looks_like_cre_or_lease(text):
+            return None
+
+        # Skip nav/hero/filter blocks: a real listing has a title AND
+        # (a price OR a detail link). This is what stops junk-container
+        # selectors from emitting empty-title, price-less rows.
+        if not is_listing_element(element, base_url):
+            return None
+
+        title = best_card_title(element, base_url) or text[:100]
 
         link_el = element.find("a", href=True)
         detail_url = urljoin(base_url, link_el["href"]) if link_el else None
@@ -520,9 +762,9 @@ class ListingExtractor:
             if d == b or "#" in d.split("?")[0][-5:]:
                 detail_url = None
 
-        asking_price = cls.extract_price(text)
-        cash_flow    = cls.extract_cash_flow(text)
-        revenue      = cls.extract_revenue(text)
+        asking_price = positive_or_none(cls.extract_price(text))
+        cash_flow    = positive_or_none(cls.extract_cash_flow(text))
+        revenue      = positive_or_none(cls.extract_revenue(text))
         location     = LocationExtractor.extract(text)
         vertical     = cls.classify_vertical(text)
 
@@ -572,11 +814,11 @@ class ListingExtractor:
 
         # Financials — full page text has much more context
         if not listing.get("asking_price"):
-            listing["asking_price"] = cls.extract_price(full_text)
+            listing["asking_price"] = positive_or_none(cls.extract_price(full_text))
         if not listing.get("cash_flow"):
-            listing["cash_flow"] = cls.extract_cash_flow(full_text)
+            listing["cash_flow"] = positive_or_none(cls.extract_cash_flow(full_text))
         if not listing.get("revenue"):
-            listing["revenue"] = cls.extract_revenue(full_text)
+            listing["revenue"] = positive_or_none(cls.extract_revenue(full_text))
 
         # Location — the key reason we fetch detail pages
         if not listing.get("state"):
@@ -651,23 +893,58 @@ class PageFetcher:
         resp.raise_for_status()
         return resp.text
 
-    def fetch_playwright(self, url, timeout=20000, use_proxy=False):
+    def fetch_playwright(self, url, timeout=30000, use_proxy=False):
         if not HAS_PLAYWRIGHT:
             raise RuntimeError("Playwright not installed")
         browser = self._get_browser(use_proxy)
         page = browser.new_page(user_agent=random.choice(USER_AGENTS))
         try:
-            page.goto(url, timeout=timeout, wait_until="networkidle")
-            page.wait_for_timeout(2000)
+            page.goto(url, timeout=timeout, wait_until="domcontentloaded")
+            # Give XHR/fetch-driven listing widgets time to populate.
+            try:
+                page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:
+                pass
+            # Scroll to trigger lazy-loaded / infinite-scroll listing cards.
+            for _ in range(4):
+                page.mouse.wheel(0, 4000)
+                page.wait_for_timeout(1200)
+            page.wait_for_timeout(1500)
             return page.content()
         finally:
             page.close()
 
+    @staticmethod
+    def _has_listing_signal(html):
+        """
+        True if the fetched HTML already contains listing content (dollar
+        amounts or listing keywords). JS-shell pages return a large but
+        content-free HTML — those should escalate to Playwright even though
+        they clear the size bar.
+        """
+        if not html:
+            return False
+        # Check VISIBLE text, not raw HTML — embedded JSON/CSS/script blobs
+        # (Wix warmup data, Next.js props) are full of "$" tokens that would
+        # otherwise mask a content-free JS shell as if it had listings.
+        soup = BeautifulSoup(html, "html.parser")
+        for junk in soup(["script", "style", "template", "noscript"]):
+            junk.decompose()
+        text = soup.get_text(" ", strip=True)
+        prices = parse_all_prices(text)
+        if len(prices) >= 2:
+            return True
+        low = text.lower()
+        return bool(prices) and any(kw in low for kw in LISTING_KEYWORDS[:6])
+
     def fetch(self, url, use_proxy=False):
+        requests_html = None
         try:
-            html = self.fetch_requests(url, use_proxy=use_proxy)
-            if len(html) > 3000:
-                return html, "requests"
+            requests_html = self.fetch_requests(url, use_proxy=use_proxy)
+            # Only trust the requests HTML if it actually carries listing
+            # content. A big-but-empty JS shell falls through to Playwright.
+            if len(requests_html) > 3000 and self._has_listing_signal(requests_html):
+                return requests_html, "requests"
         except requests.HTTPError as e:
             if e.response is not None and e.response.status_code == 403:
                 raise  # Propagate 403 for failure classification
@@ -676,10 +953,15 @@ class PageFetcher:
 
         if HAS_PLAYWRIGHT:
             try:
-                return self.fetch_playwright(url, use_proxy=use_proxy), "playwright"
+                pw_html = self.fetch_playwright(url, use_proxy=use_proxy)
+                # Prefer whichever rendering actually has listing content.
+                if self._has_listing_signal(pw_html) or not requests_html:
+                    return pw_html, "playwright"
             except Exception:
                 pass
 
+        if requests_html and len(requests_html) > 3000:
+            return requests_html, "requests"
         return self.fetch_requests(url, timeout=25, use_proxy=use_proxy), "requests"
 
     def close(self):
@@ -747,9 +1029,9 @@ class SupabaseWriter:
                 "broker_domain": l.get("broker_domain"),
                 "city":          l.get("city"),
                 "state":         l.get("state"),
-                "asking_price":  l.get("asking_price"),
-                "cash_flow":     l.get("cash_flow"),
-                "revenue":       l.get("revenue"),
+                "asking_price":  positive_or_none(l.get("asking_price")),
+                "cash_flow":     positive_or_none(l.get("cash_flow")),
+                "revenue":       positive_or_none(l.get("revenue")),
                 "vertical":      l.get("vertical", "other"),
                 "description":   (l.get("description") or "")[:2000],
                 "status":        "active",

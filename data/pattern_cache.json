@@ -2014,5 +2014,17 @@
     "total_listings": 3,
     "first_seen": "2026-02-24T08:05:46.177656",
     "last_used": "2026-02-24T08:05:46.177668"
+  },
+  "www.eastcoastbusinessbrokers.com": {
+    "container_selector": "div.col",
+    "count": 6,
+    "score": 16,
+    "sample_text": "Featured Available Automotive - Car Wash - Auto - Boat Profitable Auto Repair Shop \u2013 High-Traffic Location, Strong Customer Base - PROPERTY INCLUDED Nassau, New York 12460 Established Auto Repair Shop"
+  },
+  "www.wesellrestaurants.com": {
+    "container_selector": "div.custom-innercard.itemscards_itemCustomInnercard__G_Ouy.itemscards_wsCard__V9TVI.itemscards_featureItemCards__eZ9LB",
+    "count": 51,
+    "score": 28,
+    "sample_text": "Coral Gables Restaurant for sale, $1.68M Sales, $186K Owner Benefit $799,000 Coral Gables, Florida View Listing"
   }
 }
