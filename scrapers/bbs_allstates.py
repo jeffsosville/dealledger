@@ -18,8 +18,10 @@ Requirements:
 
 import json
 import os
+import random
 import re
 import sys
+import time
 import uuid
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -43,6 +45,12 @@ PROXY = "2e675ba5977dd3336e3d:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
 BATCH_SIZE           = 100
 STATE_FILES_DIR      = Path("state_files")
 STALE_DAYS           = 14  # deactivate listings not seen in this many days
+
+# ── Pacing / anti-block config ──────────────────────────────────────────────
+PAGE_DELAY       = 1.5   # base seconds between page requests
+PAGE_JITTER      = 1.5   # add up to this many random seconds on top
+MAX_403_RETRIES  = 3     # re-warm + retry this many times on an Akamai 403
+BACKOFF_BASE     = 3.0   # first backoff = 3s, then 6s, then 12s (+jitter)
 
 # ── Date model ─────────────────────────────────────────────────────────────────
 ANCHOR_NUM  = 2_367_857
@@ -80,33 +88,49 @@ STATE_REGION_IDS = {
 # ── Scraper ────────────────────────────────────────────────────────────────────
 class BBSAllStatesScraper:
     def __init__(self):
-        self.session = requests.Session(impersonate="chrome")
+        # Pin a specific recent Chrome build so the TLS/JA3 fingerprint matches
+        # the User-Agent curl_cffi sends. NOTE: chrome124 went stale ~6/30/2026
+        # and Akamai began 403ing it — bumped to chrome131. If BizBuySell starts
+        # hard-403ing again months from now, try the next newer target here first
+        # (this was the entire cause of the 6/30 outage).
+        self.session = requests.Session(impersonate="chrome131")
         self.proxies = {
             "http":  f"http://{PROXY}",
             "https": f"http://{PROXY}",
         }
+        # NOTE: no 'User-Agent' key here on purpose — curl_cffi sets a matching one.
+        # 'Content-Type' also removed from the shared dict; it's added only on POSTs.
         self.headers = {
-            'User-Agent':       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Accept':           'application/json, text/plain, */*',
             'Accept-Language':  'en-US,en;q=0.9',
-            'Content-Type':     'application/json',
             'Origin':           'https://www.bizbuysell.com',
             'Referer':          'https://www.bizbuysell.com/',
             'X-Correlation-Id': str(uuid.uuid4()),
         }
         self.token = self._get_token()
 
+    def _warm(self):
+        """Hit homepage + a listings page so Akamai issues fresh sensor cookies
+        (_abck / bm_sz / ak_bmsc) against this TLS fingerprint + IP."""
+        self.session.get(
+            'https://www.bizbuysell.com/',
+            headers=self.headers, proxies=self.proxies, timeout=60,
+        )
+        r = self.session.get(
+            'https://www.bizbuysell.com/businesses-for-sale/new-york-ny/',
+            headers=self.headers, proxies=self.proxies, timeout=60,
+        )
+        return r
+
     def _get_token(self):
         print(f"{Fore.CYAN}[*] Getting auth token...")
         try:
-            r = self.session.get(
-                'https://www.bizbuysell.com/businesses-for-sale/new-york-ny/',
-                headers=self.headers,
-                proxies=self.proxies,
-                timeout=60
-            )
-            token = r.cookies.get('_track_tkn')
-            print(f"{Fore.GREEN}[+] Token {'obtained' if token else 'FAILED'}")
+            r = self._warm()
+            token = r.cookies.get('_track_tkn') or self.session.cookies.get('_track_tkn')
+            cookie_names = sorted(self.session.cookies.keys())
+            print(f"{Fore.CYAN}    listings page status: {r.status_code}")
+            print(f"{Fore.CYAN}    session cookies: {', '.join(cookie_names) or '(none)'}")
+            print(f"{Fore.GREEN if token else Fore.RED}[+] Token {'obtained' if token else 'FAILED'}")
             return token
         except Exception as e:
             print(f"{Fore.RED}[-] Token error: {e}")
@@ -117,12 +141,18 @@ class BBSAllStatesScraper:
         if not self.token:
             return []
 
-        api_headers = {**self.headers, 'Authorization': f'Bearer {self.token}'}
+        api_headers = {
+            **self.headers,
+            'Content-Type':  'application/json',
+            'Authorization': f'Bearer {self.token}',
+        }
         all_listings = []
         seen_ids = set()
         empty_streak = 0
+        dumped_block = False  # only dump a blocked-response body once per state
 
-        for page in range(1, max_pages + 1):
+        page = 1
+        while page <= max_pages:
             payload = {
                 "bfsSearchCriteria": {
                     "siteId": 20,
@@ -158,44 +188,87 @@ class BBSAllStatesScraper:
                 }
             }
 
-            try:
-                resp = self.session.post(
-                    'https://api.bizbuysell.com/bff/v2/BbsBfsSearchResults',
-                    headers=api_headers,
-                    json=payload,
-                    proxies=self.proxies,
-                    timeout=60
-                )
-                if resp.status_code != 200:
-                    print(f"  {Fore.RED}Page {page}: HTTP {resp.status_code} — stopping")
+            # Fetch this page with up to MAX_403_RETRIES on an Akamai block.
+            # A 403 here is rate/cookie-freshness based (probabilistic), so we
+            # re-warm the session to get fresh sensor cookies and back off.
+            resp = None
+            blocked = False
+            for attempt in range(MAX_403_RETRIES + 1):
+                try:
+                    resp = self.session.post(
+                        'https://api.bizbuysell.com/bff/v2/BbsBfsSearchResults',
+                        headers=api_headers,
+                        json=payload,
+                        proxies=self.proxies,
+                        timeout=60
+                    )
+                except Exception as e:
+                    print(f"  {Fore.RED}Page {page}: request error: {e}")
+                    resp = None
                     break
 
-                listings = resp.json().get("value", {}).get("bfsSearchResult", {}).get("value", [])
-                if not listings:
-                    empty_streak += 1
-                    if empty_streak >= 2:
-                        break
-                    continue
+                if resp.status_code == 200:
+                    blocked = False
+                    break
 
-                empty_streak = 0
-                new = 0
-                for l in listings:
-                    lid = l.get('listNumber') or l.get('specificId')
-                    if lid and str(lid) not in seen_ids:
-                        seen_ids.add(str(lid))
-                        l['_state'] = state_code
-                        all_listings.append(l)
-                        new += 1
+                # non-200 → treat as block; dump body once, then retry
+                blocked = True
+                if not dumped_block:
+                    dumped_block = True
+                    snippet = (resp.text or '')[:200].replace('\n', ' ')
+                    print(f"  {Fore.YELLOW}  first block body[:200]: {snippet}")
 
-                print(f"  Page {page:>3}: +{new:>3} | Total: {len(all_listings)}", end='\r')
-                if new == 0:
-                    empty_streak += 1
-                    if empty_streak >= 2:
-                        break
+                if attempt < MAX_403_RETRIES:
+                    backoff = BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5)
+                    print(f"  {Fore.YELLOW}Page {page}: HTTP {resp.status_code} "
+                          f"— re-warming + retry {attempt+1}/{MAX_403_RETRIES} "
+                          f"in {backoff:.1f}s")
+                    time.sleep(backoff)
+                    try:
+                        self._warm()  # refresh Akamai cookies on the same session
+                    except Exception as e:
+                        print(f"  {Fore.YELLOW}  re-warm failed: {e}")
 
-            except Exception as e:
-                print(f"  {Fore.RED}Page {page}: {e}")
+            if resp is None or resp.status_code != 200:
+                # exhausted retries (or hard request error) — give up on this state
+                if blocked:
+                    print(f"  {Fore.RED}Page {page}: still blocked after "
+                          f"{MAX_403_RETRIES} retries — stopping state")
                 break
+
+            try:
+                listings = resp.json().get("value", {}).get("bfsSearchResult", {}).get("value", [])
+            except Exception as e:
+                print(f"  {Fore.RED}Page {page}: JSON parse error: {e}")
+                break
+
+            if not listings:
+                empty_streak += 1
+                if empty_streak >= 2:
+                    break
+                page += 1
+                time.sleep(PAGE_DELAY + random.uniform(0, PAGE_JITTER))
+                continue
+
+            empty_streak = 0
+            new = 0
+            for l in listings:
+                lid = l.get('listNumber') or l.get('specificId')
+                if lid and str(lid) not in seen_ids:
+                    seen_ids.add(str(lid))
+                    l['_state'] = state_code
+                    all_listings.append(l)
+                    new += 1
+
+            print(f"  Page {page:>3}: +{new:>3} | Total: {len(all_listings)}", end='\r')
+            if new == 0:
+                empty_streak += 1
+                if empty_streak >= 2:
+                    break
+
+            page += 1
+            # Pace requests so we don't trip Akamai's rate heuristics.
+            time.sleep(PAGE_DELAY + random.uniform(0, PAGE_JITTER))
 
         print(f"  {Fore.GREEN}{state_code}: {len(all_listings)} listings scraped{' '*20}")
         return all_listings
@@ -381,6 +454,19 @@ def main():
 
         save_state_file(state_code, listings)
         print(f"  {Fore.GREEN}✓ {state_code}: {len(listings)} scraped → {ok} upserted | Running total: {grand_total}")
+
+    # ── Safety guard ────────────────────────────────────────────────────────
+    # If we scraped 0 listings across every state, we were almost certainly
+    # blocked (403). Do NOT run stale-deactivation — otherwise a blocked run
+    # silently ages out thousands of real, still-live listings. Fail the job
+    # so the GitHub Actions run shows RED instead of a misleading green.
+    if grand_total == 0:
+        print(f"\n{Fore.RED}{'='*50}")
+        print(f"{Fore.RED}  0 listings scraped across all {total} states.")
+        print(f"{Fore.RED}  Almost certainly BLOCKED (403). Skipping stale-")
+        print(f"{Fore.RED}  deactivation to protect the dataset. Failing job.")
+        print(f"{Fore.RED}{'='*50}")
+        sys.exit(1)
 
     deactivate_stale(sb)
 
