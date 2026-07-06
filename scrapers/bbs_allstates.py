@@ -41,7 +41,20 @@ except ImportError:
 # ── Config ────────────────────────────────────────────────────────────────────
 SUPABASE_URL         = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
-PROXY = "2e675ba5977dd3336e3d:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
+
+# Proxy: DataImpulse. Two important params baked into the username:
+#   __cr.us       -> force US exit IPs (Akamai on a US site is much harsher on
+#                    foreign residential IPs; the old string omitted this).
+#   ;sessid.<id>  -> sticky session: hold ONE exit IP for ~30 min instead of
+#                    rotating per request. Rotation was causing curl(28) timeouts
+#                    (landing on dead residential IPs) and breaking cookie warming.
+# A fresh random sessid per process run keeps one stable IP for the whole scrape.
+PROXY_USER = "2e675ba5977dd3336e3d"
+PROXY_PASS = "39cd7cb8adc0d68f"
+PROXY_HOST = "gw.dataimpulse.com:823"
+PROXY_SESSID = f"gha{random.randint(100000, 999999)}"
+PROXY = f"{PROXY_USER}__cr.us;sessid.{PROXY_SESSID}:{PROXY_PASS}@{PROXY_HOST}"
+
 BATCH_SIZE           = 100
 STATE_FILES_DIR      = Path("state_files")
 STALE_DAYS           = 14  # deactivate listings not seen in this many days
@@ -51,6 +64,8 @@ PAGE_DELAY       = 1.5   # base seconds between page requests
 PAGE_JITTER      = 1.5   # add up to this many random seconds on top
 MAX_403_RETRIES  = 3     # re-warm + retry this many times on an Akamai 403
 BACKOFF_BASE     = 3.0   # first backoff = 3s, then 6s, then 12s (+jitter)
+REQ_TIMEOUT      = 25    # per-request timeout; a hung/dead proxy IP fails fast
+                         # instead of eating 60s per attempt (curl 28 timeouts)
 
 # ── Date model ─────────────────────────────────────────────────────────────────
 ANCHOR_NUM  = 2_367_857
@@ -114,11 +129,11 @@ class BBSAllStatesScraper:
         (_abck / bm_sz / ak_bmsc) against this TLS fingerprint + IP."""
         self.session.get(
             'https://www.bizbuysell.com/',
-            headers=self.headers, proxies=self.proxies, timeout=60,
+            headers=self.headers, proxies=self.proxies, timeout=REQ_TIMEOUT,
         )
         r = self.session.get(
             'https://www.bizbuysell.com/businesses-for-sale/new-york-ny/',
-            headers=self.headers, proxies=self.proxies, timeout=60,
+            headers=self.headers, proxies=self.proxies, timeout=REQ_TIMEOUT,
         )
         return r
 
@@ -200,7 +215,7 @@ class BBSAllStatesScraper:
                         headers=api_headers,
                         json=payload,
                         proxies=self.proxies,
-                        timeout=60
+                        timeout=REQ_TIMEOUT
                     )
                 except Exception as e:
                     print(f"  {Fore.RED}Page {page}: request error: {e}")
