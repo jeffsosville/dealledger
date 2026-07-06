@@ -1,0 +1,22 @@
+{
+  "started": "2026-07-06T16:47:30.086032+00:00",
+  "brokers_attempted": 250,
+  "brokers_success": 3,
+  "brokers_failed": 247,
+  "total_listings": 64,
+  "listings_with_price": 62,
+  "listings_with_cashflow": 1,
+  "listings_with_state": 64,
+  "detail_pages_fetched": 30,
+  "patterns_cached": 292,
+  "patterns_learned": 7,
+  "verticals": {
+    "other": 64
+  },
+  "failure_types": {
+    "NO_PATTERN": 197,
+    "HTTP_403": 25,
+    "FETCH_ERROR": 21
+  },
+  "completed": "2026-07-06T17:18:08.145597+00:00"
+}
