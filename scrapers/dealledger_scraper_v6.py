@@ -555,10 +555,15 @@ class PatternCache:
 
 class PatternDetector:
 
-    # A container qualifies only if at least this many of its repeated
-    # elements are genuine listings (title AND (price OR detail-link)). This
-    # rejects nav bars, hero blocks, and filter widgets that merely repeat.
+    # A container qualifies as a listing grid only if:
+    #  - at least MIN_LISTING_ELEMENTS of its repeated elements are genuine
+    #    listings (title AND (price OR detail-link)), AND
+    #  - at least MIN_PRICED of them actually carry a price.
+    # The price-density floor is what separates a real listing grid from nav
+    # bars, hero blocks, filter widgets, and commercial-RE/lease repeaters —
+    # empirically those score many title+link elements but ZERO prices.
     MIN_LISTING_ELEMENTS = 3
+    MIN_PRICED = 3
     SAMPLE = 15
 
     @classmethod
@@ -573,7 +578,7 @@ class PatternDetector:
                 if any(v >= 1_000 for v in
                        parse_all_prices(el.get_text(" ", strip=True))):
                     n_priced += 1
-        if n_listing < cls.MIN_LISTING_ELEMENTS:
+        if n_listing < cls.MIN_LISTING_ELEMENTS or n_priced < cls.MIN_PRICED:
             return None
         return n_listing, n_priced
 
