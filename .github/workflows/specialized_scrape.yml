@@ -1,0 +1,26 @@
+name: Specialized franchise scrapers
+on:
+  workflow_dispatch:        # manual trigger only, for now
+  # schedule:
+  #   - cron: '0 8 * * 0'   # (uncomment after we confirm it works) Sun 8am UTC
+jobs:
+  specialized:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install pandas beautifulsoup4 requests supabase colorama curl_cffi selenium webdriver-manager
+          # Chrome for Selenium
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Run specialized scrapers
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python3 scrapers/run_specialized.py
