@@ -85,6 +85,25 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+# Load .env (SUPABASE_*, PROXY_*) if python-dotenv is available. Harmless if
+# not installed or already exported — real env vars still win.
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
+# curl_cffi impersonates a real Chrome TLS/JA3 fingerprint — the same fix that
+# unblocked the BBS scraper (plain requests gets Akamai-403'd). Falls back to
+# stdlib requests if unavailable.
+try:
+    from curl_cffi import requests as cffi_requests
+    HAS_CURL_CFFI = True
+except ImportError:
+    HAS_CURL_CFFI = False
+    print("⚠️  curl_cffi not installed — falling back to plain requests (403-prone).")
+    print("   pip3 install curl_cffi")
+
 try:
     from playwright.sync_api import sync_playwright
     HAS_PLAYWRIGHT = True
@@ -392,19 +411,57 @@ VERTICALS = {
 # PROXY CONFIG
 # ============================================================
 
-# Set PROXY_URL env var — never hardcode credentials
-# Format: http://user:pass@host:port
-PROXY_URL = os.environ.get("PROXY_URL", "")
+# DataImpulse residential proxy — credentials come from the environment,
+# NEVER hardcoded. Provide either:
+#   PROXY_USER + PROXY_PASS  (+ optional PROXY_HOST, default gw.dataimpulse.com:823)
+# or a full PROXY_URL:  http://user:pass@host:port
+#
+# DataImpulse routing params are baked into the username at session-build time:
+#   __cr.us       -> force US exit IPs (foreign residential IPs draw harsher
+#                    Akamai/Cloudflare treatment on US sites)
+#   ;sessid.<id>  -> sticky session: hold ONE exit IP instead of rotating per
+#                    request (rotation caused curl(28) timeouts + broke cookie
+#                    warming). A fresh sessid gives a fresh IP on re-warm.
+def _load_proxy_creds():
+    """(user, password, host) from env, or (None, None, host)."""
+    user = os.environ.get("PROXY_USER", "").strip()
+    pw   = os.environ.get("PROXY_PASS", "").strip()
+    host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+    if not (user and pw):
+        raw = os.environ.get("PROXY_URL", "").strip()
+        if raw:
+            p = urlparse(raw)
+            user = p.username or ""
+            pw   = p.password or ""
+            if p.hostname:
+                host = f"{p.hostname}:{p.port}" if p.port else p.hostname
+    return (user or None, pw or None, host)
 
-# Domains that should always use the proxy (403 blockers)
+PROXY_USER, PROXY_PASS, PROXY_HOST = _load_proxy_creds()
+PROXY_AVAILABLE = bool(PROXY_USER and PROXY_PASS)
+
+# Anti-block retry tuning (mirrors bbs_allstates.py).
+MAX_403_RETRIES = 3      # re-warm + retry this many times on a 403/429/503
+BACKOFF_BASE    = 3.0    # backoff = 3s, 6s, 12s (+ jitter)
+REQ_TIMEOUT     = 25     # per-request timeout; a dead proxy IP fails fast
+
+
+def build_proxy_url(sessid):
+    """DataImpulse proxy URL with US sticky session, or None if unconfigured."""
+    if not PROXY_AVAILABLE:
+        return None
+    return f"http://{PROXY_USER}__cr.us;sessid.{sessid}:{PROXY_PASS}@{PROXY_HOST}"
+
+
+# Domains known to hard-block — start them on the proxy immediately.
 PROXY_DOMAINS = {
     "hedgestone.com",
     # Add more as you discover them
 }
 
 def _needs_proxy(domain: str) -> bool:
-    """Return True if this domain requires proxy routing."""
-    if not PROXY_URL:
+    """Return True if this domain should start on the proxy."""
+    if not PROXY_AVAILABLE:
         return False
     return any(pd in domain for pd in PROXY_DOMAINS)
 
@@ -847,22 +904,57 @@ class ListingExtractor:
 class PageFetcher:
 
     def __init__(self):
-        self.session = requests.Session()
+        # One sticky proxy session-id per run (fresh IP on each re-warm).
+        self._sessid = f"dl{random.randint(100000, 999999)}"
+        self.session = self._new_session()
         self.playwright   = None
         self.browser_plain = None   # no proxy
         self.browser_proxy = None   # with proxy
+        # Domains that 403'd once — subsequent pages go straight to the proxy.
+        self._proxy_domains_runtime = set()
+
+    @staticmethod
+    def _new_session():
+        """A curl_cffi session impersonating a current Chrome (chrome131).
+        chrome124 went stale ~6/30/2026 and started drawing Akamai 403s."""
+        if HAS_CURL_CFFI:
+            return cffi_requests.Session(impersonate="chrome131")
+        return requests.Session()
 
     def _proxy_dict(self):
-        """requests-style proxy dict from PROXY_URL env var."""
-        if not PROXY_URL:
+        """requests-style proxy dict for the current sticky session."""
+        p = build_proxy_url(self._sessid)
+        if not p:
             return None
-        return {"http": PROXY_URL, "https": PROXY_URL}
+        return {"http": p, "https": p}
 
     def _playwright_proxy(self):
-        """Playwright proxy config from PROXY_URL env var."""
-        if not PROXY_URL:
+        """Playwright proxy config (server + separate auth)."""
+        if not PROXY_AVAILABLE:
             return None
-        return {"server": PROXY_URL}
+        return {
+            "server":   f"http://{PROXY_HOST}",
+            "username": f"{PROXY_USER}__cr.us;sessid.{self._sessid}",
+            "password": PROXY_PASS,
+        }
+
+    def _rewarm(self, url, use_proxy):
+        """Fresh session + fresh sticky IP, then hit the site root so the
+        anti-bot layer issues fresh sensor cookies against this fingerprint."""
+        self._sessid = f"dl{random.randint(100000, 999999)}"
+        self.session = self._new_session()
+        try:
+            pu = urlparse(url)
+            root = f"{pu.scheme}://{pu.netloc}/"
+            self.session.get(
+                root, timeout=REQ_TIMEOUT, allow_redirects=True,
+                proxies=self._proxy_dict() if use_proxy else None,
+                headers={"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                         "Accept-Language": "en-US,en;q=0.9",
+                         "Referer": "https://www.google.com/"},
+            )
+        except Exception:
+            pass
 
     def _ensure_playwright(self):
         if not self.playwright:
@@ -883,20 +975,77 @@ class PageFetcher:
                 self.browser_plain = self.playwright.chromium.launch(headless=True)
             return self.browser_plain
 
-    def fetch_requests(self, url, timeout=15, use_proxy=False):
-        headers = {
-            "User-Agent":      random.choice(USER_AGENTS),
+    def _headers(self):
+        # No User-Agent: curl_cffi sets one matching its TLS fingerprint.
+        # (A mismatched UA is itself a bot signal.) Plain-requests fallback
+        # gets a UA so it isn't obviously headless.
+        h = {
             "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Language": "en-US,en;q=0.9",
             "Referer":         "https://www.google.com/",
         }
+        if not HAS_CURL_CFFI:
+            h["User-Agent"] = random.choice(USER_AGENTS)
+        return h
+
+    def fetch_requests(self, url, timeout=REQ_TIMEOUT, use_proxy=False):
+        """Single-shot GET (no retry). Kept for callers that want raw fetch."""
         resp = self.session.get(
-            url, headers=headers, timeout=timeout,
+            url, headers=self._headers(), timeout=timeout,
             allow_redirects=True,
             proxies=self._proxy_dict() if use_proxy else None,
         )
         resp.raise_for_status()
         return resp.text
+
+    def _fetch_http(self, url, use_proxy=False, timeout=REQ_TIMEOUT):
+        """
+        GET with anti-block handling: on 403/429/503, escalate to the proxy
+        (if not already on it), re-warm the session for fresh cookies, back
+        off, and retry up to MAX_403_RETRIES. Raises requests.HTTPError with
+        the last response attached when a block survives all retries, so the
+        caller can classify it as HTTP_403.
+        """
+        domain = urlparse(url).netloc
+        if domain in self._proxy_domains_runtime:
+            use_proxy = True
+        resp = None
+        for attempt in range(MAX_403_RETRIES + 1):
+            try:
+                resp = self.session.get(
+                    url, headers=self._headers(), timeout=timeout,
+                    allow_redirects=True,
+                    proxies=self._proxy_dict() if use_proxy else None,
+                )
+            except Exception:
+                # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
+                if attempt < MAX_403_RETRIES:
+                    time.sleep(BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5))
+                    self._rewarm(url, use_proxy)
+                    continue
+                raise
+
+            if resp.status_code == 200:
+                return resp.text
+
+            if resp.status_code in (403, 429, 503):
+                # First block on a direct fetch → escalate this domain to proxy.
+                if not use_proxy and PROXY_AVAILABLE:
+                    use_proxy = True
+                    self._proxy_domains_runtime.add(domain)
+                if attempt < MAX_403_RETRIES:
+                    backoff = BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5)
+                    time.sleep(backoff)
+                    self._rewarm(url, use_proxy)
+                    continue
+                break  # exhausted retries → fall through to raise
+
+            # Other non-200 (404/500/…): not a block, don't burn retries.
+            resp.raise_for_status()
+
+        raise requests.HTTPError(
+            f"HTTP {resp.status_code if resp is not None else '???'} after "
+            f"{MAX_403_RETRIES} proxy retries", response=resp)
 
     def fetch_playwright(self, url, timeout=30000, use_proxy=False):
         if not HAS_PLAYWRIGHT:
@@ -945,20 +1094,25 @@ class PageFetcher:
     def fetch(self, url, use_proxy=False):
         requests_html = None
         try:
-            requests_html = self.fetch_requests(url, use_proxy=use_proxy)
-            # Only trust the requests HTML if it actually carries listing
-            # content. A big-but-empty JS shell falls through to Playwright.
+            # curl_cffi + proxy-escalation + 403 re-warm/retry.
+            requests_html = self._fetch_http(url, use_proxy=use_proxy)
+            # Only trust the HTML if it actually carries listing content.
+            # A big-but-empty JS shell falls through to Playwright.
             if len(requests_html) > 3000 and self._has_listing_signal(requests_html):
                 return requests_html, "requests"
         except requests.HTTPError as e:
-            if e.response is not None and e.response.status_code == 403:
-                raise  # Propagate 403 for failure classification
+            # Reached only after proxy retries were exhausted → genuinely
+            # blocked. Propagate 403 for failure classification.
+            if e.response is not None and getattr(e.response, "status_code", None) == 403:
+                raise
         except Exception:
             pass
 
         if HAS_PLAYWRIGHT:
             try:
-                pw_html = self.fetch_playwright(url, use_proxy=use_proxy)
+                # If the domain has been blocking, render through the proxy too.
+                pw_proxy = use_proxy or (urlparse(url).netloc in self._proxy_domains_runtime)
+                pw_html = self.fetch_playwright(url, use_proxy=pw_proxy)
                 # Prefer whichever rendering actually has listing content.
                 if self._has_listing_signal(pw_html) or not requests_html:
                     return pw_html, "playwright"
@@ -967,7 +1121,7 @@ class PageFetcher:
 
         if requests_html and len(requests_html) > 3000:
             return requests_html, "requests"
-        return self.fetch_requests(url, timeout=25, use_proxy=use_proxy), "requests"
+        return self._fetch_http(url, use_proxy=True), "requests"
 
     def close(self):
         if self.browser_plain:
@@ -1077,10 +1231,11 @@ class DealLedgerScraper:
             except Exception as e:
                 print(f"⚠️  Supabase unavailable: {e} — local files only")
 
-        if PROXY_URL:
-            print(f"🔀 Proxy enabled — {len(PROXY_DOMAINS)} domain(s) routed through proxy")
+        fp = "chrome131 (curl_cffi)" if HAS_CURL_CFFI else "plain requests"
+        if PROXY_AVAILABLE:
+            print(f"🔀 Proxy enabled — DataImpulse US sticky; escalate on 403. Fingerprint: {fp}")
         else:
-            print("ℹ️  No proxy configured (set PROXY_URL env var to enable)")
+            print(f"ℹ️  No proxy configured (set PROXY_USER/PROXY_PASS). Fingerprint: {fp}")
 
         self.stats = {
             "started": datetime.now(timezone.utc).isoformat(),
@@ -1236,6 +1391,27 @@ class DealLedgerScraper:
                 print(f"   📦 Cached pattern: {pattern['container_selector']}")
             else:
                 pattern = PatternDetector.detect(html, url)
+
+                # Task C — pattern-aware Playwright escalation. If the plain
+                # fetch yielded no detectable pattern, the listing grid is
+                # very likely JS-rendered (a shell whose cards are injected by
+                # client-side JS). Re-render with Playwright and re-detect
+                # before giving up. Route through the proxy if this domain has
+                # been blocking. This also covers the case where curl_cffi
+                # returns a content-ful shell that passes the price-signal
+                # check but whose grid only materializes after JS runs.
+                if not pattern and method != "playwright" and HAS_PLAYWRIGHT:
+                    try:
+                        pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                        pw_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
+                        pw_pattern = PatternDetector.detect(pw_html, url)
+                        if pw_pattern:
+                            html, method, pattern = pw_html, "playwright", pw_pattern
+                            print(f"   🎭 Playwright escalation recovered a pattern "
+                                  f"({len(pw_html):,} bytes)")
+                    except Exception:
+                        pass
+
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
                     if predicted and predicted.get("score", 0) > pattern.get("score", 0):
