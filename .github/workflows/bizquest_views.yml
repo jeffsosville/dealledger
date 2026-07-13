@@ -1,28 +1,21 @@
 name: BizQuest Views Refresh
-
 on:
   schedule:
     - cron: '0 13 * * *'  # Daily 9am ET (13:00 UTC)
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 360  # 6 hours - 43k listings at ~125/min = ~6 hours
-
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-
       - name: Install dependencies
-        run: pip install curl_cffi supabase colorama
-
+        run: pip install --no-cache-dir "curl_cffi==0.7.4" supabase colorama
       - name: Run BizQuest views refresh
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
