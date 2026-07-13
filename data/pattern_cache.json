@@ -21,11 +21,10 @@
     "last_used": "2026-02-21T18:39:35.335159"
   },
   "fcbb.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 4,
-    "total_listings": 13,
-    "first_seen": "2026-02-18T12:43:47.887438",
-    "last_used": "2026-02-21T18:40:22.480622"
+    "container_selector": "div.listing",
+    "count": 5,
+    "score": 15,
+    "sample_text": "Specialty Laboratory Installation Contractor Business with Growth Potential California Specialty contracting business that focuses on the installation of laboratory furniture and technical equipment a"
   },
   "vestedbb.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
@@ -35,11 +34,10 @@
     "last_used": "2026-02-21T19:03:09.103171"
   },
   "synergybb.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 3,
-    "total_listings": 12,
-    "first_seen": "2026-02-18T14:00:41.379782",
-    "last_used": "2026-02-21T19:04:25.425400"
+    "container_selector": "div.sale-list-item",
+    "count": 20,
+    "score": 30,
+    "sample_text": "Equipment Rental and Trucking Solutions: Oil and Gas Specialty $30,000,000 Annual Revenue: $15,293,339 Net Cash Flow: $6,563,296 Transform your investment into a profitable oilfield services enterpris"
   },
   "eastcoastbusinessbrokers.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
@@ -70,11 +68,10 @@
     "last_used": "2026-02-21T19:08:28.034380"
   },
   "kensingtoncompany.com": {
-    "pattern": "div|children:div|has_link|text:medium|has_price",
-    "success_count": 3,
-    "total_listings": 306,
-    "first_seen": "2026-02-18T14:07:11.193288",
-    "last_used": "2026-02-21T19:10:39.231443"
+    "container_selector": "div.business-listing-item",
+    "count": 15,
+    "score": 30,
+    "sample_text": "Top Brand Turnkey Boutique Fitness Studio Franchise Nassau County, NY Fully built-out boutique fitness studio for sale on Long Island. Clean, easy-to-operate... Property Included Price Reduction INQUI"
   },
   "lbaweb.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
@@ -502,13 +499,6 @@
     "total_listings": 6,
     "first_seen": "2026-02-20T09:59:53.684201",
     "last_used": "2026-02-21T22:51:50.728899"
-  },
-  "indianabusinessadvisors.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
-    "success_count": 2,
-    "total_listings": 21,
-    "first_seen": "2026-02-20T10:02:08.526140",
-    "last_used": "2026-02-21T22:54:05.711134"
   },
   "reputedbrokerage.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
@@ -2026,5 +2016,65 @@
     "count": 51,
     "score": 28,
     "sample_text": "Coral Gables Restaurant for sale, $1.68M Sales, $186K Owner Benefit $799,000 Coral Gables, Florida View Listing"
+  },
+  "www.sunbeltnetwork.com": {
+    "container_selector": "div.latestBusinesses__item--middle",
+    "count": 10,
+    "score": 20,
+    "sample_text": "1,000+ Car Rental Business for Sale, Auto Repair / Towing / Dealership Confidential, Florida Rare Opportunity to Own a Successful and Well-Established Car Rental Agency in Florida with a fleet of 1,00"
+  },
+  "www.routesforsale.net": {
+    "container_selector": "div.content-main.right-content.pull-right",
+    "count": 14,
+    "score": 28,
+    "sample_text": "Bimbo Bakery Routes View Routes For Sale By States Here! Route Type City, State Price Financing Cash Flow Status Route Details Arnold & Bimbo Bread Gadsden, AL $150,000 $95,000 $74,906 Active View Rou"
+  },
+  "www.websiteclosers.com": {
+    "container_selector": "div.post_item",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Available SBA Pre-Qualified Luxury Resale Business | 2 Luxury Brands | 17-Year Business | Experienced Staff in Place | 33% YOY Profit Growth WebsiteClosers\u00ae presents an SBA Pre-Qualified Luxury Resale"
+  },
+  "www.ninbb.com": {
+    "container_selector": "div.row-fluid.member_results.level_1.search_result.verified_member_result.clearfix",
+    "count": 9,
+    "score": 18,
+    "sample_text": "Profitable HVAC and Refrigeration Business Strong Demand | Significant Growth Upside Verified Category: Building & Construction Strong Demand | Significant Growth Upside     This well-established HVAC"
+  },
+  "eatz-associates.com": {
+    "container_selector": "div.fusion-builder-row.fusion-builder-row-inner.fusion-row.fusion-flex-align-items-flex-start.fusion-flex-content-wrap",
+    "count": 45,
+    "score": 20,
+    "sample_text": "For Sale High-Volume Cold Stone Creamery Rosedale, NY \u2013 Five Town Shopping Center! One Of Queens' Busiest Shopping Centers On The High-Traffic Rockaway Blvd Corridor VIEW LISTING"
+  },
+  "restaurantforsales.com": {
+    "container_selector": "div.listing-col2",
+    "count": 157,
+    "score": 30,
+    "sample_text": "#6957 Prime Restaurant Opportunity in High-Traffic Plaza in Rancho Cordova Sacramento Monthly Rent: $5,000 Square Feet: 2,000 Available $268,000 Add To Favorites VIEW DETAILS"
+  },
+  "restaurantrealty.com": {
+    "container_selector": "div.mob",
+    "count": 144,
+    "score": 30,
+    "sample_text": "Active Los Angeles County Playa Vista Restaurant & Bar, Asset Sale, Great Location & ABC Type 47 Hard Liquor License. Los Angeles County, CA $175,000 Nestled in the heart of Playa Vista this Restauran"
+  },
+  "www.calhouncompanies.com": {
+    "container_selector": "div.business-info.group",
+    "count": 10,
+    "score": 20,
+    "sample_text": "Dairy Queen for Sale - 11971 BC Industry Food & Beverage Location Minnesota Category Fast Food Restaurant Price $595,000"
+  },
+  "listings.routeconsultant.com": {
+    "container_selector": "div.result__body",
+    "count": 209,
+    "score": 30,
+    "sample_text": "Bread 24 Accounts Total Revenue: $725,296 Listing Price: $125,000"
+  },
+  "indianabusinessadvisors.com": {
+    "container_selector": "div.acadp-card.md\\:acadp-flex-row.md\\:acadp-gap-4.md\\:acadp-p-4",
+    "count": 12,
+    "score": 23,
+    "sample_text": "New Listing Custom Guttering, Sheet Metal and Roofing Installer Service 145 views $2,100,000.00"
   }
 }

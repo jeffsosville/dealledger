@@ -19,7 +19,7 @@ Usage:
     python3 scrapers/run_specialized.py --dry-run
 """
 
-import os, sys, json, time, hashlib, argparse, logging
+import os, sys, re, json, time, hashlib, argparse, logging
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 import requests as http_requests
@@ -29,7 +29,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
     SunbeltScraper, VRScraper, FCBBScraper,
-    LinkBusinessScraper, LarryBodnerScraper
+    LinkBusinessScraper, LarryBodnerScraper,
+    WeSellRestaurantsScraper
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -83,6 +84,11 @@ BROKERS = {
         "account": "1006",
         "display_name": "Executive Business Brokers (Larry Bodner)",
         "fn": lambda: LarryBodnerScraper().scrape("1006"),
+    },
+    "wesell": {
+        "account": "2900",
+        "display_name": "We Sell Restaurants",
+        "fn": lambda: WeSellRestaurantsScraper().scrape("2900", max_pages=40),
     },
 }
 
@@ -232,6 +238,79 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
     return upserted
 
 
+def cleanup_stale_wesell_rows() -> int:
+    """
+    Remove stale We Sell Restaurants rows that predate the dedicated scraper.
+
+    The old generic scrape left index-page rows under
+    broker_domain='wesellrestaurants.com' (e.g. the account-2900 row stuck
+    at a single '/restaurant-for-sale-near-me/...' URL since 2026-03-27).
+    The new scraper writes per-listing detail URLs with 'spec:'-prefixed ids,
+    so those legacy rows don't get superseded by the upsert. Delete any
+    wesellrestaurants.com row whose URL is NOT a per-listing detail page.
+    """
+    if not SUPABASE_SERVICE_KEY:
+        return 0
+    headers = {
+        "apikey": SUPABASE_SERVICE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+        "Content-Type": "application/json",
+    }
+    # A valid per-listing detail URL looks like
+    # /restaurant-for-sale/<slug>/<id>. Anything else (index pages, the
+    # legacy /restaurant-for-sale-near-me/... row) is stale. Paginate the
+    # fetch so we don't miss rows beyond Supabase's default 1000-row window.
+    def _is_detail_url(u: str) -> bool:
+        u = (u or "").rstrip("/")
+        if "/restaurant-for-sale-near-me/" in u:
+            return False
+        return bool(re.search(r"/restaurant-for-sale/[^/]+/\d+$", u))
+
+    stale_ids = []
+    offset, page_size = 0, 1000
+    while True:
+        try:
+            r = http_requests.get(
+                f"{SUPABASE_URL}/rest/v1/listings_direct",
+                headers={**headers, "Range-Unit": "items",
+                         "Range": f"{offset}-{offset + page_size - 1}"},
+                params={"broker_domain": "eq.wesellrestaurants.com", "select": "id,url"},
+                timeout=30,
+            )
+            r.raise_for_status()
+            rows = r.json()
+        except Exception as e:
+            log.error(f"[wesell cleanup] fetch failed: {e}")
+            break
+        if not rows:
+            break
+        stale_ids.extend(row["id"] for row in rows if not _is_detail_url(row.get("url", "")))
+        if len(rows) < page_size:
+            break
+        offset += page_size
+
+    if not stale_ids:
+        log.info("[wesell cleanup] no stale index-page rows found")
+        return 0
+
+    deleted = 0
+    for i in range(0, len(stale_ids), 100):
+        chunk = stale_ids[i:i + 100]
+        id_list = ",".join(f'"{sid}"' for sid in chunk)
+        dr = http_requests.delete(
+            f"{SUPABASE_URL}/rest/v1/listings_direct",
+            headers=headers,
+            params={"id": f"in.({id_list})"},
+            timeout=30,
+        )
+        if dr.status_code in (200, 204):
+            deleted += len(chunk)
+        else:
+            log.error(f"[wesell cleanup] delete error {dr.status_code}: {dr.text[:200]}")
+    log.info(f"[wesell cleanup] removed {deleted} stale index-page row(s)")
+    return deleted
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def run(broker_filter: list[str] | None, dry_run: bool):
     if not SUPABASE_SERVICE_KEY and not dry_run:
@@ -270,6 +349,10 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             upserted = upsert_listings(listings, display_name=broker_meta["display_name"])
             log.info(f"[{name}] Upserted {upserted} rows")
             grand_total += upserted
+
+            # Post-upsert cleanup of legacy index-page rows for We Sell Restaurants
+            if name == "wesell":
+                cleanup_stale_wesell_rows()
 
         except Exception as e:
             log.error(f"[{name}] Failed: {e}")
