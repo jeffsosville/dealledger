@@ -1,0 +1,29 @@
+name: Freshness Monitor
+
+on:
+  schedule:
+    # 13:00 UTC = 9:00am ET (EDT). Daily coverage-staleness check.
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run freshness monitor
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python scrapers/freshness_monitor.py

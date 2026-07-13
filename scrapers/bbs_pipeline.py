@@ -28,7 +28,7 @@ from supabase import create_client
 # ── Config ─────────────────────────────────────────────────────────────────────
 SUPABASE_URL        = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
-PROXY_STRING        = "2e675ba5977dd3336e3d__cr.us:719577c3bc6fb269@gw.dataimpulse.com:823"
+PROXY_STRING        = "2e675ba5977dd3336e3d__cr.us:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
 BATCH_SIZE          = 50
 
 # listNumber → date model (7 anchors, ±12 day mean error)
