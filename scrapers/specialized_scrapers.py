@@ -1190,17 +1190,28 @@ class LarryBodnerScraper:
     Executive Business Brokers (Larry Bodner)
     https://execbb.com
 
-    POSTs search form and parses HTML table directly. No Selenium needed.
-    ~1,000+ listings across NJ and other states.
+    POSTs the buyer search form and parses the HTML results table directly.
+    No Selenium needed (curl_cffi is sufficient).
+
+    Structure notes (verified 2026-07 — the site changed since April):
+    - results.asp with AllListings=ON returns the ENTIRE national listing set
+      (~1,050) in one response, regardless of the State param, so a single
+      POST is enough — no per-state loop.
+    - Each listing spans two <tr> rows inside div.scrolllistings:
+        * Title row : one <a href="listingdetail.asp?listingid=<id>, <cat>">
+                      whose text is "<id>, <cat> <business type>".
+        * Detail row (next sibling <tr>, 5 <td>):
+            td[1] = Highlights/description
+            td[2] = asking price
+            td[3] = cash flow   (NOT revenue — this was mis-mapped before)
+            td[4] = location "County, ST"
+    - The href carries a trailing ", <cat>"; we keep only the numeric id so
+      the detail URL is clean and stable.
     """
 
     BASE = "https://execbb.com"
     SEARCH_URL = f"{BASE}/buyer/sub/search.asp"
     RESULTS_URL = f"{BASE}/Buyer/sub/results.asp?searchtype=incsearch"
-
-    STATES = ['NJ', 'NY', 'CT', 'PA', 'al', 'AZ', 'CA', 'co', 'fl',
-              'ga', 'il', 'in', 'md', 'ma', 'mi', 'mn', 'mo', 'nc',
-              'oh', 'or', 'pa', 'sc', 'tn', 'tx', 'va', 'wa', 'wi']
 
     def __init__(self):
         self.session = requests.Session(impersonate="chrome120")
@@ -1209,60 +1220,92 @@ class LarryBodnerScraper:
         except Exception as e:
             print(f"[Bodner] Session init warning: {e}")
 
-    def _fetch_state(self, state: str) -> List[Dict]:
+    @staticmethod
+    def _clean(text: Optional[str]) -> Optional[str]:
+        if text is None:
+            return None
+        t = text.replace('\xa0', ' ').strip()
+        if t in ('', '-', '--', '-, --', 'Undisclosed'):
+            return None
+        return t
+
+    def _detail_url(self, href: str) -> Optional[str]:
+        """Build a clean listing-detail URL, keeping only the numeric id."""
+        if not href:
+            return None
+        m = re.search(r'listingid=(\d+)', href)
+        if not m:
+            return None
+        return f"{self.BASE}/Buyer/sub/listingdetail.asp?listingid={m.group(1)}"
+
+    def _fetch_all(self) -> List[Dict]:
         data = {
             'Category': 'all',
-            'State': state,
+            'State': '',
             'County': '0',
             'AllListings': 'ON',
-            'searchtype': 'IncSearch'
+            'searchtype': 'IncSearch',
         }
         try:
-            r = self.session.post(self.RESULTS_URL, data=data, timeout=30)
+            r = self.session.post(self.RESULTS_URL, data=data, timeout=45)
             r.raise_for_status()
         except Exception as e:
-            print(f"[Bodner] Error fetching {state}: {e}")
+            print(f"[Bodner] Error fetching results: {e}")
             return []
 
         soup = BeautifulSoup(r.text, 'html.parser')
-        listing_links = [a for a in soup.find_all('a', href=True) if 'listingdetail' in a.get('href', '')]
+        listing_links = [
+            a for a in soup.find_all('a', href=True)
+            if 'listingdetail' in a.get('href', '').lower()
+        ]
         listings = []
 
         for link in listing_links:
             try:
                 href = link.get('href', '')
-                title = link.get_text(strip=True)
-                if not title or not href:
+                url = self._detail_url(href)
+                if not url:
                     continue
-                url = href if href.startswith('http') else f"{self.BASE}/Buyer/sub/{href.lstrip('/')}"
+
+                raw = link.get_text(strip=True)  # "<id>, <cat> <business type>"
+                m = re.match(r'^\s*\d+\s*,\s*\d+\s*(.*)$', raw)
+                business_type = (m.group(1).strip() if m else raw) or None
+                title = business_type
+
                 title_row = link.find_parent('tr')
                 if not title_row:
                     continue
-                next_row = title_row.find_next_sibling('tr')
-                cells = next_row.find_all('td') if next_row else []
-                price_text = None
-                revenue_text = None
-                location = None
-                description = cells[0].get_text(strip=True) if len(cells) >= 1 else None
-                if len(cells) >= 3:
-                    revenue_text = cells[2].get_text(strip=True)
-                    if revenue_text in ['', chr(160), 'Undisclosed']:
-                        revenue_text = None
-                if len(cells) >= 4:
-                    price_text = cells[3].get_text(strip=True)
-                    if price_text in ['', chr(160)]:
-                        price_text = None
-                if len(cells) >= 5:
-                    location = cells[4].get_text(strip=True)
-                    if location in ['', chr(160)]:
-                        location = None
-                city, st = extract_city_state(location or f", {state}")
-                if not st:
-                    st = state
+                detail_row = title_row.find_next_sibling('tr')
+                cells = detail_row.find_all('td') if detail_row else []
+
+                def cell(i):
+                    return cells[i].get_text(' ', strip=True) if len(cells) > i else None
+
+                description = self._clean(cell(1))
+                if description and description.lower().startswith('highlights'):
+                    description = re.sub(r'^highlights\s*:\s*', '', description, flags=re.I).strip() or None
+                price_text = self._clean(cell(2))
+                cash_flow_text = self._clean(cell(3))
+                location = self._clean(cell(4))
+
+                city, st = extract_city_state(location) if location else (None, None)
+                # Location comes as "County, ST"; the first token is a county,
+                # not a city — only trust the 2-letter state code.
+                if not st and location and ',' in location:
+                    tail = location.split(',')[-1].strip()
+                    if len(tail) == 2 and tail.isalpha():
+                        st = tail.upper()
+
                 listings.append({
-                    'url': url, 'title': title, 'price_text': price_text,
-                    'revenue_text': revenue_text, 'location': location,
-                    'city': city, 'state': st, 'description': description
+                    'url': url,
+                    'title': title,
+                    'business_type': business_type,
+                    'price_text': price_text,
+                    'cash_flow_text': cash_flow_text,
+                    'location': location,
+                    'city': None,
+                    'state': st,
+                    'description': description,
                 })
             except Exception:
                 continue
@@ -1274,22 +1317,19 @@ class LarryBodnerScraper:
             print("Executive Business Brokers (Larry Bodner)")
             print('='*60)
 
+        raw_items = self._fetch_all()
+
+        # Deduplicate by clean listing URL
         all_items = []
         seen_urls = set()
+        for it in raw_items:
+            if it['url'] in seen_urls:
+                continue
+            seen_urls.add(it['url'])
+            all_items.append(it)
 
-        for state in self.STATES:
-            try:
-                state_items = self._fetch_state(state)
-                new = [l for l in state_items if l['url'] not in seen_urls]
-                for l in new:
-                    seen_urls.add(l['url'])
-                all_items.extend(new)
-                if verbose and new:
-                    print(f"[Bodner] {state}: {len(new)} new listings | Total: {len(all_items)}")
-                time.sleep(0.5)
-            except Exception as e:
-                if verbose:
-                    print(f"[Bodner] Error on {state}: {e}")
+        if verbose:
+            print(f"[Bodner] Fetched {len(all_items)} unique listings (national feed)")
 
         listings = []
         for item in all_items:
@@ -1303,12 +1343,167 @@ class LarryBodnerScraper:
                 city=item['city'],
                 state=item['state'],
                 description=item['description'],
-                revenue=parse_money(item['revenue_text'])
+                business_type=item['business_type'],
+                cash_flow=parse_money(item['cash_flow_text']),
             ))
 
         if verbose:
             with_price = sum(1 for l in listings if l.get('price'))
-            print(f"\n✓ {len(listings)} Larry Bodner listings ({with_price} with price)")
+            with_cf = sum(1 for l in listings if l.get('cash_flow'))
+            print(f"\n✓ {len(listings)} Larry Bodner listings "
+                  f"({with_price} with price, {with_cf} with cash flow)")
+
+        return listings
+
+
+# ============================================================================
+# WE SELL RESTAURANTS SCRAPER
+# National corporate feed via the Next.js JSON API (curl_cffi)
+# ============================================================================
+
+class WeSellRestaurantsScraper:
+    """
+    We Sell Restaurants
+    https://www.wesellrestaurants.com
+
+    wesellrestaurants.com is a Next.js SPA whose listings load from a JSON
+    API. The full national feed comes from POST /searchFilter with an empty
+    body and Laravel-style ?page=N pagination (per_page=51, ~1,300+ listings).
+
+    Per-record fields used:
+        id            -> listing id (part of detail URL)
+        slug_url      -> URL slug (part of detail URL)
+        bname         -> business name / title
+        bsaleprice    -> asking price
+        bcity/bstate  -> location
+        listing_bat.grossSales     -> revenue
+        listing_bat.owner_benefits -> cash flow (SDE)
+
+    Detail URL pattern (verified against the live site):
+        https://www.wesellrestaurants.com/restaurant-for-sale/{slug_url}/{id}
+    """
+
+    BASE = "https://www.wesellrestaurants.com"
+    API_BASE = "https://api.wesellrestaurants.com/wsr-rebuild-prod/api"
+    SEARCH_URL = f"{API_BASE}/searchFilter"
+
+    def __init__(self):
+        self.session = requests.Session(impersonate="chrome131")
+        self.api_headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "Origin": self.BASE,
+            "Referer": f"{self.BASE}/",
+        }
+
+    def _fetch_page(self, page_num: int) -> Optional[Dict]:
+        """POST to /searchFilter?page=N with an empty body; returns the
+        Laravel paginator object under the top-level 'data' key."""
+        for attempt in range(3):
+            try:
+                r = self.session.post(
+                    f"{self.SEARCH_URL}?page={page_num}",
+                    headers=self.api_headers,
+                    json={},
+                    timeout=45,
+                )
+                r.raise_for_status()
+                payload = r.json()
+                return payload.get("data") or {}
+            except Exception as e:
+                if attempt == 2:
+                    print(f"[WeSell] Error page {page_num}: {e}")
+                    return None
+                time.sleep(1.5 * (attempt + 1))
+        return None
+
+    def _detail_url(self, rec: Dict) -> Optional[str]:
+        slug = (rec.get("slug_url") or "").strip().strip("/")
+        rid = rec.get("id")
+        if not slug or not rid:
+            return None
+        return f"{self.BASE}/restaurant-for-sale/{slug}/{rid}"
+
+    @staticmethod
+    def _to_number(val) -> Optional[float]:
+        """Coerce API numeric fields (may be int, str, None, or 0) to a
+        positive float, treating 0/blank as 'not disclosed'."""
+        if val in (None, "", "0", 0):
+            return None
+        try:
+            n = float(str(val).replace(",", "").replace("$", "").strip())
+            return n if n > 0 else None
+        except (ValueError, TypeError):
+            return None
+
+    def scrape(self, broker_account: str, max_pages: int = 40, verbose: bool = True) -> List[Dict]:
+        if verbose:
+            print(f"\n{'='*60}")
+            print("We Sell Restaurants (national corporate feed)")
+            print('='*60)
+
+        all_items = []
+        seen_ids = set()
+        last_page = None
+
+        page_num = 1
+        while page_num <= max_pages:
+            data = self._fetch_page(page_num)
+            if not data:
+                break
+
+            records = data.get("data", []) or []
+            if last_page is None:
+                last_page = data.get("last_page")
+                if verbose:
+                    print(f"[WeSell] {data.get('total', '?')} total listings "
+                          f"across {last_page} pages (per_page={data.get('per_page')})")
+
+            new = [r for r in records if r.get("id") not in seen_ids]
+            for r in new:
+                seen_ids.add(r.get("id"))
+            all_items.extend(new)
+
+            if verbose and (page_num == 1 or page_num % 5 == 0 or page_num == last_page):
+                print(f"[WeSell] Page {page_num}/{last_page or '?'}: "
+                      f"{len(new)} new | Total: {len(all_items)}")
+
+            if not records:
+                break
+            if last_page and page_num >= last_page:
+                break
+
+            page_num += 1
+            time.sleep(random.uniform(0.4, 0.9))
+
+        listings = []
+        for rec in all_items:
+            url = self._detail_url(rec)
+            if not url:
+                continue
+            bat = rec.get("listing_bat") or {}
+            city = (rec.get("bcity") or "").strip() or None
+            state = (rec.get("bstate") or "").strip() or None
+            location = ", ".join([p for p in (city, state) if p]) or None
+            title = (rec.get("bheadlinead") or rec.get("bname")
+                     or rec.get("burldes") or "").strip() or None
+
+            listings.append(format_listing(
+                url=url,
+                broker_account=broker_account,
+                title=title,
+                price=self._to_number(rec.get("bsaleprice")),
+                location=location,
+                city=city,
+                state=state,
+                description=rec.get("bmetadescription") or rec.get("burldes"),
+                revenue=self._to_number(bat.get("grossSales")),
+                cash_flow=self._to_number(bat.get("owner_benefits")),
+            ))
+
+        if verbose:
+            with_price = sum(1 for l in listings if l.get("price"))
+            print(f"\n✓ {len(listings)} We Sell Restaurants listings ({with_price} with price)")
 
         return listings
 
@@ -1377,7 +1572,11 @@ def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[Li
     # FCBB
     if 'first choice' in name or 'fcbb' in name or 'fcbb.com' in url:
         return FCBBScraper().scrape(broker_account=account, verbose=verbose)
-    
+
+    # We Sell Restaurants
+    if 'we sell restaurant' in name or 'wesellrestaurants.com' in url:
+        return WeSellRestaurantsScraper().scrape(broker_account=account, verbose=verbose)
+
     # Not a specialized broker
     return None
 
@@ -1391,8 +1590,8 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Test specialized scrapers")
     parser.add_argument("broker", choices=[
-        'murphy', 'hedgestone', 'transworld', 'sunbelt', 
-        'vr', 'fcbb', 'link', 'bodner', 'all'
+        'murphy', 'hedgestone', 'transworld', 'sunbelt',
+        'vr', 'fcbb', 'link', 'bodner', 'wesell', 'all'
     ])
     parser.add_argument("--account", default="test-123", help="Broker account ID")
     
@@ -1407,6 +1606,7 @@ if __name__ == "__main__":
         'fcbb': lambda: FCBBScraper().scrape(args.account, max_pages=79),
         'link': lambda: LinkBusinessScraper().scrape(args.account, max_pages=20),
         'bodner': lambda: LarryBodnerScraper().scrape(args.account),
+        'wesell': lambda: WeSellRestaurantsScraper().scrape(args.account, max_pages=40),
     }
     
     if args.broker == 'all':
