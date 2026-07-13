@@ -328,6 +328,20 @@ def has_detail_link(element, base_url=""):
     return False
 
 
+def css_selector(tag, classes):
+    """
+    Build a CSS-VALID selector from a tag + class list. Utility-CSS class
+    names contain characters that are illegal in a bare CSS selector and make
+    BeautifulSoup.select() raise ("Malformed selector"): Tailwind responsive/
+    state prefixes use ':' (md:flex, hover:bg), fractional widths use '/'
+    (w-1/2), some use '.' (p-1.5). Escape them so the selector parses.
+    """
+    out = []
+    for c in classes:
+        out.append(re.sub(r'([ :./\[\]()#!,%&>+~*=\'"])', r'\\\1', c))
+    return tag + "".join("." + c for c in out)
+
+
 def is_listing_element(element, base_url=""):
     """
     A container element counts as a listing only if it has a real title AND
@@ -650,7 +664,7 @@ class PatternDetector:
             for el in soup.find_all(tag):
                 classes = el.get("class", [])
                 if classes:
-                    class_groups[f"{tag}.{'.'.join(classes)}"].append(el)
+                    class_groups[css_selector(tag, classes)].append(el)
 
             for selector, group in class_groups.items():
                 if len(group) < cls.MIN_LISTING_ELEMENTS:
