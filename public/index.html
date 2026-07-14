@@ -519,7 +519,7 @@ async function loadData() {
         let rows = [], from = 0;
         while (true) {
             const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,first_seen,estimated_listed_date,days_on_market,listing_views,relisted,is_active&is_active=eq.true&order=first_seen.desc&limit=${BATCH}&offset=${from}`,
+                `${SUPABASE_URL}/rest/v1/listings?select=listing_number,header,state,price,url,source,first_seen,estimated_listed_date,days_on_market,listing_views,relisted,is_active&is_active=eq.true&order=source.desc,estimated_listed_date.desc&limit=${BATCH}&offset=${from}`,
                 { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
             );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
