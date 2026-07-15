@@ -1,0 +1,29 @@
+name: Scraper Regression Check
+
+on:
+  schedule:
+    # 15:00 UTC = 11:00am ET — after the daily scrapers (8am ET) have finished.
+    - cron: "0 15 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run regression suite
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        # Exits 1 on any regression → the job fails loudly (GitHub emails the owner).
+        run: python scrapers/regression_check.py
