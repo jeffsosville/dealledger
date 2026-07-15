@@ -38,9 +38,7 @@ TITLE_SAMPLE = 2000        # titles pulled per broker for the junk check
 # Each broker: how to select its rows in listings_direct + a healthy baseline.
 # filter = (column, PostgREST expression).
 BROKERS = [
-    # NOTE: routesforsale.net shows ~33 in listings_direct vs the 14 baseline —
-    # reconcile the baseline or the filter when convenient (drop-check still guards it).
-    {"name": "routesforsale",  "baseline": 14,   "filter": ("broker_domain", "ilike.*routesforsale.net*")},
+    {"name": "routesforsale",  "baseline": 289,  "filter": ("broker_domain", "ilike.*routesforsale.net*")},
     {"name": "quietlight",     "baseline": 423,  "filter": ("broker_domain", "ilike.*quietlight*")},
     {"name": "companysellers", "baseline": 498,  "filter": ("broker_domain", "ilike.*companysellers*")},
     {"name": "link",           "baseline": 443,  "filter": ("broker_name", "eq.Link Business")},
