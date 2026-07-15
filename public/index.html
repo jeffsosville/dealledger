@@ -332,6 +332,7 @@ let debounceTimer    = null;
 
 function getSignal(dom, views) {
     if (!dom) return null;
+    if (views === null || views === undefined) return null;
     const lowDOM    = dom <= 90;
     const highDOM   = dom > 180;
     const highViews = views && views > 200;
@@ -468,7 +469,7 @@ function renderListings() {
     body.innerHTML = page.map(l => {
         const href  = l.source_url || '#';
         const dom   = l.days_on_market;
-        const views = l.listing_views || 0;
+        const views = l.listing_views;
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
             <td class="col-title">
@@ -537,7 +538,7 @@ async function loadData() {
             first_seen:            r.first_seen,
             estimated_listed_date: r.estimated_listed_date,
             days_on_market:        r.days_on_market,
-            listing_views:         r.listing_views || 0,
+            listing_views:         r.listing_views,
             relisted:              r.relisted || false,
         }));
         populateStates();
