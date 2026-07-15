@@ -39,8 +39,14 @@ def is_listing_junk(title, url=""):
         return True
     if tl.startswith("checking your browser") or re.match(r'403.*forbidden', tl):
         return True
-    # 4 financial fragments (grabbed a price/metric, not a name)
-    if re.match(r'^(net|gross|asking price|revenue|cash flow|sde|ebitda|price)\b', tl):
+    # 4 financial fragments (grabbed a price/metric, not a name). Match a
+    # label followed by ':' or '$' ("Price: $500k"), or a SHORT bare label —
+    # but NOT a real title that merely opens with the word
+    # ("Price Reduced! Restaurant for Sale in Scottsdale").
+    _fin = r'(net|gross|asking price|revenue|cash flow|sde|ebitda|price)'
+    if re.match(r'^' + _fin + r'\s*[:$]', tl):
+        return True
+    if re.match(r'^' + _fin + r'\b', tl) and len(t) < 25:
         return True
     if re.search(r'gross (revenue|sales)', tl) or re.search(r'net op(erating)? inc', tl):
         return True
