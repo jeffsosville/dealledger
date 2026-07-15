@@ -201,6 +201,10 @@ GENERIC_LINK_TEXT = {
     "view", "see details", "see more", "view more", "inquire", "get details",
     "view property", "full details", "request info", "request information",
     "add to favorites", "save", "share", "next", "previous",
+    # CTA button labels seen grabbed as titles (companysellers: "MORE DETAILS")
+    "more details", "view more details", "see full details", "details here",
+    "view business", "view business details", "learn more about this business",
+    "click for details", "get more info", "request details", "view now",
 }
 
 # href path tokens that strongly indicate a listing DETAIL page.
@@ -245,6 +249,10 @@ def best_card_title(element, base_url=""):
         title comes from the longest text node or the detail-href slug.
     Returns None if no title-like text ≥ 8 chars can be found.
     """
+    # A candidate must be non-trivial and not CTA/nav text — otherwise CTA text
+    # like "MORE DETAILS" (companysellers) gets grabbed as the title and the
+    # card is then wrongly discarded as junk. Rejecting it here lets us fall
+    # through to the detail-href slug, which carries the real business name.
     def ok(t):
         return t and len(t) >= 8 and t.lower() not in GENERIC_LINK_TEXT
 
@@ -261,19 +269,22 @@ def best_card_title(element, base_url=""):
         t = a.get_text(" ", strip=True)
         if ok(t):
             return t[:500]
+    # Fallback B: derive a title from the listing detail href / data-url slug
+    # (e.g. .../listing/nj-highly-profitable-... -> title). Tried before the
+    # text-node fallback because for anonymized-CTA cards the slug is the only
+    # place the real name survives.
+    slug = _title_from_slug(element, base_url)
+    if slug:
+        return slug
     # Fallback A: the longest single text node (a real descriptive string,
     # not a CTA or a fragment split across spans).
     longest = ""
     for s in element.stripped_strings:
         if len(s) > len(longest):
             longest = s
-    if len(longest) >= 15 and longest.lower() not in GENERIC_LINK_TEXT:
+    if len(longest) >= 15 and longest.lower() not in GENERIC_LINK_TEXT \
+            and not is_junk_listing(longest):
         return longest[:500]
-    # Fallback B: derive a title from the listing detail href / data-url slug
-    # (e.g. .../listing/ios-privacy-security-utility-app/ -> title).
-    slug = _title_from_slug(element, base_url)
-    if slug:
-        return slug
     # Fallback C: card text up to the first financial marker (isolates the name).
     txt = element.get_text(" ", strip=True)
     cut = re.split(r'\s*(?:revenue|price|profit|cash\s*flow|asking|ebitda|sde|\$)',
