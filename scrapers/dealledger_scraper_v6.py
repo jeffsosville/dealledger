@@ -328,6 +328,72 @@ def has_detail_link(element, base_url=""):
     return False
 
 
+# Junk-title gate — Python port of the DB is_listing_junk(title,url) filter.
+# Applied at EXTRACTION time (the durable fix) so nav fragments, price
+# fragments, status badges, CTA copy, legal pages, and CRE/land never become
+# "listings" in the first place, instead of being filtered downstream.
+_JUNK_TITLE_EXACT = {
+    # nav / UI furniture
+    "more details", "add to favorites", "business listings", "newsletter sign up",
+    "create account", "recent posts", "medical spa", "real estate", "environmental svcs",
+    "view all", "load more", "sign in", "log in", "learn more", "read more", "click here",
+    "view listing", "view details", "see details", "favorites", "next", "previous",
+    "our listings", "all listings", "featured listings", "search", "filter", "home",
+    "contact us", "about us", "get started", "subscribe", "menu",
+    # status words / error & challenge pages
+    "sold", "pending", "under contract", "coming soon", "new listing", "new", "featured",
+    "checking your browser", "403 - forbidden", "403 forbidden", "404", "not found",
+    "access denied", "page not found", "error",
+}
+_JUNK_URL_SUBSTR = ("javascript:", "mailto:", "maps.app.goo.gl", "/privacy",
+                    "/terms", "/author/", "addtofavorites", "/newsletter")
+
+
+def is_junk_listing(title, url=""):
+    """True if (title,url) is scraper junk, not a real business listing."""
+    t = (title or "").strip()
+    tl = t.lower()
+    u = (url or "").lower()
+    if len(t) < 6:                                             # 1 empty/short
+        return True
+    if tl in _JUNK_TITLE_EXACT:                                # 2/3 nav + status
+        return True
+    if tl.startswith("checking your browser") or re.match(r'403.*forbidden', tl):
+        return True
+    # 4 financial fragments (grabbed a price/metric, not a name)
+    if re.match(r'^(net|gross|asking price|revenue|cash flow|sde|ebitda|price)\b', tl):
+        return True
+    if re.search(r'gross (revenue|sales)', tl) or re.search(r'net op(erating)? inc', tl):
+        return True
+    if re.match(r'^\$?[\d,]+(\.\d+)?\s*$', t):                 # title is just a number
+        return True
+    if re.match(r'^\$[\d,]+.{0,4}(for sale|gross|revenue)', tl):
+        return True
+    # 5 CTA / marketing copy
+    if (tl.startswith("join the") or tl.startswith("sell your business")
+            or "exit planning circle" in tl
+            or tl.startswith("it's the easiest thing")
+            or "the easiest thing in the world" in tl):
+        return True
+    # 6 broker firm name as title (short + firm keyword)
+    if len(t) < 45 and re.search(
+            r'(business advisors|business brokers|commercial real estate brokerage|'
+            r'the business selling experts)$', tl):
+        return True
+    # 7 privacy / terms / legal
+    if (tl.startswith("privacy policy") or tl.startswith("terms ")
+            or "terms of service" in tl or tl == "google maps"):
+        return True
+    # 8 bad destination URLs
+    if u and any(s in u for s in _JUNK_URL_SUBSTR):
+        return True
+    # 9 CRE / land (not a business)
+    if re.search(r'(commercial real estate for lease|residential land|land for sale|'
+                 r'for lease in)', tl) and 'business' not in tl:
+        return True
+    return False
+
+
 def css_selector(tag, classes):
     """
     Build a CSS-VALID selector from a tag + class list. Utility-CSS class
@@ -351,7 +417,8 @@ def is_listing_element(element, base_url=""):
     text = element.get_text(" ", strip=True)
     if len(text) < 20:
         return False
-    if not best_card_title(element, base_url):
+    title = best_card_title(element, base_url)
+    if not title or is_junk_listing(title):
         return False
     has_price = any(v >= 1_000 for v in parse_all_prices(text))
     return has_price or has_detail_link(element, base_url)
@@ -680,6 +747,40 @@ class PatternDetector:
                         "sample_text": group[0].get_text(separator=" ", strip=True)[:200],
                     })
 
+        # Strategy 1b: rows/cards with PER-ITEM UNIQUE classes. Platforms like
+        # dealrelations emit <tr class="element_row74162"> — every row a
+        # different class, so Strategy 1 sees no repetition. Group by the class
+        # token with its trailing id suffix stripped, and select via a
+        # [class*="prefix"] attribute selector.
+        for tag in ["tr", "div", "article", "li"]:
+            norm_groups = defaultdict(list)
+            for el in soup.find_all(tag):
+                classes = el.get("class", [])
+                if not classes:
+                    continue
+                norm = tuple(c for c in
+                             (re.sub(r'[-_]?[0-9a-fA-F]{2,}$', '', c) for c in classes)
+                             if len(c) >= 4)
+                if norm:
+                    norm_groups[norm].append(el)
+            for norm, group in norm_groups.items():
+                if len(group) < cls.MIN_LISTING_ELEMENTS:
+                    continue
+                # Only relevant when the raw classes really do differ per item.
+                raw = {css_selector(tag, el.get("class", [])) for el in group[:8]}
+                if len(raw) < 2:
+                    continue
+                scored = cls._score_group(group, url)
+                if scored:
+                    n_listing, n_priced = scored
+                    stable = max(norm, key=len)
+                    candidates.append({
+                        "container_selector": f'{tag}[class*="{stable}"]',
+                        "count": len(group),
+                        "score": n_listing + n_priced,
+                        "sample_text": group[0].get_text(separator=" ", strip=True)[:200],
+                    })
+
         # Strategy 2: known selectors (small boost for being a known shape)
         for selector in [
             "div.listing", "div.listing-item", "div.property-listing",
@@ -838,6 +939,11 @@ class ListingExtractor:
             if d == b or "#" in d.split("?")[0][-5:]:
                 detail_url = None
 
+        # Junk gate — nav fragment, price fragment, status badge, CTA, legal
+        # page, CRE/land: never emit these as a listing.
+        if is_junk_listing(title, detail_url or base_url):
+            return None
+
         asking_price = positive_or_none(cls.extract_price(text))
         cash_flow    = positive_or_none(cls.extract_cash_flow(text))
         revenue      = positive_or_none(cls.extract_revenue(text))
@@ -909,6 +1015,118 @@ class ListingExtractor:
         )
 
         return listing
+
+
+# ============================================================
+# API HANDLERS  —  JS-loaded sites whose listings come from a JSON endpoint
+# ============================================================
+# Some brokers render an empty HTML shell and load listings from an XHR/JSON
+# API. Rather than drive a headless browser, we detect the platform from the
+# page source and hit the JSON endpoint directly. Each handler returns a list
+# of listing dicts in the same schema as ListingExtractor.from_card.
+
+def _make_api_listing(base_url, broker_name, title, detail_url=None,
+                      asking_price=None, cash_flow=None, revenue=None,
+                      city=None, state=None, description=None):
+    now = datetime.now(timezone.utc).isoformat()
+    url = detail_url or base_url
+    listing_id = hashlib.sha256(
+        f"{title}|{asking_price}|{url}".encode()).hexdigest()[:16]
+    text = f"{title or ''} {description or ''}"
+    return {
+        "id":            listing_id,
+        "title":         (title or "")[:500],
+        "asking_price":  positive_or_none(asking_price),
+        "cash_flow":     positive_or_none(cash_flow),
+        "revenue":       positive_or_none(revenue),
+        "city":          city,
+        "state":         state,
+        "vertical":      ListingExtractor.classify_vertical(text),
+        "url":           url,
+        "broker_name":   broker_name,
+        "broker_domain": urlparse(base_url).netloc,
+        "description":   (description or title or "")[:1000],
+        "first_seen":    now,
+        "last_seen":     now,
+    }
+
+
+def _state_from_location(loc):
+    """Pull a 2-letter state out of a 'City, ST, US' style string."""
+    if not loc:
+        return None
+    for part in (p.strip() for p in str(loc).split(",")):
+        if len(part) == 2 and part.upper() in US_STATES:
+            return part.upper()
+    m = LocationExtractor.extract(str(loc))
+    return m["state"] if m else None
+
+
+def _handler_tupelosmb(url, html, broker_name, fetcher):
+    """
+    Tupelo SMB CRM platform. The broker page loads listings from
+    crm.tupelosmb.com/api/public/listings?organizationId=<cuid>&take=&skip=
+    The org cuid is the only 'cl…' id present in the page source.
+    """
+    m = re.search(r'\b(cl[a-z0-9]{20,})\b', html)
+    if not m:
+        return None
+    org_id = m.group(1)
+    out, skip, take = [], 0, 100
+    while True:
+        try:
+            r = fetcher.session.get(
+                "https://crm.tupelosmb.com/api/public/listings"
+                f"?organizationId={org_id}&take={take}&skip={skip}",
+                timeout=REQ_TIMEOUT)
+            if r.status_code != 200:
+                break
+            data = r.json()
+        except Exception:
+            break
+        items = data.get("listings", []) if isinstance(data, dict) else []
+        total = data.get("totalCount", 0) if isinstance(data, dict) else 0
+        for it in items:
+            if str(it.get("status", "")).upper() not in ("ACTIVE", ""):
+                continue
+            loc = it.get("locationStringShort") or it.get("locationString") or ""
+            out.append(_make_api_listing(
+                url, broker_name,
+                title=it.get("headline"),
+                asking_price=it.get("askingPrice"),
+                cash_flow=it.get("cashFlow"),
+                revenue=it.get("revenue"),
+                state=_state_from_location(loc),
+                city=(loc.split(",")[0].strip() if loc else None),
+                description=it.get("headline")))
+        skip += take
+        if not items or skip >= total:
+            break
+    return out or None
+
+
+# Registry: substring found in page source -> handler(url, html, broker_name, fetcher)
+API_HANDLERS = [
+    ("tupelosmb.com", _handler_tupelosmb),
+]
+
+
+def extract_via_api(url, html, broker_name, fetcher):
+    """If the page is a known JS platform with a JSON feed, pull listings
+    from the API directly. Returns a list of listing dicts, or None."""
+    low = (html or "").lower()
+    for signature, handler in API_HANDLERS:
+        if signature in low:
+            try:
+                listings = handler(url, html, broker_name, fetcher)
+                if listings:
+                    clean = [l for l in listings
+                             if not is_junk_listing(l.get("title"), l.get("url"))]
+                    if clean:
+                        return clean
+            except Exception:
+                pass
+    return None
 
 
 # ============================================================
@@ -1397,6 +1615,19 @@ class DealLedgerScraper:
                 return []
 
             print(f"   ✅ Fetched ({method}, {len(html):,} bytes)")
+
+            # ── API handler (JS sites with a JSON feed) ───────────────────
+            # If this is a known JS platform, pull listings straight from its
+            # JSON endpoint and skip DOM pattern detection entirely.
+            api_listings = extract_via_api(url, html, name, self.fetcher)
+            if api_listings:
+                print(f"   🔌 API handler → {len(api_listings)} listings")
+                p  = sum(1 for l in api_listings if l.get("asking_price"))
+                st = sum(1 for l in api_listings if l.get("state"))
+                print(f"   💰 price={p}  state={st}/{len(api_listings)}")
+                self.stats["brokers_success"] += 1
+                self.stats["detail_pages_fetched"] += 0
+                return api_listings
 
             # ── Pattern detection ─────────────────────────────────────────
             cached = self.pattern_cache.get(domain)
