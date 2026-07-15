@@ -26,6 +26,7 @@ License: MIT
 """
 
 import hashlib
+import os
 import re
 import json
 import time
@@ -319,7 +320,7 @@ class HedgestoneScraper:
     BASE = "https://www.hedgestone.com"
     LIST_URL = f"{BASE}/businesses-for-sale/"
     
-    def scrape(self, broker_account: str, max_pages: int = 15, headless: bool = True, verbose: bool = True) -> List[Dict]:
+    def scrape(self, broker_account: str, max_pages: int = 40, headless: bool = True, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("Hedgestone Business Advisors")
@@ -857,7 +858,7 @@ class VRScraper:
 
         return listings
 
-    def scrape(self, broker_account: str, max_pages: int = 20, verbose: bool = True) -> List[Dict]:
+    def scrape(self, broker_account: str, max_pages: int = 40, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
             print("VR Business Brokers")
@@ -1526,6 +1527,234 @@ def get_specialized_broker_names() -> List[str]:
     ]
 
 
+# ============================================================================
+# VESTED BUSINESS BROKERS SCRAPER
+# PHP AJAX pagination (listing_search_ajax.php), form-encoded, ~121 pages.
+# Same shape as Sunbelt: POST the search endpoint, parse the HTML fragment.
+# ============================================================================
+
+class VestedScraper:
+    """
+    Vested Business Brokers  (account 1593)
+    https://www.vestedbb.com
+
+    The advancesearch / businesses-for-sale page loads results from a PHP
+    AJAX endpoint that returns an HTML fragment of listing cards. Paginates
+    via the `page` param (~121 pages). The full param set (esp. sort_by +
+    listing_key) and X-Requested-With header are required — a partial payload
+    silently caps at ~20 pages.
+    """
+
+    BASE = "https://www.vestedbb.com"
+    INIT_URL = f"{BASE}/advancesearch/index.html"
+    AJAX_URL = f"{BASE}/script/listing_search_ajax.php"
+    CARD_SEL = "div.col-md-3.col-sm-6.col-xs-6.ff100"
+    # Overlay-badge alt/title text that must never be used as a listing title.
+    _BADGE_WORDS = {
+        "owner financing", "new listing", "sold", "pending", "price change",
+        "recently updated", "featured", "under contract", "coming soon",
+        "reduced", "hot listing", "price reduced", "just listed",
+    }
+
+    def __init__(self):
+        self.proxies = self._build_proxies()
+        self.session, self.fallback = self._make_session()
+
+    @staticmethod
+    def _build_proxies():
+        """DataImpulse US sticky-session proxy from env, or None. vestedbb
+        rate-limits a single IP across a full 121-page crawl, so route through
+        a residential proxy when creds are available."""
+        user = os.environ.get("PROXY_USER", "").strip()
+        pw = os.environ.get("PROXY_PASS", "").strip()
+        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        if not (user and pw):
+            return None
+        sid = f"vt{random.randint(100000, 999999)}"
+        url = f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}"
+        return {"http": url, "https": url}
+
+    def _make_session(self):
+        """Prefer curl_cffi (codebase convention); fall back to stdlib requests
+        if curl_cffi's TLS stack is unavailable in this environment. vestedbb
+        serves plain requests fine, so the fallback is fully functional."""
+        try:
+            s = requests.Session(impersonate="chrome120")
+            s.get(self.INIT_URL, timeout=15, proxies=self.proxies)
+            return s, False
+        except Exception:
+            import requests as _std
+            s = _std.Session()
+            s.headers.update({
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                              "AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/120.0.0.0 Safari/537.36"})
+            try:
+                s.get(self.INIT_URL, timeout=15, proxies=self.proxies)
+            except Exception:
+                pass
+            return s, True
+
+    def _fetch_page(self, page_num: int) -> str:
+        payload = {
+            "page": str(page_num),
+            "default_search": "1",
+            "business_type": "",
+            "stateid": "",
+            "countyid": "",
+            "asking_price_min": "",
+            "asking_price_max": "",
+            "cash_flow_min": "",
+            "cash_flow_max": "",
+            "listing_key": "",
+            "owner_financed": "",
+            "down_pay": "",
+            "sort_by": "ListingDate:HL",
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.INIT_URL,
+            "Origin": self.BASE,
+        }
+        r = self.session.post(self.AJAX_URL, data=payload, headers=headers,
+                              timeout=30, proxies=self.proxies)
+        r.raise_for_status()
+        return r.text
+
+    def _parse_html(self, html: str) -> List[Dict]:
+        soup = BeautifulSoup(html, "html.parser")
+        out = []
+        for card in soup.select(self.CARD_SEL):
+            # Detail URL — from the anchor, else the redirectURL() onclick.
+            url = None
+            a = card.find("a", href=True)
+            if a and a["href"].strip():
+                url = a["href"].strip()
+            if not url:
+                m = re.search(r"redirectURL\(['\"]([^'\"]+)['\"]\)", str(card))
+                url = m.group(1) if m else None
+            if not url:
+                continue
+            if url.startswith("/"):
+                url = self.BASE + url
+
+            # Location from the card's location line ("New Haven County, CT").
+            text = card.get_text(" ", strip=True)
+            loc_el = card.select_one("div.location")
+            location = loc_el.get_text(" ", strip=True) if loc_el else None
+            city, state = None, None
+            if location and "," in location:
+                parts = [p.strip() for p in location.split(",")]
+                city = parts[0]
+                if len(parts[-1]) == 2:
+                    state = parts[-1].upper()
+
+            # Vested cards are anonymized: the colored header (div.name) shows a
+            # business TYPE — "Gas Station/CStore", "Indian Restaurant" — not a
+            # business name. Use type + location as the title (skip badge
+            # overlays like "Sold"), and keep the raw type in business_type.
+            nm = card.select_one("div.name")
+            business_type = nm.get_text(" ", strip=True) if nm else None
+            if business_type and business_type.lower() in self._BADGE_WORDS:
+                business_type = None
+            if business_type and location:
+                title = f"{business_type} in {location}"
+            else:
+                title = business_type or location
+
+            price_text = self._field(text, "Asking Price")
+            cf_text = self._field(text, "Cash Flow")
+            out.append({
+                "url": url, "title": title, "business_type": business_type,
+                "location": location, "city": city, "state": state,
+                "price_text": price_text, "cf_text": cf_text,
+            })
+        return out
+
+    @staticmethod
+    def _field(text: str, label: str) -> Optional[str]:
+        m = re.search(re.escape(label) + r'\s*:?\s*(\$[\d,]+(?:\.\d+)?|Undisclosed|N/?A)',
+                      text, re.I)
+        if not m:
+            return None
+        val = m.group(1)
+        # $0 / undisclosed -> no real price
+        if re.match(r'^\$0+(\.0+)?$', val) or val.lower() in ("undisclosed", "na", "n/a"):
+            return None
+        return val
+
+    def scrape(self, broker_account: str, max_pages: int = 130, verbose: bool = True) -> List[Dict]:
+        if verbose:
+            print(f"\n{'='*60}")
+            print("Vested Business Brokers")
+            print('='*60)
+            if self.fallback:
+                print("[Vested] curl_cffi unavailable — using stdlib requests")
+
+        all_items, seen = [], set()
+        empty_streak = 0
+        fail_streak = 0
+        for page_num in range(1, max_pages + 1):
+            # The site 500s after ~20 sequential requests from one IP. Rotate
+            # to a fresh residential-proxy IP proactively every 15 pages.
+            if self.proxies and page_num > 1 and page_num % 15 == 1:
+                self.proxies = self._build_proxies()
+
+            items = None
+            for attempt in range(4):
+                try:
+                    items = self._parse_html(self._fetch_page(page_num))
+                    break
+                except Exception as e:
+                    # Rate-limit / 500 -> rotate IP and retry the same page.
+                    if self.proxies:
+                        self.proxies = self._build_proxies()
+                    if attempt == 3:
+                        if verbose:
+                            print(f"[Vested] Page {page_num} failed after retries: {e}")
+                    else:
+                        time.sleep(random.uniform(1.0, 2.0) * (attempt + 1))
+
+            if items is None:
+                fail_streak += 1
+                if fail_streak >= 6:      # give up if the site is hard-down
+                    if verbose:
+                        print("[Vested] 6 consecutive page failures — stopping")
+                    break
+                continue
+            fail_streak = 0
+
+            new = [l for l in items if l["url"] not in seen]
+            for l in new:
+                seen.add(l["url"])
+            all_items.extend(new)
+            if verbose and (page_num == 1 or page_num % 20 == 0):
+                print(f"[Vested] Page {page_num}: {len(new)} new | Total: {len(all_items)}")
+            # Stop when the feed stops yielding anything new (handles the
+            # site returning the last page repeatedly past the real end).
+            if not new:
+                empty_streak += 1
+                if empty_streak >= 3:
+                    break
+            else:
+                empty_streak = 0
+            time.sleep(random.uniform(0.5, 1.1))
+
+        listings = [format_listing(
+            url=it["url"], broker_account=broker_account, title=it["title"],
+            price=parse_money(it["price_text"]), price_text=it["price_text"],
+            location=it["location"], city=it["city"], state=it["state"],
+            business_type=it.get("business_type"),
+            cash_flow=parse_money(it["cf_text"]),
+        ) for it in all_items]
+
+        if verbose:
+            with_price = sum(1 for l in listings if l.get("price"))
+            print(f"\n✓ {len(listings)} Vested listings ({with_price} with price)")
+        return listings
+
+
 def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[List[Dict]]:
     """
     Auto-detect broker type and route to appropriate scraper.
@@ -1577,6 +1806,10 @@ def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[Li
     if 'we sell restaurant' in name or 'wesellrestaurants.com' in url:
         return WeSellRestaurantsScraper().scrape(broker_account=account, verbose=verbose)
 
+    # Vested Business Brokers
+    if 'vested' in name or 'vestedbb.com' in url:
+        return VestedScraper().scrape(broker_account=account, verbose=verbose)
+
     # Not a specialized broker
     return None
 
@@ -1591,7 +1824,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test specialized scrapers")
     parser.add_argument("broker", choices=[
         'murphy', 'hedgestone', 'transworld', 'sunbelt',
-        'vr', 'fcbb', 'link', 'bodner', 'wesell', 'all'
+        'vr', 'fcbb', 'link', 'bodner', 'wesell', 'vested', 'all'
     ])
     parser.add_argument("--account", default="test-123", help="Broker account ID")
     
@@ -1599,14 +1832,15 @@ if __name__ == "__main__":
     
     scrapers = {
         'murphy': lambda: MurphyScraper.scrape(args.account, max_pages=50),
-        'hedgestone': lambda: HedgestoneScraper().scrape(args.account, max_pages=15),
+        'hedgestone': lambda: HedgestoneScraper().scrape(args.account, max_pages=40),
         'transworld': lambda: TransworldScraper().scrape(args.account, max_pages=385),
         'sunbelt': lambda: SunbeltScraper().scrape(args.account, max_pages=130),
-        'vr': lambda: VRScraper().scrape(args.account, max_pages=15),
+        'vr': lambda: VRScraper().scrape(args.account, max_pages=40),
         'fcbb': lambda: FCBBScraper().scrape(args.account, max_pages=79),
         'link': lambda: LinkBusinessScraper().scrape(args.account, max_pages=20),
         'bodner': lambda: LarryBodnerScraper().scrape(args.account),
         'wesell': lambda: WeSellRestaurantsScraper().scrape(args.account, max_pages=40),
+        'vested': lambda: VestedScraper().scrape(args.account, max_pages=130),
     }
     
     if args.broker == 'all':
