@@ -30,7 +30,7 @@ from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
     SunbeltScraper, VRScraper, FCBBScraper,
     LinkBusinessScraper, LarryBodnerScraper,
-    WeSellRestaurantsScraper
+    WeSellRestaurantsScraper, VestedScraper
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -48,7 +48,7 @@ BROKERS = {
     "transworld": {
         "account": "28148",
         "display_name": "Transworld Business Advisors",
-        "fn": lambda: TransworldScraper().scrape("28148", max_pages=150, workers=8),
+        "fn": lambda: TransworldScraper().scrape("28148", max_pages=400, workers=8),
     },
     "sunbelt": {
         "account": "1001",
@@ -68,17 +68,17 @@ BROKERS = {
     "vr": {
         "account": "1004",
         "display_name": "VR Business Brokers",
-        "fn": lambda: VRScraper().scrape("1004", max_pages=15),
+        "fn": lambda: VRScraper().scrape("1004", max_pages=40),
     },
     "hedgestone": {
         "account": "28149",
         "display_name": "Hedgestone Business Advisors",
-        "fn": lambda: HedgestoneScraper().scrape("28149", max_pages=15),
+        "fn": lambda: HedgestoneScraper().scrape("28149", max_pages=40),
     },
     "link": {
         "account": "1005",
         "display_name": "Link Business",
-        "fn": lambda: LinkBusinessScraper().scrape("1005", max_pages=20),
+        "fn": lambda: LinkBusinessScraper().scrape("1005", max_pages=60),
     },
     "bodner": {
         "account": "1006",
@@ -89,6 +89,11 @@ BROKERS = {
         "account": "2900",
         "display_name": "We Sell Restaurants",
         "fn": lambda: WeSellRestaurantsScraper().scrape("2900", max_pages=40),
+    },
+    "vested": {
+        "account": "1593",
+        "display_name": "Vested Business Brokers",
+        "fn": lambda: VestedScraper().scrape("1593", max_pages=130),
     },
 }
 
