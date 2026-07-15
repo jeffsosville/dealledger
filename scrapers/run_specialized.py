@@ -30,7 +30,7 @@ from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
     SunbeltScraper, VRScraper, FCBBScraper,
     LinkBusinessScraper, LarryBodnerScraper,
-    WeSellRestaurantsScraper, VestedScraper
+    WeSellRestaurantsScraper, VestedScraper, RoutesForSaleScraper
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -94,6 +94,11 @@ BROKERS = {
         "account": "1593",
         "display_name": "Vested Business Brokers",
         "fn": lambda: VestedScraper().scrape("1593", max_pages=130),
+    },
+    "routesforsale": {
+        "account": "13461",
+        "display_name": "Routes For Sale",
+        "fn": lambda: RoutesForSaleScraper().scrape("13461"),
     },
 }
 
