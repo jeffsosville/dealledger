@@ -1755,14 +1755,143 @@ class VestedScraper:
         return listings
 
 
+# ============================================================================
+# ROUTES FOR SALE SCRAPER
+# Entire inventory on ONE static HTML page as ~14 <table> sections.
+# ============================================================================
+
+class RoutesForSaleScraper:
+    """
+    Routes For Sale (routesforsale.net) — account 13461.
+
+    ~293 routes live on ONE static page as ~14 <table> sections, each preceded
+    by a category heading ("Flowers Bread Routes", "Mission's Tortilla Routes",
+    …). Row columns: Route Type | City, State | Price | Financing | Cash Flow |
+    Status | Route Details(link). One GET + BeautifulSoup — no pagination, API,
+    or proxy. Skips non-Active rows and rows with a blank cash flow.
+    """
+
+    BASE = "https://www.routesforsale.net"
+    URL = f"{BASE}/route-listings.html"
+
+    def __init__(self):
+        self.session = self._make_session()
+
+    @classmethod
+    def _make_session(cls):
+        try:
+            s = requests.Session(impersonate="chrome120")
+            s.get(cls.BASE, timeout=15)
+            return s
+        except Exception:
+            import requests as _std
+            s = _std.Session()
+            s.headers.update({
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                              "AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/120.0.0.0 Safari/537.36"})
+            return s
+
+    @staticmethod
+    def _category_for(table):
+        """Nearest preceding heading, stripped of a trailing 'Routes'."""
+        el = table.find_previous(["h1", "h2", "h3", "h4", "h5", "strong", "b", "caption", "p"])
+        for _ in range(6):
+            if el is None:
+                break
+            t = el.get_text(" ", strip=True)
+            if t and "route" in t.lower() and len(t) <= 60:
+                return re.sub(r'\s*routes?\s*$', '', t, flags=re.I).strip() or t
+            el = el.find_previous(["h1", "h2", "h3", "h4", "h5", "strong", "b", "caption", "p"])
+        return None
+
+    @staticmethod
+    def _is_header(low):
+        return "status" in low and any("price" in c for c in low) \
+            and any("route" in c for c in low)
+
+    def scrape(self, broker_account: str, verbose: bool = True) -> List[Dict]:
+        if verbose:
+            print(f"\n{'='*60}")
+            print("Routes For Sale (routesforsale.net)")
+            print('='*60)
+
+        html = self.session.get(self.URL, timeout=30).text
+        soup = BeautifulSoup(html, "html.parser")
+        items, seen = [], set()
+
+        for table in soup.find_all("table"):
+            category = self._category_for(table)
+            # Build a column-index map from this table's header row, if present.
+            colmap = None
+            for tr in table.find_all("tr"):
+                low = [c.get_text(" ", strip=True).lower() for c in tr.find_all(["td", "th"])]
+                if self._is_header(low):
+                    colmap = {name: i for i, name in enumerate(low)}
+                    break
+
+            def idx(name, default):
+                if colmap:
+                    for key, i in colmap.items():
+                        if name in key:
+                            return i
+                return default
+
+            for tr in table.find_all("tr"):
+                cells = tr.find_all(["td", "th"])
+                if len(cells) < 5:
+                    continue
+                texts = [c.get_text(" ", strip=True) for c in cells]
+                low = [t.lower() for t in texts]
+                if self._is_header(low):
+                    continue
+
+                def col(name, default):
+                    i = idx(name, default)
+                    return texts[i] if 0 <= i < len(texts) else ""
+
+                route_type = col("route type", 0) or col("type", 0)
+                loc = col("city", 1)
+                price_txt = col("price", 2)
+                cf_txt = col("cash flow", 4)
+                status = col("status", 5)
+
+                link = tr.find("a", href=True)
+                url = link["href"].strip() if link else None
+                if url and url.startswith("/"):
+                    url = self.BASE + url
+
+                # Filters: Active only; must have a cash-flow figure and a link.
+                if status and status.strip().lower() != "active":
+                    continue
+                if not cf_txt or not re.search(r'\d', cf_txt):
+                    continue
+                if not route_type or not url or url in seen:
+                    continue
+                seen.add(url)
+
+                city, state = extract_city_state(loc)
+                items.append(format_listing(
+                    url=url, broker_account=broker_account,
+                    title=f"{route_type} Route - {loc}".strip(),
+                    price=parse_money(price_txt), price_text=price_txt,
+                    location=loc, city=city, state=state,
+                    business_type=category, cash_flow=parse_money(cf_txt)))
+
+        if verbose:
+            with_price = sum(1 for l in items if l.get("price"))
+            print(f"\n✓ {len(items)} Routes For Sale listings ({with_price} with price)")
+        return items
+
+
 def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[List[Dict]]:
     """
     Auto-detect broker type and route to appropriate scraper.
-    
+
     Args:
         broker: Dict with 'account', 'name', 'url' keys
         verbose: Print progress
-    
+
     Returns:
         List of listings, or None if not a specialized broker
     """
@@ -1810,6 +1939,10 @@ def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[Li
     if 'vested' in name or 'vestedbb.com' in url:
         return VestedScraper().scrape(broker_account=account, verbose=verbose)
 
+    # Routes For Sale
+    if 'routesforsale' in url or 'routes for sale' in name:
+        return RoutesForSaleScraper().scrape(broker_account=account, verbose=verbose)
+
     # Not a specialized broker
     return None
 
@@ -1824,7 +1957,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test specialized scrapers")
     parser.add_argument("broker", choices=[
         'murphy', 'hedgestone', 'transworld', 'sunbelt',
-        'vr', 'fcbb', 'link', 'bodner', 'wesell', 'vested', 'all'
+        'vr', 'fcbb', 'link', 'bodner', 'wesell', 'vested', 'routesforsale', 'all'
     ])
     parser.add_argument("--account", default="test-123", help="Broker account ID")
     
@@ -1841,6 +1974,7 @@ if __name__ == "__main__":
         'bodner': lambda: LarryBodnerScraper().scrape(args.account),
         'wesell': lambda: WeSellRestaurantsScraper().scrape(args.account, max_pages=40),
         'vested': lambda: VestedScraper().scrape(args.account, max_pages=130),
+        'routesforsale': lambda: RoutesForSaleScraper().scrape(args.account),
     }
     
     if args.broker == 'all':
