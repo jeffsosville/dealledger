@@ -1,62 +1,8 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.egg-info/
-.venv/
-venv/
-env/
-
-# Environment
+.claude/
+logs/
+scratchpad/
+supabase/.temp/
+*.bak
+data/*.bak
 .env
-.env.local
-
-# OS
 .DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# Data — large scrape outputs, never commit
-data/snapshots/
-scrapers/bizquest_states/
-scrapers/bizquest_raw.csv
-scrapers/bizquest_raw.json
-scrapers/bizquest_enriched.csv
-scrapers/bizquest_enriched.json
-data/pattern_cache.json
-
-# Local SQL migrations (kept for reference, not for active dev)
-*_updates.sql
-*_fixes.sql
-clean_*.sql
-rollback_*.sql
-
-# Scraper output directories — daily snapshots, never commit
-state_files/
-data/listings/
-data/snapshots/
-data/listings_clean.jsonl
-data/listings_clean2.jsonl
-data/pattern_cache.json
-bizquest_combined.json
-
-# Next.js
-.next/
-node_modules/
-next-env.d.ts
-.env.local
-
-# OS
-.DS_Store
-
-# Cookies and debug artifacts
-scrapers/bbs_cookies*
-scrapers/debug_*.html
-DEALLEDGER_INTERNAL_METHODOLOGY.md
-RUNBOOK.md
