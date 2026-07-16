@@ -9,6 +9,68 @@ that would be extracted is exactly a title the regression suite considers clean.
 """
 
 import re
+from urllib.parse import unquote, urlparse
+
+# ── Title extraction guard ────────────────────────────────────────────────────
+# One rule, shared by every scraper: if an extracted title is junk/blank, reject
+# it and fall through to the next strategy; if all fail, derive from the URL
+# slug. ~24% of listings were capturing a CTA/status/category string instead of
+# the business name (Sunbelt's register modal, Link's blank, companysellers'
+# "MORE DETAILS", "Pending", "Sold", "Request Quote", …).
+JUNK_TITLES = {
+    "more details", "add to favorites", "view details", "request quote",
+    "asking price", "for sale", "sold", "pending", "under contract",
+    "learn more", "read more", "view listing", "see details", "click here",
+    "contact us", "get started", "details", "view", "more info",
+    "view more", "inquire", "request info", "save", "share", "favorites",
+}
+JUNK_PREFIXES = ("you need to register", "sign up to", "log in to",
+                 "create an account", "please register", "register to")
+
+
+def is_junk_title(t, firm_name=None):
+    """True if `t` is a CTA / status / category string rather than a business
+    name — i.e. reject it and fall through to the next title strategy."""
+    if not t or len(t.strip()) < 6:
+        return True
+    tl = t.strip().lower()
+    if tl in JUNK_TITLES:
+        return True
+    if any(tl.startswith(p) for p in JUNK_PREFIXES):
+        return True
+    # Category slug, e.g. "Food/Liquor-Liquor Store". Requires the '/' so a real
+    # hyphenated title ("Well-Established Cafe") is NOT rejected.
+    if "/" in tl and len(tl) < 40 and re.match(r'^[a-z/ ]+-[a-z/ ]+$', tl):
+        return True
+    # The broker's own firm name used as a listing title (lbaweb et al).
+    if firm_name and tl == firm_name.strip().lower():
+        return True
+    return False
+
+
+def title_from_slug(url):
+    """Derive a title from a listing URL's last path segment.
+    /businesses-for-sale/SD00077/Women%27s-Fashion-Boutique-North-County
+        -> "Women's Fashion Boutique North County"
+    Returns None when the segment is empty, numeric, or too short."""
+    if not url:
+        return None
+    try:
+        path = urlparse(url).path.rstrip("/")
+    except Exception:
+        return None
+    seg = path.split("/")[-1] if path else ""
+    seg = unquote(seg)
+    seg = re.sub(r"\.\w+$", "", seg)               # strip .html/.php
+    slug = re.sub(r"[-_+]+", " ", seg)
+    slug = re.sub(r"\s+", " ", slug).strip()
+    if len(slug) < 6 or slug.replace(" ", "").isdigit():
+        return None
+    # Capitalize the first letter only — .title() would mangle apostrophes
+    # ("Women's" -> "Women'S"). Keep existing all-caps tokens (HVAC, LLC).
+    return " ".join(w if w.isupper() else (w[:1].upper() + w[1:])
+                    for w in slug.split())[:500]
+
 
 # Link/heading text that is a call-to-action / nav furniture, not a title.
 _JUNK_TITLE_EXACT = {
@@ -100,12 +162,20 @@ _SOLD_MARKERS = (
 )
 
 
+# Title-suffix status marker: "Company Name – Sold", "Diner: Under Contract"
+# (synergybb has no status taxonomy — status lives in the title suffix).
+_SOLD_SUFFIX = re.compile(
+    r'[-–—:|]\s*(?:sold|under[\s-]*contract|sale[\s-]*pending|pending)\s*$', re.IGNORECASE)
+
+
 def is_sold_or_pending(title):
     """True if the title marks the deal SOLD / UNDER CONTRACT (a status signal,
     not a reason to discard the listing)."""
     t = (title or "").strip()
     if not t or _SOLD_SPARE.search(t):
         return False
-    if re.search(_SOLD_MARKERS[0], t):          # SOLD must be ALL-CAPS to count
+    if _SOLD_SUFFIX.search(t):                   # "… – Sold" title suffix
+        return True
+    if re.search(_SOLD_MARKERS[0], t):           # SOLD must be ALL-CAPS mid-title
         return True
     return any(re.search(p, t, re.IGNORECASE) for p in _SOLD_MARKERS[1:])
