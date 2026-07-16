@@ -22,3 +22,6 @@ CLAUDE_CODE_PLAN.md
 money_parser_patch.py
 platform-brokerage-report/
 marketpulse sql queries for newsletter/
+*.pre_prune
+*.pre_urlfix
+supabase/
