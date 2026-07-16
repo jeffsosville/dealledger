@@ -2082,5 +2082,11 @@
     "count": 12,
     "score": 24,
     "sample_text": "Owner Weekly Benefit $2,911 Gas Station/CStore Price Change New Haven County, CT Listing 37138 Multiple 2.81X Asking Price: $425,000 Cash Flow: $151,370 Down Payment: $425,000 View Listing Call Now 1("
+  },
+  "corbettrestaurantgroup.com": {
+    "container_selector": "div.p-4.flex.flex-col.flex-grow",
+    "count": 30,
+    "score": 30,
+    "sample_text": "Iconic Long Island Waterfront Restaurant Price $3,990,000 Type Full Service Concept Fine Dining, Bar/Pub Sales $3,901,993 Cash Flow $1,299,265 Square Footage 4,461 sq ft Seating 380 Parking Street Rea"
   }
 }
