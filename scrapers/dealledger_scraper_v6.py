@@ -79,7 +79,7 @@ import time
 import traceback
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
 
 import pandas as pd
 import requests
@@ -491,7 +491,34 @@ def build_proxy_url(sessid):
 
 # Domains known to hard-block — start them on the proxy immediately.
 PROXY_DOMAINS = {
+    # Discovered via URL health sweep 2026-07-16 — these return 401/403/406/429 direct
     "hedgestone.com",
+    "quietlight.com",                    # 403 — 423 listings at risk
+    "progressivepracticesales.com",      # 403 — 210 listings
+    "restaurantrealty.com",              # 401 — 126 listings
+    "bristolgrouponline.com",
+    "myersba.com",
+    "krbrokers.com",
+    "capitalbbw.com",
+    "businessmodificationgroup.com",
+    "cbcworldwide.com",
+    "interbloomgroup.com",
+    "firstsourcebb.com",
+    "atlantahomes.us",
+    "beehivebusinessbrokers.com",
+    "prime100businessbrokers.com",
+    "thedynastyba.com",
+    "toddbusinesssolutions.com",
+    "genuinebusinessadvisors.com",
+    "autocenter-sales.com",
+    "rambizgroup.com",
+    "cabi.coloradobusinesses.com",
+    "businessesforsale.nebba.com",
+    "kmfbusinessadvisors.dealrelations.com",
+    "realtyall.com",
+    "affordablebusinessconcepts.com",
+    "bisonbusiness.com",                 # 429 rate limited
+    "poolroutebrokers.com",              # 406
     # Add more as you discover them
 }
 
@@ -1343,6 +1370,50 @@ class PaginationHandler:
                 return urljoin(current_url, a["href"])
         return None
 
+    # Query params (and path form) used for numbered pagination when a site
+    # has NO explicit next-link (numbered pages, JS pagination, "Load More").
+    _PAGE_PARAMS   = ("page", "paged", "p", "pg", "wpv_paged")
+    _OFFSET_PARAMS = ("offset", "start")
+
+    @staticmethod
+    def _with_param(base_url, param, value):
+        pu = urlparse(base_url)
+        q = {k: list(v) for k, v in parse_qs(pu.query, keep_blank_values=True).items()}
+        q[param] = [str(value)]
+        return urlunparse((pu.scheme, pu.netloc, pu.path, pu.params,
+                           urlencode(q, doseq=True), pu.fragment))
+
+    @classmethod
+    def candidate_page_urls(cls, base_url, page_num, page_size):
+        """Candidate URLs for `page_num` (>=2), each tagged with a template so
+        the winner can be reused for later pages. Tries ?page=N / ?paged=N /
+        ?p=N / ?pg=N / ?wpv_paged=N, ?offset=N*size / ?start=N*size, /page/N/."""
+        out = []
+        for param in cls._PAGE_PARAMS:
+            out.append((cls._with_param(base_url, param, page_num), ("param", param)))
+        off = (page_num - 1) * max(page_size, 1)
+        for param in cls._OFFSET_PARAMS:
+            out.append((cls._with_param(base_url, param, off), ("offset", param)))
+        pu = urlparse(base_url)
+        path = pu.path.rstrip("/")
+        out.append((urlunparse((pu.scheme, pu.netloc, f"{path}/page/{page_num}/",
+                                pu.params, pu.query, pu.fragment)), ("path", None)))
+        return out
+
+    @classmethod
+    def build_from_template(cls, base_url, template, page_num, page_size):
+        kind, param = template
+        if kind == "param":
+            return cls._with_param(base_url, param, page_num)
+        if kind == "offset":
+            return cls._with_param(base_url, param, (page_num - 1) * max(page_size, 1))
+        if kind == "path":
+            pu = urlparse(base_url)
+            path = pu.path.rstrip("/")
+            return urlunparse((pu.scheme, pu.netloc, f"{path}/page/{page_num}/",
+                               pu.params, pu.query, pu.fragment))
+        return None
+
 
 # ============================================================
 # SUPABASE WRITER
@@ -1633,51 +1704,88 @@ class DealLedgerScraper:
                     return []
 
             # ── Phase 1: extract cards from all list pages ────────────────
-            cards: list[dict] = []
-            current_url = url
+            # Follows explicit next-links; when a site has none (numbered / JS
+            # pagination), falls back to constructing ?page=N / /page/N/ /
+            # ?offset= URLs, locks onto whichever template yields new cards, and
+            # stops when a page adds nothing new or repeats page 1.
+            unique_cards: list[dict] = []
+            seen_ids: set[str] = set()
+            first_page_ids: set[str] = set()
+            page_size = 0
             page_num = 1
-            max_pages = 20
+            max_pages = 50
+            current_url = url
+            pending_html = html          # page 1 already fetched
+            template = None              # locked pagination template once found
 
-            while current_url and page_num <= max_pages:
-                if page_num > 1:
+            def _cards_from(html_text, page_url):
+                soup = BeautifulSoup(html_text, "html.parser")
+                try:
+                    els = soup.select(pattern["container_selector"])
+                except Exception:
+                    els = []
+                out = []
+                for el in els:
+                    c = ListingExtractor.from_card(el, page_url, name)
+                    if c:
+                        out.append(c)
+                return soup, out
+
+            while page_num <= max_pages:
+                if pending_html is not None:
+                    cur_html, pending_html = pending_html, None
+                else:
                     time.sleep(random.uniform(1, 3))
                     try:
-                        html, _ = self.fetcher.fetch(current_url, use_proxy=use_proxy)
+                        cur_html, _ = self.fetcher.fetch(current_url, use_proxy=use_proxy)
                     except Exception:
                         break
 
-                soup = BeautifulSoup(html, "html.parser")
-                try:
-                    elements = soup.select(pattern["container_selector"])
-                except Exception:
-                    elements = []
-
-                if not elements:
-                    break
-
-                page_cards = []
-                for el in elements:
-                    listing = ListingExtractor.from_card(el, current_url, name)
-                    if listing:
-                        page_cards.append(listing)
-
+                soup, page_cards = _cards_from(cur_html, current_url)
                 if not page_cards:
                     break
+                page_ids = {c["id"] for c in page_cards}
 
-                cards.extend(page_cards)
+                if page_num == 1:
+                    first_page_ids = page_ids
+                    page_size = len(page_cards)
+                elif not (page_ids - seen_ids) or page_ids == first_page_ids:
+                    break  # nothing new / pagination looped back to page 1
+
+                new = [c for c in page_cards if c["id"] not in seen_ids]
+                unique_cards.extend(new)
+                seen_ids |= page_ids
                 if page_num > 1:
-                    print(f"   📄 Page {page_num}: {len(page_cards)} cards")
+                    print(f"   📄 Page {page_num}: {len(new)} new cards")
 
-                current_url = PaginationHandler.find_next_page(soup, current_url)
-                page_num += 1
-
-            # Deduplicate cards
-            seen: set[str] = set()
-            unique_cards: list[dict] = []
-            for c in cards:
-                if c["id"] not in seen:
-                    seen.add(c["id"])
-                    unique_cards.append(c)
+                # ── decide next page ──────────────────────────────────────
+                nxt = PaginationHandler.find_next_page(soup, current_url)
+                if nxt:
+                    current_url, template = nxt, None
+                    page_num += 1
+                    continue
+                if template:
+                    current_url = PaginationHandler.build_from_template(
+                        url, template, page_num + 1, page_size)
+                    page_num += 1
+                    continue
+                # No explicit next-link and no locked template yet — discover one.
+                discovered = False
+                for cand, tmpl in PaginationHandler.candidate_page_urls(
+                        url, page_num + 1, page_size):
+                    try:
+                        chtml, _ = self.fetcher.fetch(cand, use_proxy=use_proxy)
+                    except Exception:
+                        continue
+                    _, ccards = _cards_from(chtml, cand)
+                    cids = {c["id"] for c in ccards}
+                    if cids and (cids - seen_ids) and cids != first_page_ids:
+                        template, current_url, pending_html = tmpl, cand, chtml
+                        page_num += 1
+                        discovered = True
+                        break
+                if not discovered:
+                    break
 
             if not unique_cards:
                 print(f"   ⚠️  Pattern matched but no listings extracted")
