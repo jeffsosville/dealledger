@@ -27,6 +27,7 @@ import requests as http_requests
 # Add parent dir to path so we can import specialized_scrapers
 sys.path.insert(0, os.path.dirname(__file__))
 import csv as _csv
+from junk_filter import is_junk_title, title_from_slug
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
     SunbeltScraper, VRScraper, FCBBScraper,
@@ -256,9 +257,14 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
         broker_domain = derive_broker_domain(url)
         url_is_listing_specific = detect_index_page_url(url)
 
-        # Title is NOT NULL in listings_direct. If the scraper produced none
-        # (Transworld heading / Hedgestone h3 miss), fall back to the URL slug.
-        title = (l.get("title") or "").strip()[:500] or derive_title_from_url(url)
+        # ONE RULE: if the scraper's title is blank OR junk (a CTA/status/
+        # category string rather than a business name), fall back to the URL
+        # slug. Covers every specialized scraper in one place — Sunbelt's
+        # register-modal string (971), Link's blanks (429), Bodner's category
+        # column (~200), plus Transworld/Hedgestone's missing headings.
+        title = (l.get("title") or "").strip()[:500]
+        if is_junk_title(title, firm_name=broker_name):
+            title = title_from_slug(url) or derive_title_from_url(url) or title or None
 
         rows.append({
             "id":            uid,

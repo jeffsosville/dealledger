@@ -238,7 +238,7 @@ def looks_like_cre_or_lease(text):
     return bool(_LEASE_CRE_RE.search(text))
 
 
-def best_card_title(element, base_url=""):
+def best_card_title(element, base_url="", firm_name=None):
     """
     Recover a real listing title from a card element.
 
@@ -249,12 +249,13 @@ def best_card_title(element, base_url=""):
         title comes from the longest text node or the detail-href slug.
     Returns None if no title-like text ≥ 8 chars can be found.
     """
-    # A candidate must be non-trivial and not CTA/nav text — otherwise CTA text
-    # like "MORE DETAILS" (companysellers) gets grabbed as the title and the
-    # card is then wrongly discarded as junk. Rejecting it here lets us fall
-    # through to the detail-href slug, which carries the real business name.
+    # ONE RULE: a candidate must not be junk — a CTA ("MORE DETAILS"), a status
+    # ("Pending"/"Sold"), a category slug, a register-modal string, or the
+    # broker's own firm name. Rejecting it here is what lets us fall through to
+    # the detail-href slug, which is where the real business name survives.
     def ok(t):
-        return t and len(t) >= 8 and t.lower() not in GENERIC_LINK_TEXT
+        return (t and len(t) >= 8 and t.lower() not in GENERIC_LINK_TEXT
+                and not is_junk_title(t, firm_name))
 
     for tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
         for el in element.find_all(tag):
@@ -344,9 +345,11 @@ def has_detail_link(element, base_url=""):
 # nav fragments, price fragments, status badges, CTA copy, legal pages, and
 # CRE/land never become "listings" in the first place.
 try:
-    from junk_filter import is_listing_junk as is_junk_listing, is_sold_or_pending
+    from junk_filter import (is_listing_junk as is_junk_listing, is_sold_or_pending,
+                             is_junk_title, title_from_slug)
 except ImportError:  # allow import as a package (scrapers.dealledger_scraper_v6)
-    from scrapers.junk_filter import is_listing_junk as is_junk_listing, is_sold_or_pending
+    from scrapers.junk_filter import (is_listing_junk as is_junk_listing,
+                                      is_sold_or_pending, is_junk_title, title_from_slug)
 
 
 def css_selector(tag, classes):
@@ -934,8 +937,6 @@ class ListingExtractor:
         if not is_listing_element(element, base_url):
             return None
 
-        title = best_card_title(element, base_url) or text[:100]
-
         link_el = element.find("a", href=True)
         detail_url = urljoin(base_url, link_el["href"]) if link_el else None
 
@@ -945,6 +946,12 @@ class ListingExtractor:
             b = base_url.rstrip("/")
             if d == b or "#" in d.split("?")[0][-5:]:
                 detail_url = None
+
+        title = best_card_title(element, base_url, firm_name=broker_name) or text[:100]
+        # ONE RULE: a junk/blank title falls back to the listing URL slug, which
+        # is where the real business name survives on CTA-titled cards.
+        if is_junk_title(title, broker_name):
+            title = title_from_slug(detail_url) or title
 
         # Junk gate — nav fragment, price fragment, status badge, CTA, legal
         # page, CRE/land: never emit these as a listing.

@@ -582,13 +582,21 @@ class TransworldScraper:
             price = item.get("price")
             cash_flow = item.get("seller_discretionary_earnings")
             slug = item.get("slug", "")
-            tribe = item.get("tribe_slug", "")
 
-            # Build canonical URL
-            if tribe and slug:
-                url = f"{self.BASE}/{tribe}/listing/{slug}"
+            # Reading beats building: use a URL the API hands us if it looks like
+            # a real detail page (/agents/<agent>/listings/<slug>).
+            api_url = (item.get("url") or item.get("permalink")
+                       or item.get("link") or "")
+            if "/agents/" in api_url and "/listings/" in api_url:
+                url = api_url
             elif slug:
-                url = f"{self.BASE}/listings/{slug}"
+                # Transworld requires an /agents/{slug}/ prefix — bare
+                # /listings/{slug} and the old /{tribe}/listing/{slug} both 404.
+                # Any agent slug works (they serve any listing under any agent
+                # path; it's just franchise attribution). Hardcoded because the
+                # API returns no agent field. NOTE: if this agent leaves
+                # Transworld these URLs break — worth a periodic check.
+                url = f"{self.BASE}/agents/aaronbrownlee/listings/{slug.lower()}"
             else:
                 url = self.BASE
 
@@ -1987,6 +1995,15 @@ class WPRestScraper:
             return None
 
         cl = item.get("class_list") or []
+        # Not everything in a listing post type is a live business for sale.
+        # A listing_category of space-for-lease / property / real-estate is CRE
+        # or a lease, not a Main-Street business — skip it (x-wp-total overcounts).
+        cat = self._taxonomy(cl, "listing_category", "category")
+        if cat and re.search(r'(?:^|\b)(?:space[\s-]?for[\s-]?lease|for[\s-]?lease|'
+                             r'lease|land|real[\s-]?estate|commercial[\s-]?property)\b',
+                             cat, re.I):
+            return None
+
         # Real industry taxonomy (industry-boutiques), NOT the post-type slug
         # (type-business_listing) — exclude "type".
         business_type = self._taxonomy(cl, "industry", "category", "sector")
