@@ -64,6 +64,9 @@ def title_from_slug(url):
     seg = re.sub(r"\.\w+$", "", seg)               # strip .html/.php
     slug = re.sub(r"[-_+]+", " ", seg)
     slug = re.sub(r"\s+", " ", slug).strip()
+    # Trailing listing number (Sunbelt: ...-revenue-57447) is not part of the
+    # business name.
+    slug = re.sub(r"\s+\d{4,6}$", "", slug).strip()
     if len(slug) < 6 or slug.replace(" ", "").isdigit():
         return None
     # Capitalize the first letter only — .title() would mangle apostrophes
@@ -88,6 +91,41 @@ _JUNK_TITLE_EXACT = {
 }
 _JUNK_URL_SUBSTR = ("javascript:", "mailto:", "maps.app.goo.gl", "/privacy",
                     "/terms", "/author/", "addtofavorites", "/newsletter")
+
+# ── Dead-listing detection ────────────────────────────────────────────────────
+# Three verified signals. Note status codes LIE — Transworld and Sunbelt both
+# serve 200 on dead listings, so the <title> is the only definitive check.
+_DEAD_URL_RE = re.compile(
+    r'\?post_type=[^&]*&p=\d+'      # VR: WordPress raw fallback; the post is gone
+    r'|/deleted-business/'          # Sunbelt: dead listings redirect here
+    r'|/listing-not-found',
+    re.IGNORECASE)
+_DEAD_TITLE_RE = re.compile(
+    r'page not found|404 not found|listing no longer available|'
+    r'listing not found|no longer available',
+    re.IGNORECASE)
+
+
+def is_dead_listing(url, html=None):
+    """True if a listing URL/page is a dead link.
+
+    Signals (all verified in the wild):
+      - VR          : ?post_type=listing&p=<id>  (WP raw fallback = post deleted)
+      - Sunbelt     : redirects to /omaha-ne/deleted-business/ ("Listing No
+                      Longer Available")
+      - Transworld  : client-rendered 404 — HTTP 200, so only the <title> tells
+
+    `html` is optional: the URL check alone catches VR/Sunbelt without a fetch.
+    """
+    if url and _DEAD_URL_RE.search(url):
+        return True
+    if html:
+        m = re.search(r'<title[^>]*>(.*?)</title>', html, re.IGNORECASE | re.DOTALL)
+        if m and _DEAD_TITLE_RE.search(m.group(1)):
+            return True
+        if re.search(r'listing no longer available', html, re.IGNORECASE):
+            return True
+    return False
 
 
 def is_listing_junk(title, url=""):
@@ -131,8 +169,11 @@ def is_listing_junk(title, url=""):
     if (tl.startswith("privacy policy") or tl.startswith("terms ")
             or "terms of service" in tl or tl == "google maps"):
         return True
-    # 8 bad destination URLs
+    # 8 bad destination URLs (incl. known dead-listing URL markers, e.g. VR's
+    # ?post_type=listing&p=<id> WordPress fallback — the post no longer exists)
     if u and any(s in u for s in _JUNK_URL_SUBSTR):
+        return True
+    if u and _DEAD_URL_RE.search(u):
         return True
     # 9 CRE / land (not a business)
     if re.search(r'(commercial real estate for lease|residential land|land for sale|'
