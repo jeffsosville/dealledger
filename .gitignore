@@ -6,3 +6,19 @@ supabase/.temp/
 data/*.bak
 .env
 .DS_Store
+node_modules/
+.next/
+next-env.d.ts
+__pycache__/
+*.pyc
+.env.local
+state_files/
+data/listings/
+data/snapshots/
+*.jsonl
+scrapers/bbs_cookies*
+scrapers/debug_*.html
+CLAUDE_CODE_PLAN.md
+money_parser_patch.py
+platform-brokerage-report/
+marketpulse sql queries for newsletter/
