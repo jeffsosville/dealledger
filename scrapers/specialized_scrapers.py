@@ -33,6 +33,12 @@ import time
 import random
 from html import unescape as html_unescape
 from typing import List, Dict, Optional
+
+try:
+    from junk_filter import is_sold_or_pending
+except Exception:
+    def is_sold_or_pending(_title):  # graceful no-op if module unavailable
+        return False
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -139,13 +145,15 @@ def format_listing(
     description: str = None,
     business_type: str = None,
     revenue: float = None,
-    cash_flow: float = None
+    cash_flow: float = None,
+    status: str = "active"
 ) -> Dict:
     """Create a standardized listing dict."""
     return {
         'listing_id': hashlib.md5(url.encode()).hexdigest(),
         'broker_account': broker_account,
         'title': title,
+        'status': status,
         'price': price,
         'price_text': price_text,
         'location': location,
@@ -1986,6 +1994,21 @@ class WPRestScraper:
         st = self._taxonomy(cl, "state")
         state = st.upper() if st and re.fullmatch(r"[a-z]{2}", st.strip(), re.I) else None
 
+        # Sold/under-contract → status='sold' (class_list carries the WP post
+        # status / a listing-status taxonomy, e.g. status-sold, availability-sold).
+        _sold_slug = re.compile(
+            r'(?:status|availability|listing[_-]?st\w*)[-_]'
+            r'(?:sold|under[_-]?contract|sale[_-]?pending|off[_-]?market)', re.I)
+        status = "active"
+        if is_sold_or_pending(title):
+            status = "sold"
+        else:
+            for c in cl:
+                if _sold_slug.search(c) or c.strip().lower() in (
+                        "sold", "under-contract", "sale-pending"):
+                    status = "sold"
+                    break
+
         acf = item.get("acf") or {}
         price = self._num(acf.get("asking_price") or acf.get("price") or acf.get("list_price"))
         cash_flow = self._num(acf.get("cash_flow") or acf.get("cashflow") or acf.get("sde"))
@@ -1996,7 +2019,7 @@ class WPRestScraper:
             price=price, cash_flow=cash_flow, revenue=revenue,
             business_type=(business_type.title() if business_type else None),
             city=(acf.get("city") or None), state=(state or acf.get("state") or None),
-            location=loc.title() if loc else None)
+            location=loc.title() if loc else None, status=status)
 
     def scrape(self, broker_account: str, max_pages: int = 60, verbose: bool = True) -> List[Dict]:
         if verbose:
