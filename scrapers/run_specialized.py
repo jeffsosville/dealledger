@@ -161,6 +161,26 @@ def resolve_broker_name(broker_account: str, fallback_display_name: str | None =
     return raw or "Unknown"
 
 
+def derive_title_from_url(url: str) -> str | None:
+    """
+    Fallback title from a listing URL slug when the scraper produced none —
+    e.g. .../listing/ca-3-kona-ice-franchise-territories -> "Ca 3 Kona Ice
+    Franchise Territories". Returns None if the last segment is empty, numeric,
+    or too short to be a title. Prevents NOT NULL(title) write failures.
+    """
+    try:
+        path = urlparse(url).path.rstrip("/")
+    except Exception:
+        return None
+    seg = path.split("/")[-1] if path else ""
+    seg = re.sub(r"\.\w+$", "", seg)                 # strip .html / .php
+    slug = re.sub(r"[-_+]+", " ", seg).strip()
+    slug = re.sub(r"\s+", " ", slug)
+    if len(slug) < 6 or slug.replace(" ", "").isdigit():
+        return None
+    return slug.title()[:500]
+
+
 # ── Supabase upsert ───────────────────────────────────────────────────────────
 def upsert_listings(listings: list[dict], display_name: str | None = None) -> int:
     """
@@ -205,9 +225,13 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
         broker_domain = derive_broker_domain(url)
         url_is_listing_specific = detect_index_page_url(url)
 
+        # Title is NOT NULL in listings_direct. If the scraper produced none
+        # (Transworld heading / Hedgestone h3 miss), fall back to the URL slug.
+        title = (l.get("title") or "").strip()[:500] or derive_title_from_url(url)
+
         rows.append({
             "id":            uid,
-            "title":         (l.get("title") or "")[:500] or None,
+            "title":         title,
             "url":           url,
             "broker_name":   broker_name,
             "broker_domain": broker_domain,
@@ -230,19 +254,34 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "updated_at":    now,
         })
 
+    # Drop rows still missing a NOT NULL title (no scraper title, no usable
+    # slug) so they can't reject an entire batch.
+    dropped_null = sum(1 for r in rows if not r.get("title"))
+    if dropped_null:
+        log.warning(f"Skipping {dropped_null} row(s) with no derivable title")
+    rows = [r for r in rows if r.get("title")]
+
+    endpoint = f"{SUPABASE_URL}/rest/v1/listings_direct"
+
+    def write_chunk(chunk: list[dict]) -> int:
+        """Post a chunk; on rejection, split-and-retry down to single rows so
+        one bad record can't take out its 99 good neighbours."""
+        if not chunk:
+            return 0
+        r = http_requests.post(endpoint, headers=headers, json=chunk, timeout=60)
+        if r.status_code in (200, 201):
+            return len(chunk)
+        if len(chunk) == 1:
+            log.error(f"Dropping bad row id={chunk[0].get('id')}: "
+                      f"{r.status_code} {r.text[:150]}")
+            return 0
+        mid = len(chunk) // 2
+        time.sleep(0.05)
+        return write_chunk(chunk[:mid]) + write_chunk(chunk[mid:])
+
     upserted = 0
     for i in range(0, len(rows), 500):
-        batch = rows[i:i+500]
-        r = http_requests.post(
-            f"{SUPABASE_URL}/rest/v1/listings_direct",
-            headers=headers,
-            json=batch,
-            timeout=60,
-        )
-        if r.status_code in (200, 201):
-            upserted += len(batch)
-        else:
-            log.error(f"Upsert error {r.status_code}: {r.text[:200]}")
+        upserted += write_chunk(rows[i:i+500])
         time.sleep(0.1)
 
     return upserted
