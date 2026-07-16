@@ -26,11 +26,13 @@ import requests as http_requests
 
 # Add parent dir to path so we can import specialized_scrapers
 sys.path.insert(0, os.path.dirname(__file__))
+import csv as _csv
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
     SunbeltScraper, VRScraper, FCBBScraper,
     LinkBusinessScraper, LarryBodnerScraper,
-    WeSellRestaurantsScraper, VestedScraper, RoutesForSaleScraper
+    WeSellRestaurantsScraper, VestedScraper, RoutesForSaleScraper,
+    WPRestScraper
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -101,6 +103,35 @@ BROKERS = {
         "fn": lambda: RoutesForSaleScraper().scrape("13461"),
     },
 }
+
+
+def _register_wp_rest_brokers():
+    """Register the WordPress-REST brokers from data/wp_rest_brokers.csv —
+    one generic WPRestScraper, ~54 brokers as (domain, rest_base, account)
+    rows. Keeps the big registry version-controlled and out of the code."""
+    path = os.path.join(os.path.dirname(__file__), "..", "data", "wp_rest_brokers.csv")
+    if not os.path.exists(path):
+        return
+    with open(path) as f:
+        for row in _csv.DictReader(f):
+            domain = (row.get("domain") or "").strip()
+            rest = (row.get("rest_base") or "").strip()
+            if not domain or not rest:
+                continue
+            acct = (row.get("account") or "").strip()
+            slug = re.sub(r"[^a-z0-9]+", "_", domain.replace("www.", "").lower()).strip("_")
+            key = "wp_" + slug
+            account = acct or key
+            display = (row.get("display_name") or "").strip() or domain
+            BROKERS[key] = {
+                "account": account,
+                "display_name": display,
+                "fn": (lambda d=domain, rb=rest, a=account:
+                       WPRestScraper(d, rb).scrape(a, max_pages=60)),
+            }
+
+
+_register_wp_rest_brokers()
 
 # Build reverse lookup: account_id → display_name
 ACCOUNT_TO_BROKER_NAME = {b["account"]: b["display_name"] for b in BROKERS.values()}
