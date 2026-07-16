@@ -193,24 +193,11 @@ def resolve_broker_name(broker_account: str, fallback_display_name: str | None =
     return raw or "Unknown"
 
 
-def derive_title_from_url(url: str) -> str | None:
-    """
-    Fallback title from a listing URL slug when the scraper produced none —
-    e.g. .../listing/ca-3-kona-ice-franchise-territories -> "Ca 3 Kona Ice
-    Franchise Territories". Returns None if the last segment is empty, numeric,
-    or too short to be a title. Prevents NOT NULL(title) write failures.
-    """
-    try:
-        path = urlparse(url).path.rstrip("/")
-    except Exception:
-        return None
-    seg = path.split("/")[-1] if path else ""
-    seg = re.sub(r"\.\w+$", "", seg)                 # strip .html / .php
-    slug = re.sub(r"[-_+]+", " ", seg).strip()
-    slug = re.sub(r"\s+", " ", slug)
-    if len(slug) < 6 or slug.replace(" ", "").isdigit():
-        return None
-    return slug.title()[:500]
+# NOTE: the old local derive_title_from_url() was removed — it duplicated
+# title_from_slug() WITHOUT the script-filename/reserved-route guards and would
+# happily turn listingdetail.asp into "Listingdetail". junk_filter.title_from_slug
+# is the single source of truth.
+derive_title_from_url = title_from_slug
 
 
 # ── Supabase upsert ───────────────────────────────────────────────────────────
