@@ -1902,6 +1902,211 @@ class RoutesForSaleScraper:
 
 
 # ============================================================================
+# GENERIC FACETWP AJAX SCRAPER
+# The only way to filter by STATUS on FacetWP sites.
+# ============================================================================
+
+class FacetWPScraper:
+    """
+    Generic FacetWP AJAX scraper — one class, many brokers.
+
+        FacetWPScraper("eatz-associates.com", "listings",
+                       {"status": ["for-sale", "new-listing"]}).scrape(acct)
+
+    Why this exists: on FacetWP sites the WP REST endpoint returns the WHOLE
+    archive with no status field — eatz's wp-json/wp/v2/listing is 1,026 records
+    but only ~5 pages are for-sale vs ~64 pages sold (93% graveyard). The
+    ?fwp_status= URL param is ignored server-side (every variant returns
+    identical HTML). The facetwp_refresh POST is the only thing that actually
+    filters, so it's the only safe way to import these brokers.
+
+    Same payload shape for every FacetWP broker — only `uri` and the facet
+    names change (Synergy is the same shape, also ~47% sold).
+    """
+
+    # Facet keys are sent as empty lists unless overridden; FacetWP expects the
+    # site's full facet set in the payload.
+    DEFAULT_FACET_KEYS = ("pagination", "state", "citydropdown", "status",
+                          "business_type", "featured", "food_type",
+                          "listing_categories", "service_type")
+
+    def __init__(self, domain, uri, facets=None, facet_keys=None,
+                 link_match="/listing"):
+        self.domain = domain.strip().strip("/")
+        self.uri = uri.strip("/")
+        self.facets = facets or {"status": ["for-sale"]}
+        self.facet_keys = tuple(facet_keys) if facet_keys else self.DEFAULT_FACET_KEYS
+        self.link_match = link_match
+        self.base = f"https://{self.domain}"
+        self.endpoint = f"{self.base}/{self.uri}/"
+        self.session = self._make_session()
+        # DIRECT FIRST. Counter-intuitively the residential proxy makes eatz
+        # WORSE — it 429s DataImpulse exit IPs while serving our direct IP 200.
+        # The proxy is an escalation path only, for brokers that block us.
+        self.proxies = None
+
+    @staticmethod
+    def _make_session():
+        import requests as _std
+        s = _std.Session()
+        s.headers.update({
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/120.0.0.0 Safari/537.36"})
+        return s
+
+    @staticmethod
+    def _build_proxies():
+        user = os.environ.get("PROXY_USER", "").strip()
+        pw = os.environ.get("PROXY_PASS", "").strip()
+        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        if not (user and pw):
+            return None
+        sid = f"fw{random.randint(100000, 999999)}"
+        return {"http": f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}",
+                "https": f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}"}
+
+    def _payload(self, paged):
+        facets = {k: [] for k in self.facet_keys}
+        facets.update(self.facets)
+        get = {"fwp_paged": str(paged)}
+        url_vars = {}
+        for k, v in self.facets.items():
+            if v:
+                get[f"fwp_{k}"] = ",".join(v)
+                url_vars[k] = list(v)
+        return {
+            "action": "facetwp_refresh",
+            "data": {
+                "facets": facets,
+                "frozen_facets": {},
+                "http_params": {"get": get, "uri": self.uri, "url_vars": url_vars},
+                "template": "wp",
+                "extras": {"sort": "default"},
+                "soft_refresh": 1,
+                "is_bfcache": 1,
+                "first_load": 0,
+                "paged": paged,
+            },
+        }
+
+    def _headers(self):
+        return {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": self.endpoint,
+            "Origin": self.base,
+        }
+
+    def _post(self, paged):
+        return self.session.post(self.endpoint, json=self._payload(paged),
+                                 headers=self._headers(), timeout=35,
+                                 proxies=self.proxies)
+
+    def _parse_template(self, html, broker_account):
+        soup = BeautifulSoup(html, "html.parser")
+        out, seen = [], set()
+        for a in soup.select(f'a[href*="{self.link_match}"]'):
+            href = (a.get("href") or "").strip()
+            if not href or href in seen:
+                continue
+            seen.add(href)
+            # Walk up to the card so we can read price/cash-flow text.
+            card = a
+            for _ in range(4):
+                if card.parent is None or len(card.get_text(" ", strip=True)) > 40:
+                    break
+                card = card.parent
+            text = card.get_text(" ", strip=True)
+
+            title = a.get_text(" ", strip=True)
+            if is_junk_title(title):
+                h = card.find(["h1", "h2", "h3", "h4"])
+                ht = h.get_text(" ", strip=True) if h else ""
+                title = ht if not is_junk_title(ht) else (title_from_slug(href) or "")
+            if not title:
+                continue
+
+            pm = re.search(r'\$\s?[\d,]{4,}', text)
+            cf = re.search(r'(?:cash\s*flow|sde)[^$]{0,20}(\$\s?[\d,]{4,})', text, re.I)
+            out.append(format_listing(
+                url=href, broker_account=broker_account, title=title,
+                price=parse_money(pm.group(0)) if pm else None,
+                price_text=pm.group(0) if pm else None,
+                cash_flow=parse_money(cf.group(1)) if cf else None,
+                status="sold" if is_sold_or_pending(title) else "active"))
+        return out
+
+    def scrape(self, broker_account: str, max_pages: int = 40, verbose: bool = True) -> List[Dict]:
+        if verbose:
+            print(f"\n{'='*60}")
+            print(f"FacetWP: {self.domain}/{self.uri}  facets={self.facets}")
+            print('='*60)
+        try:
+            self.session.get(self.endpoint, timeout=30, proxies=self.proxies)
+        except Exception:
+            pass
+
+        listings, seen = [], set()
+        empty_streak = 0
+        for paged in range(1, max_pages + 1):
+            # Rotate the exit IP proactively once we're ON the proxy (these
+            # sites rate-limit durably per-IP).
+            if self.proxies and paged > 1 and paged % 15 == 1:
+                self.proxies = self._build_proxies()
+
+            data = None
+            for attempt in range(4):
+                try:
+                    r = self._post(paged)
+                    if r.status_code in (429, 500, 502, 503) or \
+                            "json" not in r.headers.get("content-type", "").lower():
+                        raise RuntimeError(f"HTTP {r.status_code}")
+                    data = r.json()
+                    break
+                except Exception as e:
+                    # Back off first; only escalate to (or rotate) the proxy if
+                    # direct keeps failing — for eatz the proxy is 429'd while
+                    # direct is 200, so never proxy pre-emptively.
+                    if attempt >= 1:
+                        self.proxies = self._build_proxies()
+                    if attempt == 3:
+                        if verbose:
+                            print(f"[FacetWP:{self.domain}] page {paged} failed: {e}")
+                    else:
+                        time.sleep(random.uniform(1.5, 3.0) * (attempt + 1))
+            if data is None:
+                break
+
+            new = [l for l in self._parse_template(data.get("template") or "",
+                                                   broker_account)
+                   if l["listing_url"] not in seen]
+            for l in new:
+                seen.add(l["listing_url"])
+            listings.extend(new)
+
+            pager = (data.get("settings") or {}).get("pager") or {}
+            total_pages = pager.get("total_pages")
+            if verbose and (paged == 1 or paged % 10 == 0):
+                print(f"[FacetWP:{self.domain}] page {paged}: {len(new)} new | "
+                      f"total={len(listings)} | pager_total_pages={total_pages}")
+            if not new:
+                empty_streak += 1
+                if empty_streak >= 2:
+                    break
+            else:
+                empty_streak = 0
+            if total_pages and paged >= int(total_pages):
+                break
+            time.sleep(random.uniform(0.6, 1.2))
+
+        if verbose:
+            wp = sum(1 for l in listings if l.get("price"))
+            print(f"\n✓ {len(listings)} {self.domain} listings ({wp} with price)")
+        return listings
+
+
+# ============================================================================
 # GENERIC WORDPRESS REST SCRAPER
 # Many brokers run WordPress and expose listings at /wp-json/wp/v2/<type>.
 # One class, many brokers — registered as (domain, rest_base, account) tuples.
