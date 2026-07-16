@@ -42,32 +42,65 @@ def is_junk_title(t, firm_name=None):
     # hyphenated title ("Well-Established Cafe") is NOT rejected.
     if "/" in tl and len(tl) < 40 and re.match(r'^[a-z/ ]+-[a-z/ ]+$', tl):
         return True
+    # Bodner/execbb category column: "General Services-Laundromat",
+    # "Food/Liquor-Liquor Lic. C", "General Retail-Convenience". The hyphen must
+    # sit tight between letters so a real title ("General Store - Profitable")
+    # is spared.
+    if re.match(r'^(?:general|food|retail)[ /][a-z ]*[a-z]-[a-z]', tl):
+        return True
     # The broker's own firm name used as a listing title (lbaweb et al).
     if firm_name and tl == firm_name.strip().lower():
         return True
     return False
 
 
+# A last path segment that is a script filename or a generic route is NOT a
+# title. Without these guards execbb.com/Buyer/sub/listingdetail.asp?listingid=X
+# yielded "Listingdetail" for 370 listings — worse than the original.
+_SCRIPT_EXT_RE = re.compile(r'\.(?:asp|aspx|php|html?|jsp|cgi|cfm)$', re.IGNORECASE)
+_RESERVED_SEGMENTS = {
+    "index", "detail", "details", "listingdetail", "results", "result",
+    "default", "search", "listing", "listings", "page", "view", "item",
+    "property", "properties", "business", "businesses", "home",
+}
+
+
 def title_from_slug(url):
     """Derive a title from a listing URL's last path segment.
     /businesses-for-sale/SD00077/Women%27s-Fashion-Boutique-North-County
         -> "Women's Fashion Boutique North County"
-    Returns None when the segment is empty, numeric, or too short."""
+
+    Returns None rather than inventing a title when the segment is a script
+    filename (listingdetail.asp), a generic route (index/detail/search),
+    numeric, or too short to be a real slug. Callers do
+    `title_from_slug(url) or title`, so None correctly keeps the original."""
     if not url:
         return None
     try:
         path = urlparse(url).path.rstrip("/")
     except Exception:
         return None
-    seg = path.split("/")[-1] if path else ""
-    seg = unquote(seg)
-    seg = re.sub(r"\.\w+$", "", seg)               # strip .html/.php
+    seg = unquote(path.split("/")[-1] if path else "")
+    if not seg:
+        return None
+    if _SCRIPT_EXT_RE.search(seg):                 # listingdetail.asp -> not a title
+        return None
+    seg = re.sub(r"\.\w+$", "", seg)               # strip any other extension
+    if seg.strip().lower() in _RESERVED_SEGMENTS:
+        return None
+    if seg.replace("-", "").replace("_", "").isdigit():
+        return None
+    # A real slug is hyphen/underscore separated; a short bare word isn't a title.
+    if "-" not in seg and "_" not in seg and len(seg) < 10:
+        return None
     slug = re.sub(r"[-_+]+", " ", seg)
     slug = re.sub(r"\s+", " ", slug).strip()
     # Trailing listing number (Sunbelt: ...-revenue-57447) is not part of the
     # business name.
     slug = re.sub(r"\s+\d{4,6}$", "", slug).strip()
     if len(slug) < 6 or slug.replace(" ", "").isdigit():
+        return None
+    if slug.lower() in _RESERVED_SEGMENTS:
         return None
     # Capitalize the first letter only — .title() would mangle apostrophes
     # ("Women's" -> "Women'S"). Keep existing all-caps tokens (HVAC, LLC).
