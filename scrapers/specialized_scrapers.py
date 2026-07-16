@@ -31,6 +31,7 @@ import re
 import json
 import time
 import random
+from html import unescape as html_unescape
 from typing import List, Dict, Optional
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -1882,6 +1883,193 @@ class RoutesForSaleScraper:
             with_price = sum(1 for l in items if l.get("price"))
             print(f"\n✓ {len(items)} Routes For Sale listings ({with_price} with price)")
         return items
+
+
+# ============================================================================
+# GENERIC WORDPRESS REST SCRAPER
+# Many brokers run WordPress and expose listings at /wp-json/wp/v2/<type>.
+# One class, many brokers — registered as (domain, rest_base, account) tuples.
+# ============================================================================
+
+class WPRestScraper:
+    """
+    Generic WordPress REST scraper. Pulls a custom post type from
+    https://<domain>/wp-json/wp/v2/<rest_base>?per_page=100&page=N and paginates
+    off the x-wp-totalpages header. Clean JSON — no HTML parsing, browser, or
+    proxy. Financials are usually absent from REST (acf often empty); when
+    fetch_financials=True it follows each listing's `link` to scrape price/cash
+    flow from the detail page.
+
+        WPRestScraper("eatz-associates.com", "listing").scrape(account)
+    """
+
+    def __init__(self, domain: str, rest_base: str, fetch_financials: bool = False):
+        self.domain = domain.strip().strip("/")
+        self.rest_base = rest_base.strip().strip("/")
+        self.fetch_financials = fetch_financials
+        self.session = self._make_session()
+        self._proxies = self._build_proxies()   # used only if REST is blocked
+        self._use_proxy = False
+
+    @staticmethod
+    def _build_proxies():
+        user = os.environ.get("PROXY_USER", "").strip()
+        pw = os.environ.get("PROXY_PASS", "").strip()
+        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        if not (user and pw):
+            return None
+        sid = f"wp{random.randint(100000, 999999)}"
+        url = f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}"
+        return {"http": url, "https": url}
+
+    def _get(self, url):
+        return self.session.get(
+            url, timeout=30, proxies=self._proxies if self._use_proxy else None)
+
+    @staticmethod
+    def _make_session():
+        try:
+            return requests.Session(impersonate="chrome120")
+        except Exception:
+            import requests as _std
+            s = _std.Session()
+            s.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac "
+                              "OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/120.0.0.0 Safari/537.36"})
+            return s
+
+    def _api_url(self, page: int) -> str:
+        return (f"https://{self.domain}/wp-json/wp/v2/{self.rest_base}"
+                f"?per_page=100&page={page}"
+                f"&_fields=title,link,slug,date,modified,class_list,acf")
+
+    @staticmethod
+    def _clean_title(raw: str) -> str:
+        return html_unescape(re.sub(r"<[^>]+>", "", raw or "")).strip()
+
+    @staticmethod
+    def _taxonomy(class_list, *keys):
+        """Pull a readable value from class_list slugs like
+        'listing_industry-restaurant' or 'business_location-california'."""
+        for c in class_list or []:
+            for key in keys:
+                m = re.search(r'(?:^|[_-])' + key + r'[-_](.+)$', c)
+                if m:
+                    return m.group(1).replace("-", " ").strip()
+        return None
+
+    @staticmethod
+    def _num(v):
+        if v in (None, "", False):
+            return None
+        try:
+            return float(re.sub(r"[^\d.]", "", str(v)) or 0) or None
+        except Exception:
+            return None
+
+    def _parse(self, item, broker_account):
+        link = item.get("link") or ""
+        if not link:
+            return None
+        title = self._clean_title((item.get("title") or {}).get("rendered", ""))
+        if not title:
+            slug = re.sub(r"[-_]+", " ", item.get("slug") or "").strip()
+            title = slug.title() if len(slug) >= 6 else None
+        if not title:
+            return None
+
+        cl = item.get("class_list") or []
+        # Real industry taxonomy (industry-boutiques), NOT the post-type slug
+        # (type-business_listing) — exclude "type".
+        business_type = self._taxonomy(cl, "industry", "category", "sector")
+        loc = self._taxonomy(cl, "location", "region")
+        st = self._taxonomy(cl, "state")
+        state = st.upper() if st and re.fullmatch(r"[a-z]{2}", st.strip(), re.I) else None
+
+        acf = item.get("acf") or {}
+        price = self._num(acf.get("asking_price") or acf.get("price") or acf.get("list_price"))
+        cash_flow = self._num(acf.get("cash_flow") or acf.get("cashflow") or acf.get("sde"))
+        revenue = self._num(acf.get("revenue") or acf.get("gross_revenue"))
+
+        return format_listing(
+            url=link, broker_account=broker_account, title=title,
+            price=price, cash_flow=cash_flow, revenue=revenue,
+            business_type=(business_type.title() if business_type else None),
+            city=(acf.get("city") or None), state=(state or acf.get("state") or None),
+            location=loc.title() if loc else None)
+
+    def scrape(self, broker_account: str, max_pages: int = 60, verbose: bool = True) -> List[Dict]:
+        if verbose:
+            print(f"\n{'='*60}")
+            print(f"WordPress REST: {self.domain}/wp-json/wp/v2/{self.rest_base}")
+            print('='*60)
+
+        listings, seen = [], set()
+        total_pages = None
+        for page in range(1, max_pages + 1):
+            try:
+                r = self._get(self._api_url(page))
+                # Cloudflare-blocked endpoints return an HTML challenge instead
+                # of JSON — on page 1, retry once through the proxy.
+                if (page == 1 and not self._use_proxy and self._proxies
+                        and "json" not in r.headers.get("content-type", "").lower()):
+                    if verbose:
+                        print(f"[WP:{self.domain}] non-JSON on page 1 — retrying via proxy")
+                    self._use_proxy = True
+                    r = self._get(self._api_url(page))
+            except Exception as e:
+                if verbose:
+                    print(f"[WP:{self.domain}] page {page} error: {e}")
+                break
+            if r.status_code != 200:
+                # 400 rest_post_invalid_page_number = past the last page
+                if verbose and page == 1:
+                    print(f"[WP:{self.domain}] HTTP {r.status_code}: {r.text[:120]}")
+                break
+            if total_pages is None:
+                try:
+                    total_pages = int(r.headers.get("x-wp-totalpages", "1") or 1)
+                    print(f"[WP:{self.domain}] x-wp-total="
+                          f"{r.headers.get('x-wp-total','?')} pages={total_pages}")
+                except ValueError:
+                    total_pages = max_pages
+            try:
+                items = r.json()
+            except Exception:
+                break
+            if not isinstance(items, list) or not items:
+                break
+            for it in items:
+                rec = self._parse(it, broker_account)
+                if rec and rec["listing_url"] not in seen:
+                    seen.add(rec["listing_url"])
+                    listings.append(rec)
+            if total_pages and page >= total_pages:
+                break
+            time.sleep(0.2)
+
+        if self.fetch_financials:
+            self._enrich_financials(listings, verbose)
+
+        if verbose:
+            wp = sum(1 for l in listings if l.get("price"))
+            print(f"\n✓ {len(listings)} listings from {self.domain} ({wp} with price)")
+        return listings
+
+    def _enrich_financials(self, listings, verbose=True):
+        """Follow each listing's detail page for price/cash flow (opt-in — slow)."""
+        for i, rec in enumerate(listings):
+            if rec.get("price"):
+                continue
+            try:
+                html_text = self.session.get(rec["listing_url"], timeout=20).text
+                prices = re.findall(r'\$\s?[\d,]{4,}', html_text)
+                if prices:
+                    rec["price"] = parse_money(prices[0])
+            except Exception:
+                pass
+            if verbose and i and i % 100 == 0:
+                print(f"[WP:{self.domain}] enriched {i}/{len(listings)}")
 
 
 def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[List[Dict]]:
