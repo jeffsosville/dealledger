@@ -50,7 +50,7 @@ BROKERS = {
     "transworld": {
         "account": "28148",
         "display_name": "Transworld Business Advisors",
-        "fn": lambda: TransworldScraper().scrape("28148", max_pages=400, workers=8),
+        "fn": lambda: TransworldScraper().scrape("28148", max_pages=450, workers=8),
     },
     "sunbelt": {
         "account": "1001",
