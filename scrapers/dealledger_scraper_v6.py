@@ -344,9 +344,9 @@ def has_detail_link(element, base_url=""):
 # nav fragments, price fragments, status badges, CTA copy, legal pages, and
 # CRE/land never become "listings" in the first place.
 try:
-    from junk_filter import is_listing_junk as is_junk_listing
+    from junk_filter import is_listing_junk as is_junk_listing, is_sold_or_pending
 except ImportError:  # allow import as a package (scrapers.dealledger_scraper_v6)
-    from scrapers.junk_filter import is_listing_junk as is_junk_listing
+    from scrapers.junk_filter import is_listing_junk as is_junk_listing, is_sold_or_pending
 
 
 def css_selector(tag, classes):
@@ -361,6 +361,31 @@ def css_selector(tag, classes):
     for c in classes:
         out.append(re.sub(r'([ :./\[\]()#!,%&>+~*=\'"])', r'\\\1', c))
     return tag + "".join("." + c for c in out)
+
+
+# Sold / off-market status shown on a card as a class, badge, ribbon, or image
+# overlay (NOT just the word appearing in a description — that would false-fire).
+_SOLD_TEXT_RE = re.compile(
+    r'\b(sold|under[\s-]*contract|sale[\s-]*pending|off[\s-]*market)\b', re.I)
+_SOLD_CLASS_RE = re.compile(
+    r'\b(sold|under-?contract|sale-?pending|off-?market)\b', re.I)
+
+
+def looks_sold(element):
+    """True if a listing card is marked SOLD / UNDER CONTRACT via a CSS class,
+    badge/ribbon/status element, or image overlay. High-precision: it does not
+    match the word merely appearing in the description text."""
+    for el in [element, *element.find_all(True)]:
+        if _SOLD_CLASS_RE.search(" ".join(el.get("class", []))):
+            return True
+    for el in element.select("[class*='badge'], [class*='ribbon'], [class*='status'], "
+                             "[class*='label'], [class*='flag'], [class*='overlay']"):
+        if _SOLD_TEXT_RE.search(el.get_text(" ", strip=True)):
+            return True
+    for img in element.find_all("img"):
+        if _SOLD_TEXT_RE.search(f"{img.get('alt','')} {img.get('title','')}"):
+            return True
+    return False
 
 
 def is_listing_element(element, base_url=""):
@@ -951,6 +976,11 @@ class ListingExtractor:
             "broker_name":   broker_name,
             "broker_domain": urlparse(base_url).netloc,
             "description":   text[:1000],
+            # Sold/under-contract deals are imported as status='sold' (from a
+            # badge/class/ribbon OR a title marker) so they don't inflate the
+            # active count or get DOM'd as live inventory.
+            "status":        "sold" if (looks_sold(element)
+                                        or is_sold_or_pending(title)) else "active",
             "first_seen":    now,
             "last_seen":     now,
             "_detail_url":   detail_url,
@@ -1451,7 +1481,7 @@ class SupabaseWriter:
                 "revenue":       positive_or_none(l.get("revenue")),
                 "vertical":      l.get("vertical", "other"),
                 "description":   (l.get("description") or "")[:2000],
-                "status":        "active",
+                "status":        l.get("status") or "active",
                 "source":        "broker_direct",
                 "first_seen":    l.get("first_seen", now),
                 "last_seen":     now,

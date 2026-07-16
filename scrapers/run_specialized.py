@@ -275,7 +275,7 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "contact_name":  l.get("contact_name"),
             "contact_phone": l.get("contact_phone"),
             "location_raw":  l.get("location"),
-            "status":        "active",
+            "status":        l.get("status") or "active",
             "source":        "broker_direct",
             "quality_tier":  "Unverified",
             "url_is_listing_specific": url_is_listing_specific,

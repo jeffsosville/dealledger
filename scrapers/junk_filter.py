@@ -81,3 +81,31 @@ def is_listing_junk(title, url=""):
 
 # Back-compat alias — dealledger_scraper_v6 historically called this is_junk_listing.
 is_junk_listing = is_listing_junk
+
+
+# Sold / under-contract STATUS markers in a title. Kept in sync with the SQL
+# is_sold_or_pending(t). Used by the scrapers to set status='sold' (NOT to drop
+# the listing — a sold deal is a real listing, just not active). Catches badge-
+# style markers (all-caps SOLD, UNDER CONTRACT, "(SOLD & SETTLED)", "just
+# closed", "recently sold") while sparing descriptive uses ("Sold With Real
+# Estate", "Sold As-Is").
+_SOLD_SPARE = re.compile(r'\bsold\s+(?:with|as[\s-]?is)\b', re.IGNORECASE)
+_SOLD_MARKERS = (
+    r'\bSOLD\b',                        # all-caps badge
+    r'\bunder[\s-]*contract\b',
+    r'\bsale[\s-]*pending\b',
+    r'\bjust[\s-]*closed\b',
+    r'\brecently[\s-]*sold\b',
+    r'\(\s*sold[^)]*\)',               # (SOLD), (SOLD & SETTLED)
+)
+
+
+def is_sold_or_pending(title):
+    """True if the title marks the deal SOLD / UNDER CONTRACT (a status signal,
+    not a reason to discard the listing)."""
+    t = (title or "").strip()
+    if not t or _SOLD_SPARE.search(t):
+        return False
+    if re.search(_SOLD_MARKERS[0], t):          # SOLD must be ALL-CAPS to count
+        return True
+    return any(re.search(p, t, re.IGNORECASE) for p in _SOLD_MARKERS[1:])
