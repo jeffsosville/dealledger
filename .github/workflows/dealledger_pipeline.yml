@@ -1,8 +1,8 @@
 name: DealLedger Daily Pipeline
 
 on:
-  schedule:
-    - cron: '0 12 * * *'
+  # schedule:  # DISABLED — BBS Akamai-blocked 2026-07-15
+    # - cron: '0 12 * * *'  # DISABLED — BBS Akamai-blocked
   workflow_dispatch:
 
 permissions:
