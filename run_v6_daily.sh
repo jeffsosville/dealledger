@@ -22,5 +22,5 @@ try:
 except Exception as e:
     print(f'PROXY HEALTH: FAILED — {e}')
 " >> "$LOG" 2>&1
-$PY scrapers/dealledger_scraper_v6.py --brokers data/brokers_clean.csv --stale-first --top-n 250 >> "$LOG" 2>&1
+$PY -u scrapers/dealledger_scraper_v6.py --brokers data/brokers_clean.csv --stale-first --top-n 250 >> "$LOG" 2>&1
 echo "=== v6 run finished $(date) exit=$? ===" >> "$LOG"
