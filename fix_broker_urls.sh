@@ -1,7 +1,7 @@
 #!/bin/bash
 # Fix MOVED broker URLs in brokers_clean.csv (from the 2026-07-16 URL health sweep)
 # Run from the repo root. Makes a backup first.
-cd /Users/jeffsosville/desktop/dealledger-repo || exit 1
+cd /Users/jeffsosville/dealledger-repo || exit 1
 cp data/brokers_clean.csv data/brokers_clean.csv.pre_urlfix
 
 fix() {
