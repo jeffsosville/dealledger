@@ -1,8 +1,8 @@
 name: DealLedger Daily Pipeline
 
 on:
-  schedule:
-    - cron: '0 12 * * *'
+  # schedule:  # DISABLED — source disabled 2026-07-15
+    # - cron: '0 12 * * *'  # DISABLED — source disabled
   workflow_dispatch:
 
 permissions:
