@@ -1,0 +1,30 @@
+name: Tagging Monitor
+
+on:
+  schedule:
+    # 13:30 UTC daily — 30 min after the freshness monitor so the two alerts
+    # don't arrive on top of each other.
+    - cron: "30 13 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  tagging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run tagging + schema monitor
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python scrapers/tagging_monitor.py
