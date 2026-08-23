@@ -1,23 +1,36 @@
 {
-  "started": "2026-08-23T18:15:51.921310+00:00",
-  "brokers_attempted": 30,
-  "brokers_success": 2,
-  "brokers_failed": 28,
-  "total_listings": 39,
-  "listings_with_price": 39,
-  "listings_with_cashflow": 30,
-  "listings_with_state": 21,
-  "detail_pages_fetched": 23,
-  "patterns_cached": 303,
-  "patterns_learned": 2,
+  "started": "2026-08-23T22:53:02.120564+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 9,
+  "brokers_failed": 91,
+  "total_listings": 704,
+  "listings_with_price": 703,
+  "listings_with_cashflow": 95,
+  "listings_with_state": 402,
+  "detail_pages_fetched": 153,
+  "patterns_cached": 308,
+  "patterns_learned": 9,
   "verticals": {
-    "technology": 27,
-    "restaurant": 1,
-    "other": 11
+    "technology": 58,
+    "construction": 50,
+    "restaurant": 128,
+    "automotive": 57,
+    "retail": 114,
+    "other": 199,
+    "landscaping": 1,
+    "manufacturing": 3,
+    "roofing": 1,
+    "cleaning": 2,
+    "healthcare": 4,
+    "plumbing": 1,
+    "hvac": 1,
+    "electrical": 43,
+    "vending": 42
   },
   "failure_types": {
-    "FETCH_ERROR": 5,
-    "NO_PATTERN": 23
+    "NO_PATTERN": 80,
+    "HTTP_403": 4,
+    "FETCH_ERROR": 7
   },
-  "completed": "2026-08-23T20:52:50.464210+00:00"
+  "completed": "2026-08-23T23:54:14.913472+00:00"
 }
