@@ -1887,12 +1887,44 @@ class DealLedgerScraper:
     def run(self, brokers: list[dict]) -> None:
         print(f"📦 Pattern cache: {len(self.pattern_cache.patterns)} patterns\n")
 
-        for broker in brokers:
+        total = len(brokers)
+        # INCREMENTAL WRITE (2026-08): previously the whole batch was upserted
+        # ONCE, after all 250 brokers finished — so a run that was cancelled or
+        # crashed mid-way wrote NOTHING, and the DB stayed empty for ~30-40 min
+        # even on a healthy run. Now we flush to Supabase every FLUSH_EVERY
+        # brokers, so rows land progressively and partial runs still persist.
+        FLUSH_EVERY = 20
+        pending = []          # listings accumulated since last flush
+        total_written = 0
+
+        def _flush(tag=""):
+            nonlocal pending, total_written
+            if self.supabase_writer and pending:
+                try:
+                    n = self.supabase_writer.upsert(pending)
+                    total_written += n
+                    print(f"   📤 flushed {n} listings to Supabase "
+                          f"({total_written} total this run){tag}", flush=True)
+                except Exception as e:
+                    print(f"   ❌ Supabase flush failed: {e}", flush=True)
+            pending = []
+
+        for i, broker in enumerate(brokers, 1):
+            print(f"—— broker {i}/{total} —————————————————————————", flush=True)
             listings = self.scrape_broker(broker)
             self.all_listings.extend(listings)
+            pending.extend(listings)
             for l in listings:
                 self.stats["verticals"][l.get("vertical", "other")] += 1
-            time.sleep(random.uniform(2, 5))
+
+            # Flush periodically so writes land as we go, not all at the end.
+            if i % FLUSH_EVERY == 0:
+                _flush(f" [after {i}/{total}]")
+
+            time.sleep(random.uniform(1, 2))   # trimmed from (2,5): proxy rotates IPs anyway
+
+        # Final flush for the remainder past the last batch boundary.
+        _flush(" [final]")
 
         self.stats.update({
             "total_listings":         len(self.all_listings),
@@ -1907,13 +1939,8 @@ class DealLedgerScraper:
 
         self._save_results()
 
-        if self.supabase_writer and self.all_listings:
-            print(f"\n📤 Writing {len(self.all_listings)} listings to Supabase...")
-            try:
-                written = self.supabase_writer.upsert(self.all_listings)
-                print(f"   ✅ {written} rows upserted")
-            except Exception as e:
-                print(f"   ❌ Supabase write failed: {e}")
+        if self.supabase_writer:
+            print(f"\n✅ Supabase: {total_written} rows upserted across the run", flush=True)
 
         self._print_summary()
 
