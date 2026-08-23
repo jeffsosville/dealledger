@@ -1,0 +1,23 @@
+{
+  "started": "2026-08-23T18:15:51.921310+00:00",
+  "brokers_attempted": 30,
+  "brokers_success": 2,
+  "brokers_failed": 28,
+  "total_listings": 39,
+  "listings_with_price": 39,
+  "listings_with_cashflow": 30,
+  "listings_with_state": 21,
+  "detail_pages_fetched": 23,
+  "patterns_cached": 303,
+  "patterns_learned": 2,
+  "verticals": {
+    "technology": 27,
+    "restaurant": 1,
+    "other": 11
+  },
+  "failure_types": {
+    "FETCH_ERROR": 5,
+    "NO_PATTERN": 23
+  },
+  "completed": "2026-08-23T20:52:50.464210+00:00"
+}
