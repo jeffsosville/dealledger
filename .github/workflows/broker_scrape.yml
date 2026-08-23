@@ -19,11 +19,12 @@ jobs:
           playwright install-deps chromium
       - name: Run V6 scraper
         env:
+          PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
         run: |
-          python3 scrapers/dealledger_scraper_v6.py \
+          python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers data/brokers_clean.csv \
             --stale-first \
             --top-n 250 \
