@@ -14,7 +14,7 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install curl_cffi==0.7.4 pandas beautifulsoup4 playwright requests supabase colorama
+          pip install curl_cffi==0.13.0 pandas beautifulsoup4 playwright requests supabase colorama
           playwright install chromium
           playwright install-deps chromium
       - name: Run V6 scraper
@@ -27,7 +27,7 @@ jobs:
           python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers data/brokers_clean.csv \
             --stale-first \
-            --top-n 250 \
+            --top-n 30 \
             --output data/snapshots
       - name: Commit snapshot
         run: |
