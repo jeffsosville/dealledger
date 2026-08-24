@@ -10,6 +10,8 @@ does not watch these, and neither did anything else:
                 every vertical marketplace read from a bucket that had stopped
                 growing. Scrapers were healthy the whole time; jobs exited 0.
 
+  4. INDEX PAGES - a crawler writing a broker's paginated index as listings.
+
   2. SCHEMA   — the marketplace apps query specific columns. When the source
                 shape changed, `location` and `last_verified_at` disappeared,
                 search started returning 500s and a freshness stat silently
@@ -56,6 +58,7 @@ LOOKBACK_DAYS       = 7
 MIN_ROWS_TO_JUDGE   = 20     # ignore days too small to draw a conclusion from
 UNTAGGED_SHARE_MAX  = 0.20   # >20% of a day's inserts untagged = failure
 VERTICAL_FREEZE_DAYS = 7     # a tagged vertical going quiet this long = failure
+TITLE_RATIO_MIN     = 0.20   # distinct titles / rows, per broker
 
 
 def _headers():
@@ -190,6 +193,52 @@ def check_schema() -> dict:
     }
 
 
+
+# ── Check 4: index pages written as listings ───────────────────────────────────
+def check_index_pages() -> dict:
+    """
+    A crawler that walks a broker's paginated index and writes each page as a
+    listing produces many rows with almost no distinct titles.
+
+    Aug 2026: aria.net wrote 343 rows for 3 real listings, all flagged
+    url_is_listing_specific, and one amusement park rendered 42 times on
+    VendingExits. The signature is the title-to-row ratio, so watch that rather
+    than any particular URL shape.
+    """
+    r = requests.get(
+        f"{SUPABASE_URL}/rest/v1/listings_direct",
+        headers=_headers(),
+        params={"select": "broker_domain,title,url_is_listing_specific",
+                "url_is_listing_specific": "is.true", "limit": "50000"},
+        timeout=120,
+    )
+    r.raise_for_status()
+    rows = r.json()
+
+    per_broker: dict[str, list] = {}
+    for row in rows:
+        per_broker.setdefault(row.get("broker_domain") or "?", []).append(
+            row.get("title") or "")
+
+    bad = []
+    for dom, titles in per_broker.items():
+        if len(titles) < MIN_ROWS_TO_JUDGE:
+            continue
+        ratio = len(set(titles)) / len(titles)
+        if ratio < TITLE_RATIO_MIN:
+            bad.append(f"{dom} - {len(titles)} rows, {len(set(titles))} titles "
+                       f"({ratio:.0%})")
+
+    return {
+        "name": "Index pages as listings",
+        "failed": bool(bad),
+        "summary": ("no broker is writing index pages" if not bad
+                    else f"{len(bad)} brokers below {TITLE_RATIO_MIN:.0%} "
+                         f"distinct titles"),
+        "detail": sorted(bad),
+    }
+
+
 # ── Reporting ──────────────────────────────────────────────────────────────────
 def render(results, now: datetime) -> str:
     out = [f"DealLedger tagging + schema monitor — "
@@ -230,7 +279,8 @@ def main():
     results = []
     for fn, args in ((check_schema, ()),
                      (check_tagging, (now,)),
-                     (check_vertical_freshness, (now,))):
+                     (check_vertical_freshness, (now,)),
+                     (check_index_pages, ())):
         try:
             results.append(fn(*args))
         except Exception as exc:
