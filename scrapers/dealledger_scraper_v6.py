@@ -445,6 +445,23 @@ def _looks_like_person_name(t):
                for p in parts)
 
 
+def _is_nav_selector(selector):
+    """True if a CSS selector is a navigation menu / non-listing container.
+    WordPress emits li.menu-item-* for nav bars; those repeat and link out, so
+    the detector otherwise matches the site's MENU as 'listings' (myersba: 61
+    nav links; svnmarinas: 53 'Advisory Services'). A listing site uses custom
+    post-type classes (post-type-listing, property, business-listing), never
+    menu-item. Reject these outright — a NO_PATTERN broker is better than one
+    that writes its nav bar as inventory."""
+    if not selector:
+        return False
+    s = selector.lower()
+    NAV_TOKENS = ("menu-item", "menu_item", "nav-item", "navbar", "nav-link",
+                  "sub-menu", "submenu", "menu-link", "dropdown", "breadcrumb",
+                  "footer", "widget", "sidebar")
+    return any(tok in s for tok in NAV_TOKENS)
+
+
 def validate_listing_set(cards, url=""):
     """
     Gate an extracted set of listings before it is written. Returns
@@ -500,6 +517,27 @@ def validate_listing_set(cards, url=""):
     empty_frac  = sum(1 for t in titles if not t) / n
     button_frac = sum(1 for t in lowered if t in _BUTTON_TEXT) / n
     name_frac   = sum(1 for t in titles if _looks_like_person_name(t)) / n
+    # Marketing/nav phrases: content-page headings and CTAs the detector grabs
+    # when it matches a menu or a marketing section rather than a listing grid
+    # (myersba "Ready to talk about what comes next?", buybizusa "» Selling a
+    # Business", alpine "Steps to Selling Your Business"). These are full
+    # phrases so they dodge the button/name/empty checks — detect by leading
+    # menu bullets and marketing keyword phrases.
+    def _is_marketing(t):
+        tl = t.lower().strip()
+        if tl[:1] in "»›▸-•":            # menu bullet prefix
+            return True
+        for kw in ("selling a business", "buying a business", "sell your business",
+                   "about us", "contact us", "our services", "free consult",
+                   "advisory services", "learn more", "how to sell", "how to buy",
+                   "valuation", "testimonial", "why choose", "meet the team",
+                   "recent transaction", "case study", "consulting services",
+                   "ready to talk", "what comes next", "register", "whitepaper",
+                   "newsletter", "get started", "schedule a", "book a call"):
+            if kw in tl:
+                return True
+        return False
+    marketing_frac = sum(1 for t in titles if _is_marketing(t)) / n
 
     # --- reject conditions (title realness) ---
     # Mostly empty titles: extraction targeted the wrong element. (quietlight)
@@ -512,6 +550,10 @@ def validate_listing_set(cards, url=""):
     # Mostly person names with no business signal: agent directory. (aria.net)
     if name_frac >= 0.6:
         return "reject", f"{name_frac:.0%} person-name titles (agent directory?)"
+    # Mostly marketing/nav phrases: matched a menu or content section, not a
+    # listing grid. (myersba, buybizusa, alpine, texasbusinessbrokers)
+    if marketing_frac >= 0.5:
+        return "reject", f"{marketing_frac:.0%} marketing/nav phrase titles"
 
     # --- reject conditions (browse grids) ---
     # A browse grid: almost no concrete data AND titles are mostly categories.
@@ -971,6 +1013,14 @@ class PatternDetector:
             except Exception:
                 pass
 
+        if not candidates:
+            return None
+        # Drop navigation/menu/footer/widget containers: WordPress nav bars
+        # repeat and link out, so they otherwise win as "listings" (myersba's
+        # 61 menu links, svnmarinas' 53 'Advisory Services'). Better NO_PATTERN
+        # than writing a site's nav bar as inventory.
+        candidates = [c for c in candidates
+                      if not _is_nav_selector(c.get("container_selector", ""))]
         if not candidates:
             return None
         candidates.sort(key=lambda x: x["score"], reverse=True)
@@ -1891,7 +1941,8 @@ class DealLedgerScraper:
 
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
-                    if predicted and predicted.get("score", 0) > pattern.get("score", 0):
+                    if (predicted and predicted.get("score", 0) > pattern.get("score", 0)
+                            and not _is_nav_selector(predicted.get("container_selector", ""))):
                         pattern = predicted
                         print(f"   🧠 ML predicted: {pattern['container_selector']}")
                     else:
