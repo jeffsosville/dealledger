@@ -410,6 +410,40 @@ _LOCATION_ONLY = {
     "ohio", "illinois", "michigan", "washington", "oregon", "nevada",
 }
 
+# Button/CTA text a scraper grabs when it targets the wrong element inside a
+# card (the "read more" link instead of the title). A grid whose titles are
+# mostly these matched the button, not the listing. (companysellers:
+# "MORE DETAILS" ×N; kingsleybrokers: "lower than or equal" filter option.)
+_BUTTON_TEXT = {
+    "more details", "read more", "view details", "view listing",
+    "view more", "learn more", "details", "more info", "see details",
+    "click here", "inquire", "contact", "lower than or equal",
+    "greater than or equal", "view", "next", "previous",
+}
+
+# Business-listing title signals. A real listing title almost always contains
+# one. Used to spot agent/name directories (aria.net) whose "titles" are
+# person names with none of these signals.
+_BIZ_TITLE_HINTS = (
+    "for sale", "for lease", "business", "restaurant", "shop", "store",
+    "company", "franchise", "service", "llc", "inc", "route", "salon",
+    "cafe", "bar", "grill", "market", "auto", "repair", "clean", "vending",
+    "laundr", "gym", "spa", "bakery", "manufactur", "distribut", "profit",
+    "established", "turnkey", "cash flow", "revenue", "$",
+)
+
+
+def _looks_like_person_name(t):
+    """2-3 capitalized words with no business signal — likely an agent name
+    from a 'meet our team' grid (aria.net), not a listing title."""
+    parts = t.split()
+    if not (2 <= len(parts) <= 3):
+        return False
+    if any(h in t.lower() for h in _BIZ_TITLE_HINTS):
+        return False
+    return all(p[:1].isupper() and p.replace("-", "").replace(".", "").isalpha()
+               for p in parts)
+
 
 def validate_listing_set(cards, url=""):
     """
@@ -461,7 +495,25 @@ def validate_listing_set(cards, url=""):
     uniq_titles = len({t for t in lowered if t})
     dup_frac = 1 - (uniq_titles / n) if n else 0
 
-    # --- reject conditions ---
+    # Title-realness signals (fire regardless of price — companysellers and
+    # aria.net both had prices but junk titles).
+    empty_frac  = sum(1 for t in titles if not t) / n
+    button_frac = sum(1 for t in lowered if t in _BUTTON_TEXT) / n
+    name_frac   = sum(1 for t in titles if _looks_like_person_name(t)) / n
+
+    # --- reject conditions (title realness) ---
+    # Mostly empty titles: extraction targeted the wrong element. (quietlight)
+    if empty_frac >= 0.5:
+        return "reject", f"{empty_frac:.0%} empty titles"
+    # Mostly button/CTA text: grabbed the "read more" link, not the title.
+    # (companysellers 'MORE DETAILS' ×N)
+    if button_frac >= 0.4:
+        return "reject", f"{button_frac:.0%} button-text titles"
+    # Mostly person names with no business signal: agent directory. (aria.net)
+    if name_frac >= 0.6:
+        return "reject", f"{name_frac:.0%} person-name titles (agent directory?)"
+
+    # --- reject conditions (browse grids) ---
     # A browse grid: almost no concrete data AND titles are mostly categories.
     if with_data == 0 and category_frac >= 0.5:
         return "reject", f"no data + {category_frac:.0%} category-like titles"
@@ -1601,6 +1653,17 @@ class SupabaseWriter:
                 "updated_at":    now,
                 "created_at":    l.get("first_seen", now),
             })
+
+        # Dedupe by id BEFORE batching. Postgres rejects an upsert whose batch
+        # contains the same conflict key (id) twice ("ON CONFLICT DO UPDATE
+        # command cannot affect row a second time", 21000) — and that error
+        # fails the ENTIRE flush, silently dropping every good broker in the
+        # batch. Two cards can collide on id (same listing linked twice, or a
+        # hash collision), so we keep the LAST occurrence (most enriched) per id.
+        deduped = {}
+        for r in rows:
+            deduped[r["id"]] = r
+        rows = list(deduped.values())
 
         written = 0
         for i in range(0, len(rows), 100):
