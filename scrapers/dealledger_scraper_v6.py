@@ -391,6 +391,96 @@ def looks_sold(element):
     return False
 
 
+# Category/browse-grid words that masquerade as listing titles. A grid whose
+# "titles" are mostly these is a navigation grid, not businesses for sale.
+_CATEGORY_TITLE_WORDS = {
+    "restaurants", "retail", "manufacturing", "automotive", "franchise",
+    "franchises", "services", "service", "wholesale", "distribution",
+    "healthcare", "construction", "technology", "hospitality", "industry",
+    "industries", "categories", "category", "browse", "all listings",
+    "view all", "read more", "learn more", "contact us", "about us",
+    "commercial", "residential", "for lease", "for rent", "home", "next",
+    "previous", "search", "filter", "sort by",
+}
+
+# US state names/abbrevs used as location-browse tiles (not listings).
+_LOCATION_ONLY = {
+    "florida", "texas", "california", "georgia", "arizona", "colorado",
+    "new york", "north carolina", "south carolina", "tennessee", "virginia",
+    "ohio", "illinois", "michigan", "washington", "oregon", "nevada",
+}
+
+
+def validate_listing_set(cards, url=""):
+    """
+    Gate an extracted set of listings before it is written. Returns
+    (verdict, reason) where verdict is 'ok', 'review', or 'reject'.
+
+    Guards against the loosened detector matching a category/browse grid or
+    other repeating non-listing structure. The checks look for the signatures
+    that separate real business-for-sale listings from navigation tiles:
+
+      - reject: almost no card yields ANY concrete data (no price, no cash
+        flow, no state) AND titles look like category/location words — the
+        classic "browse by industry / by state" grid false positive.
+      - reject: titles are near-duplicates (same string repeated) — a
+        template/nav artifact, not distinct listings.
+      - review: extracted but weak signal (very few priced, or short titles) —
+        write, but flag needs_review for a human sample-check.
+      - ok: enough cards carry real listing data.
+    """
+    n = len(cards)
+    if n == 0:
+        return "reject", "empty"
+
+    titles = [(c.get("title") or "").strip() for c in cards]
+    lowered = [t.lower() for t in titles]
+
+    # Signal density: how many cards carry concrete listing data?
+    priced = sum(1 for c in cards if c.get("asking_price"))
+    cashflowed = sum(1 for c in cards if c.get("cash_flow"))
+    stated = sum(1 for c in cards if c.get("state"))
+    with_data = sum(1 for c in cards
+                    if c.get("asking_price") or c.get("cash_flow") or c.get("state"))
+
+    # Title quality: fraction that look like category/location browse tiles.
+    def _is_category(t):
+        if not t or len(t) < 3:
+            return True
+        if t in _CATEGORY_TITLE_WORDS or t in _LOCATION_ONLY:
+            return True
+        # single generic word, or "N Businesses" style bucket labels
+        if len(t.split()) <= 2 and t in _CATEGORY_TITLE_WORDS:
+            return True
+        return False
+
+    category_like = sum(1 for t in lowered if _is_category(t))
+    category_frac = category_like / n
+
+    # Near-duplicate titles: a template/nav artifact, not real listings.
+    uniq_titles = len({t for t in lowered if t})
+    dup_frac = 1 - (uniq_titles / n) if n else 0
+
+    # --- reject conditions ---
+    # A browse grid: almost no concrete data AND titles are mostly categories.
+    if with_data == 0 and category_frac >= 0.5:
+        return "reject", f"no data + {category_frac:.0%} category-like titles"
+    # Heavily duplicated titles with no data = template repeat, not listings.
+    if dup_frac >= 0.7 and with_data == 0:
+        return "reject", f"{dup_frac:.0%} duplicate titles, no data"
+    # Every card is a category/location word.
+    if category_frac >= 0.85:
+        return "reject", f"{category_frac:.0%} category/location titles"
+
+    # --- review conditions (write, but flag) ---
+    if with_data < max(2, int(0.2 * n)):
+        return "review", f"weak signal: only {with_data}/{n} cards carry data"
+    if priced == 0 and cashflowed == 0:
+        return "review", "no price or cash flow on any card (detail-only site)"
+
+    return "ok", f"{with_data}/{n} cards carry data"
+
+
 def is_listing_element(element, base_url=""):
     """
     A container element counts as a listing only if it has a real title AND
@@ -706,12 +796,16 @@ class PatternDetector:
     # A container qualifies as a listing grid only if:
     #  - at least MIN_LISTING_ELEMENTS of its repeated elements are genuine
     #    listings (title AND (price OR detail-link)), AND
-    #  - at least MIN_PRICED of them actually carry a price.
-    # The price-density floor is what separates a real listing grid from nav
-    # bars, hero blocks, filter widgets, and commercial-RE/lease repeaters —
-    # empirically those score many title+link elements but ZERO prices.
+    #  - EITHER at least MIN_PRICED of them carry a price (classic priced grid),
+    #    OR most of them link to detail pages (price-on-detail-page grid).
+    # Rationale (2026-08): many broker sites show NO price on the index — price
+    # lives on the detail page. The old hard MIN_PRICED floor discarded those
+    # entirely (a large share of NO_PATTERN). We now accept a price-less grid
+    # IF its cards are detail-linked, which still excludes nav bars / filter
+    # widgets / lease repeaters (those don't have per-item detail links).
     MIN_LISTING_ELEMENTS = 3
     MIN_PRICED = 3
+    MIN_LINKED_FRAC = 0.6   # if unpriced, ≥60% of cards must link to a detail page
     SAMPLE = 15
 
     @classmethod
@@ -720,15 +814,26 @@ class PatternDetector:
         n_priced) or None if the group doesn't clear the listing bar."""
         n_listing = 0
         n_priced = 0
+        n_linked = 0
         for el in elements[:cls.SAMPLE]:
             if is_listing_element(el, url):
                 n_listing += 1
                 if any(v >= 1_000 for v in
                        parse_all_prices(el.get_text(" ", strip=True))):
                     n_priced += 1
-        if n_listing < cls.MIN_LISTING_ELEMENTS or n_priced < cls.MIN_PRICED:
+                if has_detail_link(el, url):
+                    n_linked += 1
+        if n_listing < cls.MIN_LISTING_ELEMENTS:
             return None
-        return n_listing, n_priced
+        # Classic priced grid: enough cards carry a price.
+        if n_priced >= cls.MIN_PRICED:
+            return n_listing, n_priced
+        # Price-on-detail-page grid: no price floor met, but the cards are
+        # genuine detail-linked listings, not nav/filter noise.
+        if n_linked >= max(cls.MIN_LISTING_ELEMENTS,
+                           int(cls.MIN_LINKED_FRAC * n_listing)):
+            return n_listing, n_priced
+        return None
 
     @classmethod
     def detect(cls, html, url):
@@ -1489,6 +1594,7 @@ class SupabaseWriter:
                 "vertical":      l.get("vertical", "other"),
                 "description":   (l.get("description") or "")[:2000],
                 "status":        l.get("status") or "active",
+                "needs_review":  bool(l.get("needs_review", False)),
                 "source":        "broker_direct",
                 "first_seen":    l.get("first_seen", now),
                 "last_seen":     now,
@@ -1872,6 +1978,25 @@ class DealLedgerScraper:
             print(f"   💰 price={p}  cf={cf}  state={st}/{len(unique_cards)}")
 
             self.stats["brokers_success"] += 1
+
+            # VALIDATION GATE (2026-08): the loosened detector accepts price-less
+            # grids, which can occasionally match a category/browse grid instead
+            # of real listings. Validate the extracted set before it is written.
+            # A set that fails is treated as NO_PATTERN, not written, and flagged
+            # for review — protecting data quality as detection recall increases.
+            verdict, reason = validate_listing_set(unique_cards, url)
+            if verdict == "reject":
+                print(f"   🚫 VALIDATION FAILED ({reason}) — not writing, flagged for review")
+                self.stats["failure_types"]["VALIDATION_REJECT"] += 1
+                self.failures.append({"broker": name, "url": url,
+                                      "error": f"validation: {reason}",
+                                      "type": "VALIDATION_REJECT"})
+                return []
+            if verdict == "review":
+                print(f"   ⚠️  VALIDATION SOFT ({reason}) — writing but flagged for review")
+                for l in unique_cards:
+                    l["needs_review"] = True
+
             return unique_cards
 
         except Exception as e:
