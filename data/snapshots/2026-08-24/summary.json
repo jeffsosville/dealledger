@@ -1,0 +1,32 @@
+{
+  "started": "2026-08-24T18:07:43.607684+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 20,
+  "brokers_failed": 80,
+  "total_listings": 406,
+  "listings_with_price": 96,
+  "listings_with_cashflow": 6,
+  "listings_with_state": 164,
+  "detail_pages_fetched": 251,
+  "patterns_cached": 311,
+  "patterns_learned": 21,
+  "verticals": {
+    "healthcare": 5,
+    "other": 305,
+    "automotive": 10,
+    "restaurant": 26,
+    "technology": 40,
+    "roofing": 2,
+    "cleaning": 4,
+    "manufacturing": 8,
+    "retail": 5,
+    "electrical": 1
+  },
+  "failure_types": {
+    "NO_PATTERN": 62,
+    "HTTP_403": 9,
+    "VALIDATION_REJECT": 2,
+    "FETCH_ERROR": 8
+  },
+  "completed": "2026-08-24T20:17:42.334292+00:00"
+}
