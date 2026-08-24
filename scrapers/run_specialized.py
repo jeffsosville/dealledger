@@ -21,6 +21,7 @@ Usage:
 
 import os, sys, re, json, time, hashlib, argparse, logging
 from datetime import datetime, timezone
+import re
 from urllib.parse import urlparse
 import requests as http_requests
 
@@ -145,26 +146,60 @@ ACCOUNT_TO_BROKER_NAME.update({
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+# Pagination markers. These appear ANYWHERE in the path or query, not only at
+# the end, which is how they slipped past the original suffix-only check.
+#
+# Aug 2026: aria.net produced 343 rows for 3 real listings because the crawler
+# walked /listings/page/2/, /page/3/ ... and each one carried the same detail
+# slug appended. Every row came back flagged as a specific listing, so the
+# vertical views trusted them and one amusement park rendered 42 times on
+# VendingExits.
+_PAGINATION_PATTERNS = (
+    re.compile(r"/(?:page|pg|p)/\d+", re.I),      # /page/10/  /pg/3  /p/7
+    re.compile(r"[?&](?:page|pg|start|offset)=\d+", re.I),
+    re.compile(r"/\d+/\d+/?$"),                    # trailing /2/10
+)
+
+# Index path segments. Checked mid-path as well as at the end - a detail slug
+# appended to an index path does not make it a detail page.
+_INDEX_SEGMENTS = (
+    "listings", "businesses-for-sale", "business-for-sale",
+    "business-listings", "business-directory", "restaurants-for-sale",
+    "routes-for-sale", "search", "results", "browse", "archive",
+)
+
+
 def detect_index_page_url(url: str) -> bool:
     """
-    Return False if the URL looks like a broker's listings INDEX page
-    rather than an individual listing detail page.
+    Return False if the URL looks like a broker's listings INDEX or a paginated
+    page rather than an individual listing detail page.
 
-    Used to flag rows that need URL re-scraping later.
+    True means "safe to treat as a listing". The vertical marketplace views
+    filter on this, so a false positive here puts junk on a live site.
     """
     if not url:
         return False
-    lower = url.lower().rstrip("/")
-    junk_suffixes = (
-        "/listings", "/businesses-for-sale", "/business-for-sale",
-        "/business-listings", "/business-directory", "/restaurants-for-sale",
-        "/routes-for-sale", "/routelist.aspx",
-    )
+
+    lower = url.lower()
+    stripped = lower.rstrip("/")
+
     junk_schemes = ("javascript:", "mailto:", "tel:")
-    if any(lower.endswith(suf) for suf in junk_suffixes):
-        return False
     if any(scheme in lower for scheme in junk_schemes):
         return False
+
+    # Pagination anywhere in the URL disqualifies it.
+    if any(pat.search(lower) for pat in _PAGINATION_PATTERNS):
+        return False
+
+    # A doubled slash mid-path is a crawler join bug, not a real URL.
+    path = lower.split("://", 1)[-1]
+    if "//" in path:
+        return False
+
+    junk_suffixes = tuple(f"/{seg}" for seg in _INDEX_SEGMENTS) + ("/routelist.aspx",)
+    if any(stripped.endswith(suf) for suf in junk_suffixes):
+        return False
+
     return True
 
 
