@@ -238,6 +238,49 @@ def looks_like_cre_or_lease(text):
     return bool(_LEASE_CRE_RE.search(text))
 
 
+def _find_listing_iframes(html, base_url):
+    """Return candidate iframe src URLs that likely hold listings, best-first.
+
+    Many broker sites (Wix, Squarespace, custom) embed their listings in an
+    <iframe> — a third-party feed (listing_feeds, AllBizForSale, etc.) or the
+    BizBuySell widget. The outer page has no listing HTML, so detection returns
+    NO_PATTERN; the listings live at the iframe's src, a different URL we must
+    fetch separately. This finds those srcs and skips obvious non-listing
+    iframes (ads, tracking, video, maps, social)."""
+    soup = BeautifulSoup(html, "html.parser")
+    out = []
+    SKIP = ("google", "youtube", "vimeo", "facebook", "twitter", "instagram",
+            "doubleclick", "googletagmanager", "recaptcha", "gstatic",
+            "maps.google", "player.", "ads", "analytics", "hotjar", "intercom",
+            "calendly", "hubspot", "linkedin")
+    WANT = ("listing", "feed", "business", "search", "properties", "inventory",
+            "results", "forsale", "for-sale", "bizbuysell", "widget", "embed")
+    for ifr in soup.find_all("iframe"):
+        src = ifr.get("src") or ifr.get("data-src") or ""
+        if not src:
+            continue
+        full = urljoin(base_url, src)
+        low = full.lower()
+        if any(s in low for s in SKIP):
+            continue
+        # score: prefer srcs whose URL or the iframe id/class hints "listings"
+        idc = " ".join([ifr.get("id", "")] + ifr.get("class", [])).lower()
+        score = sum(1 for w in WANT if w in low) + sum(2 for w in WANT if w in idc)
+        # even unscored same-doc iframes can hold listings; keep with low prio
+        out.append((score, full))
+    out.sort(key=lambda x: x[0], reverse=True)
+    # de-dup preserving order
+    seen, urls = set(), []
+    for _, u in out:
+        if u not in seen:
+            seen.add(u); urls.append(u)
+    return urls
+
+
+def _iframe_is_bizbuysell(iframe_url):
+    return "bizbuysell.com" in (iframe_url or "").lower()
+
+
 def _title_from_text(text):
     """Derive a listing title from body/description text when no title element
     was found. Takes the first sentence-like chunk that looks like a business
@@ -1830,6 +1873,7 @@ class DealLedgerScraper:
         }
         self.all_listings: list[dict] = []
         self.failures:     list[dict] = []
+        self.embed_brokers: list[dict] = []  # iframe/embed brokers (prospect list)
 
     @staticmethod
     def _load_brokers(csv_path: str) -> list[dict]:
@@ -2010,6 +2054,39 @@ class DealLedgerScraper:
                                   f"({len(pw_html):,} bytes)")
                     except Exception:
                         pass
+
+                # ── iframe unwrap ─────────────────────────────────────────
+                # Still no pattern? The listings may live inside an <iframe>
+                # (third-party feed or BizBuySell widget). Fetch the iframe's
+                # src directly and detect on THAT. Recovers Wix/Squarespace
+                # "listing_feeds" embeds and similar. BizBuySell iframes are
+                # recorded for the embed prospect list but skipped for data
+                # (marketplace dependency — we index direct sources only).
+                if not pattern:
+                    for ifr_url in _find_listing_iframes(html, url)[:3]:
+                        if _iframe_is_bizbuysell(ifr_url):
+                            print(f"   🔗 BizBuySell embed detected → tagged, skipping data")
+                            self.stats["failure_types"]["EMBED_BBS"] += 1
+                            self.embed_brokers.append(
+                                {"broker": name, "url": url, "iframe": ifr_url,
+                                 "provider": "bizbuysell"})
+                            break
+                        try:
+                            ifr_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                            ifr_html, _ = self.fetcher.fetch(ifr_url, use_proxy=ifr_proxy)
+                            ifr_pattern = PatternDetector.detect(ifr_html, ifr_url)
+                            if ifr_pattern:
+                                # extract from the iframe document instead
+                                html, method, pattern = ifr_html, "iframe", ifr_pattern
+                                url = ifr_url  # detail links resolve against iframe base
+                                print(f"   🖼️  iframe unwrap recovered a pattern "
+                                      f"({len(ifr_html):,} bytes) from {ifr_url[:60]}")
+                                self.embed_brokers.append(
+                                    {"broker": name, "url": broker["url"],
+                                     "iframe": ifr_url, "provider": "feed"})
+                                break
+                        except Exception:
+                            continue
 
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
@@ -2267,6 +2344,11 @@ class DealLedgerScraper:
                 os.path.join(snap, "listings.csv"), index=False)
         with open(os.path.join(snap, "failures.json"), "w") as f:
             json.dump(self.failures, f, indent=2, default=str)
+        # Embed/iframe brokers — the prospect list of brokers whose listings
+        # live in a third-party or BizBuySell widget (candidates for a
+        # DealLedger-powered custom site).
+        with open(os.path.join(snap, "embed_brokers.json"), "w") as f:
+            json.dump(self.embed_brokers, f, indent=2, default=str)
         with open(os.path.join(snap, "summary.json"), "w") as f:
             json.dump(self.stats, f, indent=2, default=str)
 
