@@ -1,31 +1,25 @@
 {
-  "started": "2026-08-24T21:59:06.371114+00:00",
+  "started": "2026-08-25T14:12:38.325549+00:00",
   "brokers_attempted": 100,
-  "brokers_success": 5,
-  "brokers_failed": 95,
-  "total_listings": 158,
-  "listings_with_price": 111,
-  "listings_with_cashflow": 109,
-  "listings_with_state": 73,
-  "detail_pages_fetched": 85,
-  "patterns_cached": 306,
-  "patterns_learned": 6,
+  "brokers_success": 4,
+  "brokers_failed": 96,
+  "total_listings": 28,
+  "listings_with_price": 11,
+  "listings_with_cashflow": 0,
+  "listings_with_state": 27,
+  "detail_pages_fetched": 40,
+  "patterns_cached": 304,
+  "patterns_learned": 5,
   "verticals": {
-    "other": 77,
-    "landscaping": 5,
-    "hvac": 8,
-    "construction": 24,
-    "technology": 16,
-    "manufacturing": 12,
-    "electrical": 5,
-    "plumbing": 5,
-    "automotive": 5,
-    "restaurant": 1
+    "other": 25,
+    "retail": 1,
+    "healthcare": 2
   },
   "failure_types": {
-    "FETCH_ERROR": 31,
-    "NO_PATTERN": 63,
+    "NO_PATTERN": 69,
+    "FETCH_ERROR": 25,
+    "EMBED_BBS": 22,
     "VALIDATION_REJECT": 2
   },
-  "completed": "2026-08-25T01:16:10.652146+00:00"
+  "completed": "2026-08-25T19:28:32.365128+00:00"
 }
