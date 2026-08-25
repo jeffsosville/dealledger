@@ -2043,10 +2043,12 @@ class DealLedgerScraper:
                 # been blocking. This also covers the case where curl_cffi
                 # returns a content-ful shell that passes the price-signal
                 # check but whose grid only materializes after JS runs.
+                rendered_html = None  # reused by iframe unwrap to avoid double render
                 if not pattern and method != "playwright" and HAS_PLAYWRIGHT:
                     try:
                         pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
                         pw_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
+                        rendered_html = pw_html
                         pw_pattern = PatternDetector.detect(pw_html, url)
                         if pw_pattern:
                             html, method, pattern = pw_html, "playwright", pw_pattern
@@ -2059,34 +2061,60 @@ class DealLedgerScraper:
                 # Still no pattern? The listings may live inside an <iframe>
                 # (third-party feed or BizBuySell widget). Fetch the iframe's
                 # src directly and detect on THAT. Recovers Wix/Squarespace
-                # "listing_feeds" embeds and similar. BizBuySell iframes are
-                # recorded for the embed prospect list but skipped for data
-                # (marketplace dependency — we index direct sources only).
+                # "listing_feeds" embeds and similar. Many sites inject the
+                # iframe via JS, so it is ABSENT from the raw HTML — we search
+                # the raw HTML first, then the Playwright-RENDERED DOM where the
+                # JS-injected iframe actually appears. BizBuySell iframes are
+                # recorded for the prospect list but skipped for data.
                 if not pattern:
-                    for ifr_url in _find_listing_iframes(html, url)[:3]:
-                        if _iframe_is_bizbuysell(ifr_url):
+                    def _try_iframes(source_html, source_url):
+                        """Return (html, pattern, iframe_url) on recovery, or
+                        ('bbs', None, ifr_url) if a BBS embed was tagged, else None."""
+                        for ifr_url in _find_listing_iframes(source_html, source_url)[:3]:
+                            if _iframe_is_bizbuysell(ifr_url):
+                                return ("bbs", None, ifr_url)
+                            try:
+                                ip = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                                ih, _ = self.fetcher.fetch(ifr_url, use_proxy=ip)
+                                ipat = PatternDetector.detect(ih, ifr_url)
+                                if ipat:
+                                    return (ih, ipat, ifr_url)
+                            except Exception:
+                                continue
+                        return None
+
+                    # 1) raw HTML iframes
+                    result = _try_iframes(html, url)
+                    # 2) if nothing, look in the Playwright-RENDERED DOM where
+                    #    JS-injected iframes appear (capstar/excellence-style).
+                    #    Reuse the render from the escalation step if we have it;
+                    #    otherwise render now.
+                    if result is None and method != "playwright" and HAS_PLAYWRIGHT:
+                        try:
+                            if rendered_html is None:
+                                pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                                rendered_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
+                            result = _try_iframes(rendered_html, url)
+                        except Exception:
+                            pass
+
+                    if result is not None:
+                        if result[0] == "bbs":
+                            ifr_url = result[2]
                             print(f"   🔗 BizBuySell embed detected → tagged, skipping data")
                             self.stats["failure_types"]["EMBED_BBS"] += 1
                             self.embed_brokers.append(
-                                {"broker": name, "url": url, "iframe": ifr_url,
+                                {"broker": name, "url": broker["url"], "iframe": ifr_url,
                                  "provider": "bizbuysell"})
-                            break
-                        try:
-                            ifr_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
-                            ifr_html, _ = self.fetcher.fetch(ifr_url, use_proxy=ifr_proxy)
-                            ifr_pattern = PatternDetector.detect(ifr_html, ifr_url)
-                            if ifr_pattern:
-                                # extract from the iframe document instead
-                                html, method, pattern = ifr_html, "iframe", ifr_pattern
-                                url = ifr_url  # detail links resolve against iframe base
-                                print(f"   🖼️  iframe unwrap recovered a pattern "
-                                      f"({len(ifr_html):,} bytes) from {ifr_url[:60]}")
-                                self.embed_brokers.append(
-                                    {"broker": name, "url": broker["url"],
-                                     "iframe": ifr_url, "provider": "feed"})
-                                break
-                        except Exception:
-                            continue
+                        else:
+                            ifr_html, ifr_pattern, ifr_url = result
+                            html, method, pattern = ifr_html, "iframe", ifr_pattern
+                            url = ifr_url
+                            print(f"   🖼️  iframe unwrap recovered a pattern "
+                                  f"({len(ifr_html):,} bytes) from {ifr_url[:60]}")
+                            self.embed_brokers.append(
+                                {"broker": name, "url": broker["url"],
+                                 "iframe": ifr_url, "provider": "feed"})
 
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
