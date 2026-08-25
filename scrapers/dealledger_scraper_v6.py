@@ -691,7 +691,7 @@ PROXY_AVAILABLE = bool(PROXY_USER and PROXY_PASS)
 # Anti-block retry tuning (mirrors bbs_allstates.py).
 MAX_403_RETRIES = 3      # re-warm + retry this many times on a 403/429/503
 BACKOFF_BASE    = 3.0    # backoff = 3s, 6s, 12s (+ jitter)
-REQ_TIMEOUT     = 25     # per-request timeout; a dead proxy IP fails fast
+REQ_TIMEOUT     = 40     # per-request timeout (raised 25→40 2026-08: slow broker sites + proxy latency were timing out)
 
 
 def build_proxy_url(sessid):
@@ -1463,11 +1463,18 @@ class PageFetcher:
         off, and retry up to MAX_403_RETRIES. Raises requests.HTTPError with
         the last response attached when a block survives all retries, so the
         caller can classify it as HTTP_403.
+
+        Transient network failures (proxy timeout curl-28, tunnel-fail curl-56)
+        are retried with a fresh sticky IP, and — as a last resort — retried
+        ONCE directly without the proxy, since many broker sites don't need it
+        and the DataImpulse gateway itself is often what's timing out. (2026-08:
+        cut a ~31% FETCH_ERROR rate driven by proxy-gateway congestion.)
         """
         domain = urlparse(url).netloc
         if domain in self._proxy_domains_runtime:
             use_proxy = True
         resp = None
+        last_net_err = None
         for attempt in range(MAX_403_RETRIES + 1):
             try:
                 resp = self.session.get(
@@ -1475,13 +1482,28 @@ class PageFetcher:
                     allow_redirects=True,
                     proxies=self._proxy_dict() if use_proxy else None,
                 )
-            except Exception:
-                # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
+            except Exception as e:
+                # Dead/slow proxy IP or gateway timeout — re-warm onto a fresh
+                # IP and retry.
+                last_net_err = e
                 if attempt < MAX_403_RETRIES:
                     time.sleep(BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5))
                     self._rewarm(url, use_proxy)
                     continue
-                raise
+                # All proxied attempts exhausted on a NETWORK error (not a
+                # block). Last resort: try once directly, no proxy — the
+                # gateway may be the thing failing, not the target site.
+                if use_proxy:
+                    try:
+                        resp = self.session.get(
+                            url, headers=self._headers(), timeout=timeout,
+                            allow_redirects=True, proxies=None,
+                        )
+                        if resp.status_code == 200:
+                            return resp.text
+                    except Exception:
+                        pass
+                raise last_net_err
 
             if resp.status_code == 200:
                 return resp.text
