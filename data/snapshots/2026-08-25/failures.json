@@ -1,24 +1,31 @@
 [
   {
+    "broker": "route consultant",
+    "url": "https://listings.routeconsultant.com/route-search-results/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.result__body"
+  },
+  {
     "broker": "troy duffan, ceo",
     "url": "https://www.sagbrokerage.com/for-sale/",
-    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 151
   },
   {
     "broker": "trevin rasmussen",
     "url": "https://bristolgrouponline.com/businesses-for-sale/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "felizardo gaxiola",
     "url": "https://www.excellencebusinessbrokers.com/businesses-for-sale",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 859044
+    "html_size": 858368
   },
   {
     "broker": "liliane tietjen",
@@ -30,9 +37,9 @@
   {
     "broker": "raj golee",
     "url": "https://biz-depot.co/properties-standard-list/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "sasa milosevic",
@@ -44,9 +51,9 @@
   {
     "broker": "sanjay wadhwani",
     "url": "https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "anthony rigney",
@@ -57,9 +64,9 @@
   {
     "broker": "john hawke",
     "url": "https://sbpoolroutes.com/route-listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "monika page",
@@ -73,14 +80,14 @@
     "url": "https://www.capstarco.com/search-business",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 530725
+    "html_size": 531062
   },
   {
     "broker": "frank rubin",
     "url": "https://bbms.biz/listings/bbf-134/bus-own.asp",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 230
   },
   {
     "broker": "andy rumph",
@@ -108,14 +115,14 @@
     "url": "https://sebusinessalliance.com/buy-a-business/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 82436
+    "html_size": 82294
   },
   {
     "broker": "dennis serpone",
     "url": "https://www.nerestaurantbrokers.com/full-service-restaurants\n\nhttps://www.nerestaurantbrokers.com/fast-food-restaurants\n\nhttps://www.nerestaurantbrokers.com/liquor-businesses",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 2699
+    "html_size": 2695
   },
   {
     "broker": "colliers & acquisitions",
@@ -157,7 +164,7 @@
     "url": "https://www.paragonacquisitionsintl.com/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 120374
+    "html_size": 113270
   },
   {
     "broker": "mike jani",
@@ -171,14 +178,14 @@
     "url": "https://wesell.group/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 54700
+    "html_size": 54724
   },
   {
     "broker": "al lorenzen",
     "url": "https://businessbrokersinc.com/our-listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "dashka altanbasan",
@@ -190,9 +197,9 @@
   {
     "broker": "ronnie tarulli",
     "url": "https://moxbiz.com/search/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "aaron evans",
@@ -213,42 +220,42 @@
     "url": "https://eca-ba.com/buy-a-business/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 105263
+    "html_size": 105267
   },
   {
     "broker": "keith mackenzie",
     "url": "https://app.dealbuilder.co/listings?country=CA&region=BC",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "andrew stokely",
     "url": "https://www.franchisebrokergroup.com/franchise-search/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 54829
+    "html_size": 54924
   },
   {
     "broker": "jim mayfield, mba",
     "url": "https://www.islandbusinessbrokers.com/all-listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "george gourousis",
     "url": "https://www.massrestaurantbroker.com/listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "michael migliore",
     "url": "https://atlantahomes.us/business-sales/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "michael song",
@@ -260,23 +267,23 @@
   {
     "broker": "frank passantino",
     "url": "https://www.poolroutebrokers.com/routes.php",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 13880
   },
   {
     "broker": "gulambasir nagpuria",
     "url": "https://www.greenstarrealty.biz/biz4sell/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "jeannie randolph",
     "url": "https://www.briobrokers.com/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 666785
+    "html_size": 667714
   },
   {
     "broker": "carlos cardenas",
@@ -290,14 +297,14 @@
     "url": "https://abbexinc.com/businesses-for-sale/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 119659
+    "html_size": 119655
   },
   {
     "broker": "country business inc.",
     "url": "https://www.countrybusiness.net/currentopportunities",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 111926
+    "html_size": 112030
   },
   {
     "broker": "j jensen",
@@ -316,30 +323,30 @@
   {
     "broker": "sy sebastianelli",
     "url": "https://broker.businessmart.com/scrantonbusinessbrokers?owner=1",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "andy kumar",
     "url": "https://ubbusa.com/city-neighborhood-street",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "randy shurbet",
     "url": "https://www.isellrestaurantsandbars.com/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 605802
+    "html_size": 605886
   },
   {
     "broker": "john vassiliades, designated managing broker",
     "url": "https://laundry-broker.myshopify.com/collections/coming-soon",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 96120
+    "html_size": 96123
   },
   {
     "broker": "michelle webster",
@@ -351,9 +358,9 @@
   {
     "broker": "yazan ibrahim",
     "url": "https://firstamericanbrokers.com/listings",
-    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 151
   },
   {
     "broker": "russell kitzberger",
@@ -367,7 +374,7 @@
     "url": "https://burrtemkin.com/listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 42286
+    "html_size": 42407
   },
   {
     "broker": "davidson business investments",
@@ -379,9 +386,9 @@
   {
     "broker": "tim cunha, j.d.",
     "url": "https://evergreengold.com/business-for-sale-listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "james mcgeehan",
@@ -393,9 +400,9 @@
   {
     "broker": "clint cm&ap, m&ami",
     "url": "https://bisonbusiness.com/marketplace/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "jorge couto",
@@ -409,7 +416,7 @@
     "url": "https://www.dirigobusinessgroup.com/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 436130
+    "html_size": 436192
   },
   {
     "broker": "pete castrichini",
@@ -449,16 +456,16 @@
   {
     "broker": "andrew mccrady",
     "url": "https://crestrealtyutah.com/category/business-sale/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "shane massey",
     "url": "https://fitnessclubbusinessbroker.com/club-listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 599883
+    "html_size": 600403
   },
   {
     "broker": "david meier",
@@ -466,13 +473,6 @@
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
     "html_size": 140
-  },
-  {
-    "broker": "luke sawyer",
-    "url": "https://millenia-partners.com/listings",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 43318
   },
   {
     "broker": "kwang chul \"kc\" whang",
@@ -484,9 +484,9 @@
   {
     "broker": "michael korizno",
     "url": "https://www.atlanticbizalliance.com/listings.html",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1043
   },
   {
     "broker": "joe marley",
@@ -512,65 +512,65 @@
   {
     "broker": "brad reeder",
     "url": "https://belizebusinessbroker.com/buy-a-business/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "michael nunnery",
     "url": "https://www.gbbvinc.com/businessesforsale",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 516371
+    "html_size": 516264
   },
   {
     "broker": "justin svetnicka",
     "url": "https://www.newmexicobusinessbrokers.com/listings",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 646115
+    "html_size": 646257
   },
   {
     "broker": "michael ramatowski",
     "url": "https://www.rambizgroup.com/how-to-buy-a-business-listings/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "robert hedges",
     "url": "https://www.trhc.biz/listings.shtml?statuses=ACTIVE",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25000 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1601
   },
   {
     "broker": "shaji george",
     "url": "https://www.trendatlanta.com/3/Trend-Listings",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 88877
+    "error": "Failed to perform, curl: (28) Connection timed out after 40003 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40003 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "john preston",
     "url": "https://wellstonegroup.net/business-search/",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 182357
   },
   {
     "broker": "anthony visconto",
     "url": "https://www.ajvconsultinggroup.com/for-sale",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 370177
+    "html_size": 370106
   },
   {
     "broker": "keith lehmann",
     "url": "https://bbms.biz/cgi-bin/a-bus2.asp?forsale=go",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 140
   },
   {
     "broker": "brandy rumph",
@@ -589,9 +589,9 @@
   {
     "broker": "richard veale",
     "url": "https://www.profilesrealty.com/106/Business-Search",
-    "error": "No listing pattern detected",
-    "type": "NO_PATTERN",
-    "html_size": 51848
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "michael lefkowitz",
@@ -611,7 +611,7 @@
     "url": "https://acerealty.biz/listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 40591
+    "html_size": 40592
   },
   {
     "broker": "all trades global",
@@ -625,7 +625,7 @@
     "url": "https://azul-advisory.com/listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 214835
+    "html_size": 214919
   },
   {
     "broker": "elite business investments corp.",
@@ -653,14 +653,14 @@
     "url": "https://proassetadvisors.com/listings/",
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
-    "html_size": 167885
+    "html_size": 167887
   },
   {
     "broker": "donald barrick",
     "url": "https://bafgroup.com/listings.html",
-    "error": "Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "error": "Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
     "type": "FETCH_ERROR",
-    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 25001 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+    "traceback": "py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.Timeout: Failed to perform, curl: (28) Connection timed out after 40002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
   },
   {
     "broker": "james d. (jim) orum",
@@ -675,5 +675,12 @@
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
     "html_size": 5856
+  },
+  {
+    "broker": "ken galecki",
+    "url": "https://www.exit360brokers.com/portfolio",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 886272
   }
 ]
