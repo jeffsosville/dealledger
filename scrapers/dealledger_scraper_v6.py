@@ -238,6 +238,26 @@ def looks_like_cre_or_lease(text):
     return bool(_LEASE_CRE_RE.search(text))
 
 
+def _title_from_text(text):
+    """Derive a listing title from body/description text when no title element
+    was found. Takes the first sentence-like chunk that looks like a business
+    description — skips pure prices, dates, and boilerplate."""
+    if not text:
+        return None
+    for chunk in re.split(r'[\n.!?]', text):
+        c = chunk.strip()
+        if len(c) < 8 or len(c) > 140:
+            continue
+        low = c.lower()
+        if low.startswith(("$", "price", "asking", "contact", "call ", "click",
+                            "read more", "view", "more details")):
+            continue
+        if not re.search(r'[A-Za-z]{3,}', c):
+            continue
+        return c[:200]
+    return None
+
+
 def best_card_title(element, base_url="", firm_name=None):
     """
     Recover a real listing title from a card element.
@@ -702,6 +722,16 @@ def build_proxy_url(sessid):
 
 
 # Domains known to hard-block — start them on the proxy immediately.
+# Domains that are NOT real listing brokers — agent directories, aggregators
+# that yield junk, or sites that only ever produce non-listing content. These
+# are skipped entirely at load time. (2026-08: aria.net is an agent roster —
+# it matched a person-name grid, wrote 350 "Carol Shin"-style rows.)
+BLOCKLIST_DOMAINS = {
+    "aria.net",
+    "www.aria.net",
+}
+
+
 PROXY_DOMAINS = {
     # Discovered via URL health sweep 2026-07-16 — these return 401/403/406/429 direct
     "hedgestone.com",
@@ -1170,6 +1200,16 @@ class ListingExtractor:
         revenue      = positive_or_none(cls.extract_revenue(text))
         location     = LocationExtractor.extract(text)
         vertical     = cls.classify_vertical(text)
+
+        # Title recovery: if the title is still blank after slug fallback, derive
+        # a clean one from the description's first meaningful sentence. Prevents
+        # real, priced listings from being written with an empty title (which
+        # then looks like junk). (2026-08: recovered ~1200 empty-title rows.)
+        if not title or not title.strip():
+            title = _title_from_text(text) or title
+        if not title or not title.strip():
+            # Still nothing usable — skip rather than emit an empty-title row.
+            return None
 
         listing_id = hashlib.sha256(
             f"{title}|{asking_price}|{detail_url or base_url}".encode()
@@ -1816,16 +1856,26 @@ class DealLedgerScraper:
         )
 
         brokers = []
+        skipped = 0
         for _, row in df.iterrows():
             url = str(row[url_col]).strip()
             if not url.startswith("http"):
                 continue
+            domain = urlparse(url).netloc
+            # Skip known non-listing sites (agent directories, junk aggregators).
+            if domain in BLOCKLIST_DOMAINS or domain.lstrip("www.") in {
+                    d.lstrip("www.") for d in BLOCKLIST_DOMAINS}:
+                skipped += 1
+                continue
             name = (str(row[name_col]).strip()
                     if name_col and pd.notna(row.get(name_col))
-                    else urlparse(url).netloc)
-            brokers.append({"name": name, "url": url, "domain": urlparse(url).netloc})
+                    else domain)
+            brokers.append({"name": name, "url": url, "domain": domain})
 
-        print(f"📋 Loaded {len(brokers)} brokers from {csv_path}")
+        msg = f"📋 Loaded {len(brokers)} brokers from {csv_path}"
+        if skipped:
+            msg += f" ({skipped} blocklisted skipped)"
+        print(msg)
         return brokers
 
     def _order_by_staleness(self, brokers: list[dict]) -> list[dict]:
