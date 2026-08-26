@@ -1,0 +1,27 @@
+{
+  "started": "2026-08-26T14:46:01.327086+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 5,
+  "brokers_failed": 95,
+  "total_listings": 42,
+  "listings_with_price": 11,
+  "listings_with_cashflow": 2,
+  "listings_with_state": 39,
+  "detail_pages_fetched": 38,
+  "patterns_cached": 305,
+  "patterns_learned": 5,
+  "verticals": {
+    "other": 38,
+    "healthcare": 2,
+    "automotive": 1,
+    "restaurant": 1
+  },
+  "failure_types": {
+    "NO_PATTERN": 80,
+    "HTTP_403": 5,
+    "EMBED_BBS": 23,
+    "VALIDATION_REJECT": 1,
+    "FETCH_ERROR": 9
+  },
+  "completed": "2026-08-26T16:01:25.264397+00:00"
+}
