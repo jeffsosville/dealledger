@@ -1,8 +1,16 @@
 name: Daily broker scrape
 on:
   schedule:
-    - cron: "0 14 * * *"   # 14:00 UTC = 10am ET daily (re-enabled 2026-08-23; runs in cloud, not local Mac cron)
-  workflow_dispatch:       # manual trigger from GitHub UI
+    - cron: "0 14 * * *"   # 14:00 UTC = 10am ET daily
+  workflow_dispatch:
+    inputs:
+      stale_first:
+        description: "Order by staleness (untick for a control run)"
+        type: boolean
+        default: true
+      top_n:
+        description: "Brokers to attempt"
+        default: "100"
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -26,8 +34,8 @@ jobs:
         run: |
           python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers data/brokers_clean.csv \
-            --stale-first \
-            --top-n 100 \
+            ${{ (inputs.stale_first == false) && ' ' || '--stale-first' }} \
+            --top-n ${{ inputs.top_n || '100' }} \
             --output data/snapshots
       - name: Commit snapshot
         run: |
