@@ -771,7 +771,31 @@ def build_proxy_url(sessid):
 # it matched a person-name grid, wrote 350 "Carol Shin"-style rows.)
 BLOCKLIST_DOMAINS = {
     "aria.net",
-    "www.aria.net",
+}
+
+
+# Owned by the specialized pipeline (scrapers/specialized_scrapers.py).
+# V6 must never scrape these: the specialized scrapers already cover them
+# properly, so a generic attempt is wasted budget AND risks writing worse
+# rows over good ones. Matched on the domain OR any subdomain, because FCBB
+# alone has ~10 city sites (pittsburgh.fcbb.com, atlantametro.fcbb.com, ...).
+# Kept in sync with scrape_specialized_broker() dispatch.
+SPECIALIZED_DOMAINS = {
+    "execbb.com",                    # LarryBodnerScraper
+    "linkbusiness.com",              # LinkBusinessScraper
+    "murphybusiness.com",            # MurphyScraper
+    "hedgestone.com",                # HedgestoneScraper
+    "tworld.com",                    # TransworldScraper
+    "sunbeltnetwork.com",            # SunbeltScraper
+    "vrbbusa.com",                   # VRScraper
+    "vrbusinessbrokers.com",         # VRScraper
+    "fcbb.com",                      # FCBBScraper (+ all *.fcbb.com)
+    "wesellrestaurants.com",         # WeSellRestaurantsScraper
+    "vestedbb.com",                  # VestedScraper
+    "routesforsale.net",             # RoutesForSaleScraper (exact site only —
+                                     # commercialroutesforsale.com and
+                                     # deliveryroutesforsale.com are DIFFERENT
+                                     # companies; V6 must keep scraping those)
 }
 
 
@@ -1907,8 +1931,10 @@ class DealLedgerScraper:
                 continue
             domain = urlparse(url).netloc
             # Skip known non-listing sites (agent directories, junk aggregators).
-            if domain in BLOCKLIST_DOMAINS or domain.lstrip("www.") in {
-                    d.lstrip("www.") for d in BLOCKLIST_DOMAINS}:
+            bare = domain[4:] if domain.startswith("www.") else domain
+            if (bare in BLOCKLIST_DOMAINS
+                    or any(bare == d or bare.endswith("." + d)
+                           for d in SPECIALIZED_DOMAINS)):
                 skipped += 1
                 continue
             name = (str(row[name_col]).strip()
