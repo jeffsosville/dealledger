@@ -35,10 +35,16 @@ from html import unescape as html_unescape
 from typing import List, Dict, Optional
 
 try:
-    from junk_filter import is_sold_or_pending
-except Exception:
-    def is_sold_or_pending(_title):  # graceful no-op if module unavailable
+    from junk_filter import is_sold_or_pending, is_junk_title, title_from_slug
+except Exception:                    # graceful no-ops if module unavailable
+    def is_sold_or_pending(_title):
         return False
+
+    def is_junk_title(_t, firm_name=None):
+        return not _t or len(str(_t).strip()) < 6
+
+    def title_from_slug(_url):
+        return None
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -55,6 +61,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 # curl_cffi for anti-bot bypass
 from curl_cffi import requests
+import requests as R_requests          # stdlib requests (curl_cffi shadows the name)
 from requests.exceptions import RequestException
 
 
@@ -1930,13 +1937,23 @@ class FacetWPScraper:
                           "business_type", "featured", "food_type",
                           "listing_categories", "service_type")
 
+    # The WAF 429s a cookie-less POST. Any plausible returning-browser cookie
+    # set satisfies it (these are just analytics/popup cookies — no auth).
+    DEFAULT_COOKIES = {
+        "_gauges_unique": "1", "_gauges_unique_day": "1",
+        "_gauges_unique_hour": "1", "_gauges_unique_month": "1",
+        "_gauges_unique_year": "1",
+    }
+
     def __init__(self, domain, uri, facets=None, facet_keys=None,
-                 link_match="/listing"):
+                 link_match="/listing", cookies=None, use_proxy_fallback=False):
         self.domain = domain.strip().strip("/")
         self.uri = uri.strip("/")
         self.facets = facets or {"status": ["for-sale"]}
         self.facet_keys = tuple(facet_keys) if facet_keys else self.DEFAULT_FACET_KEYS
         self.link_match = link_match
+        self.cookies = cookies or dict(self.DEFAULT_COOKIES)
+        self.use_proxy_fallback = use_proxy_fallback
         self.base = f"https://{self.domain}"
         self.endpoint = f"{self.base}/{self.uri}/"
         self.session = self._make_session()
@@ -1966,15 +1983,27 @@ class FacetWPScraper:
         return {"http": f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}",
                 "https": f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}"}
 
+    def _query(self, paged):
+        """fwp_ query string. The comma between facet values stays URL-ENCODED
+        (%2C) exactly as the browser sends it."""
+        parts = [f"fwp_{k}=" + "%2C".join(v) for k, v in self.facets.items() if v]
+        parts.append(f"fwp_paged={paged}")
+        return "&".join(parts)
+
+    def _page_url(self, paged):
+        # The POST goes to the URL *with* the fwp_ params — not the bare path.
+        return f"{self.endpoint}?{self._query(paged)}"
+
     def _payload(self, paged):
         facets = {k: [] for k in self.facet_keys}
         facets.update(self.facets)
-        get = {"fwp_paged": str(paged)}
+        get = {}
         url_vars = {}
         for k, v in self.facets.items():
             if v:
-                get[f"fwp_{k}"] = ",".join(v)
+                get[f"fwp_{k}"] = "%2C".join(v)      # encoded, as the browser sends
                 url_vars[k] = list(v)
+        get["fwp_paged"] = str(paged)
         return {
             "action": "facetwp_refresh",
             "data": {
@@ -1986,21 +2015,39 @@ class FacetWPScraper:
                 "soft_refresh": 1,
                 "is_bfcache": 1,
                 "first_load": 0,
-                "paged": paged,
+                "paged": str(paged),                  # string, not int
             },
         }
 
-    def _headers(self):
+    def _headers(self, paged):
+        # Full browser header set — a bare Content-Type/XHR pair gets 429'd.
         return {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": self.endpoint,
-            "Origin": self.base,
+            "accept": "*/*",
+            "accept-language": "en-US,en;q=0.9",
+            "content-type": "application/json",
+            "origin": self.base,
+            "priority": "u=1, i",
+            "referer": self._page_url(paged),
+            "sec-ch-ua": '"Google Chrome";v="149", "Chromium";v="149", '
+                         '"Not)A;Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/149.0.0.0 Safari/537.36",
         }
 
     def _post(self, paged):
-        return self.session.post(self.endpoint, json=self._payload(paged),
-                                 headers=self._headers(), timeout=35,
+        # Send the JSON as a raw body and pass cookies explicitly. A cookie-less
+        # POST is 429'd, and (counter-intuitively) a warm-up GET before the POST
+        # ALSO triggers the 429 — so we go straight to the POST.
+        body = json.dumps(self._payload(paged), separators=(",", ":")).encode()
+        return self.session.post(self._page_url(paged), data=body,
+                                 headers=self._headers(paged),
+                                 cookies=self.cookies, timeout=35,
                                  proxies=self.proxies)
 
     def _parse_template(self, html, broker_account):
@@ -2042,11 +2089,8 @@ class FacetWPScraper:
             print(f"\n{'='*60}")
             print(f"FacetWP: {self.domain}/{self.uri}  facets={self.facets}")
             print('='*60)
-        try:
-            self.session.get(self.endpoint, timeout=30, proxies=self.proxies)
-        except Exception:
-            pass
-
+        # NOTE: deliberately NO warm-up GET — it trips the WAF into 429ing the
+        # subsequent POST. Straight to the POST with cookies.
         listings, seen = [], set()
         empty_streak = 0
         for paged in range(1, max_pages + 1):
@@ -2056,7 +2100,7 @@ class FacetWPScraper:
                 self.proxies = self._build_proxies()
 
             data = None
-            for attempt in range(4):
+            for attempt in range(5):
                 try:
                     r = self._post(paged)
                     if r.status_code in (429, 500, 502, 503) or \
@@ -2065,16 +2109,18 @@ class FacetWPScraper:
                     data = r.json()
                     break
                 except Exception as e:
-                    # Back off first; only escalate to (or rotate) the proxy if
-                    # direct keeps failing — for eatz the proxy is 429'd while
-                    # direct is 200, so never proxy pre-emptively.
-                    if attempt >= 1:
+                    # 429 here is a plain rate-limit — BACK OFF, don't reach for
+                    # the proxy: eatz 429s DataImpulse exit IPs outright, so
+                    # proxying makes it strictly worse. Proxy is opt-in only.
+                    if self.use_proxy_fallback and attempt >= 1:
                         self.proxies = self._build_proxies()
-                    if attempt == 3:
+                    if attempt == 4:
                         if verbose:
                             print(f"[FacetWP:{self.domain}] page {paged} failed: {e}")
                     else:
-                        time.sleep(random.uniform(1.5, 3.0) * (attempt + 1))
+                        # 5s, 15s, 30s, 60s — the limiter needs real time.
+                        time.sleep((5, 15, 30, 60)[min(attempt, 3)]
+                                   + random.uniform(0, 3))
             if data is None:
                 break
 
