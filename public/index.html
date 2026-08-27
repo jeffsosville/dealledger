@@ -667,7 +667,6 @@ loadData();
 
         const meta = ['BW' + d.listing_number];
         if (d.location) meta.push(d.location);
-        if (d.is_active === false) meta.push('no longer listed');
         if (d.relisted) meta.push('previously listed');
 
         let since = '';
