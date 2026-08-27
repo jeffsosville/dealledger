@@ -702,7 +702,8 @@ loadData();
                     <div class="lk-track"><div class="lk-fill" id="lkFill"></div></div>
                     <div class="lk-ticks"><span>LISTED</span><span>1 YEAR</span><span>2 YEARS</span></div>
                 </div>
-                ${cells.length ? `<div class="lk-grid">${cellHTML}</div>` : ''}
+                              ${cells.length ? `<div class="lk-grid">${cellHTML}</div>` : ''}
+            </div>`;
 
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         requestAnimationFrame(() => { document.getElementById('lkFill').style.width = pct + '%'; });
