@@ -703,8 +703,6 @@ loadData();
                     <div class="lk-ticks"><span>LISTED</span><span>1 YEAR</span><span>2 YEARS</span></div>
                 </div>
                 ${cells.length ? `<div class="lk-grid">${cellHTML}</div>` : ''}
-                ${d.views_last_seen ? `<div class="lk-note">View counts last measured ${lkDate(d.views_last_seen)}.</div>` : ''}
-            </div>`;
 
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         requestAnimationFrame(() => { document.getElementById('lkFill').style.width = pct + '%'; });
