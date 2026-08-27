@@ -111,12 +111,54 @@
         .about-links { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
         .about-link { font-family: var(--mono); font-size: 12px; color: var(--link); text-decoration: none; }
         .about-link:hover { text-decoration: underline; }
+
+        /* ---------- Listing lookup ---------- */
+        .lookup-section { border-bottom: 1px solid var(--border); padding: 36px 0; background: #ffffff; }
+        .lookup-inner { max-width: 760px; }
+        .lookup-title { font-family: var(--mono); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--text); }
+        .lookup-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px; }
+        .lookup-form { display: flex; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+        .lookup-input { flex: 1 1 340px; min-width: 0; padding: 11px 14px; font-family: var(--mono); font-size: 13px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
+        .lookup-input:focus { border-color: var(--text); }
+        .lookup-input::placeholder { color: #a8a29e; }
+        .lookup-btn { padding: 11px 22px; font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--text); color: var(--bg); border: 1px solid var(--text); cursor: pointer; white-space: nowrap; }
+        .lookup-btn:disabled { opacity: 0.5; cursor: default; }
+        .lookup-msg { font-family: var(--mono); font-size: 12px; color: var(--text-muted); min-height: 18px; }
+        .lookup-msg.is-error { color: #991b1b; }
+
+        .lk-card { margin-top: 18px; border: 1px solid var(--border); background: var(--bg); }
+        .lk-head { padding: 18px 20px 0; }
+        .lk-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
+        .lk-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-muted); display: flex; gap: 14px; flex-wrap: wrap; }
+        .lk-counter { padding: 20px 20px 0; display: flex; align-items: baseline; gap: 11px; }
+        .lk-days { font-family: var(--mono); font-weight: 600; font-size: clamp(46px, 11vw, 68px); line-height: 0.88; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--lk-sig, var(--text)); }
+        .lk-days-label { font-size: 13px; color: var(--text-muted); }
+        .lk-since { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); padding: 9px 20px 0; }
+        .lk-rail { padding: 16px 20px 20px; }
+        .lk-track { position: relative; height: 3px; background: var(--border); }
+        .lk-fill { position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--lk-sig, var(--text)); transition: width 0.7s cubic-bezier(0.2, 0.7, 0.3, 1); }
+        .lk-ticks { display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; color: #a8a29e; }
+        .lk-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+        .lk-cell { padding: 14px 20px; border-right: 1px solid var(--border); }
+        .lk-cell:nth-child(2n) { border-right: 0; }
+        .lk-cell:nth-child(n+3) { border-top: 1px solid var(--border); }
+        .lk-k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+        .lk-v { font-family: var(--mono); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .lk-v span { font-family: var(--sans); font-size: 11px; font-weight: 400; color: var(--text-muted); margin-left: 5px; }
+        .lk-note { padding: 12px 20px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+        @media (prefers-reduced-motion: reduce) { .lk-fill { transition: none; } }
+
         @media (max-width: 768px) {
             .header-content { flex-direction: column; align-items: flex-start; }
             .filter-strip { flex-direction: column; align-items: flex-start; }
             .results-count { margin-left: 0; }
             th, td { padding: 8px 10px; }
             .col-title { max-width: 180px; }
+        }
+        @media (max-width: 600px) {
+            .lk-grid { grid-template-columns: 1fr; }
+            .lk-cell { border-right: 0; }
+            .lk-cell:nth-child(n+2) { border-top: 1px solid var(--border); }
         }
     </style>
 </head>
@@ -185,6 +227,23 @@
     </div>
 </div>
 
+<!-- ============================ LISTING LOOKUP ============================ -->
+<section id="lookup" class="lookup-section">
+    <div class="container">
+        <div class="lookup-inner">
+            <h2 class="lookup-title">How long has it really been listed?</h2>
+            <p class="lookup-sub">Paste any BizBuySell or BizQuest listing URL. You'll get the date it went up, how long it's been sitting, and how much traffic it's getting.</p>
+            <form class="lookup-form" id="lkForm">
+                <input type="text" class="lookup-input" id="lkInput" inputmode="url" autocomplete="off"
+                       placeholder="bizbuysell.com/business-opportunity/…/2442643/" aria-label="Listing URL or number">
+                <button type="submit" class="lookup-btn" id="lkGo">Look up</button>
+            </form>
+            <div class="lookup-msg" id="lkMsg"></div>
+            <div id="lkOut"></div>
+        </div>
+    </div>
+</section>
+
 <main class="container">
     <div class="notice" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <span>Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.
@@ -241,7 +300,7 @@
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
                 <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 — TIMESTAMP</div>
                 <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Recover listing dates</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We recover estimated listing dates using a proprietary methodology. Mean error: ±12 days.</p>
+                <p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We recover them from the marketplace's own listing sequence, calibrated against dated crawl snapshots going back to December 2024.</p>
             </div>
             <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
                 <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — TRACK</div>
@@ -571,6 +630,140 @@ document.getElementById('brokerForm').addEventListener('submit', function(e) {
 });
 
 loadData();
+
+/* ======================== LISTING LOOKUP ======================== */
+(function(){
+    const lkForm  = document.getElementById('lkForm');
+    const lkInput = document.getElementById('lkInput');
+    const lkGo    = document.getElementById('lkGo');
+    const lkMsg   = document.getElementById('lkMsg');
+    const lkOut   = document.getElementById('lkOut');
+
+    function parseListingNumber(s) {
+        s = (s || '').trim();
+        if (/^\d{6,8}$/.test(s)) return parseInt(s, 10);
+        const m = s.match(/(?:BW)?(\d{6,8})(?:\/|\?|$)/i);
+        return m ? parseInt(m[1], 10) : null;
+    }
+
+    const lkNum   = n => n == null ? null : n.toLocaleString('en-US');
+    const lkMoney = n => (n == null || n === 0) ? null : '$' + Math.round(n).toLocaleString('en-US');
+    const lkDate  = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : null;
+
+    // Matches the DOM badge thresholds used in the table above.
+    function lkTone(days) {
+        if (days == null) return '#78716c';
+        if (days <= 30)  return '#166534';
+        if (days <= 90)  return '#78716c';
+        if (days <= 180) return '#92400e';
+        if (days <= 365) return '#c2410c';
+        return '#991b1b';
+    }
+
+    function lkRender(d) {
+        const days = d.days_on_market;
+        const sig  = lkTone(days);
+        const pct  = days == null ? 0 : Math.min(100, days / 730 * 100);
+
+        const meta = ['BW' + d.listing_number];
+        if (d.location) meta.push(d.location);
+        if (d.is_active === false) meta.push('no longer listed');
+        if (d.relisted) meta.push('previously listed');
+
+        let since = '';
+        if (d.date_precision === 'floor') {
+            since = 'Listed before December 2024 — exact date predates our records.';
+        } else if (d.listed_on) {
+            since = 'Listed ' + lkDate(d.listed_on) + (d.date_precision === 'provisional' ? ' (provisional)' : '');
+        }
+
+        const cells = [];
+        if (lkMoney(d.price))     cells.push(['Asking price', lkMoney(d.price)]);
+        if (lkMoney(d.cash_flow)) cells.push(['Cash flow', lkMoney(d.cash_flow)]);
+        if (d.views_total   != null) cells.push(['Total views', lkNum(d.views_total)]);
+        if (d.views_per_day != null) cells.push(['Views per day', d.views_per_day + '<span>measured</span>']);
+        if (cells.length % 2) cells.push(['','']);
+
+        const cellHTML = cells.map(c =>
+            `<div class="lk-cell">${c[0] ? `<div class="lk-k">${c[0]}</div><div class="lk-v">${c[1]}</div>` : ''}</div>`
+        ).join('');
+
+        lkOut.innerHTML = `
+            <div class="lk-card" style="--lk-sig:${sig}">
+                <div class="lk-head">
+                    <p class="lk-title">${d.header ? d.header.trim() : 'Listing ' + d.listing_number}</p>
+                    <div class="lk-meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>
+                </div>
+                <div class="lk-counter">
+                    <div class="lk-days" id="lkCtr">0</div>
+                    <div class="lk-days-label">days on market</div>
+                </div>
+                <div class="lk-since">${since}</div>
+                <div class="lk-rail">
+                    <div class="lk-track"><div class="lk-fill" id="lkFill"></div></div>
+                    <div class="lk-ticks"><span>LISTED</span><span>1 YEAR</span><span>2 YEARS</span></div>
+                </div>
+                ${cells.length ? `<div class="lk-grid">${cellHTML}</div>` : ''}
+                ${d.views_last_seen ? `<div class="lk-note">View counts last measured ${lkDate(d.views_last_seen)}.</div>` : ''}
+            </div>`;
+
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        requestAnimationFrame(() => { document.getElementById('lkFill').style.width = pct + '%'; });
+
+        const ctr = document.getElementById('lkCtr');
+        if (days == null) { ctr.textContent = '—'; return; }
+        if (reduce) { ctr.textContent = lkNum(days); return; }
+        const t0 = performance.now(), dur = 700;
+        (function tick(t){
+            const p = Math.min(1, (t - t0) / dur);
+            ctr.textContent = lkNum(Math.round(days * (1 - Math.pow(1 - p, 3))));
+            if (p < 1) requestAnimationFrame(tick);
+        })(t0);
+    }
+
+    lkForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        lkOut.innerHTML = '';
+        lkMsg.className = 'lookup-msg';
+        lkMsg.textContent = '';
+
+        const ln = parseListingNumber(lkInput.value);
+        if (!ln) {
+            lkMsg.className = 'lookup-msg is-error';
+            lkMsg.textContent = "That doesn't look like a listing URL. Paste the full address, or just the listing number.";
+            return;
+        }
+
+        lkGo.disabled = true;
+        lkMsg.textContent = 'Looking up BW' + ln + '…';
+
+        try {
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/listing_lookup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON,
+                    'Authorization': `Bearer ${SUPABASE_ANON}`
+                },
+                body: JSON.stringify({ ln })
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const d = await res.json();
+            if (!d || !d.found) {
+                lkMsg.textContent = 'BW' + ln + " isn't in the ledger yet. New listings are added daily.";
+                return;
+            }
+            lkMsg.textContent = '';
+            lkRender(d);
+        } catch (err) {
+            console.error(err);
+            lkMsg.className = 'lookup-msg is-error';
+            lkMsg.textContent = 'Lookup failed. Try again in a moment.';
+        } finally {
+            lkGo.disabled = false;
+        }
+    });
+})();
 </script>
 </body>
 </html>
