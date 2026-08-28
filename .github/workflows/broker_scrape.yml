@@ -1,4 +1,5 @@
 name: Daily broker scrape
+
 on:
   schedule:
     - cron: "0 14 * * *"   # 14:00 UTC = 10am ET daily
@@ -11,36 +12,91 @@ on:
       top_n:
         description: "Brokers to attempt"
         default: "100"
+
+# The commit step pushes back to the repo, so the token needs write.
+permissions:
+  contents: write
+
+# Never let two scrapes run at once — they'd fight over data/snapshots/.
+concurrency:
+  group: broker-scrape
+  cancel-in-progress: false
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: |
           pip install curl_cffi==0.13.0 pandas beautifulsoup4 playwright requests supabase colorama
           playwright install chromium
           playwright install-deps chromium
+
+      # `timeout` sends SIGINT at 4h45m, well inside the 350-minute job
+      # limit. Python raises KeyboardInterrupt, the scraper unwinds, and
+      # the commit step still gets a chance to run. Exit code 124 means
+      # we hit that limit; treat it as a partial success, not a failure.
       - name: Run V6 scraper
+        id: scrape
         env:
           PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
         run: |
+          set +e
+          timeout --signal=INT 285m \
           python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers data/brokers_clean.csv \
             ${{ (inputs.stale_first == false) && ' ' || '--stale-first' }} \
             --top-n ${{ inputs.top_n || '100' }} \
             --output data/snapshots
+          CODE=$?
+          set -e
+          if [ $CODE -eq 124 ]; then
+            echo "::warning::Scraper hit the 285-minute guard and was stopped early. Committing partial results."
+            echo "partial=true" >> "$GITHUB_OUTPUT"
+          elif [ $CODE -ne 0 ]; then
+            echo "::warning::Scraper exited with code $CODE. Committing whatever landed."
+            echo "partial=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "partial=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # always() so a cancelled or failed scrape still saves its work.
+      # This is the fix for the run that lost 97 brokers' output.
       - name: Commit snapshot
+        if: always()
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
           git add -f data/snapshots/
-          git diff --staged --quiet || git commit -m "snapshot: $(date -u +%Y-%m-%d)"
-          git push || echo "Nothing to push"
+          if git diff --staged --quiet; then
+            echo "No snapshot changes to commit."
+            exit 0
+          fi
+          SUFFIX=""
+          if [ "${{ steps.scrape.outputs.partial }}" = "true" ]; then
+            SUFFIX=" (partial)"
+          fi
+          git commit -m "snapshot: $(date -u +%Y-%m-%d)${SUFFIX}"
+          # Another workflow may have pushed while we ran.
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push || echo "Push failed — snapshot is committed locally only."
+
+      # Second copy of the output, independent of git. If the push ever
+      # fails, the data is still downloadable from the run page for 30 days.
+      - name: Upload snapshot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots-${{ github.run_number }}
+          path: data/snapshots/
+          retention-days: 30
+          if-no-files-found: warn
