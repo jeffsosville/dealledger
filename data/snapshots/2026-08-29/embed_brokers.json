@@ -1,0 +1,20 @@
+[
+  {
+    "broker": "darlene ragone",
+    "url": "https://www.moxiebrokeragegroup.com/listings",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=14525&m_dmr=1",
+    "provider": "bizbuysell"
+  },
+  {
+    "broker": "coastal business brokers",
+    "url": "https://coastalbizbrokers.com/all-listings/",
+    "iframe": "https://plus.nebba.org/properties/?nebbaplus_id=20",
+    "provider": "feed"
+  },
+  {
+    "broker": "sasa milosevic",
+    "url": "https://manhattan.biz/current-listing/",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=1687&m_dmr=1",
+    "provider": "bizbuysell"
+  }
+]
