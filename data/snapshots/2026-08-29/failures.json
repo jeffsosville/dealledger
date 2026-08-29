@@ -1,0 +1,244 @@
+[
+  {
+    "broker": "route consultant",
+    "url": "https://listings.routeconsultant.com/route-search-results/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.result__body"
+  },
+  {
+    "broker": "national pool route sales lic re broker ca#01899885 fl#bk33740409",
+    "url": "https://poolroutesales.com/pool-routes-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 88015
+  },
+  {
+    "broker": "tommy tran",
+    "url": "https://restaurantforsales.com/buy-a-restaurant.html",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-col2"
+  },
+  {
+    "broker": "eric espinoza",
+    "url": "https://greenlifebusiness.com/status/for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "nidal saleh",
+    "url": "https://salehgroup.com/business-directory/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39
+  },
+  {
+    "broker": "ken stein",
+    "url": "https://kensingtoncompany.com/business-listings/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.business-listing-item"
+  },
+  {
+    "broker": "darlene ragone",
+    "url": "https://www.moxiebrokeragegroup.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 41555
+  },
+  {
+    "broker": "cbcg( c land business consulting group) director shawn kim",
+    "url": "https://www.clandbiz.com/search-listing/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11893
+  },
+  {
+    "broker": "armen nazarian",
+    "url": "https://www.armennazarian.com/buy/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7339
+  },
+  {
+    "broker": "ben strake",
+    "url": "https://premierbb.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11847
+  },
+  {
+    "broker": "aldrin raphael fernandes",
+    "url": "https://aldrin.ca/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11888
+  },
+  {
+    "broker": "sam saa",
+    "url": "https://www.buysellarestaurant.com/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 686455
+  },
+  {
+    "broker": "trevin rasmussen",
+    "url": "https://bristolgrouponline.com/businesses-for-sale/",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "tom o'brien",
+    "url": "https://pacificcommercialbrokers.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11906
+  },
+  {
+    "broker": "alpine business brokers",
+    "url": "https://www.alpinebusinessbrokers.com/utah-businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 231715
+  },
+  {
+    "broker": "nrp charlotte",
+    "url": "https://www.nationalrestaurantproperties.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "erten musa",
+    "url": "https://www.prolevelbusiness.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7075
+  },
+  {
+    "broker": "rod ross",
+    "url": "https://mycarwashbroker.com/new-york-car-wash-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 68064
+  },
+  {
+    "broker": "felizardo gaxiola",
+    "url": "https://www.excellencebusinessbrokers.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 859596
+  },
+  {
+    "broker": "carter asefi",
+    "url": "https://www.franbiznetwork.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11852
+  },
+  {
+    "broker": "nadir jiddou",
+    "url": "https://michiganbusinessbroker.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11963
+  },
+  {
+    "broker": "michael wildeveld, cbb, cbi, cm&ap, m&ami, cepa",
+    "url": "https://theveldgroup.com/main-street-businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11919
+  },
+  {
+    "broker": "bill vanden eynden",
+    "url": "https://bcvcommercialrealty.com/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "charles helms",
+    "url": "https://members.franchiseclearly.com/tools/franchisors/public?available",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11950
+  },
+  {
+    "broker": "liliane tietjen",
+    "url": "https://www.patriotbusinessadvisors.com/Listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11942
+  },
+  {
+    "broker": "carol poe",
+    "url": "https://poegroupadvisors.com/buying/usa-cpa-firms-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 12141
+  },
+  {
+    "broker": "jeff snell, cm&ap, m&ami, lmcbi, abi",
+    "url": "https://enlign.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11953
+  },
+  {
+    "broker": "justin slocum",
+    "url": "https://agencyforsale.com/listings?search%5Bbroker_listings%5D=0&search%5Bstatus%5D=&search%5Bfranchise_id%5D=&search%5Bstate%5D=&search%5Bmin_price%5D=&search%5Bmax_price%5D=&search%5Bmin_premium%5D=&search%5Bmax_premium%5D=&button=",
+    "error": "validation: 79% person-name titles (agent directory?)",
+    "type": "VALIDATION_REJECT"
+  },
+  {
+    "broker": "raj golee",
+    "url": "https://biz-depot.co/properties-standard-list/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11894
+  },
+  {
+    "broker": "miriam liang, cbi",
+    "url": "https://www.routeadvisors.com/available-routes/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11875
+  },
+  {
+    "broker": "sasa milosevic",
+    "url": "https://manhattan.biz/current-listing/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 35934
+  },
+  {
+    "broker": "ps broker",
+    "url": "https://psbroker.com/veterinary-practices-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11909
+  },
+  {
+    "broker": "dr. tom necela",
+    "url": "https://strategicdc.com/chiropractic-practices-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11932
+  },
+  {
+    "broker": "tom brubaker",
+    "url": "https://www.tambaymergers.com/",
+    "error": "validation: 67% marketing/nav phrase titles",
+    "type": "VALIDATION_REJECT"
+  },
+  {
+    "broker": "vantage partners",
+    "url": "https://www.commercialmls.com/People/AgentBusOps/19393",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 98487
+  }
+]
