@@ -717,8 +717,9 @@ if __name__ == "__main__":
             listings.sort(key=lambda x: x.get('profileViews') or 0, reverse=True)
             scraper.save_results(listings, "bizquest_enriched.json")
             scraper.save_to_csv(listings, "bizquest_enriched.csv")
-            if WRITE_DB:
-                scraper.save_to_supabase(listings)
+
+        if WRITE_DB:
+            scraper.save_to_supabase(listings)
 
         print(f"\n{'=' * 60}")
         print("FINAL STATS")
