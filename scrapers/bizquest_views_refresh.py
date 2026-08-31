@@ -8,6 +8,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 
+
 class BizQuestScraper:
     def __init__(self, proxy=None):
         self.session = requests.Session(impersonate="chrome")
@@ -41,6 +42,10 @@ class BizQuestScraper:
         self.states = []
         self.get_auth_token()
 
+    # ------------------------------------------------------------------
+    # Auth + discovery
+    # ------------------------------------------------------------------
+
     def get_auth_token(self):
         """Get authentication token from BizQuest."""
         print("[*] Obtaining authentication token...")
@@ -51,15 +56,11 @@ class BizQuestScraper:
                 proxies=self.proxies,
                 timeout=60
             )
-
-            cookies = response.cookies
-            self.token = cookies.get('_track_tkn')
-
+            self.token = response.cookies.get('_track_tkn')
             if self.token:
-                print(f"[+] Token obtained successfully")
+                print("[+] Token obtained successfully")
             else:
-                print(f"[-] Failed to get token")
-
+                print("[-] Failed to get token")
         except Exception as e:
             print(f"[-] Error obtaining token: {str(e)}")
 
@@ -74,9 +75,8 @@ class BizQuestScraper:
         api_headers = self.headers.copy()
         api_headers['Authorization'] = f'Bearer {self.token}'
 
-        # This is the key - get the actual state objects from their API
         payload = {
-            "siteId": 10,  # 10 = BizQuest
+            "siteId": 10,          # 10 = BizQuest
             "languageId": 10,
             "query": "",
             "geographyTypes": [20]  # 20 = US States
@@ -95,21 +95,22 @@ class BizQuestScraper:
                 data = response.json()
                 states = data.get("value", [])
                 print(f"[+] Retrieved {len(states)} states from API")
-
-                # Debug - show first state structure
                 if states:
                     print(f"[DEBUG] Sample state object: {json.dumps(states[0], indent=2)}")
-
                 self.states = states
                 return states
-            else:
-                print(f"[-] Failed to get states. Status: {response.status_code}")
-                print(f"[-] Response: {response.text[:500]}")
-                return []
+
+            print(f"[-] Failed to get states. Status: {response.status_code}")
+            print(f"[-] Response: {response.text[:500]}")
+            return []
 
         except Exception as e:
             print(f"[-] Error fetching states: {str(e)}")
             return []
+
+    # ------------------------------------------------------------------
+    # Normalization
+    # ------------------------------------------------------------------
 
     def flatten_listing(self, listing):
         """Flatten nested structures for CSV export."""
@@ -138,12 +139,15 @@ class BizQuestScraper:
 
         return flattened
 
+    # ------------------------------------------------------------------
+    # Scraping
+    # ------------------------------------------------------------------
+
     def get_listing_detail(self, url_stub):
         """Get full listing detail including profileViews."""
         api_headers = self.headers.copy()
         api_headers['Authorization'] = f'Bearer {self.token}'
 
-        # Strip domain - seoName needs just the path
         seo_name = url_stub
         if 'bizquest.com' in url_stub:
             seo_name = url_stub.split('bizquest.com')[1]
@@ -178,31 +182,29 @@ class BizQuestScraper:
                 if data.get("status") != 1:
                     return None
                 return data.get("value", {}).get("listingDetail")
-        except Exception as e:
+        except Exception:
             pass
 
         return None
 
     def scrape_listings_for_state(self, state_obj, max_pages=200, workers=3):
-        """Scrape business listings for a specific state using the state object from API."""
+        """Scrape business listings for a specific state."""
         if not self.token:
             print("[-] No token. Cannot proceed.")
             return []
 
-        state_name = state_obj.get('regionName', 'Unknown')
         state_code = state_obj.get('stateCode', 'XX')
 
         api_headers = self.headers.copy()
         api_headers['Authorization'] = f'Bearer {self.token}'
 
-        # Use the full state object as the location filter
         payload_template = {
             "bfsSearchCriteria": {
-                "siteId": 10,  # BizQuest
+                "siteId": 10,
                 "languageId": 10,
                 "categories": None,
-                "bizQuestCategories": None,  # All categories
-                "locations": [state_obj],  # Pass the FULL state object from API
+                "bizQuestCategories": None,
+                "locations": [state_obj],
                 "excludeLocations": None,
                 "askingPriceMax": 0,
                 "askingPriceMin": 0,
@@ -212,7 +214,7 @@ class BizQuestScraper:
                 "cashFlowMax": 0,
                 "grossIncomeMin": 0,
                 "grossIncomeMax": 0,
-                "daysListedAgo": 0,  # All time
+                "daysListedAgo": 0,
                 "establishedAfterYear": 0,
                 "listingsWithNoAskingPrice": 0,
                 "homeBasedListings": 0,
@@ -273,7 +275,7 @@ class BizQuestScraper:
                                 listing['scraped_state'] = state_code
                                 new_listings.append(listing)
                     return new_listings
-            except Exception as e:
+            except Exception:
                 pass
             return []
 
@@ -298,10 +300,8 @@ class BizQuestScraper:
             print("[-] No token. Cannot proceed.")
             return []
 
-        # Create output directory
         os.makedirs(output_dir, exist_ok=True)
 
-        # Get states from API
         states = self.get_all_states()
         if not states:
             print("[-] Failed to get states from API. Exiting.")
@@ -327,13 +327,11 @@ class BizQuestScraper:
                 workers=workers
             )
 
-            # Save state file
             if state_listings:
                 state_file = os.path.join(output_dir, f"bizquest_{state_code}.json")
                 with open(state_file, 'w', encoding='utf-8') as f:
                     json.dump(state_listings, f, indent=2)
 
-            # Dedupe against global list
             new_count = 0
             for listing in state_listings:
                 lid = listing.get('listNumber')
@@ -343,7 +341,7 @@ class BizQuestScraper:
                     new_count += 1
 
             print(f"    [+] {new_count} new unique listings (Global total: {len(all_listings)})")
-            time.sleep(0.5)  # Be nice between states
+            time.sleep(0.5)
 
         return all_listings
 
@@ -374,8 +372,7 @@ class BizQuestScraper:
         with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = {executor.submit(fetch_detail, l): l for l in listings}
             for i, future in enumerate(as_completed(futures)):
-                result = future.result()
-                enriched.append(result)
+                enriched.append(future.result())
                 if (i + 1) % 100 == 0:
                     elapsed = time.time() - start_time
                     rate = (i + 1) / elapsed * 60
@@ -385,14 +382,16 @@ class BizQuestScraper:
         print(f"[+] Enriched {len(enriched)}/{len(listings)} in {(time.time() - start_time)/60:.1f} minutes")
         return enriched
 
+    # ------------------------------------------------------------------
+    # Local output
+    # ------------------------------------------------------------------
+
     def save_results(self, listings, filename="bizquest_all.json"):
-        """Save results to JSON file."""
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(listings, f, indent=2)
         print(f"[+] Saved {len(listings)} listings to {filename}")
 
     def save_to_csv(self, listings, filename="bizquest_all.csv"):
-        """Save results to CSV file."""
         if not listings:
             return
 
@@ -413,10 +412,8 @@ class BizQuestScraper:
         with open(filename, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=columns, extrasaction='ignore')
             writer.writeheader()
-
             for listing in flattened_listings:
-                row = {col: listing.get(col, '') for col in columns}
-                writer.writerow(row)
+                writer.writerow({col: listing.get(col, '') for col in columns})
 
         print(f"[+] Saved to {filename}")
 
@@ -425,17 +422,39 @@ class BizQuestScraper:
     # ------------------------------------------------------------------
 
     @staticmethod
+    def _sb_client():
+        import os
+        from supabase import create_client
+        url = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
+        key = os.environ.get("SUPABASE_SERVICE_KEY", "")
+        if not key:
+            return None
+        return create_client(url, key)
+
+    @staticmethod
+    def _today():
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).date().isoformat()
+
+    @staticmethod
+    def _as_int(v):
+        """Ints only; 0 and junk become None so the card can hide the field."""
+        try:
+            n = int(float(v))
+            return n if n != 0 else None
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
     def _clean_view_rows(listings):
-        """Return {listing_number: views} for valid BW-range listings."""
+        """{listing_number: views} for valid BW-range listings."""
         seen = {}
         for l in listings:
-            ln = l.get("listNumber")
-            pv = l.get("profileViews")
+            ln, pv = l.get("listNumber"), l.get("profileViews")
             if ln is None or pv is None:
                 continue
             try:
-                ln = int(ln)
-                pv = int(pv)
+                ln, pv = int(ln), int(pv)
             except (TypeError, ValueError):
                 continue
             if 1_000_000 <= ln <= 2_999_999:
@@ -443,99 +462,152 @@ class BizQuestScraper:
         return seen
 
     def save_to_supabase(self, listings, observed_at=None):
-        """Append a DATED views snapshot to listing_views_history.
+        """Write a dated views snapshot, mirror the marketplace, refresh the ledger.
 
-        Also refreshes listings.listing_views for convenience, but the
-        history table is the source of truth: it never overwrites, so
-        every run adds a new layer and velocity stays computable.
+        listing_views_history is append-only and is the source of truth for
+        velocity. bizquest_listings is a separate marketplace mirror. The
+        broker-direct public ledger in `listings` is only ever updated in
+        place — never inserted into — so it stays broker-sourced.
         """
-        import os
-        from datetime import date, timezone, datetime
-        from supabase import create_client
-
-        url = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
-        key = os.environ.get("SUPABASE_SERVICE_KEY", "")
-        if not key:
+        sb = self._sb_client()
+        if sb is None:
             print("[-] SUPABASE_SERVICE_KEY not set — skipping DB write")
             return
 
-        sb = create_client(url, key)
-        observed_at = observed_at or datetime.now(timezone.utc).date().isoformat()
-
-        seen = self._clean_view_rows(listings)
-        if not seen:
-            print("[-] No valid view rows to write")
-            return
-
-        print(f"\n[*] Writing {len(seen):,} dated view rows for {observed_at}...")
-
+        observed_at = observed_at or self._today()
         BATCH = 500
 
-        # 1. Dated history — append-only, never destructive.
-        history = [
-            {"listing_number": ln, "observed_at": observed_at,
-             "views": v, "source": "bizquest"}
-            for ln, v in seen.items()
-        ]
+        # ---- 1. dated views history (append-only) ----
+        seen = self._clean_view_rows(listings)
+        if seen:
+            history = [{"listing_number": k, "observed_at": observed_at,
+                        "views": v, "source": "bizquest"} for k, v in seen.items()]
+            written = failed = 0
+            print(f"\n[*] Writing {len(history):,} dated view rows for {observed_at}...")
+            for i in range(0, len(history), BATCH):
+                batch = history[i:i + BATCH]
+                try:
+                    sb.table("listing_views_history") \
+                      .upsert(batch, on_conflict="listing_number,observed_at,source") \
+                      .execute()
+                    written += len(batch)
+                except Exception as e:
+                    failed += len(batch)
+                    print(f"\n  [!] history batch {i // BATCH} failed: {e}")
+                print(f"  [history: {written:,} written, {failed:,} failed]", end="\r")
+            print(f"\n[+] listing_views_history: {written:,} written | {failed:,} failed")
+        else:
+            print("[-] No view data to write to history")
 
-        written = failed = 0
-        for i in range(0, len(history), BATCH):
-            batch = history[i:i + BATCH]
+        # ---- 2. full marketplace mirror ----
+        rows, skipped = {}, 0
+        for l in listings:
             try:
-                sb.table("listing_views_history") \
-                  .upsert(batch, on_conflict="listing_number,observed_at,source") \
+                ln = int(l.get("listNumber"))
+            except (TypeError, ValueError):
+                skipped += 1
+                continue
+            if not (1_000_000 <= ln <= 2_999_999):
+                skipped += 1
+                continue
+
+            flat = self.flatten_listing(l)
+
+            stub = flat.get("urlStub") or ""
+            if stub and not stub.startswith("http"):
+                stub = "https://www.bizquest.com" + stub
+
+            rows[ln] = {
+                "listing_number":   ln,
+                "header":           (flat.get("header") or "").strip() or None,
+                "city":             (flat.get("location") or "").strip() or None,
+                "state":            flat.get("scraped_state") or None,
+                "price":            self._as_int(flat.get("price")),
+                "cash_flow":        self._as_int(flat.get("cashFlow")),
+                "gross_income":     self._as_int(flat.get("grossIncome")),
+                "category":         str(flat.get("bizType") or "") or None,
+                "broker_company":   (flat.get("brokerCompany") or "").strip() or None,
+                "broker_contact":   (flat.get("contactFullName") or "").strip() or None,
+                "account_id":       str(flat.get("accountId") or "") or None,
+                "is_fsbo":          bool(flat.get("isFSBO")),
+                "url":              stub or None,
+                "year_established": str(flat.get("yearEstablished") or "") or None,
+                "employees":        str(flat.get("employees") or "") or None,
+                "summary":          (flat.get("summary") or "").strip()[:2000] or None,
+                "last_seen":        observed_at,
+                "is_active":        True,
+            }
+
+        mirror = list(rows.values())
+        print(f"\n[*] Upserting {len(mirror):,} listings into bizquest_listings "
+              f"({skipped:,} skipped as out-of-range)...")
+
+        up = bad = 0
+        for i in range(0, len(mirror), BATCH):
+            batch = mirror[i:i + BATCH]
+            try:
+                sb.table("bizquest_listings") \
+                  .upsert(batch, on_conflict="listing_number") \
                   .execute()
-                written += len(batch)
+                up += len(batch)
             except Exception as e:
-                failed += len(batch)
-                print(f"\n  [!] history batch {i // BATCH} failed: {e}")
-            print(f"  [{written:,} written, {failed:,} failed]", end="\r")
+                bad += len(batch)
+                print(f"\n  [!] mirror batch {i // BATCH} failed: {e}")
+            print(f"  [mirror: {up:,} upserted, {bad:,} failed]", end="\r")
+        print(f"\n[+] bizquest_listings: {up:,} upserted | {bad:,} failed")
 
-        print(f"\n[+] listing_views_history: {written:,} written | {failed:,} failed")
+        # ---- 3. delist sweep ----
+        # Anything we didn't see today came off the marketplace. Only run
+        # this if the crawl looks complete — a truncated run would wrongly
+        # delist thousands.
+        if up >= 20000 and bad == 0:
+            try:
+                sb.table("bizquest_listings") \
+                  .update({"is_active": False}) \
+                  .lt("last_seen", observed_at) \
+                  .eq("is_active", True) \
+                  .execute()
+                print("[+] Delist sweep complete")
+            except Exception as e:
+                print(f"[-] Delist sweep failed: {e}")
+        else:
+            print(f"[!] Skipping delist sweep — only {up:,} rows upserted "
+                  f"({bad:,} failed); run looks incomplete")
 
-        # 2. Current value on listings — update only, never insert, so
-        #    BizQuest-only listings don't create stub rows.
+        # ---- 4. current views on the public ledger (update only) ----
         updated = errors = 0
         for ln, v in seen.items():
             try:
-                sb.table("listings") \
-                  .update({"listing_views": v}) \
-                  .eq("listing_number", ln) \
-                  .execute()
+                sb.table("listings").update({"listing_views": v}) \
+                  .eq("listing_number", ln).execute()
                 updated += 1
-            except Exception as e:
+            except Exception:
                 errors += 1
-                if errors <= 3:
-                    print(f"\n  [!] listings update failed for {ln}: {e}")
-            if updated % 1000 == 0 and updated:
-                print(f"  [listings: {updated:,} updated]", end="\r")
-
-        print(f"\n[+] listings.listing_views: {updated:,} updated | {errors:,} errors")
+            if updated and updated % 2000 == 0:
+                print(f"  [ledger: {updated:,} updated]", end="\r")
+        print(f"[+] listings.listing_views: {updated:,} updated | {errors:,} errors")
 
     def record_dom_anchor(self, listings, observed_at=None):
-        """Record today's max listing number as a DOM calibration anchor."""
-        import os
-        from datetime import datetime, timezone
-        from supabase import create_client
+        """Record today's max listing number as a DOM calibration anchor.
 
-        key = os.environ.get("SUPABASE_SERVICE_KEY", "")
-        if not key:
+        Called right after the raw crawl so the anchor lands even if
+        enrichment later times out.
+        """
+        sb = self._sb_client()
+        if sb is None:
             return
 
-        url = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
-        sb = create_client(url, key)
-        observed_at = observed_at or datetime.now(timezone.utc).date().isoformat()
+        observed_at = observed_at or self._today()
 
-        nums = [ln for ln in self._clean_view_rows(listings)]
-        if not nums:
-            nums = []
-            for l in listings:
-                try:
-                    ln = int(l.get("listNumber"))
-                except (TypeError, ValueError):
-                    continue
-                if 1_000_000 <= ln <= 2_999_999:
-                    nums.append(ln)
+        nums = []
+        for l in listings:
+            try:
+                ln = int(l.get("listNumber"))
+            except (TypeError, ValueError):
+                continue
+            if 1_000_000 <= ln <= 2_999_999:
+                nums.append(ln)
+
         if not nums:
             print("[-] No valid listing numbers for DOM anchor")
             return
@@ -585,7 +657,6 @@ if __name__ == "__main__":
     print("BizQuest Full Marketplace Scraper (API State Data)")
     print("=" * 60)
 
-    # Configuration
     PROXY = os.environ.get("PROXY_URL")
     MAX_PAGES_PER_STATE = int(os.environ.get("MAX_PAGES_PER_STATE", "150"))
     WORKERS = int(os.environ.get("WORKERS", "5"))
@@ -595,10 +666,9 @@ if __name__ == "__main__":
     if not PROXY:
         print("[!] PROXY_URL not set — running direct (may be blocked)")
 
-    # Parse command line args
     if len(sys.argv) > 1:
         if sys.argv[1] == "combine":
-            listings = combine_state_files()
+            combine_state_files()
             sys.exit(0)
         elif sys.argv[1] == "enrich":
             scraper = BizQuestScraper(PROXY)
@@ -610,8 +680,8 @@ if __name__ == "__main__":
             scraper.save_results(listings, "bizquest_enriched.json")
             scraper.save_to_csv(listings, "bizquest_enriched.csv")
             if WRITE_DB:
-                scraper.save_to_supabase(listings)
                 scraper.record_dom_anchor(listings)
+                scraper.save_to_supabase(listings)
             sys.exit(0)
 
     print(f"\n[*] Configuration:")
@@ -621,14 +691,12 @@ if __name__ == "__main__":
     print(f"    Write to Supabase: {WRITE_DB}")
     print()
 
-    # Create scraper
     scraper = BizQuestScraper(PROXY)
 
     if not scraper.token:
         print("[-] Failed to get token. Exiting.")
         sys.exit(1)
 
-    # Scrape all states
     listings = scraper.scrape_all_states(
         max_pages_per_state=MAX_PAGES_PER_STATE,
         workers=WORKERS,
@@ -636,16 +704,14 @@ if __name__ == "__main__":
     )
 
     if listings:
-        # Save raw
         scraper.save_results(listings, "bizquest_raw.json")
         scraper.save_to_csv(listings, "bizquest_raw.csv")
 
-        # Record the DOM anchor from the raw crawl — this is the true
-        # ceiling for today regardless of whether enrichment succeeds.
+        # Anchor first: the raw crawl gives the true ceiling for today,
+        # and this survives an enrichment timeout.
         if WRITE_DB:
             scraper.record_dom_anchor(listings)
 
-        # Enrich
         if ENRICH:
             listings = scraper.enrich_with_views(listings, workers=WORKERS)
             listings.sort(key=lambda x: x.get('profileViews') or 0, reverse=True)
@@ -654,13 +720,11 @@ if __name__ == "__main__":
             if WRITE_DB:
                 scraper.save_to_supabase(listings)
 
-        # Stats
         print(f"\n{'=' * 60}")
         print("FINAL STATS")
         print(f"{'=' * 60}")
         print(f"Total unique listings: {len(listings)}")
 
-        # State breakdown
         state_counts = {}
         for l in listings:
             st = l.get('scraped_state', 'UNK')
@@ -670,7 +734,6 @@ if __name__ == "__main__":
         for st, count in sorted(state_counts.items(), key=lambda x: x[1], reverse=True)[:15]:
             print(f"    {st}: {count:,}")
 
-        # View stats if enriched
         views = [l.get('profileViews') or 0 for l in listings if l.get('profileViews') is not None]
         if views:
             print(f"\nView stats:")
@@ -679,8 +742,6 @@ if __name__ == "__main__":
             print(f"    Avg views: {sum(views)/len(views):,.0f}")
             print(f"    Max views: {max(views):,}")
 
-        # Top 20
-        if views:
             print(f"\nTOP 20 BY VIEWS:")
             for i, l in enumerate(listings[:20], 1):
                 v = l.get('profileViews') or 0
