@@ -1,0 +1,55 @@
+name: BizQuest Daily Crawl
+
+# Fast path: state crawl only, no per-listing enrichment.
+# ~25 minutes vs ~4.5 hours. Records the DOM anchor and refreshes
+# the bizquest_listings mirror every day. View counts come from the
+# weekly enrichment workflow instead.
+
+on:
+  schedule:
+    - cron: '0 13 * * *'   # daily 09:00 ET
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bizquest
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir "curl_cffi==0.7.4" supabase colorama
+
+      - name: Crawl BizQuest (no enrichment)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          ENRICH: "0"          # skip the 4-hour per-listing detail fetch
+          WRITE_DB: "1"
+          MAX_PAGES_PER_STATE: "150"
+          WORKERS: "5"
+        run: python3 scrapers/bizquest_views_refresh.py
+
+      # bizquest_combined.json feeds the weekly enrich run so it doesn't
+      # have to re-crawl all 50 states.
+      - name: Upload crawl output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bizquest-raw-${{ github.run_number }}
+          path: |
+            bizquest_raw.json
+            bizquest_raw.csv
+          retention-days: 14
+          if-no-files-found: warn

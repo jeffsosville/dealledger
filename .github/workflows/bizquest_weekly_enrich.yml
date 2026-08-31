@@ -1,0 +1,69 @@
+name: BizQuest Weekly Enrichment
+
+# Slow path: fetches profileViews for every listing. This is the
+# expensive one (~4 hours), so it runs once a week instead of daily.
+# Views move by a median of 3/day, so weekly readings lose almost
+# nothing and cut Actions minutes by roughly 80%.
+
+on:
+  schedule:
+    - cron: '0 13 * * 0'   # Sundays 09:00 ET
+  workflow_dispatch:
+    inputs:
+      workers:
+        description: "Parallel enrichment workers"
+        default: "8"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bizquest
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir "curl_cffi==0.7.4" supabase colorama
+
+      # SIGINT at 4h40m so Python unwinds and still writes what it has,
+      # instead of being killed outright at the job timeout.
+      - name: Crawl and enrich
+        id: run
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          ENRICH: "1"
+          WRITE_DB: "1"
+          MAX_PAGES_PER_STATE: "150"
+          WORKERS: ${{ inputs.workers || '8' }}
+        run: |
+          set +e
+          timeout --signal=INT 280m python3 scrapers/bizquest_views_refresh.py
+          CODE=$?
+          set -e
+          if [ $CODE -eq 124 ]; then
+            echo "::warning::Enrichment hit the 280-minute guard and stopped early."
+          elif [ $CODE -ne 0 ]; then
+            echo "::warning::Scraper exited with code $CODE."
+          fi
+
+      - name: Upload enriched output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bizquest-enriched-${{ github.run_number }}
+          path: |
+            bizquest_enriched.csv
+            bizquest_enriched.json
+          retention-days: 30
+          if-no-files-found: warn
