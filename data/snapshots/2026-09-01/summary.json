@@ -1,0 +1,26 @@
+{
+  "started": "2026-09-01T16:58:50.161183+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 3,
+  "brokers_failed": 97,
+  "total_listings": 28,
+  "listings_with_price": 10,
+  "listings_with_cashflow": 0,
+  "listings_with_state": 28,
+  "detail_pages_fetched": 29,
+  "patterns_cached": 304,
+  "patterns_learned": 4,
+  "verticals": {
+    "other": 25,
+    "automotive": 1,
+    "healthcare": 2
+  },
+  "failure_types": {
+    "HTTP_403": 9,
+    "NO_PATTERN": 78,
+    "EMBED_BBS": 23,
+    "VALIDATION_REJECT": 1,
+    "FETCH_ERROR": 9
+  },
+  "completed": "2026-09-01T18:09:55.561749+00:00"
+}
