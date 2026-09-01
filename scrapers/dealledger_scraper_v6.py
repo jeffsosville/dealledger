@@ -1851,6 +1851,7 @@ class DealLedgerScraper:
 
         try:
             latest: dict[str, str] = {}
+            yield_by_domain: dict[str, int] = {}
             # Page through listings_direct in chunks (PostgREST caps rows/req)
             page_size = 1000
             start = 0
@@ -1870,9 +1871,41 @@ class DealLedgerScraper:
                         continue
                     if d not in latest or ls > latest[d]:
                         latest[d] = ls
+                    yield_by_domain[d] = yield_by_domain.get(d, 0) + 1
                 if len(rows) < page_size:
                     break
                 start += page_size
+
+            # PRODUCERS FIRST, unless explicitly told otherwise.
+            #
+            # Pure staleness ordering sorts never-scraped brokers to the very
+            # front, so every run spends itself on the cohort that has never
+            # once succeeded - 70% NO_PATTERN and almost no listings, while
+            # brokers holding hundreds of live listings go unrefreshed for
+            # days. Staleness is the tiebreaker; proven yield is the sort.
+            #
+            # ORDER=stale restores the old behaviour for a deliberate sweep of
+            # the dark ones. ORDER=never crawls only never-scraped brokers.
+            order_mode = os.environ.get("ORDER", "yield").lower()
+
+            if order_mode == "never":
+                brokers = [b for b in brokers
+                           if yield_by_domain.get(b["domain"], 0) == 0]
+                print(f"📊 ORDER=never — {len(brokers)} never-scraped brokers only")
+                return brokers
+
+            if order_mode == "yield":
+                def key(b):
+                    d = b["domain"]
+                    produced = yield_by_domain.get(d, 0)
+                    # Never-scraped go last in this mode, not first.
+                    return (0 if produced else 1, -produced, latest.get(d, ""))
+                brokers = sorted(brokers, key=key)
+                producing = sum(1 for b in brokers
+                                if yield_by_domain.get(b["domain"], 0) > 0)
+                print(f"📊 ORDER=yield — {producing} producing brokers first, "
+                      f"{len(brokers) - producing} never-scraped last")
+                return brokers
 
             # Empty string sorts before any ISO timestamp => never-scraped first
             brokers.sort(key=lambda b: latest.get(b["domain"], ""))
