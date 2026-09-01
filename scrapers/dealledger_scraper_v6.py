@@ -1742,13 +1742,44 @@ class SupabaseWriter:
                 "created_at":    l.get("first_seen", now),
             })
 
+        # Postgres refuses an INSERT ... ON CONFLICT batch that contains the
+        # same conflict key twice: "ON CONFLICT DO UPDATE command cannot affect
+        # row a second time". It rejects the WHOLE batch, not the duplicate -
+        # so up to 100 good listings were being silently discarded every time
+        # a broker produced two cards that resolved to the same id. That fired
+        # three times in a single 100-broker run.
+        #
+        # Dedupe by id first, keeping the last occurrence (the later card is
+        # usually the more complete one - detail-page enrichment runs in order).
+        deduped: dict[str, dict] = {}
+        for row in rows:
+            deduped[row["id"]] = row
+        dropped = len(rows) - len(deduped)
+        if dropped:
+            print(f"   ⓘ  collapsed {dropped} duplicate ids before upsert")
+        rows = list(deduped.values())
+
         written = 0
         for i in range(0, len(rows), 100):
             batch = rows[i:i + 100]
-            self.client.table("listings_direct").upsert(
-                batch, on_conflict="id", ignore_duplicates=False
-            ).execute()
-            written += len(batch)
+            try:
+                self.client.table("listings_direct").upsert(
+                    batch, on_conflict="id", ignore_duplicates=False
+                ).execute()
+                written += len(batch)
+            except Exception as exc:
+                # One bad row must not cost the other 99. Retry singly so the
+                # rest land and the offender is named.
+                print(f"   ⚠️  batch upsert failed ({exc}); retrying rows individually")
+                for row in batch:
+                    try:
+                        self.client.table("listings_direct").upsert(
+                            [row], on_conflict="id", ignore_duplicates=False
+                        ).execute()
+                        written += 1
+                    except Exception as row_exc:
+                        print(f"      row {row.get('id')} "
+                              f"({(row.get('title') or '')[:50]}): {row_exc}")
             time.sleep(0.1)
         return written
 
