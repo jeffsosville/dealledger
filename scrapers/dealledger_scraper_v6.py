@@ -238,69 +238,6 @@ def looks_like_cre_or_lease(text):
     return bool(_LEASE_CRE_RE.search(text))
 
 
-def _find_listing_iframes(html, base_url):
-    """Return candidate iframe src URLs that likely hold listings, best-first.
-
-    Many broker sites (Wix, Squarespace, custom) embed their listings in an
-    <iframe> — a third-party feed (listing_feeds, AllBizForSale, etc.) or the
-    BizBuySell widget. The outer page has no listing HTML, so detection returns
-    NO_PATTERN; the listings live at the iframe's src, a different URL we must
-    fetch separately. This finds those srcs and skips obvious non-listing
-    iframes (ads, tracking, video, maps, social)."""
-    soup = BeautifulSoup(html, "html.parser")
-    out = []
-    SKIP = ("google", "youtube", "vimeo", "facebook", "twitter", "instagram",
-            "doubleclick", "googletagmanager", "recaptcha", "gstatic",
-            "maps.google", "player.", "ads", "analytics", "hotjar", "intercom",
-            "calendly", "hubspot", "linkedin")
-    WANT = ("listing", "feed", "business", "search", "properties", "inventory",
-            "results", "forsale", "for-sale", "bizbuysell", "widget", "embed")
-    for ifr in soup.find_all("iframe"):
-        src = ifr.get("src") or ifr.get("data-src") or ""
-        if not src:
-            continue
-        full = urljoin(base_url, src)
-        low = full.lower()
-        if any(s in low for s in SKIP):
-            continue
-        # score: prefer srcs whose URL or the iframe id/class hints "listings"
-        idc = " ".join([ifr.get("id", "")] + ifr.get("class", [])).lower()
-        score = sum(1 for w in WANT if w in low) + sum(2 for w in WANT if w in idc)
-        # even unscored same-doc iframes can hold listings; keep with low prio
-        out.append((score, full))
-    out.sort(key=lambda x: x[0], reverse=True)
-    # de-dup preserving order
-    seen, urls = set(), []
-    for _, u in out:
-        if u not in seen:
-            seen.add(u); urls.append(u)
-    return urls
-
-
-def _iframe_is_bizbuysell(iframe_url):
-    return "bizbuysell.com" in (iframe_url or "").lower()
-
-
-def _title_from_text(text):
-    """Derive a listing title from body/description text when no title element
-    was found. Takes the first sentence-like chunk that looks like a business
-    description — skips pure prices, dates, and boilerplate."""
-    if not text:
-        return None
-    for chunk in re.split(r'[\n.!?]', text):
-        c = chunk.strip()
-        if len(c) < 8 or len(c) > 140:
-            continue
-        low = c.lower()
-        if low.startswith(("$", "price", "asking", "contact", "call ", "click",
-                            "read more", "view", "more details")):
-            continue
-        if not re.search(r'[A-Za-z]{3,}', c):
-            continue
-        return c[:200]
-    return None
-
-
 def best_card_title(element, base_url="", firm_name=None):
     """
     Recover a real listing title from a card element.
@@ -473,57 +410,6 @@ _LOCATION_ONLY = {
     "ohio", "illinois", "michigan", "washington", "oregon", "nevada",
 }
 
-# Button/CTA text a scraper grabs when it targets the wrong element inside a
-# card (the "read more" link instead of the title). A grid whose titles are
-# mostly these matched the button, not the listing. (companysellers:
-# "MORE DETAILS" ×N; kingsleybrokers: "lower than or equal" filter option.)
-_BUTTON_TEXT = {
-    "more details", "read more", "view details", "view listing",
-    "view more", "learn more", "details", "more info", "see details",
-    "click here", "inquire", "contact", "lower than or equal",
-    "greater than or equal", "view", "next", "previous",
-}
-
-# Business-listing title signals. A real listing title almost always contains
-# one. Used to spot agent/name directories (aria.net) whose "titles" are
-# person names with none of these signals.
-_BIZ_TITLE_HINTS = (
-    "for sale", "for lease", "business", "restaurant", "shop", "store",
-    "company", "franchise", "service", "llc", "inc", "route", "salon",
-    "cafe", "bar", "grill", "market", "auto", "repair", "clean", "vending",
-    "laundr", "gym", "spa", "bakery", "manufactur", "distribut", "profit",
-    "established", "turnkey", "cash flow", "revenue", "$",
-)
-
-
-def _looks_like_person_name(t):
-    """2-3 capitalized words with no business signal — likely an agent name
-    from a 'meet our team' grid (aria.net), not a listing title."""
-    parts = t.split()
-    if not (2 <= len(parts) <= 3):
-        return False
-    if any(h in t.lower() for h in _BIZ_TITLE_HINTS):
-        return False
-    return all(p[:1].isupper() and p.replace("-", "").replace(".", "").isalpha()
-               for p in parts)
-
-
-def _is_nav_selector(selector):
-    """True if a CSS selector is a navigation menu / non-listing container.
-    WordPress emits li.menu-item-* for nav bars; those repeat and link out, so
-    the detector otherwise matches the site's MENU as 'listings' (myersba: 61
-    nav links; svnmarinas: 53 'Advisory Services'). A listing site uses custom
-    post-type classes (post-type-listing, property, business-listing), never
-    menu-item. Reject these outright — a NO_PATTERN broker is better than one
-    that writes its nav bar as inventory."""
-    if not selector:
-        return False
-    s = selector.lower()
-    NAV_TOKENS = ("menu-item", "menu_item", "nav-item", "navbar", "nav-link",
-                  "sub-menu", "submenu", "menu-link", "dropdown", "breadcrumb",
-                  "footer", "widget", "sidebar")
-    return any(tok in s for tok in NAV_TOKENS)
-
 
 def validate_listing_set(cards, url=""):
     """
@@ -575,50 +461,7 @@ def validate_listing_set(cards, url=""):
     uniq_titles = len({t for t in lowered if t})
     dup_frac = 1 - (uniq_titles / n) if n else 0
 
-    # Title-realness signals (fire regardless of price — companysellers and
-    # aria.net both had prices but junk titles).
-    empty_frac  = sum(1 for t in titles if not t) / n
-    button_frac = sum(1 for t in lowered if t in _BUTTON_TEXT) / n
-    name_frac   = sum(1 for t in titles if _looks_like_person_name(t)) / n
-    # Marketing/nav phrases: content-page headings and CTAs the detector grabs
-    # when it matches a menu or a marketing section rather than a listing grid
-    # (myersba "Ready to talk about what comes next?", buybizusa "» Selling a
-    # Business", alpine "Steps to Selling Your Business"). These are full
-    # phrases so they dodge the button/name/empty checks — detect by leading
-    # menu bullets and marketing keyword phrases.
-    def _is_marketing(t):
-        tl = t.lower().strip()
-        if tl[:1] in "»›▸-•":            # menu bullet prefix
-            return True
-        for kw in ("selling a business", "buying a business", "sell your business",
-                   "about us", "contact us", "our services", "free consult",
-                   "advisory services", "learn more", "how to sell", "how to buy",
-                   "valuation", "testimonial", "why choose", "meet the team",
-                   "recent transaction", "case study", "consulting services",
-                   "ready to talk", "what comes next", "register", "whitepaper",
-                   "newsletter", "get started", "schedule a", "book a call"):
-            if kw in tl:
-                return True
-        return False
-    marketing_frac = sum(1 for t in titles if _is_marketing(t)) / n
-
-    # --- reject conditions (title realness) ---
-    # Mostly empty titles: extraction targeted the wrong element. (quietlight)
-    if empty_frac >= 0.5:
-        return "reject", f"{empty_frac:.0%} empty titles"
-    # Mostly button/CTA text: grabbed the "read more" link, not the title.
-    # (companysellers 'MORE DETAILS' ×N)
-    if button_frac >= 0.4:
-        return "reject", f"{button_frac:.0%} button-text titles"
-    # Mostly person names with no business signal: agent directory. (aria.net)
-    if name_frac >= 0.6:
-        return "reject", f"{name_frac:.0%} person-name titles (agent directory?)"
-    # Mostly marketing/nav phrases: matched a menu or content section, not a
-    # listing grid. (myersba, buybizusa, alpine, texasbusinessbrokers)
-    if marketing_frac >= 0.5:
-        return "reject", f"{marketing_frac:.0%} marketing/nav phrase titles"
-
-    # --- reject conditions (browse grids) ---
+    # --- reject conditions ---
     # A browse grid: almost no concrete data AND titles are mostly categories.
     if with_data == 0 and category_frac >= 0.5:
         return "reject", f"no data + {category_frac:.0%} category-like titles"
@@ -638,20 +481,116 @@ def validate_listing_set(cards, url=""):
     return "ok", f"{with_data}/{n} cards carry data"
 
 
+# Words that only appear in site chrome. A "listing" whose title reads
+# "About Toggle child menu Expand" is a navigation dropdown.
+#
+# missionpeakbrokers.com taught us this: an 18-item nav menu beat a working
+# pattern that was extracting 12 real listings, because every nav item has a
+# link and 20+ characters of text, so is_listing_element said yes 18 times.
+_NAV_WORDS = re.compile(
+    r"\b(toggle|child menu|submenu|expand|collapse|skip to|main menu|"
+    r"navigation|breadcrumb|search this|filter by|sort by|sign in|log in|"
+    r"my account|newsletter|cookie|privacy policy|terms of)\b",
+    re.I,
+)
+
+# Structural containers that genuinely never hold listing cards.
+_CHROME_TAGS = {"nav", "header", "footer", "aside"}
+
+# Class names that mean navigation, matched as WHOLE words only.
+#
+# The first version of this used a loose prefix match on words including
+# "widget", "header" and "filter". That hit `elementor-widget-container`,
+# `card-header` and `entry-header` - the standard wrappers around real listing
+# cards on WordPress - and rejected genuine listings across whole sites.
+# NO_PATTERN went from ~49% to 78% in one run.
+#
+# So: whole words, a short list, and only two levels up. The precise signal is
+# the nav VOCABULARY check below, not class-name guessing.
+_CHROME_CLASSES = {
+    "nav", "navbar", "navigation", "main-nav", "primary-nav", "menu",
+    "main-menu", "site-header", "site-footer", "breadcrumb", "breadcrumbs",
+    "sidebar", "offcanvas", "off-canvas", "topbar", "cookie-banner",
+}
+
+
+def _in_site_chrome(element) -> bool:
+    """
+    Is this element inside real navigation?
+
+    Two levels only. A listing card sits a long way inside a page and its
+    distant ancestors are layout containers with arbitrary names - walking
+    five levels up and pattern-matching class strings produces far more false
+    positives than it prevents.
+    """
+    node = element
+    for _ in range(2):
+        node = getattr(node, "parent", None)
+        if node is None or not getattr(node, "name", None):
+            return False
+        if node.name in _CHROME_TAGS:
+            return True
+        if node.get("role") in ("navigation", "banner", "contentinfo"):
+            return True
+        classes = {c.lower() for c in (node.get("class") or [])}
+        if classes & _CHROME_CLASSES:
+            return True
+    return False
+
+
 def is_listing_element(element, base_url=""):
     """
     A container element counts as a listing only if it has a real title AND
-    (a real price OR a detail link). This is what separates genuine listing
-    cards from nav bars, hero blocks, and filter widgets that merely repeat.
+    (a real price OR a detail link), and is not site chrome.
+
+    The chrome checks are not optional decoration. Without them a repeated nav
+    menu scores higher than a real listing grid, because menus repeat cleanly
+    and listings do not.
     """
     text = element.get_text(" ", strip=True)
     if len(text) < 20:
         return False
+
+    # Only the opening of the text - a card whose FIRST words are nav
+    # vocabulary is a menu. One of these words appearing later in a long
+    # description is not evidence of anything.
+    if _NAV_WORDS.search(text[:60]):
+        return False
+    if element.name in _CHROME_TAGS:
+        return False
+    if _in_site_chrome(element):
+        return False
+
     title = best_card_title(element, base_url)
     if not title or is_junk_listing(title):
         return False
+    if _NAV_WORDS.search(title):
+        return False
+
     has_price = any(v >= 1_000 for v in parse_all_prices(text))
     return has_price or has_detail_link(element, base_url)
+
+
+
+def stable_listing_id(title: str, url: str, base_url: str, broker_domain: str) -> str:
+    """
+    Identity for a listing across runs.
+
+    DO NOT put asking_price in here. It used to be
+    sha256(title|asking_price|url), and a price that parsed even slightly
+    differently between runs produced a different id, so the upsert on `id`
+    never matched and wrote a new row instead of updating. On 29 Aug 2026 that
+    turned 316 real quietlight.com listings into 11,243 rows. A price change is
+    a price change - it is not a different listing.
+
+    Prefer the detail URL. Fall back to broker + title, never to the index URL,
+    or every listing on a page collapses into one identity.
+    """
+    if url and url != base_url:
+        key = url
+    else:
+        key = f"{broker_domain}|{(title or '').strip().lower()}"
+    return hashlib.sha256(key.encode()).hexdigest()[:16]
 
 
 def positive_or_none(v):
@@ -754,7 +693,7 @@ PROXY_AVAILABLE = bool(PROXY_USER and PROXY_PASS)
 # Anti-block retry tuning (mirrors bbs_allstates.py).
 MAX_403_RETRIES = 3      # re-warm + retry this many times on a 403/429/503
 BACKOFF_BASE    = 3.0    # backoff = 3s, 6s, 12s (+ jitter)
-REQ_TIMEOUT     = 40     # per-request timeout (raised 25→40 2026-08: slow broker sites + proxy latency were timing out)
+REQ_TIMEOUT     = 25     # per-request timeout; a dead proxy IP fails fast
 
 
 def build_proxy_url(sessid):
@@ -765,40 +704,6 @@ def build_proxy_url(sessid):
 
 
 # Domains known to hard-block — start them on the proxy immediately.
-# Domains that are NOT real listing brokers — agent directories, aggregators
-# that yield junk, or sites that only ever produce non-listing content. These
-# are skipped entirely at load time. (2026-08: aria.net is an agent roster —
-# it matched a person-name grid, wrote 350 "Carol Shin"-style rows.)
-BLOCKLIST_DOMAINS = {
-    "aria.net",
-}
-
-
-# Owned by the specialized pipeline (scrapers/specialized_scrapers.py).
-# V6 must never scrape these: the specialized scrapers already cover them
-# properly, so a generic attempt is wasted budget AND risks writing worse
-# rows over good ones. Matched on the domain OR any subdomain, because FCBB
-# alone has ~10 city sites (pittsburgh.fcbb.com, atlantametro.fcbb.com, ...).
-# Kept in sync with scrape_specialized_broker() dispatch.
-SPECIALIZED_DOMAINS = {
-    "execbb.com",                    # LarryBodnerScraper
-    "linkbusiness.com",              # LinkBusinessScraper
-    "murphybusiness.com",            # MurphyScraper
-    "hedgestone.com",                # HedgestoneScraper
-    "tworld.com",                    # TransworldScraper
-    "sunbeltnetwork.com",            # SunbeltScraper
-    "vrbbusa.com",                   # VRScraper
-    "vrbusinessbrokers.com",         # VRScraper
-    "fcbb.com",                      # FCBBScraper (+ all *.fcbb.com)
-    "wesellrestaurants.com",         # WeSellRestaurantsScraper
-    "vestedbb.com",                  # VestedScraper
-    "routesforsale.net",             # RoutesForSaleScraper (exact site only —
-                                     # commercialroutesforsale.com and
-                                     # deliveryroutesforsale.com are DIFFERENT
-                                     # companies; V6 must keep scraping those)
-}
-
-
 PROXY_DOMAINS = {
     # Discovered via URL health sweep 2026-07-16 — these return 401/403/406/429 direct
     "hedgestone.com",
@@ -955,7 +860,48 @@ class PatternCache:
             return entry
         return None
 
+    @staticmethod
+    def _proven(entry) -> int:
+        """
+        Evidence that this pattern extracts real listings.
+
+        Deliberately NOT `count`. In the current schema `count` is how many
+        elements the selector matched, which is not evidence of anything - a
+        nav menu matches 18 elements cleanly. `score` comes out of
+        _score_group, so those elements at least passed is_listing_element.
+        `total_listings` in the older schema is real historical yield and is
+        the strongest signal available.
+        """
+        if not isinstance(entry, dict):
+            return 0
+        if entry.get("total_listings"):
+            return int(entry["total_listings"])
+        if entry.get("score"):
+            return int(entry["score"])
+        return 0
+
     def store(self, domain, pattern):
+        """
+        Keep the better pattern, not the newer one.
+
+        Both schemas live in this file - an older one keyed on
+        pattern/success_count/total_listings, and the current
+        container_selector/count/score. Whichever ran last used to win
+        outright, which is how missionpeakbrokers.com lost a pattern
+        extracting 12 real listings to a nav menu that matched 18 elements.
+
+        Element count is not evidence. A new pattern has to at least match the
+        proven yield of the one it replaces.
+        """
+        existing = self.patterns.get(domain)
+        if existing:
+            old_yield = self._proven(existing)
+            new_yield = self._proven(pattern)
+            if old_yield >= 3 and new_yield < old_yield:
+                print(f"   ↩︎  keeping cached pattern for {domain} "
+                      f"({old_yield} listings) over new guess ({new_yield})")
+                return
+
         self.patterns[domain] = pattern
         self.save()
 
@@ -1112,14 +1058,6 @@ class PatternDetector:
 
         if not candidates:
             return None
-        # Drop navigation/menu/footer/widget containers: WordPress nav bars
-        # repeat and link out, so they otherwise win as "listings" (myersba's
-        # 61 menu links, svnmarinas' 53 'Advisory Services'). Better NO_PATTERN
-        # than writing a site's nav bar as inventory.
-        candidates = [c for c in candidates
-                      if not _is_nav_selector(c.get("container_selector", ""))]
-        if not candidates:
-            return None
         candidates.sort(key=lambda x: x["score"], reverse=True)
         return candidates[0]
 
@@ -1268,19 +1206,10 @@ class ListingExtractor:
         location     = LocationExtractor.extract(text)
         vertical     = cls.classify_vertical(text)
 
-        # Title recovery: if the title is still blank after slug fallback, derive
-        # a clean one from the description's first meaningful sentence. Prevents
-        # real, priced listings from being written with an empty title (which
-        # then looks like junk). (2026-08: recovered ~1200 empty-title rows.)
-        if not title or not title.strip():
-            title = _title_from_text(text) or title
-        if not title or not title.strip():
-            # Still nothing usable — skip rather than emit an empty-title row.
-            return None
-
-        listing_id = hashlib.sha256(
-            f"{title}|{asking_price}|{detail_url or base_url}".encode()
-        ).hexdigest()[:16]
+        _url = detail_url or base_url
+        listing_id = stable_listing_id(
+            title, _url, base_url, urlparse(base_url).netloc
+        )
 
         now = datetime.now(timezone.utc).isoformat()
 
@@ -1293,7 +1222,8 @@ class ListingExtractor:
             "city":          location["city"]  if location else None,
             "state":         location["state"] if location else None,
             "vertical":      vertical,
-            "url":           detail_url or base_url,
+            "url":           _url,
+            "url_is_listing_specific": bool(detail_url) and detail_url != base_url,
             "broker_name":   broker_name,
             "broker_domain": urlparse(base_url).netloc,
             "description":   text[:1000],
@@ -1363,8 +1293,8 @@ def _make_api_listing(base_url, broker_name, title, detail_url=None,
                       city=None, state=None, description=None):
     now = datetime.now(timezone.utc).isoformat()
     url = detail_url or base_url
-    listing_id = hashlib.sha256(
-        f"{title}|{asking_price}|{url}".encode()).hexdigest()[:16]
+    listing_id = stable_listing_id(
+        title, url, base_url, urlparse(base_url).netloc)
     text = f"{title or ''} {description or ''}"
     return {
         "id":            listing_id,
@@ -1376,6 +1306,7 @@ def _make_api_listing(base_url, broker_name, title, detail_url=None,
         "state":         state,
         "vertical":      ListingExtractor.classify_vertical(text),
         "url":           url,
+        "url_is_listing_specific": bool(detail_url) and detail_url != base_url,
         "broker_name":   broker_name,
         "broker_domain": urlparse(base_url).netloc,
         "description":   (description or title or "")[:1000],
@@ -1570,18 +1501,11 @@ class PageFetcher:
         off, and retry up to MAX_403_RETRIES. Raises requests.HTTPError with
         the last response attached when a block survives all retries, so the
         caller can classify it as HTTP_403.
-
-        Transient network failures (proxy timeout curl-28, tunnel-fail curl-56)
-        are retried with a fresh sticky IP, and — as a last resort — retried
-        ONCE directly without the proxy, since many broker sites don't need it
-        and the DataImpulse gateway itself is often what's timing out. (2026-08:
-        cut a ~31% FETCH_ERROR rate driven by proxy-gateway congestion.)
         """
         domain = urlparse(url).netloc
         if domain in self._proxy_domains_runtime:
             use_proxy = True
         resp = None
-        last_net_err = None
         for attempt in range(MAX_403_RETRIES + 1):
             try:
                 resp = self.session.get(
@@ -1589,28 +1513,13 @@ class PageFetcher:
                     allow_redirects=True,
                     proxies=self._proxy_dict() if use_proxy else None,
                 )
-            except Exception as e:
-                # Dead/slow proxy IP or gateway timeout — re-warm onto a fresh
-                # IP and retry.
-                last_net_err = e
+            except Exception:
+                # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
                 if attempt < MAX_403_RETRIES:
                     time.sleep(BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5))
                     self._rewarm(url, use_proxy)
                     continue
-                # All proxied attempts exhausted on a NETWORK error (not a
-                # block). Last resort: try once directly, no proxy — the
-                # gateway may be the thing failing, not the target site.
-                if use_proxy:
-                    try:
-                        resp = self.session.get(
-                            url, headers=self._headers(), timeout=timeout,
-                            allow_redirects=True, proxies=None,
-                        )
-                        if resp.status_code == 200:
-                            return resp.text
-                    except Exception:
-                        pass
-                raise last_net_err
+                raise
 
             if resp.status_code == 200:
                 return resp.text
@@ -1833,17 +1742,6 @@ class SupabaseWriter:
                 "created_at":    l.get("first_seen", now),
             })
 
-        # Dedupe by id BEFORE batching. Postgres rejects an upsert whose batch
-        # contains the same conflict key (id) twice ("ON CONFLICT DO UPDATE
-        # command cannot affect row a second time", 21000) — and that error
-        # fails the ENTIRE flush, silently dropping every good broker in the
-        # batch. Two cards can collide on id (same listing linked twice, or a
-        # hash collision), so we keep the LAST occurrence (most enriched) per id.
-        deduped = {}
-        for r in rows:
-            deduped[r["id"]] = r
-        rows = list(deduped.values())
-
         written = 0
         for i in range(0, len(rows), 100):
             batch = rows[i:i + 100]
@@ -1897,7 +1795,6 @@ class DealLedgerScraper:
         }
         self.all_listings: list[dict] = []
         self.failures:     list[dict] = []
-        self.embed_brokers: list[dict] = []  # iframe/embed brokers (prospect list)
 
     @staticmethod
     def _load_brokers(csv_path: str) -> list[dict]:
@@ -1924,28 +1821,16 @@ class DealLedgerScraper:
         )
 
         brokers = []
-        skipped = 0
         for _, row in df.iterrows():
             url = str(row[url_col]).strip()
             if not url.startswith("http"):
                 continue
-            domain = urlparse(url).netloc
-            # Skip known non-listing sites (agent directories, junk aggregators).
-            bare = domain[4:] if domain.startswith("www.") else domain
-            if (bare in BLOCKLIST_DOMAINS
-                    or any(bare == d or bare.endswith("." + d)
-                           for d in SPECIALIZED_DOMAINS)):
-                skipped += 1
-                continue
             name = (str(row[name_col]).strip()
                     if name_col and pd.notna(row.get(name_col))
-                    else domain)
-            brokers.append({"name": name, "url": url, "domain": domain})
+                    else urlparse(url).netloc)
+            brokers.append({"name": name, "url": url, "domain": urlparse(url).netloc})
 
-        msg = f"📋 Loaded {len(brokers)} brokers from {csv_path}"
-        if skipped:
-            msg += f" ({skipped} blocklisted skipped)"
-        print(msg)
+        print(f"📋 Loaded {len(brokers)} brokers from {csv_path}")
         return brokers
 
     def _order_by_staleness(self, brokers: list[dict]) -> list[dict]:
@@ -2069,12 +1954,10 @@ class DealLedgerScraper:
                 # been blocking. This also covers the case where curl_cffi
                 # returns a content-ful shell that passes the price-signal
                 # check but whose grid only materializes after JS runs.
-                rendered_html = None  # reused by iframe unwrap to avoid double render
                 if not pattern and method != "playwright" and HAS_PLAYWRIGHT:
                     try:
                         pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
                         pw_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
-                        rendered_html = pw_html
                         pw_pattern = PatternDetector.detect(pw_html, url)
                         if pw_pattern:
                             html, method, pattern = pw_html, "playwright", pw_pattern
@@ -2083,69 +1966,9 @@ class DealLedgerScraper:
                     except Exception:
                         pass
 
-                # ── iframe unwrap ─────────────────────────────────────────
-                # Still no pattern? The listings may live inside an <iframe>
-                # (third-party feed or BizBuySell widget). Fetch the iframe's
-                # src directly and detect on THAT. Recovers Wix/Squarespace
-                # "listing_feeds" embeds and similar. Many sites inject the
-                # iframe via JS, so it is ABSENT from the raw HTML — we search
-                # the raw HTML first, then the Playwright-RENDERED DOM where the
-                # JS-injected iframe actually appears. BizBuySell iframes are
-                # recorded for the prospect list but skipped for data.
-                if not pattern:
-                    def _try_iframes(source_html, source_url):
-                        """Return (html, pattern, iframe_url) on recovery, or
-                        ('bbs', None, ifr_url) if a BBS embed was tagged, else None."""
-                        for ifr_url in _find_listing_iframes(source_html, source_url)[:3]:
-                            if _iframe_is_bizbuysell(ifr_url):
-                                return ("bbs", None, ifr_url)
-                            try:
-                                ip = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
-                                ih, _ = self.fetcher.fetch(ifr_url, use_proxy=ip)
-                                ipat = PatternDetector.detect(ih, ifr_url)
-                                if ipat:
-                                    return (ih, ipat, ifr_url)
-                            except Exception:
-                                continue
-                        return None
-
-                    # 1) raw HTML iframes
-                    result = _try_iframes(html, url)
-                    # 2) if nothing, look in the Playwright-RENDERED DOM where
-                    #    JS-injected iframes appear (capstar/excellence-style).
-                    #    Reuse the render from the escalation step if we have it;
-                    #    otherwise render now.
-                    if result is None and method != "playwright" and HAS_PLAYWRIGHT:
-                        try:
-                            if rendered_html is None:
-                                pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
-                                rendered_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
-                            result = _try_iframes(rendered_html, url)
-                        except Exception:
-                            pass
-
-                    if result is not None:
-                        if result[0] == "bbs":
-                            ifr_url = result[2]
-                            print(f"   🔗 BizBuySell embed detected → tagged, skipping data")
-                            self.stats["failure_types"]["EMBED_BBS"] += 1
-                            self.embed_brokers.append(
-                                {"broker": name, "url": broker["url"], "iframe": ifr_url,
-                                 "provider": "bizbuysell"})
-                        else:
-                            ifr_html, ifr_pattern, ifr_url = result
-                            html, method, pattern = ifr_html, "iframe", ifr_pattern
-                            url = ifr_url
-                            print(f"   🖼️  iframe unwrap recovered a pattern "
-                                  f"({len(ifr_html):,} bytes) from {ifr_url[:60]}")
-                            self.embed_brokers.append(
-                                {"broker": name, "url": broker["url"],
-                                 "iframe": ifr_url, "provider": "feed"})
-
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
-                    if (predicted and predicted.get("score", 0) > pattern.get("score", 0)
-                            and not _is_nav_selector(predicted.get("container_selector", ""))):
+                    if predicted and predicted.get("score", 0) > pattern.get("score", 0):
                         pattern = predicted
                         print(f"   🧠 ML predicted: {pattern['container_selector']}")
                     else:
@@ -2398,11 +2221,6 @@ class DealLedgerScraper:
                 os.path.join(snap, "listings.csv"), index=False)
         with open(os.path.join(snap, "failures.json"), "w") as f:
             json.dump(self.failures, f, indent=2, default=str)
-        # Embed/iframe brokers — the prospect list of brokers whose listings
-        # live in a third-party or BizBuySell widget (candidates for a
-        # DealLedger-powered custom site).
-        with open(os.path.join(snap, "embed_brokers.json"), "w") as f:
-            json.dump(self.embed_brokers, f, indent=2, default=str)
         with open(os.path.join(snap, "summary.json"), "w") as f:
             json.dump(self.stats, f, indent=2, default=str)
 
