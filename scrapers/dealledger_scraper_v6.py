@@ -2014,7 +2014,13 @@ class DealLedgerScraper:
                         out.append(c)
                 return soup, out
 
+            MAX_CARDS_PER_BROKER = 2500
+
             while page_num <= max_pages:
+                if len(unique_cards) >= MAX_CARDS_PER_BROKER:
+                    print(f"   ⚠️  hit {MAX_CARDS_PER_BROKER}-card ceiling for this "
+                          f"broker - stopping (suspect pagination loop)")
+                    break
                 if pending_html is not None:
                     cur_html, pending_html = pending_html, None
                 else:
@@ -2029,11 +2035,36 @@ class DealLedgerScraper:
                     break
                 page_ids = {c["id"] for c in page_cards}
 
+                # Content fingerprint of the page, independent of how ids are
+                # built. The id-set check below cannot fire when ids embed the
+                # page URL - quietlight.com returned the same 227 cards on all
+                # 50 pages and every one counted as new, producing 11,440 rows
+                # for ~300 real listings. Titles are what actually repeat.
+                page_sig = hash(frozenset(
+                    (c.get("title") or "")[:80] for c in page_cards
+                ))
                 if page_num == 1:
                     first_page_ids = page_ids
+                    first_page_sig = page_sig
                     page_size = len(page_cards)
-                elif not (page_ids - seen_ids) or page_ids == first_page_ids:
-                    break  # nothing new / pagination looped back to page 1
+                    seen_sigs = {page_sig}
+                else:
+                    if page_sig in seen_sigs:
+                        print(f"   ↩︎  page {page_num} repeats earlier content - stopping")
+                        break
+                    seen_sigs.add(page_sig)
+
+                    if not (page_ids - seen_ids) or page_ids == first_page_ids:
+                        break  # nothing new / pagination looped back to page 1
+
+                    # A site that ignores the page parameter serves page 1
+                    # forever. Titles repeating is the tell.
+                    prev_titles = {(c.get("title") or "")[:80] for c in unique_cards}
+                    page_titles = {(c.get("title") or "")[:80] for c in page_cards}
+                    if page_titles and len(page_titles - prev_titles) / len(page_titles) < 0.2:
+                        print(f"   ↩︎  page {page_num} is {100 - int(100*len(page_titles - prev_titles)/len(page_titles))}% "
+                              f"repeat titles - stopping")
+                        break
 
                 new = [c for c in page_cards if c["id"] not in seen_ids]
                 unique_cards.extend(new)
