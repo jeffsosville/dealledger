@@ -346,6 +346,7 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "contact_phone": l.get("contact_phone"),
             "location_raw":  l.get("location"),
             "status":        l.get("status") or "active",
+            "_status_explicit": bool(l.get("status")),  # stripped before write; see below
             "source":        "broker_direct",
             "quality_tier":  "Unverified",
             "url_is_listing_specific": url_is_listing_specific,
@@ -400,12 +401,35 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
 
     new_rows = [r for r in rows if r["id"] not in existing]
     upd_rows = [r for r in rows if r["id"] in existing]
+    for r in new_rows:
+        r.pop("_status_explicit", None)
+
+    # status guard: an existing row keeps whatever status it has (active,
+    # superseded, a manual correction) unless THIS scraper run has positive
+    # evidence otherwise (e.g. a detected sold/pending badge). Without this,
+    # every successful re-scrape silently flipped a superseded row back to
+    # active — restoring listing_key()'s id stability made this worse, not
+    # better: once the id matched the original row again, upsert found it
+    # and stamped over the supersession every run. No row's manual state
+    # survives a scrape unless this guard is here.
+    #
+    # Split further (not just new vs. existing): PostgREST requires uniform
+    # keys within one POST batch, and only SOME existing rows will carry
+    # positive status evidence, so "status" can't be a key on some objects
+    # in a batch and absent on others. One pass, each row lands in exactly
+    # one of the two lists.
+    upd_rows_status, upd_rows_nostatus = [], []
     for r in upd_rows:
         r.pop("first_seen", None)
         r.pop("created_at", None)
+        if r.pop("_status_explicit"):
+            upd_rows_status.append(r)
+        else:
+            r.pop("status", None)
+            upd_rows_nostatus.append(r)
 
     upserted = 0
-    for batch in (new_rows, upd_rows):
+    for batch in (new_rows, upd_rows_status, upd_rows_nostatus):
         for i in range(0, len(batch), 500):
             upserted += write_chunk(batch[i:i + 500])
             time.sleep(0.1)
