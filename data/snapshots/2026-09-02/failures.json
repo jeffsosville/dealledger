@@ -1,0 +1,100 @@
+[
+  {
+    "broker": "larry bodner",
+    "url": "https://execbb.com/buyer/sub/results.asp?searchtype=incsearch",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 27735
+  },
+  {
+    "broker": "michael thomas",
+    "url": "https://fcbb.com/listing-property/construction-northeast-ohio-profitable-established-mold-remediation-construction-business-241-24182#",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing"
+  },
+  {
+    "broker": "rajesh bhatia",
+    "url": "https://www.reputedbrokerage.com/advanced-search/?status=for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.property-inner"
+  },
+  {
+    "broker": "tommy tran",
+    "url": "https://restaurantforsales.com/buy-a-restaurant.html",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-col2"
+  },
+  {
+    "broker": "matt evans",
+    "url": "https://businessesforsale.nebba.com/texas/bulverde/landscaping-and-yard-service-businesses-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing"
+  },
+  {
+    "broker": "scott beaton",
+    "url": "https://sellingrestaurants.com/buy-a-restaurant.html",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.simpleinline.inline-4-12"
+  },
+  {
+    "broker": "route consultant",
+    "url": "https://listings.routeconsultant.com/route-search-results/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.result__body"
+  },
+  {
+    "broker": "stuart schlosser",
+    "url": "https://www.sellingrestaurants.com/restaurant-type/for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-col2"
+  },
+  {
+    "broker": "jock purtle",
+    "url": "https://businessexits.com/listings/",
+    "error": "HTTP Error 522: ",
+    "type": "FETCH_ERROR",
+    "traceback": "_http(url, use_proxy=True), \"requests\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/dealledger/dealledger/scrapers/dealledger_scraper_v6.py\", line 1540, in _fetch_http\n    resp.raise_for_status()\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/models.py\", line 167, in raise_for_status\n    raise HTTPError(f\"HTTP Error {self.status_code}: {self.reason}\", 0, self)\ncurl_cffi.requests.exceptions.HTTPError: HTTP Error 522: \n"
+  },
+  {
+    "broker": "maninder singh sethi, mba",
+    "url": "https://www.businessusa.biz/business-for-sale?listing_number=&type=&state=&county=&price=&gross_annual_sales=&business_search=business_search",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 59092
+  },
+  {
+    "broker": "michael nuanes",
+    "url": "https://denverbbs.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 409338
+  },
+  {
+    "broker": "ronald b. gould",
+    "url": "https://www.excelbusinessbrokersusa.com/business-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "li[class*=\"menu-item-type-post_type\"]"
+  },
+  {
+    "broker": "erten musa",
+    "url": "https://www.prolevelbusiness.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 52
+  },
+  {
+    "broker": "lisa ludwig",
+    "url": "https://usapoolroutesales.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 86825
+  }
+]
