@@ -1,8 +1,13 @@
 name: Specialized franchise scrapers
 on:
-  workflow_dispatch:        # manual trigger only, for now
-  # schedule:
-  #   - cron: '0 8 * * 0'   # (uncomment after we confirm it works) Sun 8am UTC
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'    # 8am UTC daily — matches the local cron it replaces
+
+# The baseline-commit step pushes back to the repo, so the token needs write.
+permissions:
+  contents: write
+
 jobs:
   specialized:
     runs-on: ubuntu-latest
@@ -24,3 +29,33 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
         run: python3 scrapers/run_specialized.py
+
+      # Fails the job if any active row's first_seen moved later than the
+      # baseline committed by the last run — the exact regression that cost
+      # a week of DOM accuracy on execbb/fcbb/murphybusiness (CLAUDE.md #11,
+      # #13). if: always() so a scraper failure still gets checked against
+      # whatever it did manage to write.
+      - name: Check first_seen invariant
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/first_seen_monitor.py
+
+      # The baseline has to survive between runs to mean anything — a fresh
+      # container every run with no persisted state would never have a prior
+      # value to diff against. Committing it here is what closes that gap;
+      # the next run's checkout pulls it back in automatically.
+      - name: Persist first_seen baseline
+        if: always()
+        run: |
+          git config user.name "dealledger-bot"
+          git config user.email "bot@dealledger.org"
+          git add -f data/first_seen_baseline.json
+          if git diff --staged --quiet; then
+            echo "Baseline unchanged."
+            exit 0
+          fi
+          git commit -m "first_seen baseline: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push || echo "Push failed — baseline is committed locally only."

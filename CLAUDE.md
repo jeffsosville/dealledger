@@ -152,7 +152,9 @@ Our credibility is that we say what the data shows, including when it undercuts 
 
 On 1–2 Sep, full-file versions of `dealledger_scraper_v6.py` were pasted in from a clone at commit `637947d`, silently reverting three later commits and costing a reconciliation session.
 
-**Surgical patches only** — apply edits to whatever is actually in the working tree, and `git log --oneline <base>..HEAD -- <file>` before touching anything.
+**This is not a one-off.** The same clone reverted `scrapers/run_specialized.py`'s `listing_key()` (commit `12f1b16`), which held execbb.com and vestedbb.com's id stability — the revert alone produced 1,058 duplicate rows on the next run, three weeks later, with nothing pointing at the cause until someone noticed the uniqueness rate. Same mistake, same source, second file, second incident.
+
+**Any file handed over from outside the repo gets applied as a patch and verified with `git log --oneline <base>..HEAD -- <file>` first** — never dropped in whole. Surgical patches only, applied to whatever is actually in the working tree.
 
 ---
 
