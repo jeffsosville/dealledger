@@ -235,6 +235,45 @@ def resolve_broker_name(broker_account: str, fallback_display_name: str | None =
 derive_title_from_url = title_from_slug
 
 
+def listing_key(url: str, broker_domain: str | None = None) -> str:
+    """
+    Stable per-broker identity for a listing URL. The upsert conflict key
+    (row `id`) is derived from THIS, not the raw URL — so cosmetic variance
+    (execbb's trailing ID letters, vested's changing slug, http/https/www/
+    trailing-slash flips) maps the same listing to the same row instead of
+    inserting a duplicate.
+
+    Per-broker, because each site encodes identity differently:
+      execbb  -> numeric listingid only   (…listingid=44836130SXS4 == …44836130)
+      vested  -> numeric listing-id only   (slug is volatile; the id is stable)
+      default -> the raw URL, verbatim     (a different URL — e.g. a VR/bizbiz
+                 slug append — is a genuine relist and must stay a distinct row)
+
+    Returning the raw URL for the default case is deliberate: it keeps the id
+    of every non-execbb/vested row IDENTICAL to the old md5(url) scheme, so the
+    key change is surgical — only execbb and vested rows re-key, nothing else,
+    and no full-table migration is needed. Index/placeholder URLs (e.g.
+    'javascript:void(0)', broker '/listings/' pages) therefore behave exactly
+    as before and are never merged by this function.
+    """
+    u = (url or "").strip()
+    if not u:
+        return ""
+    host = (broker_domain or urlparse(u).netloc or "").replace("www.", "").lower()
+
+    if "execbb.com" in host or "execbb.com" in u.lower():
+        m = re.search(r"listingid=(\d+)", u, re.I)
+        if m:
+            return f"execbb:{m.group(1)}"
+
+    if "vestedbb.com" in host or "vestedbb.com" in u.lower():
+        m = re.search(r"listing-id-(\d+)", u, re.I)
+        if m:
+            return f"vestedbb:{m.group(1)}"
+
+    return u
+
+
 # ── Supabase upsert ───────────────────────────────────────────────────────────
 def upsert_listings(listings: list[dict], display_name: str | None = None) -> int:
     """
@@ -247,15 +286,17 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
     if not listings:
         return 0
 
-    # Deduplicate by URL within this batch before upserting
-    seen_urls = set()
+    # Deduplicate by STABLE per-broker key within this batch before upserting
+    seen_keys = set()
     deduped = []
     for l in listings:
         url = l.get("listing_url") or l.get("url") or ""
-        if url and url not in seen_urls:
-            seen_urls.add(url)
+        if not url:
             deduped.append(l)
-        elif not url:
+            continue
+        k = listing_key(url, derive_broker_domain(url))
+        if k not in seen_keys:
+            seen_keys.add(k)
             deduped.append(l)
     listings = deduped
 
@@ -274,9 +315,10 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
         if not url:
             continue
 
-        uid = f"spec:{hashlib.md5(url.encode()).hexdigest()[:16]}"
-        broker_name = resolve_broker_name(l.get("broker_account", ""), display_name)
         broker_domain = derive_broker_domain(url)
+        key = listing_key(url, broker_domain)
+        uid = f"spec:{hashlib.md5(key.encode()).hexdigest()[:16]}"
+        broker_name = resolve_broker_name(l.get("broker_account", ""), display_name)
         url_is_listing_specific = detect_index_page_url(url)
 
         # ONE RULE: if the scraper's title is blank OR junk (a CTA/status/
@@ -338,10 +380,35 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
         time.sleep(0.05)
         return write_chunk(chunk[:mid]) + write_chunk(chunk[mid:])
 
+    # first_seen guard: existing rows must keep their original first_seen /
+    # created_at (that anchor drives days-on-market). merge-duplicates would
+    # otherwise overwrite them on every run, so figure out which ids already
+    # exist and split the write: new rows carry first_seen/created_at, updates
+    # drop them. (PostgREST also requires uniform keys per POST, so two batches.)
+    existing = set()
+    all_ids = [r["id"] for r in rows]
+    for i in range(0, len(all_ids), 200):
+        idl = ",".join(f'"{x}"' for x in all_ids[i:i + 200])
+        try:
+            rr = http_requests.get(endpoint, headers=headers,
+                                   params={"id": f"in.({idl})", "select": "id"},
+                                   timeout=30)
+            if rr.ok:
+                existing.update(row["id"] for row in rr.json())
+        except Exception as e:
+            log.warning(f"first_seen guard: existence check failed: {e}")
+
+    new_rows = [r for r in rows if r["id"] not in existing]
+    upd_rows = [r for r in rows if r["id"] in existing]
+    for r in upd_rows:
+        r.pop("first_seen", None)
+        r.pop("created_at", None)
+
     upserted = 0
-    for i in range(0, len(rows), 500):
-        upserted += write_chunk(rows[i:i+500])
-        time.sleep(0.1)
+    for batch in (new_rows, upd_rows):
+        for i in range(0, len(batch), 500):
+            upserted += write_chunk(batch[i:i + 500])
+            time.sleep(0.1)
 
     return upserted
 

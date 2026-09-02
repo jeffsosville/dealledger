@@ -69,14 +69,31 @@ jobs:
             echo "partial=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Fails the job if any active row's first_seen moved later than the
+      # baseline committed by the last run — the exact regression that cost
+      # a week of DOM accuracy on execbb/fcbb/murphybusiness (CLAUDE.md #11,
+      # #13). if: always() so a scraper failure still gets checked against
+      # whatever it did manage to write.
+      - name: Check first_seen invariant
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/first_seen_monitor.py
+
       # always() so a cancelled or failed scrape still saves its work.
       # This is the fix for the run that lost 97 brokers' output.
+      #
+      # Also commits the first_seen baseline the invariant check just wrote.
+      # It has to survive between runs to mean anything — a fresh container
+      # every run with no persisted state would never have a prior value to
+      # diff against; committing it here is what closes that gap.
       - name: Commit snapshot
         if: always()
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
-          git add -f data/snapshots/
+          git add -f data/snapshots/ data/first_seen_baseline.json
           if git diff --staged --quiet; then
             echo "No snapshot changes to commit."
             exit 0
