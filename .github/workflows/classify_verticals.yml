@@ -1,0 +1,44 @@
+name: Classify Verticals
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_limit:
+        description: "Rows to classify this run"
+        required: false
+        default: "2000"
+      dry_run:
+        description: "Set to 1 to classify without writing"
+        required: false
+        default: ""
+  # Runs when the nightly scrape actually finishes, however long that takes,
+  # instead of racing it on a matching cron time — same instant as
+  # broker_scrape.yml's "0 14 * * *" meant no ordering guarantee at all.
+  workflow_run:
+    workflows: ["Daily broker scrape"]
+    types: [completed]
+
+jobs:
+  classify:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Classify
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BATCH_LIMIT: ${{ github.event.inputs.batch_limit || '2000' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || '' }}
+        run: python scrapers/classify_verticals.py
