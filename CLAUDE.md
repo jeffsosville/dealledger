@@ -156,6 +156,12 @@ On 1–2 Sep, full-file versions of `dealledger_scraper_v6.py` were pasted in fr
 
 **Any file handed over from outside the repo gets applied as a patch and verified with `git log --oneline <base>..HEAD -- <file>` first** — never dropped in whole. Surgical patches only, applied to whatever is actually in the working tree.
 
+### 14. A scrape must never undo a manual correction
+
+Rows retired by hand were flipped back to active by the next run, because the upsert overwrote `status` unconditionally — no specialized scraper has ever reported a status, so every row got `"active"` by default, every time, regardless of what a human had just set it to. Restoring `listing_key()`'s id stability made this worse, not better: once an id reliably matched its original row again, the upsert found that row every run and stamped over the correction every time.
+
+**Any field a human can set, a scraper must not blindly overwrite — it needs positive evidence, not a default.** The fix mirrors the `first_seen` guard: an existing row keeps whatever value it has unless this run's own data says otherwise.
+
 ---
 
 ## What "better every day" means concretely
