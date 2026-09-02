@@ -1,148 +1,197 @@
-# CLAUDE.md — DealLedger
+# DealLedger — Mission & Operating Context
 
-## What this project is
-DealLedger is an open public ledger for Main Street M&A — "EDGAR for small business." It is NOT a marketplace. The core value prop is data quality and transparency. The strategic positioning is a "Carfax for business listings" via the Listing Quality Score (LQS) system.
-
-- Public site: dealledger.org
-- Manifesto: dealledger.org/why.html
-- License: CC0 data, MIT code
-- Repo location: ~/dealledger-repo
+**Read this first, every session.**
+Last updated: 1 September 2026 (evening) · Target: 1 September 2027
 
 ---
 
-## Supabase Projects
+## The goal, stated plainly
 
-| Project | ID | Purpose |
+**In twelve months, DealLedger holds every business listed for sale in the United States, and can compare any of them against BizBuySell and BizQuest dynamically.**
+
+Not a sample. Not an aggregation of aggregators. The primary index — sourced directly from the brokers who list the businesses, refreshed daily, with provenance on every row.
+
+Everything else follows from that. The vertical marketplaces, the brokerage, the valuation tools, the outbound — all of them are worth more when the data underneath is the one nobody else has.
+
+### Why this is winnable
+
+BizBuySell and BizQuest are the same company (CoStar) sharing one sequential listing-number pool. They are an advertising business: sellers pay to be seen, and the platform has no incentive to tell you a listing has been sitting for 400 days or has been relisted four times. That asymmetry is the whole opening.
+
+We can compute what they won't publish — true days on market, relist history, view velocity, and whether a listing is real at all. Our data is CC0 and free. Theirs is a paywall around a number they'd rather you didn't check.
+
+### What "taking over the ecosystem" actually means
+
+Not displacing them. Becoming the layer everyone checks first — the reference the trade press cites, the number a broker quotes to a seller, the source an SBA lender pulls before underwriting. Then the transactions follow the trust, not the other way around.
+
+---
+
+## Where we actually are
+
+Be honest in every session. Overstating readiness produces bad decisions.
+
+| | 1 Sep 2026 | Needed |
 |---|---|---|
-| DealLedger (primary) | `kqckuedsyyosmccushyd` | 65,824 BizBuySell listings, LQS scores, broker data |
-| CleaningExits / business-listings | `ctvrauiiskucinibnfaj` | Vertical marketplace listings |
-| ATM CRM | `wgrmxhxozoyvcmvbfuxv` | Separate — do not touch from this repo |
+| Broker-direct listings (active) | ~28,000 | Every active US listing |
+| Brokers producing | 155 of 740 crawled | 740, plus the long tail beyond |
+| Brokers known but never crawled | **1,171** (~10,000 listings) | Zero |
+| Untagged by vertical | ~21,800 | Near zero, continuously |
+| DOM methodology | Anchored, piecewise, published | Same, validated against closed sales |
+| BBS/BQ comparison | Manual, single-listing lookup | Dynamic, whole-index |
 
-Always use `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` env vars. Never hardcode credentials.
+**Two gaps, and the second is the surprise.**
 
----
+BizBuySell's index is ~133,000. Direct broker coverage is ~28,000 active. `NO_PATTERN` on roughly half of successful fetches is the biggest lever on depth.
 
-## Key Tables (DealLedger Supabase)
-
-- `listings` — main BizBuySell listings table (65,824 rows). Fields include `listing_id`, `title`, `asking_price`, `revenue`, `cash_flow`, `category`, `state`, `is_active`, `last_seen_date`, `lqs_score`, `lqs_tier`.
-- `listings_direct` — direct broker listing schema for the broker coverage layer
-- `brokers` — 769 brokers seeded from CSV; 1,519 in `broker_master`
-- `broker_master` — master broker table with 2,859 brokers, 1,415 with emails
+But `broker_master` holds ~1,505 distinct broker domains and only ~334 appear in `listings_direct`. **1,171 brokers we already know about have never been crawled**, carrying roughly 10,000 active listings. Discovery was never the bottleneck — consumption was. `v_broker_crawl_candidates` is the queue; `agents/discover_backlog.py` works it.
 
 ---
 
-## Listing Quality Score (LQS)
+## Distribution: Twitter and SEO. Nothing else.
 
-Scores listings 0–100. Four tiers:
+**Twitter only.** Not LinkedIn, not Instagram, not TikTok, not YouTube. The SMB acquisition world lives on Twitter and nowhere else. An SMB attorney built one of the fastest-growing firms in the country on it, with a running Pizza Friday bit as the hook — the consistency and the recognizable ritual mattered as much as the substance.
 
-| Tier | Score | % of listings |
-|---|---|---|
-| Verified | High | ~46% |
-| Likely Real | Mid-high | ~45% |
-| Unverified | Mid-low | ~8% |
-| Likely Junk | Low | ~0.2% |
+What works there:
+- A specific, checkable number nobody else has
+- The same thing, repeatedly, until it's associated with us
+- Being useful before being promotional
+- Findings that correct a widely held assumption
 
-**Positive signals:** direct broker URL, financials present, unique description, reasonable multiple  
-**Negative signals:** duplicate titles, franchise territory keywords, spam broker patterns
+What does not:
+- Announcements about ourselves
+- Threads that could have been one sentence
+- Anything that reads like marketing
 
-Components: `QualityBadge.tsx`, `QualityFilter.tsx`, `QualityStatBanner.tsx`
+**SEO is the second channel, and it is seller-intent, not geo.** We do not have the inventory to win "cleaning business for sale in Ohio." We can own "what is my business worth" — because we can answer it with real comps and nobody else will.
 
----
-
-## Scraper Pipeline
-
-### Main scrapers
-- `scrapers/bbs_allstates.py` — correct all-states BizBuySell scraper (use this, not older variants)
-- `unified_broker_scraper_v2.py` — ML-based broker scraper with pattern detection
-- `bbs_pipeline.py` — orchestration pipeline (has known bugs, see below)
-- `bizquest_views_refresh.py` — BizQuest view count refresh (unresolved: needs `save_to_supabase()` method)
-
-### GitHub Actions
-- `bbs_daily.yml` — calls `bbs_allstates.py` with `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` secrets
-- Cron: `0 14 * * *` (9am ET) — if you see timezone drift, this is why
-
-### Known bugs (fix before extending)
-1. **`bbs_pipeline.py` line 171** — NoneType crash during Supabase loader phase. Guard with null check before accessing listing fields.
-2. **Cron timezone mismatch** — proposed fix already applied (`0 14 * * *`), verify if still drifting.
-3. **`bizquest_views_refresh.py`** — missing `save_to_supabase()` method; original working file is `bizquest_withviews.py`.
-
-### Auto-deactivation logic
-Listings not seen in 14 days are flipped to `is_active = false`. Do not remove this logic.
-
-### BBS DOM estimation anchor
-Listing #2367857 = May 14, 2025 ≈ 373.8 new listings/day. Use this as the reference point for any DOM calculations.
+**The recurring publishable finding:** businesses that actually sell sit ~103 days. Advertised listings average 17. The market looks three times faster than it is, because the slow ones accumulate invisibly. That correction is the kind of thing trade press picks up, and it's ours.
 
 ---
 
-## Broker Scraper — Auto-Accept Rules
+## Operating principles
 
-This is the approved use case for auto-accept / self-correcting loops in this repo. Claude may iterate autonomously on scraper logic without manual approval on each step, subject to the rules below.
+These are not abstractions. Every one of them came from a specific failure.
 
-### Self-correction loop (approved)
-1. Write or edit scraper logic
-2. Run against a **single test broker** (see gate below)
-3. Read output — classify result: pattern match, `HTTP_403`, `CAPTCHA`, or `NO_PATTERN`
-4. Adjust pattern or logic based on failure classification
-5. Rerun and verify output
-6. Repeat until clean result
-7. Only then proceed to bulk execution — and only with explicit approval
+### 1. Silent failure is the enemy, not visible failure
 
-### Single-broker test gate (mandatory)
-**Never run the scraper across all brokers without first verifying output on a single test broker.**
-- Pick a known-good broker from the knowledge base as the test target
-- Confirm pattern match and clean data before expanding scope
-- This gate applies even in auto-accept mode — bulk runs always require a manual go-ahead
+The vertical classifier stopped writing on 15 July 2026. Nothing noticed for six weeks. Jobs exited 0. Builds went green. Pages rendered. By the time anyone looked, 21,871 rows were untagged and VendingExits was showing 25 listings out of a far larger real pool.
 
-### Failure classification reference
-| Code | Meaning | Self-correction action |
-|---|---|---|
-| `HTTP_403` | Blocked by server | Rotate proxy, adjust headers, back off |
-| `CAPTCHA` | Bot detection triggered | Flag for manual review — do not retry in loop |
-| `NO_PATTERN` | Page structure not recognized | Attempt pattern detection, add to knowledge base if found |
+**Every job asserts something. A job that only reports success reports nothing.**
 
-### Knowledge base
-- Supabase knowledge base: 1,148+ patterns
-- After any new pattern is detected and confirmed, add it to the knowledge base immediately
-- Specialized scrapers for: Murphy, Transworld, Sunbelt, VR, FCBB, Hedgestone
+The check is almost always two numbers that should match: rows inserted vs rows tagged, brokers in the list vs brokers producing, distinct titles vs total rows.
 
-### Proxy
-- DataImpulse — credentials in env vars, do not hardcode
-- If `HTTP_403` persists after proxy rotation, stop and flag — do not burn through proxy quota in a loop
+### 2. Verify the whole chain, not the first link
+
+The ATMExits sell form saved to the database and sent a magic link, so it looked like it worked. It never called the endpoint that notifies anyone. Two real seller leads sat unread — one a 375-machine route at $145K/month — because the notification didn't fail, it never existed.
+
+**"The row saved" is not "the workflow completed."**
+
+### 3. Check the call path before theorizing
+
+On 27 August, an hour went into DNS records, then a suppressed mailbox, then an API key — before anyone checked whether the endpoint was called at all. It wasn't. One line in the log answered what three hypotheses hadn't.
+
+**Read the log. Grep the caller. Then theorize.**
+
+### 4. Never put mutable data in an identity hash
+
+Row IDs were `sha256(title | asking_price | url)`. A price that parsed differently between runs produced a new ID, so the upsert never matched. 316 real listings became 11,243 rows in one night.
+
+**Identity is what a thing *is*, not what it currently costs.**
+
+### 5. Title and category are signal. Description is noise.
+
+A backfill matched on description and tagged an amusement park as vending, because its listing mentioned vending machines. That one listing then rendered 42 times on VendingExits.
+
+**Related: "route" alone means nothing.** Bread routes, FedEx routes, and vending routes are three different businesses. No keyword list separates them. That is what the model is for.
+
+### 6. Nothing gets deleted
+
+A Supabase project that looked abandoned held the entire subscriber list. A "dead" marketplace app turned out to be running in production with real seller submissions in it.
+
+**Archive, deactivate, flag. Never delete.** The cost of keeping something useless is near zero. The cost of deleting something load-bearing is not.
+
+### 7. More rows is not more data
+
+Every scraper failure so far has been the same shape wearing a new disguise:
+
+- aria.net wrote paginated index URLs as listings — 343 rows for 3 listings
+- quietlight got a different id each run because the id hashed `asking_price` — 316 listings became 11,243 rows
+- quietlight again, where pagination never advanced and the same page counted as new 50 times — 11,440 cards
+- a nav menu scored better than a listing grid, because menus repeat cleanly and listings do not
+
+Each was fixed specifically. The general rule is the one that matters: **a broker that suddenly yields ten times its usual count has broken, not grown.** Check yield against history before writing, not after.
+
+### 8. Test a new filter against known-good input, not just the bad case
+
+Twice in one day a guard written to reject junk rejected real listings instead. A chrome-detection rule matched `elementor-widget-container` and `card-header`, which wrap genuine listing cards on WordPress and Bootstrap — NO_PATTERN went from 49% to 78% in a single run. A stricter page validator rejected every JS-rendered site, including franchises with 100+ listings.
+
+**A filter's false-reject rate is invisible in a way its false-accept rate is not.** Nothing looks wrong; there is simply less. Every new filter gets tested against input that must pass.
+
+### 9. Ask the site before guessing at it
+
+Path-guessing tried 21 URLs against a domain before ever loading its homepage. That is slow, it reads as a scan, and Cloudflare starts returning 403 partway through — after which every probe fails for reasons unrelated to whether the page exists. 18 of 25 brokers reported "no listings page" that way.
+
+Reading the homepage nav found `sunbeltmidwest.com/buy-a-business/search-businesses-for-sale` on the first try. **The site will tell you where its listings are.**
+
+### 10. Crawl what works before crawling what doesn't
+
+Ordering the daily run by staleness put 155 never-scraped brokers at the front of every batch, so each run spent itself on the cohort that has never once succeeded while 40,000 known-good listings went unrefreshed. Sort by proven yield; sweep the dark ones as a separate job with a different success bar.
+
+### 11. A source that goes quiet is the failure nobody sees
+
+tworld.com sat at ~977 rows from 16 July until 2 September, then jumped to 4,535 in a single run. Nothing was broken — the specialized scraper simply had not completed a full pass in six weeks, and nothing anywhere said so. vestedbb.com, the second-largest source at 3,586 listings, last updated 23 August.
+
+A source that stops producing looks identical to a source with nothing new. The index quietly ages and every downstream number ages with it.
+
+**Per-source staleness is a monitor, not a spot check**: any broker whose newest row is more than three days old, ranked by how many listings it holds.
+
+### 12. Publish the correction, not the claim
+
+Our credibility is that we say what the data shows, including when it undercuts us. Vending is 25 listings, not 200. Asking multiples are not sold multiples, and we label them as asking. Every honest caveat we publish is one a competitor can't copy without also being honest.
+
+### 13. Never replace a whole file from a stale clone
+
+On 1–2 Sep, full-file versions of `dealledger_scraper_v6.py` were pasted in from a clone at commit `637947d`, silently reverting three later commits and costing a reconciliation session.
+
+**Surgical patches only** — apply edits to whatever is actually in the working tree, and `git log --oneline <base>..HEAD -- <file>` before touching anything.
 
 ---
 
-## Broker Outreach Infrastructure
-- `broker_master_march_2026.xlsx` — 2,859 brokers, 1,415 with emails (Hunter.io)
-- `instantly_broker_outreach.csv` — 105 contacts loaded into Instantly
-- 1,303-contact DealLedger outreach CSV built, pending `jeff@dealledger.org` Google Workspace setup
-- **Bug fixed:** Michael Nuanes NaN account ID (pandas NaN key false-match — always cast keys before lookup)
+## What "better every day" means concretely
+
+Not vague improvement. Four measurable things:
+
+**Coverage.** Brokers producing, weekly. 155 today. The `NO_PATTERN` failures are the biggest available gain — those brokers fetch fine and extract nothing.
+
+**Freshness.** Rows with `last_seen` inside 7 days, as a share of active. Anything stale is a lie by omission on a live site.
+
+**Correctness.** Untagged share, duplicate rate, junk rate. All three should trend to zero and be monitored, not spot-checked.
+
+**Reach.** Citations, backlinks, inbound. Growing without paid acquisition.
+
+If a week passes where none of these moved, that week didn't count.
 
 ---
 
-## Data Conventions
-- BizBuySell EDGE subscription: $24.95/month (not $150 — update any docs that say otherwise)
-- `match_direct_listings.py` — fuzzy-matching engine for direct broker listings
-- `broker_coverage_analysis.py` — broker coverage reporting
-- `docs/OPERATIONS.md` — operations runbook, keep updated
+## Standing constraints
+
+- **CC0, always.** The data is free and unrestricted. That's what makes it citable, and citation is the distribution.
+- **Never inject our own listings into the warehouse.** DealLedger is a neutral registry. Sosville-brokered inventory lives in the app database and is clearly marked on the sites.
+- **Direct broker sourcing is the moat.** BizBuySell scraping is permanently dead (Akamai). BizQuest is a pass-through with the same listing numbers and is the path for cross-reference.
+- **Every published number has a stated method.** DOM comes from anchored interpolation, and the anchors are public. If we can't explain how we got a number, we don't publish it.
+- **Reading GitHub is free, writing is a decision.** `gh` is installed and authenticated. Don't push to main, edit or disable a workflow, trigger a run (`gh workflow run` — the broker scrape takes hours and burns Actions minutes), create or modify secrets, open PRs/issues/releases, or touch repo settings/visibility without asking first. `gh repo delete` is never acceptable. Commit locally, describe what's ready, wait for it to be pushed.
 
 ---
 
-## Common Mistakes to Avoid
-- Do NOT use older scraper variants — `bbs_allstates.py` in `scrapers/` is canonical
-- Do NOT touch ATM CRM Supabase project (`wgrmxhxozoyvcmvbfuxv`) from this repo
-- Do NOT hardcode Supabase credentials — always use env vars
-- Do NOT remove auto-deactivation logic (14-day rule)
-- Do NOT assume pandas NaN values are falsy for dict key lookups — always cast first
-- Do NOT change the CC0/MIT licensing without explicit approval
+## For any agent picking this up
 
----
+Assume the system is more broken than it looks, and that the breakage is silent. Before building anything new:
 
-## Deployment
-- Frontend deploys via Vercel (Next.js App Router)
-- DealLedger repo: `~/dealledger-repo`
-- CleaningExits repo: `~/cleaningexits` (separate — vertical marketplace layer)
+1. Is the thing you're about to extend actually running? Check the data, not the code.
+2. Does anything assert that it's running? If not, that's the first build.
+3. Has someone already built this in another repo or another project? There are five Supabase projects and several overlapping tables. Look before creating.
 
----
+And when something doesn't work: **find the call path before forming a theory.** Most of the time the answer is that a function nobody suspected is never invoked at all.
 
-## Strategic Context (for AI reasoning)
-DealLedger's moat is data quality and openness, not listings volume. Every feature decision should push toward transparency, verifiability, and broker accountability. The LQS system is the core differentiator. When in doubt: does this make the data more trustworthy and useful to a buyer or researcher? If yes, build it.
+**Check whether the job ran before reasoning about why it didn't.** `gh run list --workflow=broker_scrape.yml --limit 10` tells you if the nightly scrape actually ran and passed; `gh run view <id> --log` (or `--log-failed`) reads the real output instead of guessing at it; `gh workflow list` shows what's scheduled and enabled; `gh secret list` shows which secrets exist (names only). Most of this week's mysteries — tworld sitting at 977 rows for six weeks, `crawl_failures` staying empty — would have been answered in one command by looking at run history instead of reasoning about the code.
+
+**Always `git pull origin main` at the start of a session.** The local tree drifts from origin, and changes get pushed from elsewhere between sessions.

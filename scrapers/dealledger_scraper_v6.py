@@ -238,6 +238,49 @@ def looks_like_cre_or_lease(text):
     return bool(_LEASE_CRE_RE.search(text))
 
 
+def _find_listing_iframes(html, base_url):
+    """Return candidate iframe src URLs that likely hold listings, best-first.
+
+    Many broker sites (Wix, Squarespace, custom) embed their listings in an
+    <iframe> — a third-party feed (listing_feeds, AllBizForSale, etc.) or the
+    BizBuySell widget. The outer page has no listing HTML, so detection returns
+    NO_PATTERN; the listings live at the iframe's src, a different URL we must
+    fetch separately. This finds those srcs and skips obvious non-listing
+    iframes (ads, tracking, video, maps, social)."""
+    soup = BeautifulSoup(html, "html.parser")
+    out = []
+    SKIP = ("google", "youtube", "vimeo", "facebook", "twitter", "instagram",
+            "doubleclick", "googletagmanager", "recaptcha", "gstatic",
+            "maps.google", "player.", "ads", "analytics", "hotjar", "intercom",
+            "calendly", "hubspot", "linkedin")
+    WANT = ("listing", "feed", "business", "search", "properties", "inventory",
+            "results", "forsale", "for-sale", "bizbuysell", "widget", "embed")
+    for ifr in soup.find_all("iframe"):
+        src = ifr.get("src") or ifr.get("data-src") or ""
+        if not src:
+            continue
+        full = urljoin(base_url, src)
+        low = full.lower()
+        if any(s in low for s in SKIP):
+            continue
+        # score: prefer srcs whose URL or the iframe id/class hints "listings"
+        idc = " ".join([ifr.get("id", "")] + ifr.get("class", [])).lower()
+        score = sum(1 for w in WANT if w in low) + sum(2 for w in WANT if w in idc)
+        # even unscored same-doc iframes can hold listings; keep with low prio
+        out.append((score, full))
+    out.sort(key=lambda x: x[0], reverse=True)
+    # de-dup preserving order
+    seen, urls = set(), []
+    for _, u in out:
+        if u not in seen:
+            seen.add(u); urls.append(u)
+    return urls
+
+
+def _iframe_is_bizbuysell(iframe_url):
+    return "bizbuysell.com" in (iframe_url or "").lower()
+
+
 def best_card_title(element, base_url="", firm_name=None):
     """
     Recover a real listing title from a card element.
@@ -318,6 +361,44 @@ def _title_from_slug(element, base_url=""):
         if len(slug) >= 8 and not slug.replace(" ", "").isdigit():
             return slug.title()[:200]
     return None
+
+
+# Anchors that are never a listing's own detail page, even though they're a
+# real, live link inside the card. WordPress "fusion-portfolio-post" articles
+# (naabconsulting.com and other Avada/Fusion sites) put a "Posted by <author>"
+# byline link BEFORE the actual listing link in DOM order — picking the first
+# <a> unconditionally grabbed /author/brian/, which is_junk_listing correctly
+# flags as junk, silently dropping all 296 real listings on the page instead
+# of just fixing the URL.
+_NON_DETAIL_HREF_TOKENS = ("/author/", "/category/", "/tag/", "portfolio_category",
+                           "/wp-content/", "javascript:", "mailto:", "tel:")
+
+
+def _best_detail_link(element, base_url=""):
+    """The <a href> most likely to be THIS card's own detail page.
+
+    Prefers a link matching _DETAIL_HREF_TOKENS; among the rest, skips known
+    non-detail anchors (byline, category/tag archive); falls back to the
+    first live link so behavior is unchanged when nothing better is found.
+    """
+    candidates = []
+    for a in element.find_all("a", href=True):
+        href = (a.get("href") or "").strip()
+        if not href or href.startswith("#"):
+            continue
+        low = href.lower()
+        if low.startswith(("javascript:", "mailto:", "tel:")):
+            continue
+        candidates.append(href)
+    if not candidates:
+        return None
+    for href in candidates:
+        if any(tok in href.lower() for tok in _DETAIL_HREF_TOKENS):
+            return href
+    for href in candidates:
+        if not any(tok in href.lower() for tok in _NON_DETAIL_HREF_TOKENS):
+            return href
+    return candidates[0]
 
 
 def has_detail_link(element, base_url=""):
@@ -409,6 +490,23 @@ _LOCATION_ONLY = {
     "new york", "north carolina", "south carolina", "tennessee", "virginia",
     "ohio", "illinois", "michigan", "washington", "oregon", "nevada",
 }
+
+
+def _is_nav_selector(selector):
+    """True if a CSS selector is a navigation menu / non-listing container.
+    WordPress emits li.menu-item-* for nav bars; those repeat and link out, so
+    the detector otherwise matches the site's MENU as 'listings' (myersba: 61
+    nav links; svnmarinas: 53 'Advisory Services'). A listing site uses custom
+    post-type classes (post-type-listing, property, business-listing), never
+    menu-item. Reject these outright — a NO_PATTERN broker is better than one
+    that writes its nav bar as inventory."""
+    if not selector:
+        return False
+    s = selector.lower()
+    NAV_TOKENS = ("menu-item", "menu_item", "nav-item", "navbar", "nav-link",
+                  "sub-menu", "submenu", "menu-link", "dropdown", "breadcrumb",
+                  "footer", "widget", "sidebar")
+    return any(tok in s for tok in NAV_TOKENS)
 
 
 def validate_listing_set(cards, url=""):
@@ -701,6 +799,36 @@ def build_proxy_url(sessid):
     if not PROXY_AVAILABLE:
         return None
     return f"http://{PROXY_USER}__cr.us;sessid.{sessid}:{PROXY_PASS}@{PROXY_HOST}"
+
+
+BLOCKLIST_DOMAINS = {
+    "aria.net",
+}
+
+
+# Owned by the specialized pipeline (scrapers/specialized_scrapers.py).
+# V6 must never scrape these: the specialized scrapers already cover them
+# properly, so a generic attempt is wasted budget AND risks writing worse
+# rows over good ones. Matched on the domain OR any subdomain, because FCBB
+# alone has ~10 city sites (pittsburgh.fcbb.com, atlantametro.fcbb.com, ...).
+# Kept in sync with scrape_specialized_broker() dispatch.
+SPECIALIZED_DOMAINS = {
+    "execbb.com",                    # LarryBodnerScraper
+    "linkbusiness.com",              # LinkBusinessScraper
+    "murphybusiness.com",            # MurphyScraper
+    "hedgestone.com",                # HedgestoneScraper
+    "tworld.com",                    # TransworldScraper
+    "sunbeltnetwork.com",            # SunbeltScraper
+    "vrbbusa.com",                   # VRScraper
+    "vrbusinessbrokers.com",         # VRScraper
+    "fcbb.com",                      # FCBBScraper (+ all *.fcbb.com)
+    "wesellrestaurants.com",         # WeSellRestaurantsScraper
+    "vestedbb.com",                  # VestedScraper
+    "routesforsale.net",             # RoutesForSaleScraper (exact site only —
+                                     # commercialroutesforsale.com and
+                                     # deliveryroutesforsale.com are DIFFERENT
+                                     # companies; V6 must keep scraping those)
+}
 
 
 # Domains known to hard-block — start them on the proxy immediately.
@@ -1058,6 +1186,14 @@ class PatternDetector:
 
         if not candidates:
             return None
+        # Drop navigation/menu/footer/widget containers: WordPress nav bars
+        # repeat and link out, so they otherwise win as "listings" (myersba's
+        # 61 menu links, svnmarinas' 53 'Advisory Services'). Better NO_PATTERN
+        # than writing a site's nav bar as inventory.
+        candidates = [c for c in candidates
+                      if not _is_nav_selector(c.get("container_selector", ""))]
+        if not candidates:
+            return None
         candidates.sort(key=lambda x: x["score"], reverse=True)
         return candidates[0]
 
@@ -1179,8 +1315,8 @@ class ListingExtractor:
         if not is_listing_element(element, base_url):
             return None
 
-        link_el = element.find("a", href=True)
-        detail_url = urljoin(base_url, link_el["href"]) if link_el else None
+        best_href = _best_detail_link(element, base_url)
+        detail_url = urljoin(base_url, best_href) if best_href else None
 
         # Don't treat pagination/anchor links as detail URLs
         if detail_url:
@@ -1784,6 +1920,102 @@ class SupabaseWriter:
         return written
 
 
+def _clip(value, limit):
+    """Truncate to `limit` chars, mapping empty/None to NULL."""
+    if not value:
+        return None
+    return str(value)[:limit]
+
+
+class CrawlFailureWriter:
+    """
+    Persists per-broker crawl failures to Supabase `crawl_failures`.
+
+    Until now a failure only ever reached data/snapshots/<date>/failures.json,
+    which CI throws away with the workspace — so the table stayed at 0 rows and
+    there was no way to ask "why does this broker keep failing, and since
+    when?" across runs. The local file is still written exactly as before; this
+    is purely additive.
+
+    Attribution is by domain -> broker_sources.id, the FK the table already
+    has. ~99% of crawled domains resolve. The rest are inserted with a NULL FK
+    and their domain/url preserved in `message`, so no row is ever anonymous.
+    """
+
+    MESSAGE_LIMIT   = 2000
+    TRACEBACK_LIMIT = 2000
+    HTML_LIMIT      = 2000
+
+    def __init__(self, client):
+        self.client     = client
+        self.source_ids = self._load_source_ids()
+        self.unresolved: set[str] = set()
+        print(f"🗂️  crawl_failures: {len(self.source_ids)} broker_sources domains loaded")
+
+    @staticmethod
+    def _norm(domain: str) -> str:
+        d = (domain or "").strip().lower()
+        return d[4:] if d.startswith("www.") else d
+
+    def _load_source_ids(self) -> dict:
+        """domain -> broker_sources.id, paged (PostgREST caps rows/request)."""
+        ids, start, page = {}, 0, 1000
+        while True:
+            resp = (self.client.table("broker_sources")
+                    .select("id,domain")
+                    .range(start, start + page - 1)
+                    .execute())
+            rows = resp.data or []
+            for r in rows:
+                d = self._norm(r.get("domain"))
+                if d and d not in ids:
+                    ids[d] = r["id"]
+            if len(rows) < page:
+                break
+            start += page
+        return ids
+
+    def record(self, failures: list) -> int:
+        """Insert a batch of failure dicts. Returns rows written."""
+        if not failures:
+            return 0
+
+        rows = []
+        for f in failures:
+            domain = self._norm(f.get("domain")
+                                or urlparse(f.get("url") or "").netloc)
+            source_id = self.source_ids.get(domain)
+            message   = f.get("error") or ""
+            if not source_id:
+                # Nothing to hang the FK on — keep identity in the text so the
+                # row is still answerable when someone queries it later.
+                self.unresolved.add(domain)
+                message = (f"[{domain or 'unknown-domain'}] "
+                           f"{f.get('url') or ''} :: {message}")
+
+            rows.append({
+                "broker_source_id": source_id,
+                "failure_type":     f.get("type") or "FETCH_ERROR",
+                "http_status":      f.get("http_status"),
+                "stage":            f.get("stage"),
+                "render_mode":      f.get("render_mode"),
+                "proxy_used":       f.get("proxy_used"),
+                "message":          message[:self.MESSAGE_LIMIT] or None,
+                "traceback":        _clip(f.get("traceback"), self.TRACEBACK_LIMIT),
+                "html_sample":      _clip(f.get("html_sample"), self.HTML_LIMIT),
+                "observed_at":      (f.get("observed_at")
+                                     or datetime.now(timezone.utc).isoformat()),
+            })
+
+        written = 0
+        for i in range(0, len(rows), 100):
+            batch = rows[i:i + 100]
+            self.client.table("crawl_failures").insert(batch).execute()
+            written += len(batch)
+            time.sleep(0.1)
+        return written
+
+
 # ============================================================
 # MAIN SCRAPER
 # ============================================================
@@ -1795,6 +2027,7 @@ class DealLedgerScraper:
         self.pattern_cache = PatternCache()
         self.fetcher = PageFetcher()
         self.supabase_writer = None
+        self.failure_writer  = None
 
         if use_supabase:
             try:
@@ -1802,6 +2035,13 @@ class DealLedgerScraper:
                 print("✅ Supabase connected")
             except Exception as e:
                 print(f"⚠️  Supabase unavailable: {e} — local files only")
+
+            if self.supabase_writer:
+                try:
+                    self.failure_writer = CrawlFailureWriter(self.supabase_writer.client)
+                except Exception as e:
+                    # Never let failure logging take down a listings run.
+                    print(f"⚠️  crawl_failures unavailable: {e} — failures.json only")
 
         fp = "chrome131 (curl_cffi)" if HAS_CURL_CFFI else "plain requests"
         if PROXY_AVAILABLE:
@@ -1826,6 +2066,7 @@ class DealLedgerScraper:
         }
         self.all_listings: list[dict] = []
         self.failures:     list[dict] = []
+        self.embed_brokers: list[dict] = []  # iframe/embed brokers (prospect list)
 
     @staticmethod
     def _load_brokers(csv_path: str) -> list[dict]:
@@ -1852,16 +2093,28 @@ class DealLedgerScraper:
         )
 
         brokers = []
+        skipped = 0
         for _, row in df.iterrows():
             url = str(row[url_col]).strip()
             if not url.startswith("http"):
                 continue
+            domain = urlparse(url).netloc
+            # Skip known non-listing sites (agent directories, junk aggregators).
+            bare = domain[4:] if domain.startswith("www.") else domain
+            if (bare in BLOCKLIST_DOMAINS
+                    or any(bare == d or bare.endswith("." + d)
+                           for d in SPECIALIZED_DOMAINS)):
+                skipped += 1
+                continue
             name = (str(row[name_col]).strip()
                     if name_col and pd.notna(row.get(name_col))
-                    else urlparse(url).netloc)
-            brokers.append({"name": name, "url": url, "domain": urlparse(url).netloc})
+                    else domain)
+            brokers.append({"name": name, "url": url, "domain": domain})
 
-        print(f"📋 Loaded {len(brokers)} brokers from {csv_path}")
+        msg = f"📋 Loaded {len(brokers)} brokers from {csv_path}"
+        if skipped:
+            msg += f" ({skipped} blocklisted skipped)"
+        print(msg)
         return brokers
 
     def _order_by_staleness(self, brokers: list[dict]) -> list[dict]:
@@ -2018,10 +2271,12 @@ class DealLedgerScraper:
                 # been blocking. This also covers the case where curl_cffi
                 # returns a content-ful shell that passes the price-signal
                 # check but whose grid only materializes after JS runs.
+                rendered_html = None  # reused by iframe unwrap to avoid double render
                 if not pattern and method != "playwright" and HAS_PLAYWRIGHT:
                     try:
                         pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
                         pw_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
+                        rendered_html = pw_html
                         pw_pattern = PatternDetector.detect(pw_html, url)
                         if pw_pattern:
                             html, method, pattern = pw_html, "playwright", pw_pattern
@@ -2030,9 +2285,89 @@ class DealLedgerScraper:
                     except Exception:
                         pass
 
+                # ── iframe unwrap ─────────────────────────────────────────
+                # Still no pattern? The listings may live inside an <iframe>
+                # (third-party feed or BizBuySell widget). Fetch the iframe's
+                # src directly and detect on THAT. Recovers Wix/Squarespace
+                # "listing_feeds" embeds and similar. Many sites inject the
+                # iframe via JS, so it is ABSENT from the raw HTML — we search
+                # the raw HTML first, then the Playwright-RENDERED DOM where the
+                # JS-injected iframe actually appears. BizBuySell iframes are
+                # recorded for the prospect list but skipped for data.
+                if not pattern:
+                    def _try_iframes(source_html, source_url, _depth=0):
+                        """Return (html, pattern, iframe_url) on recovery, or
+                        ('bbs', None, ifr_url) if a BBS embed was tagged, else None.
+
+                        Recurses one level: some builders (Wix "custom HTML"
+                        embeds) wrap the real widget in an iframe whose OWN
+                        document is just a shim that in turn iframes BizBuySell
+                        or the actual feed — excellencebusinessbrokers.com is
+                        exactly this shape. A single-level search never sees
+                        the inner iframe and reports NO_PATTERN even though
+                        the page is a known, correctly-unscrapable BBS embed.
+                        """
+                        for ifr_url in _find_listing_iframes(source_html, source_url)[:3]:
+                            if _iframe_is_bizbuysell(ifr_url):
+                                return ("bbs", None, ifr_url)
+                            try:
+                                ip = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                                ih, _ = self.fetcher.fetch(ifr_url, use_proxy=ip)
+                                ipat = PatternDetector.detect(ih, ifr_url)
+                                if ipat:
+                                    return (ih, ipat, ifr_url)
+                                if _depth < 1:
+                                    nested = _try_iframes(ih, ifr_url, _depth + 1)
+                                    if nested is not None:
+                                        return nested
+                            except Exception:
+                                continue
+                        return None
+
+                    # 1) raw HTML iframes
+                    result = _try_iframes(html, url)
+                    # 2) if nothing, look in the Playwright-RENDERED DOM where
+                    #    JS-injected iframes appear (capstar/excellence-style).
+                    #    Reuse the render from the escalation step if we have it;
+                    #    otherwise render now.
+                    if result is None and method != "playwright" and HAS_PLAYWRIGHT:
+                        try:
+                            if rendered_html is None:
+                                pw_proxy = use_proxy or (domain in self.fetcher._proxy_domains_runtime)
+                                rendered_html = self.fetcher.fetch_playwright(url, use_proxy=pw_proxy)
+                            result = _try_iframes(rendered_html, url)
+                        except Exception:
+                            pass
+
+                    if result is not None:
+                        if result[0] == "bbs":
+                            ifr_url = result[2]
+                            print(f"   🔗 BizBuySell embed detected → tagged, skipping data")
+                            self.stats["failure_types"]["EMBED_BBS"] += 1
+                            self.embed_brokers.append(
+                                {"broker": name, "url": broker["url"], "iframe": ifr_url,
+                                 "provider": "bizbuysell"})
+                            # Correctly classified — don't fall through to the
+                            # "if pattern:" check below, which would ALSO log
+                            # this as NO_PATTERN (pattern is still None here)
+                            # and double-count it. That double-count is what
+                            # put already-identified BBS embeds like
+                            # manhattan.biz on the NO_PATTERN worklist.
+                            return []
+                        else:
+                            ifr_html, ifr_pattern, ifr_url = result
+                            html, method, pattern = ifr_html, "iframe", ifr_pattern
+                            url = ifr_url
+                            print(f"   🖼️  iframe unwrap recovered a pattern "
+                                  f"({len(ifr_html):,} bytes) from {ifr_url[:60]}")
+                            self.embed_brokers.append(
+                                {"broker": name, "url": broker["url"],
+                                 "iframe": ifr_url, "provider": "feed"})
+
                 if pattern:
                     predicted = self.pattern_cache.predict(html, url)
-                    if predicted and predicted.get("score", 0) > pattern.get("score", 0):
+                    if (predicted and predicted.get("score", 0) > pattern.get("score", 0)
+                            and not _is_nav_selector(predicted.get("container_selector", ""))):
                         pattern = predicted
                         print(f"   🧠 ML predicted: {pattern['container_selector']}")
                     else:
@@ -2316,6 +2651,25 @@ class DealLedgerScraper:
                 os.path.join(snap, "listings.csv"), index=False)
         with open(os.path.join(snap, "failures.json"), "w") as f:
             json.dump(self.failures, f, indent=2, default=str)
+
+        # failures.json above is discarded with the CI workspace at the end of
+        # every run, which is why crawl_failures sat at 0 rows despite this
+        # file existing on every run. Persist the same records to Supabase so
+        # "why does this broker keep failing, and since when" is answerable
+        # across runs, not just within one.
+        if self.failure_writer:
+            try:
+                n = self.failure_writer.record(self.failures)
+                print(f"🗂️  crawl_failures: {n} rows written "
+                      f"({len(self.failure_writer.unresolved)} unresolved domains)")
+            except Exception as e:
+                print(f"⚠️  crawl_failures write failed: {e} — failures.json only")
+
+        # Embed/iframe brokers — the prospect list of brokers whose listings
+        # live in a third-party or BizBuySell widget (candidates for a
+        # DealLedger-powered custom site).
+        with open(os.path.join(snap, "embed_brokers.json"), "w") as f:
+            json.dump(self.embed_brokers, f, indent=2, default=str)
         with open(os.path.join(snap, "summary.json"), "w") as f:
             json.dump(self.stats, f, indent=2, default=str)
 
