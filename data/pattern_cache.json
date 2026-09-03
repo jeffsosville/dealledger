@@ -340,11 +340,10 @@
     "last_used": "2026-02-21T20:49:47.612603"
   },
   "practicetransitionsgroup.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 2,
-    "first_seen": "2026-02-20T05:17:41.473625",
-    "last_used": "2026-02-21T20:50:46.630010"
+    "container_selector": "div[style*=\"margin-bottom: 2em\"]",
+    "count": 20,
+    "score": 40,
+    "sample_text": "San Antonio, TX General Dentistry Practice For Sale (#2248) Listing Status: Active"
   },
   "murraybizbuy.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -690,11 +689,10 @@
     "last_used": "2026-02-23T15:48:33.931705"
   },
   "treasurecoastcommercialrealestate.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T15:49:48.443278",
-    "last_used": "2026-02-23T15:49:48.443294"
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
   },
   "tucsonbusiness.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1893,13 +1891,6 @@
     "first_seen": "2026-02-24T05:40:05.245741",
     "last_used": "2026-02-24T05:40:05.245751"
   },
-  "naabconsulting.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 5,
-    "first_seen": "2026-02-24T07:28:24.207486",
-    "last_used": "2026-02-24T07:28:24.207507"
-  },
   "riccardiagency.com": {
     "pattern": "div|children:div,p|has_link|has_img|text:long",
     "success_count": 1,
@@ -2088,5 +2079,197 @@
     "count": 30,
     "score": 30,
     "sample_text": "Iconic Long Island Waterfront Restaurant Price $3,990,000 Type Full Service Concept Fine Dining, Bar/Pub Sales $3,901,993 Cash Flow $1,299,265 Square Footage 4,461 sq ft Seating 380 Parking Street Rea"
+  },
+  "mycarwashbroker.com": {
+    "container_selector": ".fusion-text p",
+    "count": 27,
+    "score": 50,
+    "sample_text": "Fantastic LI Car Wash with Real Estate ASKING PRICE: $10,500,000 GROSS REVENUE: $1,400,000 Rare opportunity to buy a Long Island car wash with real estate."
+  },
+  "www.patriotbusinessadvisors.com": {
+    "container_selector": "td[style*=\"1px inset #CC0000\"]",
+    "count": 18,
+    "score": 34,
+    "sample_text": "DRY CLEANING DELAWARE/ $40,000 $62,050"
+  },
+  "www.biz-match.com": {
+    "container_selector": "dl.listings",
+    "count": 20,
+    "score": 40,
+    "sample_text": "Greater Houston Area HVAC Service Company Greater Houston Area, Texas Price: $1,200,000 Sales Revenue: Undisclosed Net Profit: $300,000"
+  },
+  "bbfbrokers.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.naabconsulting.com": {
+    "container_selector": "article[class*=\"fusion-portfolio-post\"]",
+    "count": 296,
+    "score": 500,
+    "sample_text": "Brian Naab 2026-08-28 IN-8640 Indianapolis Area Indiana Indianapolis, Indiana Area"
+  },
+  "adamnoble.com": {
+    "container_selector": "div.mp-card",
+    "count": 50,
+    "score": 28,
+    "sample_text": "Agriculture Texoma Retail-Commercial Garden, Landscape Design Center 20531 Listing ID: 1746 Listed by Jeff Adam, PE, MCBC, FRC, CBB $1,550,000 State:"
+  },
+  "sunbeltofflorida.com": {
+    "container_selector": "div.dr-card__body",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Profitable & Scalable Roofing Contractor with Trusted Name in the Industry Stellar reputation, serving both residential and commercial clients with a strong referral network built through long-standin"
+  },
+  "bossgi.com": {
+    "container_selector": "div.uagb-container-inner-blocks-wrap",
+    "count": 15,
+    "score": 8,
+    "sample_text": "Buy a Business with Boss Group International Buying a business is more than a transaction, it\u2019s a strategy for growth and freedom. At\u00a0Boss Group International, we guide you through every step, from id"
+  },
+  "lonestarba.com": {
+    "container_selector": "div.listing-card",
+    "count": 8,
+    "score": 21,
+    "sample_text": "For Sale Gas Station & Convenience Store Commerce, TX $50K More Info \u2192"
+  },
+  "www.briobrokers.com": {
+    "container_selector": "div.listings-element",
+    "count": 15,
+    "score": 30,
+    "sample_text": "Active Gourmet Grocery & Specialty Meat Market - Multiple Locations Albuquerque, NM This opportunity represents a long-established, locally operated gourmet and specialty grocery business with nearly "
+  },
+  "millenia-partners.com": {
+    "container_selector": "div.card",
+    "count": 100,
+    "score": 23,
+    "sample_text": "FOR LEASE 12570 Splendid Pl Orlando, FL  32821 3.1 - 5.7 Acres Negotiable 2 Spaces Retail"
+  },
+  "watsoncommercial.com": {
+    "container_selector": "div.col",
+    "count": 6,
+    "score": 16,
+    "sample_text": "Featured Available Automotive - Car Wash - Auto - Boat Profitable Auto Repair Shop \u2013 High-Traffic Location, Strong Customer Base - PROPERTY INCLUDED Nassau, New York 12460 Established Auto Repair Shop"
+  },
+  "crossroadsadvisers.com": {
+    "container_selector": "div[class*=\"et_pb_css_mix_blend_mode_passthrough\"]",
+    "count": 6,
+    "score": 6,
+    "sample_text": "Schedule An appointment"
+  },
+  "homecarebuysell.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "sharpbizbrokers.com": {
+    "container_selector": "div.content_container",
+    "count": 4,
+    "score": 3,
+    "sample_text": "(619) 454-1786 For Sale About Company Overview Founder Recently Sold Team Join Team Referral Program What Others Say Media Mentions Resources Contact Free Consultation Contact Info See Calendar"
+  },
+  "proformapartners.com": {
+    "container_selector": "div.e-con-inner",
+    "count": 11,
+    "score": 3,
+    "sample_text": "In the business of selling your business | Since 1987 303.427.0800"
+  },
+  "fbb.com": {
+    "container_selector": "div.dr-card__body",
+    "count": 12,
+    "score": 24,
+    "sample_text": "High-End Liquor Store with Real Estate $500,000 Active Revenue: $3,243,947 Profits: $509,790 More Details"
+  },
+  "prakascompany.com": {
+    "container_selector": "div.es-property-inner",
+    "count": 18,
+    "score": 24,
+    "sample_text": "Commercial Property For Sale Featured Call for price 12 Rare South Florida Portfolio: Four Vacant Freestanding Retail Assets Call for price Individual pricing shown within listing page Rare South Flor"
+  },
+  "empiregbb.com": {
+    "container_selector": "div.ssmoxNY",
+    "count": 3,
+    "score": 3,
+    "sample_text": "Track 2: EGBB Agent For aspiring agents seeking a focused yet comprehensive training experience, our 3-day certification program offers a streamlined path to success. Participants will gain invaluable"
+  },
+  "atbcal.com": {
+    "container_selector": "div.listing-row-metrics",
+    "count": 20,
+    "score": 30,
+    "sample_text": "Rev $2,603,940 SDE $1,041,658 Asking $2,895,000"
+  },
+  "maloneybusinessbrokers.com": {
+    "container_selector": "div._FiCX",
+    "count": 40,
+    "score": 30,
+    "sample_text": "Brand New Listing Brand New Listing Very Popular-Profitable Wine Bar And Restaurant $1,500,000 Details"
+  },
+  "momentumprojects.com": {
+    "container_selector": "div.row.fl-post-image-beside-wrap",
+    "count": 10,
+    "score": 16,
+    "sample_text": "Business Description Step into the heart of Wilmington\u2019s Irish community at The Harp, where authentic Celtic tradition meets modern hospitality. This beloved neighborhood institution has become the co"
+  },
+  "businessadvisors.us": {
+    "container_selector": "article.bde-loop-item.ee-post",
+    "count": 4,
+    "score": 8,
+    "sample_text": "Strategic Acquirer Experienced Acquirer Looking for Founder Led Manufacturing Firms Experienced buyer looking for founder-led manufacturing firms, industrial service providers, and metal finishing com"
+  },
+  "chinookmabb.com": {
+    "container_selector": "div.e-con-inner",
+    "count": 36,
+    "score": 4,
+    "sample_text": "Buy a business For most people, buying or selling a business is a once in a lifetime transaction. Just like any other major life decision, using an experienced, qualified professional to help manage t"
+  },
+  "sunbelthuntsville.com": {
+    "container_selector": "div.latestBusinesses__item--middle",
+    "count": 10,
+    "score": 20,
+    "sample_text": "1,000+ Car Rental Business for Sale, Auto Repair / Towing / Dealership Confidential, Florida Rare Opportunity to Own a Successful and Well-Established Car Rental Agency in Florida with a fleet of 1,00"
+  },
+  "brgbrokers.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "withalrealty.com": {
+    "container_selector": "div.grid-row",
+    "count": 10,
+    "score": 5,
+    "sample_text": ""
+  },
+  "abbtx.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "cbcorion.com": {
+    "container_selector": "div.card",
+    "count": 12,
+    "score": 29,
+    "sample_text": "FOR SALE FOR SALE | MIDCO NET LEASED LAND INVESTMENT OFFERING 530 County Road 75 NW | Clearwater, MN  55320 $78,000 8,412 SF Other"
+  },
+  "titanbusinessbrokers.com": {
+    "container_selector": "div.eael-entry-wrapper",
+    "count": 3,
+    "score": 3,
+    "sample_text": "Why Timing Matters When Selling Your Business TBB Site July 5, 2026 Blog Details Home / Buying a business is a significant investment, and qualified buyers evaluate much more than annual revenue... Re"
+  },
+  "compasscommercial.com": {
+    "container_selector": "div.col",
+    "count": 6,
+    "score": 16,
+    "sample_text": "Featured Available Automotive - Car Wash - Auto - Boat Profitable Auto Repair Shop \u2013 High-Traffic Location, Strong Customer Base - PROPERTY INCLUDED Nassau, New York 12460 Established Auto Repair Shop"
+  },
+  "thesunbeltbrokers.com": {
+    "container_selector": "div.sl-card-body",
+    "count": 4,
+    "score": 8,
+    "sample_text": "Entertainment & Recreation \u00b7 North Louisiana Outdoor Adventure & Entertainment Venue Established outdoor adventure and family entertainment destination near Shreveport, in continuous operation for nea"
   }
 }
