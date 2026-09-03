@@ -113,11 +113,11 @@ account,broker_name,company_name,listing_url
 9466.0,sherman hillelson,the sherman group,https://shermangroup.net/listings/
 2762.0,indiana business advisors,indiana business advisors,https://indianabusinessadvisors.com/businesses-for-sale/
 3819.0,"brent bungard, broker",arthur berry & company,https://arthurberry.com/new-listings/
-33313.0,anthony rigney,"quorum business advisors, llc",https://qbusinessadvisors.com/buyers-and-sellers-asp/
+33313.0,anthony rigney,"quorum business advisors, llc",https://qbusinessadvisors.com/new-listings/
 34116.0,matthew baas,small business deal advisors,https://www.smallbusinessdeal.com/current-listings/
 40427.0,"lou sabbagh, cbi, cm&ap",budget business brokers,https://budgetbusinessbrokers.com/Listings-For-Sale/
 10357.0,john hawke,springboard pool route brokers,https://sbpoolroutes.com/route-listings/
-49543.0,tom cerniello,total business brokers,https://totalbusinessbrokers.com/listings-on-bizbuysell/
+49543.0,tom cerniello,total business brokers,https://totalbusinessbrokers.com/businesses-for-sale/
 7822.0,terri sokoloff,specialty bar & restaurant brokers,https://specialtygroup.com/listings/?tab=BizRE
 17065.0,brett post,3cre advisors,https://3cre.com/business-listings-columbus/
 14674.0,robert clements,benchmark business group,https://www.benchmarkbusinessgroup.com/business-for-sale
@@ -754,3 +754,953 @@ https://www.nerestaurantbrokers.com/liquor-businesses"
 47230.0,roger pinnix,"new generation realty & investments, inc.",https://childcaredirect.com/current-offerings/
 50279.0,adam post,the post brokerage group,https://www.business-team.com/buy-a-business/search-results.aspx?lid=all
 49946.0,simon leibovich,troy business advisers llc,https://www.troyba.com/buy-a-business/
+50281,Amerivest Group,Amerivest Group,https://amerivestgroup.com/buy
+50282,"Mr. Route SunStates, Inc.","Mr. Route SunStates, Inc.",https://mrroutesunstates.com/listings
+50285,"Adam Noble Group, LLC","Adam Noble Group, LLC",https://adamnoble.com/searchourlistings/
+50286,"Sunbelt Business Brokers of Naples, Sarasota and Ft. Myers","Sunbelt Business Brokers of Naples, Sarasota and Ft. Myers",https://sunbeltofflorida.com/exclusive-listings
+50287,"Boss Group International, LLC","Boss Group International, LLC",https://bossgi.com/buy-a-business/
+50288,Jeremiah Baron & Co. Commercial Real Estate LLC,Jeremiah Baron & Co. Commercial Real Estate LLC,https://treasurecoastcommercialrealestate.com/professional-office-building-sale-101-mlk-jr-blvd-stuart/
+50289,Lonestar Business Advisor,Lonestar Business Advisor,https://lonestarba.com/businesses-for-sale.html
+50290,Markell & Associates Inc.,Markell & Associates Inc.,https://buytherightpoolsupplystore.com/businesses-for-sale
+50293,"C3 CRE, LLC","C3 CRE, LLC",https://c3cre.com/buy
+50295,Lee Brokers,Lee Brokers,https://leebrokersrealty.com/seller-listing-info/
+50296,Murphy Business & Financial Corporation,Murphy Business & Financial Corporation,https://murphybusinessboise.com/buying-a-business/
+50297,Next Level Business Advisors,Next Level Business Advisors,https://nlba.biz/buy-a-business/
+50298,"ProformaPartners, LLC","ProformaPartners, LLC",https://proformapartners.com/buy-a-business/
+50299,Century 21 Farm & Forest Realty,Century 21 Farm & Forest Realty,https://farmandforest.com/real-estate/our-listings/
+50300,"The FBB Group, Ltd.","The FBB Group, Ltd.",https://fbb.com/businesses-for-sale
+50302,School Investment Properties,School Investment Properties,https://childcaresales.com/for-sale
+50303,prakascompany.com,prakascompany.com,https://prakascompany.com/listings/
+50304,Preschool Business Solutions,Preschool Business Solutions,https://preschoolbusinesssolutions.com/listings
+50305,Sunbelt Business Brokers,Sunbelt Business Brokers,https://sunbeltportland.com/listings
+50308,Empire Global Business Brokers,Empire Global Business Brokers,https://empiregbb.com/search
+50309,Goodman And Company Business Brokers,Goodman And Company Business Brokers,https://goodmanonline.com/small-sized-businesses-for-sale/
+50313,MS Real Estate Inc,MS Real Estate Inc,https://manjitsingh.biz/business-listings
+50314,A&M Realty,A&M Realty,https://stlbroker.net/listings
+50319,Brock and Grey,Brock and Grey,https://brockandgrey.com/business-listings
+50320,Realty Masters North Shore,Realty Masters North Shore,https://realtymastersnorthshore.com/browse-our-listings/
+50322,BMI Mergers & Acquisitions,BMI Mergers & Acquisitions,https://bmimergers.com/buy
+50323,"Florida 360 Investments & Realty, LLC","Florida 360 Investments & Realty, LLC",https://florida360realty.com/buy
+50326,Accounting & Tax Brokerage,Accounting & Tax Brokerage,https://atbcal.com/listings
+50327,Lee & Associates Vancouver,Lee & Associates Vancouver,https://leevancouver.com/businesses/buy-a-business/
+50328,Vanguard Properties,Vanguard Properties,https://maloneybusinessbrokers.com/properties
+50330,NA Commercial Real Estate Inc,NA Commercial Real Estate Inc,https://nacommercialrealestate.com/search
+50331,"RoseBay International, Inc.","RoseBay International, Inc.",https://rosebay.com/listings/our-active-listings
+50332,"ROI Advisors, Inc.","ROI Advisors, Inc.",https://roibusinessbrokers.com/featured-listings
+50333,VR Business Sales/ Mergers & Acquisitions of Atlanta,VR Business Sales/ Mergers & Acquisitions of Atlanta,https://vrbusinessbrokers.com/businesses-for-sale/
+50334,Momentum Companies,Momentum Companies,https://momentumprojects.com/businesses
+50335,Gilezan Global brokered by eXp Commercial,Gilezan Global brokered by eXp Commercial,https://gilezanglobal.com/listings
+50336,Jarbly LLC,Jarbly LLC,https://jarbly.com/buy
+50337,Sunbelt Business Brokers,Sunbelt Business Brokers,https://sunbeltms.com/businesses-for-sale
+50338,Diversified Business Advisors,Diversified Business Advisors,https://businessadvisors.us/buy
+50339,"Apex Brokerage, Inc","Apex Brokerage, Inc",https://theapexbrokerage.com/listings/covid-proof-established-plumbing-business/
+50340,Colorado Business Brokers,Colorado Business Brokers,https://mycoloradobusinessbrokers.com/businesses-for-sale/
+50341,Kingsley Group Business Brokers,Kingsley Group Business Brokers,https://kingsleybrokers.com/current-listings
+50342,J. H. CALLAHAN BUSINESS BROKERAGE,J. H. CALLAHAN BUSINESS BROKERAGE,https://jhcallahan.com/z/fl2/static-grid1.php
+50343,Chinook Business Advisory,Chinook Business Advisory,https://chinookmabb.com/buyers
+50344,Sunbelt Network - Montgomery,Sunbelt Network - Montgomery,https://sunbelthuntsville.com/businesses-for-sale
+50345,CORE,CORE,https://corefirms.com/listings
+50346,Business Research Group,Business Research Group,https://brgbrokers.com/search-results/?Keywords=&c_listing_region_c=&c_listing_town_c=&c_businesscategories=&pagenumber=1&resultsperpage=8&c_ownerscashflow%5B%5D=0&c_ownerscashflow%5B%5D=100000000&c_listing_askingprice_c%5B%5D=0&c_listing_askingprice_c%5B%5D=100000000&c_listing_downpayment_c%5B%5D=0&c_listing_downpayment_c%5B%5D=100000000
+50347,Serafin Real Estate,Serafin Real Estate,https://serafinre.com/inventory/
+50348,Harvest Business Advisors,Harvest Business Advisors,https://harvestbusiness.com/search
+50349,Vested Business Partners,Vested Business Partners,https://vestedbusinesspartners.com/listings
+50350,URBANLIME Real Estate,URBANLIME Real Estate,https://urbanlimere.com/listings?category=Westchester
+50351,Commodore Realty,Commodore Realty,https://commodorerealty.com/businesses-for-sale
+50352,Withal Realty,Withal Realty,https://withalrealty.com/businesses-for-sale
+50353,The Innate Group,The Innate Group,https://theinnategroup.com/opportunities-archives/
+50354,"Austin Business Brokers, Inc.","Austin Business Brokers, Inc.",https://abbtx.com/listings
+50355,Coldwell Banker Commercial Orion,Coldwell Banker Commercial Orion,https://cbcorion.com/listings/
+50356,Alamo Brokers of Texas,Alamo Brokers of Texas,https://alamobrokersoftexas.com/profitable-san-antonio-healthcare-business-for-sale/
+50357,Titan Business Brokers,Titan Business Brokers,https://titanbusinessbrokers.com/buy-a-business-in-new-jersey/
+50358,Compass Commercial,Compass Commercial,https://compasscommercial.com/businesses-for-sale
+50359,Sunbelt Business Brokers,Sunbelt Business Brokers,https://thesunbeltbrokers.com/current-listings
+50360,Bluegrass Business Advisors,Bluegrass Business Advisors,https://bluegrassbusinessadvisors.com/businesses-for-sale
+50361,LQ Commercial,LQ Commercial,https://lqcre.com/listings/
+50363,BEST Advisors,BEST Advisors,https://bestadvisorsne.com/buy-a-business/
+50367,UB Succeed,UB Succeed,https://jpar.com/our-listings
+50368,Madison Commercial Properties,Madison Commercial Properties,https://madisoncommercial.com/our-listings/
+50372,RL Dynasty Realty and Development Inc,RL Dynasty Realty and Development Inc,https://rldynasty.com/featured-listings
+50374,The Gas Broker™,The Gas Broker™,https://thegasbroker.com/activelistings/
+50377,SBRE,SBRE,https://sherrybauerrealestate.com/businesses
+50378,KW Reserve Business Brokerage,KW Reserve Business Brokerage,https://soflabusinesssales.com/businesses-for-sale
+50379,Remax Bayside Commercial Division,Remax Bayside Commercial Division,https://baysidenh.net/listings/our-listings/
+50380,Angle Business Services,Angle Business Services,https://anglebusinessservices.com/farm-listings/
+50381,Saunders Real Estate,Saunders Real Estate,https://saundersrealestate.com/properties
+50383,TOK Commercial,TOK Commercial,https://tokcommercial.com/listings-agent/
+50384,Great Lakes Business Group,Great Lakes Business Group,https://greatlakesbusinessgroup.com/businesses-sale/
+50385,NAI,NAI,https://kidder.com/properties
+50389,Fausto Commercial Realty,Fausto Commercial Realty,https://faustocommercial.com/status/for-sale/
+50390,Century 21 Semiao & Associates,Century 21 Semiao & Associates,https://century21semiao.com/real-estate/new-listings/
+50392,New Beginnings Realty Specialists,New Beginnings Realty Specialists,https://855asstliv.com/company-listings/
+50394,RE/MAX Commercial Advantage,RE/MAX Commercial Advantage,https://remax-commercialadvantage-bc.ca/listings
+50395,Century 21 Toma Partners,Century 21 Toma Partners,https://stacydragos.com/listings/my-active-listings
+50396,"Allan Michael Group, Inc.","Allan Michael Group, Inc.",https://allanmichaelgroup.com/businesses-for-sale
+50397,The Valley Business Broker,The Valley Business Broker,https://thevalleybusinessbroker.com/businesses-for-sale
+50399,"TheJetNetwork, Inc.","TheJetNetwork, Inc.",https://thejetnetwork.com/aircraft-listings
+50400,Small Biz Exit,Small Biz Exit,https://harwoodcommercialgroup.com/our-listings
+50401,Palm Commercial Brokerage,Palm Commercial Brokerage,http://palmcommercialbrokerage.com/listings/
+50402,Murphy Business & Financial Services,Murphy Business & Financial Services,https://halfeder.com/businesses-for-sale/
+50404,Kendall Capital Group,Kendall Capital Group,https://kendallcapitalgroup.com/pages/our-listings
+50405,Legacy Properties Sotheby's International,Legacy Properties Sotheby's International,https://legacysir.com/properties
+50406,Business Acquisitions,Business Acquisitions,https://businessacquisition.com/buy
+50407,The Schwarz Group,The Schwarz Group,https://theschwarzgroup.com/homes-for-sale-search/
+50408,Acropolis Realty Group,Acropolis Realty Group,https://315gasguyz.com/listings
+50410,The Independence Group,The Independence Group,https://independencegroup.com/deal-opportunities/recycling-services-paper-plastic-beverage-destruction/
+50411,Radius Group,Radius Group,https://radiusgroup.com/listings
+50412,Joe Tramonte Realty,Joe Tramonte Realty,https://tramonterealty.com/listings
+50413,Hearthside Group,Hearthside Group,https://hearthsidegroup.com/buy
+50415,California Curb Appeal Real Property Specialists,California Curb Appeal Real Property Specialists,https://calcurbs.com/businesses-for-sale
+50417,"Gold and Company, LLC","Gold and Company, LLC",https://goldcommercial.net/baltimore-commercial-listings
+50418,Advantage Realty #1,Advantage Realty #1,https://advantagehighlands.com/buy
+50421,Simmons Southcentral,Simmons Southcentral,https://simmonsinc.com/practice-listings/small-animal-greater-champaign-area/
+50423,KW Commercial Texas,KW Commercial Texas,https://hargroverealtygroup.com/results-gallery/?userID=all
+50425,Murphy Business & Financial Services LLC,Murphy Business & Financial Services LLC,https://murphybusinessnfc.com/businesses-for-sale/
+50426,Sanborn and Company,Sanborn and Company,https://restaurantsbarsforsale.com/search-listings?s=&property_type=all&location=all&price=all&search-type=listings&submit=Search+Now&status=Sold/Leased
+,route consultant,route consultant,https://listings.routeconsultant.com/route-search-results/
+,"fxg management, inc.","fxg management, inc.",https://fxgcorp.com/buyers
+,ubi business brokers,ubi business brokers,https://www.ubibusinessbrokersarizona.com/all-listings
+,river brokers,river brokers,https://riverbrokers.com/commercial-listings/
+,"sofranko advisory group, llc","sofranko advisory group, llc",https://sofrankoadvisors.com/for-sale/
+,"franchise & business opportunities, llc","franchise & business opportunities, llc",https://franchiseusa.net/franchises/
+,business exit advisors,business exit advisors,https://bizmls.com/cgi-bin/a-bus2.asp?folder=bbf-1282&src=bus-all
+,square deal realty,square deal realty,"https://link.flexmls.com/x2oeawuasrr,5"
+,accounting practice sales,accounting practice sales,https://accountingpracticesales.com/apslistings/
+,"south florida m&a advisors, inc.","south florida m&a advisors, inc.",https://bizmls.com/listings/bbf-1287002/bus-chg7day.asp
+,"pk property ,real estate company in pa,nj,ny.","pk property ,real estate company in pa,nj,ny.",https://pk-property.com/business-listing/
+,hughes properties inc.,hughes properties inc.,https://hughesproperties.com/#
+,business brokers of arizona,business brokers of arizona,https://www.azbusinessbrokers.com/search-listings
+,7 continents international,7 continents international,https://www.7cint.com/
+,bristol group,bristol group,https://bristolgrouponline.com/buy-a-business/#search
+,"generational equity, llc","generational equity, llc",https://www.dealforce.com/buying-a-business/ -- Limited list. Wants a sign in to view all listings
+,national restaurant properties,national restaurant properties,https://www.nationalrestaurantproperties.com/listings/
+,tree realty,tree realty,https://www.givingtreerealty.com/listings/
+,global one realty,global one realty,https://www.thecanvasapts.com/?rcstdid=MQ%3d%3d-WOzw8Oa5P2c%3d&gad_source=5&gad_campaignid=22511196942&gclid=EAIaIQobChMI6oyw0pO1jQMVktI8Ah0PiyvWEAAYASAAEgLWKfD_BwE
+,"fih, llc","fih, llc",https://fih.com/marketplace
+,power realty & investments,power realty & investments,https://www.powerrealty1.com/
+,hudson valley business brokers,hudson valley business brokers,https://northeastbusinessbrokers.com/
+,michigan business broker,michigan business broker,https://michiganbusinessbroker.com/listings/
+,latona's llc,latona's llc,https://latonas.com/
+,baldwin realty group,baldwin realty group,https://baldwinrealestateenterprises.com/properties/
+,professional realty group,professional realty group,https://choijina.com/index.php/our-properties/
+,business & commercial ventures,business & commercial ventures,https://bcvcommercialrealty.com/businesses-for-sale/
+,new michigan realty,new michigan realty,https://newmichiganrealty.com/search-result/
+,franchise clearly,franchise clearly,https://members.franchiseclearly.com/tools/franchisors/public?available
+,"best biz to buy, llc","best biz to buy, llc",https://www.bestbiztobuy.com/listings
+,code of the west real estate,code of the west real estate,https://cotwrealestate.com/properties/
+,prambernow,prambernow,https://businessesforsale.nuwireinvestor.com/business-broker/chris-pramber/prambernow/38206/
+,baystate business brokers,baystate business brokers,https://www.baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri/
+,jb & associates,jb & associates,https://laundromat-broker.com/listings.html
+,negocios en florida,negocios en florida,https://en.negociosenflorida.com/compre-un-negocio/negocios-destacados-2/
+,ravi jagtiani / jagtiani group with intero commercial,ravi jagtiani / jagtiani group with intero commercial,"https://www.crexi.com/profile/ravi-jagtiani-ravijag
+
+https://www.bizbuysell.com/business-broker/ravi-jagtiani/ravi-jagtiani-jagtiani-group-with-intero-commercial/32607/?bp_sreg=18&bp_cpg=2"
+,kmf business advisors,kmf business advisors,https://kmfbusinessadvisors.dealrelations.com/listings?page=2%20
+,recckio real estate and development inc.,recckio real estate and development inc.,https://recckio.com/commercial-listings/
+,q star seattle realty,q star seattle realty,https://qstarseattle.com/listings
+,cland realty,cland realty,https://www.clandbiz.com/search-results/?states%5B%5D=
+,"kw commercial - parks commercial group, llc","kw commercial - parks commercial group, llc",https://kwcommercial.com/properties/
+,the pacific group,the pacific group,https://us.businessesforsale.com/us/agents/the-pacific-group
+,biz resales,biz resales,https://www.bizmls.com/business-search.asp -- Need to choose State
+,pronovapartners,pronovapartners,https://pronovapartners.com/engagements/
+,sullbrand,sullbrand,https://sullivanbusinessbrokers.com/category/uncategorized/ - Appears all SOLD
+,century 21 carioti,century 21 carioti,https://www.century21.com/real-estate/orlando-fl/LCFLORLANDO/
+,vista investment & realty,vista investment & realty,https://www.vistarealtync.com/properties/
+,vantage commercial partners,vantage commercial partners,"https://www.commercialmls.com/People/AgentListings/19393
+
+https://www.commercialmls.com/People/AgentBusOps/19393"
+,skyline properties,skyline properties,https://paraneejudd.com/basic-search/
+,nai excel,nai excel,https://excelcres.com/properties/
+,infiniti properties,infiniti properties,https://www.rentalbeast.com/infinitipropertiesil/apartments/for_rent/Chicago-Illinois#!/search/general
+,svn | chicago commercial,svn | chicago commercial,https://svnchicago.com/properties/
+,the marvin group llc,the marvin group llc,https://www.businessesforsale.com/search?formName=searchForm&keywords=
+,greenmount properties llc,greenmount properties llc,https://www.foxandroach.com/index.php?showagency=1#rslt
+,"florida business opportunities, inc.","florida business opportunities, inc.",https://bbms.biz/cgi-bin/a-bus2ff.asp?forsale=go
+,malone commercial brokers,malone commercial brokers,https://www.malonecb.com/search-listings#/search/grid/
+,united national realty,united national realty,https://search.unitednationalrealty.com/idx/results/listings?ccz=city&city%5B0%5D=
+,re/max professionals,re/max professionals,https://www.remax.com/homes-for-sale -- Needs to fill out a form for listing
+,thomas hospitality group,thomas hospitality group,https://thomashospitality.com/
+,ko am realty,ko am realty,https://koamrealty.com/2022/category/listing/
+,national restaurant exchange,national restaurant exchange,"https://www.nerestaurantbrokers.com/full-service-restaurants
+
+https://www.nerestaurantbrokers.com/fast-food-restaurants
+
+https://www.nerestaurantbrokers.com/liquor-businesses"
+,compass first,compass first,https://compassfirst.com/category/current-listings/
+,equity oregon real estate,equity oregon real estate,https://www.equityoregon.com/
+,main source realty,main source realty,https://mainsourcerealty.com/mls-listings
+,"xite realty, llc","xite realty, llc",https://www.xiteco.com/practice-listings/?_practice_listings_map=2.861753%2C-130.813086%2C57.163602%2C-64.543555
+,sands investment group,sands investment group,https://sandsig.com/listings/
+,usa realty llc.,usa realty llc.,https://www.usarealty-mn.com/listings - Need to choose location
+,yibroker,yibroker,https://cincybizbroker.com/current-listings/
+,elite collaborative,elite collaborative,https://elitecollaborative.com/pages/buying
+,alliance bay realty,alliance bay realty,"https://alliancebayrealty.com/lss 
+
+https://alliancebayrealty.com/OfficeListings"
+,hospitality services corp.,hospitality services corp.,https://www.hscbrokers.com/property-listings/
+,hwh properties,hwh properties,https://adultclubbroker.net/current-listings/additional-listings/
+,lisiten associates,lisiten associates,https://lisitenassociates.com/exclusive-listings/
+,realty mark,realty mark,http://www.aleemshomerealty.com/results/
+,glory land realty,glory land realty,https://www.homesnap.com/kenneth-narksompop/gmb2
+,johnhart commercial,johnhart commercial,https://www.johnhartcre.com/properties
+,re/max champions,re/max champions,https://www.remaxchampions.org/index.php?showagency=1#rslt
+,big star realty,big star realty,https://www.bigstarrealty.net/cgi-bin/real?pge=newsearch&state=na&widget=true&sortby=price&area=&price_lo=0&price_hi=100000000&tot_bed_lo=0&tot_bath_lo=0&htype=ALL
+,michele phillips & company realtors,michele phillips & company realtors,https://idx.michelephillipsrealtor.com/idx/results/listings?pt=sfr&lp=100000&hp=800000
+,sellstate metro realty,sellstate metro realty,https://emadsalem.sellstatemetro.com/index.php?showagent=1#rslt
+,performance business advisors,performance business advisors,https://abb-businessbrokers.com/businesses-for-sale/
+,first choice business brokers of cincinnati,first choice business brokers of cincinnati,https://businessforsaleohio.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1
+,infinity realty & investment group,infinity realty & investment group,https://www.nestfully.com/Listing/ListingSearch.aspx
+,light & raphael,light & raphael,https://lightandraphael.com/current-offerings/
+,blatteis realty co. inc.,blatteis realty co. inc.,https://www.blatteisrealty.com/commercial-real-estate-for-sale-and-lease -- Needs input
+,re/max gold.,re/max gold.,https://remaxgold.com/properties/?perRow=auto&order=price%7Cdesc&page=1&limited=true&limit=800&layout=map&propertyTypes=1%7C2
+,"action business brokerage, llc","action business brokerage, llc",https://actionbusinessbrokerage.com/commercial-real-estate-for-sale-3/
+,first choice business brokers san diego,first choice business brokers san diego,https://sandiegonorth.fcbb.com/businesses-for-sale
+,"beachfront realty, inc. - business and commercial division","beachfront realty, inc. - business and commercial division","https://www.beachfrontonline.com/propertysearchframe.asp?region=7&county=miami,dade,broward&ptype2=h,s,t,m&PriceStart=500000"
+,restaurant marketing services llc,restaurant marketing services llc,https://www.lmmre.com/apartment-search/
+,apex commercial real estate services | kw south valley keller williams,apex commercial real estate services | kw south valley keller williams,https://www.apex-cre.com/current-listings
+,finkel brokers,finkel brokers,https://www.newhomesource.com/ - Need to choose location
+,jc kapas real estate company,jc kapas real estate company,https://www.jckapas.com/listings -- Needing a form filled out
+,premier realty group,premier realty group,http://search.premier-realty-group.net/idx/featured
+,trustus realty inc,trustus realty inc,https://www.trustusrealty.com/properties
+,"the millionaire realty, llc.","the millionaire realty, llc.",https://www.ratemyagent.com/real-estate-agency/the-millionaire-realtors-group-llc-id148/sales/properties
+,sky commercial real estate,sky commercial real estate,https://skyrei.com/available-spaces/
+,"sr business brokers, inc.","sr business brokers, inc.",https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=&ask_price_h=&map_id=12&lcity=&keyword=&lst_no=&time=0&bprice=0&fresale=0&ownerfi=0&county_id=0
+,coldwell banker commercial lyle & associates,coldwell banker commercial lyle & associates,https://cbclyle.com/properties/for-sale/?saleOrLease=sale
+,"commercial realty advisors, inc.","commercial realty advisors, inc.",https://comrealty.net/search-commercial-real-estate-listings/
+,next wave commercial,next wave commercial,https://nextwavecommercial.com/listings/
+,redpoint realty,redpoint realty,https://redpointgroup.net/listings/
+,vantage point retail llc,vantage point retail llc,https://vantagepointretail.com/exclusive-property-listings/
+,dnvr realty & financing llc,dnvr realty & financing llc,https://www.dnvrrealty.com/our-listings
+,metrobrokers inc.,metrobrokers inc.,https://www.metrobrokers.com/listings/search-listings/
+,berkshire hathaway homeservices professional realty,berkshire hathaway homeservices professional realty,https://www.bhhspro.com/index.php?showagency=1#rslt
+,patricia burnside realty,patricia burnside realty,https://www.patburnsiderealty.com/
+,vantage real estate services,vantage real estate services,https://www.vantageres.com/commercial-properties-sale-lease/
+,viewpoint realty international inc,viewpoint realty international inc,https://www.viewpoint-realty.com/homes-for-sale-featured/
+,good partner commercial real estate team,good partner commercial real estate team,https://partnerscrnc.com/available-properties/
+,the wynn group,the wynn group,https://twgcommercial.com/listings/
+,321 realty/321 business broker,321 realty/321 business broker,https://the321agent.com/property-search/
+,south florida realty group inc.,south florida realty group inc.,https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go
+,re/max market force,re/max market force,https://www.remaxmarketforce.com/index.php?showagency=1#rslt
+,restaurant realty group,restaurant realty group,https://www.rrgcre.com/marketplace
+,sam galatas,sam galatas,https://higginsgroup.com/our-listings/
+,american property group,american property group,https://www.americanpropertygroup.com/
+,century 21 everest,century 21 everest,https://www.c21everest.com/search?location=2#?q_limit=36&mlsId=425|590|498&status=1|3&q_sort=createdAt-&q_offset=0
+,coldwell banker lifestyles,coldwell banker lifestyles,https://www.thecblife.com/listings/
+,j & m realty,j & m realty,https://jmrealtyservicescorp.squarespace.com/available-listings
+,specific one realty inc,specific one realty inc,https://map.realtyonegroup.com/properties/sale/country-USA/type-single%20family;condo!townhouse;Multi_Family;land;farm;mobile!manufactured/rental-false/lat-19.660047492139814-57.66707472957554/lon-_134.4917976875-_64.2671883125/dsort-p
+,the schneider team,the schneider team,https://dwellwashington.com/recent-properties/
+,agent trust realty,agent trust realty,https://www.agenttrustrealty.com/propiedades/
+,suncoast business brokers,suncoast business brokers,https://suncoastbiz.net/search-businesses/
+,bhhs nevada properties,bhhs nevada properties,https://www.bhhsnv.com/homes/sale/status-active;Contingent%20on%20Sale;Active%20Under%20Contract/newlistings/type-Single%20Family;Condo!Townhouse;Vacant%20Land/dsort-n
+,gateway mergers & acquisitions,gateway mergers & acquisitions,https://www.gatewayma.com/available-listings
+,dds real estate,dds real estate,https://ddsrealty.net/commercial-listings
+,berkshire hathaway golden realty,berkshire hathaway golden realty,https://search.bhhsgoldenproperties.com/idx/results/listings?idxID=d025&pt=1&ccz=city&a_statusCategory%5B%5D=active&a_statusCategory%5B%5D=sold
+,coldwell banker commercial danforth,coldwell banker commercial danforth,https://danforth-federalway-wa.cbcworldwide.com/search/properties?
+,ohana realty group,ohana realty group,https://www.ohanarealtylv.com/vacancies
+,alaska unlimited realty,alaska unlimited realty,https://www.alaskaunlimitedrealty.com/featured-listings
+,canton realty,canton realty,https://www.equity55.com/index.php?showagency=1&rtype=
+,century 21 reilly realtors,century 21 reilly realtors,https://c21reilly.idxbroker.com/idx/featured
+,"crowne atlantic properties, llc","crowne atlantic properties, llc",https://www.crowneatlantic.com/premier-listings/
+,lamon assocites,lamon assocites,https://www.lamonrealestate.com/listing/listingsearch.aspx
+,loam commercial real estate,loam commercial real estate,https://loamcommercial.com/for-sale
+,nj/ny business xchange,nj/ny business xchange,https://us.businessesforsale.com/us/agents/new-york-business-exchange
+,"par commercial brokerage, inc.","par commercial brokerage, inc.",https://parcommercial.com/for-sale/
+,millennium realty inc,millennium realty inc,https://www.millenniumrealtyinc.com/index.php?showagency=1#rslt
+,location matters inc.,location matters inc.,https://locationmatters.com/map-property/
+,"beam real estate, llc","beam real estate, llc",https://www.beamrealestate.com/pages/listings/
+,berkshire hathaway homeservices crest real estate,berkshire hathaway homeservices crest real estate,https://www.bhhscrest.com/index.php?showagency=1#rslt
+,first colorado land office inc.,first colorado land office inc.,https://firstcolorado.com/properties/sale
+,insite commercial real estate advisors,insite commercial real estate advisors,https://insiterei.com/properties/
+,"mega realty & investments, inc.","mega realty & investments, inc.",http://www.megarealtyusa.com/listing/listingsearchresultsonly.aspx?Search=a5f97d56-716c-443e-991b-50913ad979a2&SearchType=AgentHome&InternalAgentCd=&OfficeCds=&AgentHomePageSearchType=AllMyOfficeListings&ListingType=&ListingDistrictTypeID=&PriorSales=&Sort=6
+,more realty,more realty,https://www.morerealty.com/buy
+,"quantum business brokers, inc.","quantum business brokers, inc.",https://bizmls.com/cgi-bin/a-bus2.asp?forsale=go
+,christie's international real estate,christie's international real estate,https://www.christiesrealestate.com/homes-for-sale/?principalcurrency=1000000%2C280353297
+,doctors broker llc,doctors broker llc,https://doctorsbroker.com/ - Have their listing per category
+,pacific reliance,pacific reliance,https://pacificrb.com/listings
+,first choice business brokers - east tennessee/nashville,first choice business brokers - east tennessee/nashville,https://nashville.fcbb.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1
+,john l scott,john l scott,https://www.johnlscott.com/search
+,prominent business brokers llc,prominent business brokers llc,https://www.businessbroker.net/listings/bfs_result.aspx?By=AdvancedSearch&r_id=33&ind_id=0&ask_price_l=0&ask_price_h=99000000&map_id=12&lcity=&keyword=&lst_no=&time=&bprice=0&fresale=0&ownerfi=0&county_id=
+,j. vassiliades & company,j. vassiliades & company,https://laundry-broker.myshopify.com/collections/coming-soon -- Needs log in
+,resolution equity partners,resolution equity partners,https://www.resolutionep.com/opportunities
+,sirius realty llc,sirius realty llc,https://siriusrealtyservices.com/search-results/?z=d1a58464cde2a37ced6f7123eb50358e&board_in=greenville-sc&wp=1&wpfolder=&num_to_show=10&type_in=RES_SFR&low_price=0&high_price=NOMAX&min_sqft_in=&max_sqft_in=&min_acres_in=&max_acres_in=&min_age_in=&max_age_in=&beds_in=0&baths_in=0&hbaths_in=0&status_in=&elemlistin%5B%5D=ALL+SCHOOLS&midlistin%5B%5D=ALL+SCHOOLS&highlistin%5B%5D=ALL+SCHOOLS&arealistin%5B%5D=ALL+AREAS&sublistin%5B%5D=ALL+SUBDIVISIONS&save=Search
+,brentwood growth corp,brentwood growth corp,https://www.brentwood-growth.com/buying-a-home-services-business/
+,cr properties group llc,cr properties group llc,https://crproperties.com/search-property-listings/
+,cw brokerage,cw brokerage,https://www.cushmanwakefield.com/en/properties/properties-for-sale
+,denver real estate brokers,denver real estate brokers,https://www.drebonline.com/listings
+,"horizon realty brokers ,inc","horizon realty brokers ,inc",https://www.horizonrealtyservices.com/properties
+,howard hanna the frederick group,howard hanna the frederick group,https://hannacre.com/locations/pennsylvania/lehigh-valley/search-properties/
+,loss realty group,loss realty group,https://lossrealtygroup.com/just-listed/
+,masters realty,masters realty,https://mastersrealty.com/the-collection
+,"northwoods realty, llc","northwoods realty, llc",https://www.northwoodswi.com/idx/search/homes-for-sale/any/WI_state
+,"re/max northern edge realty, llc","re/max northern edge realty, llc",https://www.remax-ner-berlin-nh.com/listings/our-listings/
+,realty masters,realty masters,https://propertymanage.biz/realtymasters/rentals/listings -- Needs to fill out form
+,western singh brokers,western singh brokers,https://californiabusinesssale.com/search-results/?
+,sunshineagle,sunshineagle,https://sunshineagle.com/premium-listings/
+,the signature commercial real estate,the signature commercial real estate,https://www.signaturecommercialrealestate.com/properties
+,the realty tx,the realty tx,https://www.therealtytexas.com/search-results/?keyword=&location%5B%5D=
+,exp realty,exp realty,https://www.exprealty.com/search
+,gilleland properties,gilleland properties,https://gillelandproperties.com/
+,berkshire hathaway fox & roach,berkshire hathaway fox & roach,https://www.foxroach.com/company-listings
+,berkshire hathaway new england properties,berkshire hathaway new england properties,https://www.bhhsneproperties.com/listings/bhhsexclusivelistings/dsort-p
+,best corporate real estate,best corporate real estate,https://www.bestcorporaterealestate.com/
+,best real estate and business brokerage,best real estate and business brokerage,https://bestrealestateco.com/properties/
+,"cannabis business brokers, inc","cannabis business brokers, inc",https://cannabis-brokers.com/
+,dave smith realty llc,dave smith realty llc,https://www.davesmithrealty.com/featured.htm
+,"desert mountain realty, inc.","desert mountain realty, inc.",https://www.desertmountainrealty.com/our-active-listings
+,evermark commercial group,evermark commercial group,https://www.evermarkcommercial.com/inventory/
+,metro realty & investments,metro realty & investments,https://www.metroinvestments.net/availability
+,njbizbuysell,njbizbuysell,https://njbizbuysell.com/listings
+,seawinds investments realty,seawinds investments realty,https://seawindsinvestmentrealty.com/buying-search
+,sky line commercial real estate,sky line commercial real estate,https://skycre.com/sky003/listing/
+,deborah byon investment realty,deborah byon investment realty,https://www.bizben.com/sp/1687812
+,geek realty,geek realty,https://www.buygeekrealty.com/search#?q_limit=200&mlsId=28&status=1|3&q_sort=createdAt-&q_offset=0
+,"california broker services, inc.","california broker services, inc.",https://lacountyrealestate.us/active-listings-2
+,international realty firm inc,international realty firm inc,https://internationalrealtyfirm.com/featured-listings
+,royal empire realty llc,royal empire realty llc,https://www.royalempirealty.com/profile#listings
+,business brokers of utah,business brokers of utah,https://businessbrokersofutah.com/businesses-for-sale/
+,steve ramsthel,steve ramsthel,https://sellmydeliveryroutes.com/buy-routes/
+,absolute real estate opportunities,absolute real estate opportunities,https://absolutenetproperties.com/available-property/
+,national acquisitions & investment group llc,national acquisitions & investment group llc,"https://naigllc.com/midwest-rv-center-sales-service/
+
+https://naigllc.com/midwest-restaurant-marina-property-business/
+
+https://naigllc.com/midwest-marina-satellite-facility/"
+,amiva equity partners llc,amiva equity partners llc,https://app.amivaplus.com/register?token=PuMG3da3LG0lD93100lkPQP -- Needs sign up
+,california broker,california broker,https://www.garybayus.com/3/The-Listings
+,lifestyle international realty,lifestyle international realty,https://idx.lifestyleir.com/search-results/?purchase_types=Buy&sort_field=price&sort_direction=desc&search_num_results=24
+,mericle commercial real estate,mericle commercial real estate,https://www.mericle.com/search-properties/
+,next step capital brokered by exp commercial,next step capital brokered by exp commercial,https://www.nextstep-capital.com/
+,the brokerage real estate & business brokerage,the brokerage real estate & business brokerage,https://www.thebrokerageyouwinhere.com/new-real-estate-listings
+,william bruce business sales & acquisiti,william bruce business sales & acquisiti,https://williambruce.org/website-of-william-bruce/
+,badger peabody & smith realty,badger peabody & smith realty,https://www.badgerpeabodysmith.com/results/?status_types%5B0%5D=sale&status_types%5B1%5D=contingent&status_types%5B2%5D=pending&startnewsearch=1&property_category=99&state=33&autocompleter=v2
+,berkshire hathaway home services,berkshire hathaway home services,https://www.bhhsdrysdale.com/search?SearchType=City&PropertyType=1%2C2&ListingStatus=1&ApplicationType=FOR_SALE&Sort=PRICE_DESCENDING&PageSize=32&Page=1
+,champion realty,champion realty,https://redpointgroup.net/listings/
+,endeavor business brokers,endeavor business brokers,https://www.endeavorbusinessbrokers.com/buyers/businesses-for-sale/
+,executive real estate,executive real estate,"https://www.buyexecutive.com/index.php?advanced=1&polygons%5B%5D=-73.04129206093748,42.371782412208724,-71.94265924843748,42.36366532766639,-72.14041315468748,41.23346154837674,-73.34890924843748,41.14251583912806&rtype=map&beds=0&baths=0&min=0&max=100000000&minacres=0&maxacres=3000&minfootage=0&maxfootage=30000&walkscore=&yearbuilt=0&types%5B%5D=17&types%5B%5D=4&types%5B%5D=9&types%5B%5D=15&sortby=listings.listingdate+DESC&ppc=Paid+Marketing+(PPC)&agency_photos=&view_timing=2"
+,praxis business brokers,praxis business brokers,https://nuvescor.com/companies-for-sale/
+,"realtyhive, llc","realtyhive, llc",https://www.realtyhive.com/search/
+,t & h realty group,t & h realty group,https://www.threaltyinc.com/indianapolis-houses-for-rent/
+,weichert commercial advisors,weichert commercial advisors,https://www.weichertcommercial.com/property-listings/
+,"xqb management inc, dba re/max one","xqb management inc, dba re/max one",https://www.maxoneproperties.com/IDXMini.aspx?segmentid=7558276&uid=132190&htmlfile=2019072.html
+,nest seekers international,nest seekers international,https://www.nestseekers.com/Properties/
+,prinston realty group,prinston realty group,https://princetonrealtygroup.com/properties/
+,capitol commercial real estate & business,capitol commercial real estate & business,https://www.capitalcomre.com/sale
+,dalton wade real estate group,dalton wade real estate group,https://www.daltonwade.com/index.php?showagency=1&rtype=map
+,singh and co real estate,singh and co real estate,"https://www.coloproperty.com/listing/list?perPage=200&reportFormat=quick&searchFor=listing&typeIds=1,2&orderBy=prAsc&showSolds=A,AB,AF,AP,C,P&maxResults=200&page=1&exclStatus=,S&latMin=36.91015904817117&latMax=41.09685042665029&lngMin=-109.4940386677683&lngMax=-101.69470933223069"
+,auction advisors,auction advisors,"https://auctionadvisors.com/real-estate/
+
+https://auctionadvisors.com/business-commercial-assets/"
+,thrive financial group,thrive financial group,https://thrivefinancialgrp.com/practices-for-sale/
+,avanti way,avanti way,https://search.avantiway.com/buyer
+,business broker colorado,business broker colorado,https://www.findbusinesssale.com/colorado-businesses-for-sale
+,jla realty international business consultants,jla realty international business consultants,https://brevitas.com/search
+,kelly & call business brokerage,kelly & call business brokerage,"https://www.kellyandcall.com/commercial-properties
+
+https://www.kellyandcall.com/business-aquisitions"
+,"california commercial brokers, inc.","california commercial brokers, inc.",https://ccbre.com/#listings
+,country air commercial,country air commercial,https://countryaircommercial.com/listing/listingsearch.aspx?clear=1
+,ecom brokers,ecom brokers,https://www.ecombrokers.co.uk/all-listings
+,"fitzgibbon alexander, inc.","fitzgibbon alexander, inc.",https://fitzgibbonalexander.com/business-buyer-info/
+,intero real estate inc,intero real estate inc,https://www.intero.com/realestate/search/company-listings
+,"premier realty, inc","premier realty, inc",https://www.premierhomesrealty.net/index.php?showagency=1#rslt
+,svn southland commercial real estate,svn southland commercial real estate,https://www.therestaurantrealty.com/restaurant-real-estate-listings
+,amberwood real estate,amberwood real estate,https://amberwoodre.com/featured-listings
+,berkshire hathaway homeservices western new york properties,berkshire hathaway homeservices western new york properties,https://www.bhhswny.com/search?SearchType=Empty&PropertyType=1%2C2&ApplicationType=FOR_SALE%2CFOR_RENT&ListingStatus=1&NewListing=false&Sort=PRICE_DESCENDING&PageSize=32&Page=1&isAgentPage=false&isFranchisePage=true&franchiseeCode=NY314
+,borosh realty,borosh realty,https://boroshrealty.com/buyers/
+,"car wash brokers, inc.","car wash brokers, inc.",https://www.carwashbrokers.com/?page_id=2423
+,century 21 rauh & johns,century 21 rauh & johns,https://century21rauhandjohns.com/listings/brokerage-active-listings
+,century 21 the seyboth team,century 21 the seyboth team,https://www.seybothteamhomes.com/results-gallery/?photo=1&sort=importdate&status=A
+,close-converse commercial properties,close-converse commercial properties,https://www.closeconverse.com/property-search/?status=for-sale
+,"commercial realty group, inc.","commercial realty group, inc.",http://commercialrealtygroupinc.com/busin_opp/index.htm
+,compass california ii,compass california ii,"https://www.compass.com/homes-for-sale/manhattan-ny/listing-type=coming-soon,exclusive/"
+,crest realty,crest realty,https://crestrealtyutah.com/category/business-sale/
+,current capital realty inc,current capital realty inc,https://www.currentcapitalgroup.com/commercial-space-lease/
+,dream realty,dream realty,https://www.dream-realty.com/residential-properties-for-sale
+,gilcrest properties,gilcrest properties,https://search.gilcrestproperties.com/idx/search/commercial
+,grand realty of america,grand realty of america,https://grandrealtyofamerica.com/our_listings
+,"interinvestments realty, inc.","interinvestments realty, inc.",https://interinvestments.site/all-listings/?agent-id=172&shared=true
+,kaden realty inc,kaden realty inc,https://kaden.nyc/propert/
+,keystone real estate advisors,keystone real estate advisors,https://keystoneadvisors.co/property-listings/
+,kham inc,kham inc,https://khaminc.com/businesses-for-sale/
+,"kids depot realty, inc.","kids depot realty, inc.",https://kidsdepotrealty.com/listings/
+,live in montana real estate,live in montana real estate,https://www.liveinmtrealestate.com/featured-commercial-listings
+,mackinac properties,mackinac properties,https://mackinacproperties.com/listings/commercial.php?oid=20050121235030353539000000
+,"parcel real estate, inc.","parcel real estate, inc.","https://www.moodyscre.com/marketplace/search/map@38.06709037357077,-95.8675,4/?bounds=58.47184865522712,-58.11847656250001,9.927690394804447,-133.6165234375&listedStatus=AVAILABLE_LEASE,AVAILABLE_SALE"
+,"re/max preferred group, realtors","re/max preferred group, realtors",https://www.preferredgrouprealtors.com/exclusives.php?type=Coming+Soon
+,redman realty group,redman realty group,https://www.redmanrealtygroup.com/homes-for-sale-featured/
+,sk realty,sk realty,https://businessforsaleinsandiego.com/businesses-for-sale#SearchAvailableBusinesses?sort=FeaturedLocalBusinesses&page=1
+,stonegate real estate services,stonegate real estate services,https://las.mlsmatrix.com/Matrix/Public/IDXSearch.aspx?count=1&idx=18f7be2&pv=&or=
+,synergy real estate group,synergy real estate group,https://www.synergyrealestategroup.net/commercial-properties-landing
+,synergy realty,synergy realty,https://amazingphoenixhomes.com/#listings
+,total transitions llc,total transitions llc,https://cca.troychamber.com/joblisting.aspx
+,tru international realty corp,tru international realty corp,https://www.onekeymls.com/homes/commercial/buy
+,urban group real estate,urban group real estate,https://urbangroupsf.com/buy/
+,walden home group,walden home group,"https://www.waldenhomegroup.com/search#?q_limit=200&mlsId=698|366&multi_search=Fairbanks,%20AK&multi_cat=CityState&status=1|3&q_sort=createdAt-&q_offset=0"
+,exp commercial,exp commercial,https://www.expcommercial.com/listings/
+,the agency,the agency,https://www.theagencyre.com/properties/sale/rental-false/status-active;pending/type-Single%20Family;Condominium;Townhouse;Co_op;Apartment;Land/lat-16.021396197635195-59.65490798396265/lon-_134.1841805-_64.5748055/dsort-cl
+,unbroker,unbroker,https://unbroker.com/businesses-for-sale/
+,k & m associates cre llc,k & m associates cre llc,https://www.nystatemls.com/nationwide_real_estate_listings.html
+,legacy commercial,legacy commercial,https://legacypro.com/properties/
+,nai black commercial real estate service,nai black commercial real estate service,https://www.naiblack.com/properties/
+,palm ocean realty,palm ocean realty,"https://palmoceanrealty.com/property-search
+
+https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go"
+,prime america real estate,prime america real estate,https://www.primeamericany.com/featured-listing/?paged=1&origin_ids=50589db0d23a540d10000105&search_num_results=12&oname=prime+america+real+estate&sort_field=price&sort_direction=desc
+,royal lepage your community realty,royal lepage your community realty,https://www.yourcommunityrealty.com/listings.cfm
+,"bhayani real estate group - beam real estate, llc","bhayani real estate group - beam real estate, llc",https://bhayanirealestate.com/
+,central realty group,central realty group,https://central-realty.com/real-properties/
+,century 21 select commercial group,century 21 select commercial group,https://www.selectcommercialgroup.com/search/lt-officelisting/viewall-1/
+,coldwell banker coast realty,coldwell banker coast realty,https://www.coldwellbankercoast.com/properties/?perRow=auto&layout=card&maxDaysOnSite=7&priceMin=10000&ourListings=1&order=price%7Cdesc&page=1&limited=true&limit=24&propertyTypes=1%7C2%7C3%7C5%7C31%7C33%7C17%7C4%7C56%7C15%7C20%7C8%7C55%7C30
+,"collaborative commercial business brokers, llc.","collaborative commercial business brokers, llc.",https://www.collaborativecommercial.com/listings
+,gentile real estate,gentile real estate,https://gentilerealestate.com/featured-listings/
+,lewith & freeman real estate inc.,lewith & freeman real estate inc.,https://www.lewith-freeman.com/real-estate/
+,matthews real estate investment services,matthews real estate investment services,https://www.matthews.com/listings/
+,pagoda realty,pagoda realty,https://listings.pagodarpm.com/idx/results/listings?idxID=b004&pt=1&lp=200000&hp=800000&ccz=city&srt=prd&per=10
+,svn | commercial advisory group,svn | commercial advisory group,https://suncoastsvn.com/properties/
+,the butler real estate group- berkshire hathaway hs premier properties,the butler real estate group- berkshire hathaway hs premier properties,https://butlerrealestategroup.net/commercialproperties/
+,willard retail,willard retail,https://willardretail.com/properties
+,lee & associates,lee & associates,https://www.lee-associates.com/properties/
+,shark team brokered by lpt realty,shark team brokered by lpt realty,https://sharkteamflorida.com/businesses-for-sale/
+,anderson commercial group,anderson commercial group,https://www.andersoncommercialgroup.com/brokerage/property-search
+,best choice realty,best choice realty,https://www.choicehomes4sale.com/market-activity/ -- Needs sign up
+,"cervera real estate, inc.","cervera real estate, inc.",https://cervera.com/search/
+,the exit strategy co,the exit strategy co,https://www.theexitstrategyco.com/sell
+,corporate equity/ empire business,corporate equity/ empire business,https://www.businessbrokerclevelandoh.com/businesses-currently-for-sale-cleveland-oh
+,gillagency,gillagency,https://gillagency.co/business-acquisitions/
+,james pappas real estate,james pappas real estate,https://jimpappas.net/listing-type/for-sale/
+,keller williams realty,keller williams realty,https://kw.com/search/sale?viewport=30.286003874677697%2C-97.75075999226574%2C30.240930750735444%2C-97.82045451130871
+,"national investment realty, llc","national investment realty, llc",https://www.nationalinvestment.net/
+,new star realty,new star realty,https://www.newstarrealty.com/
+,papyrus business solutions,papyrus business solutions,https://www.papyrusbusinesssolutions.com/real-estate
+,pebbles real estate,pebbles real estate,https://listings.pebblesrealestateranch.com/idx/featured
+,power of pluck,power of pluck,https://www.powerofpluck.com/
+,premier commercial,premier commercial,https://premiercommercial.biz/residential-searches/our-listings/
+,real estate of america,real estate of america,https://reoarealty.idxbroker.com/idx/map/mapsearch
+,rifkin associates,rifkin associates,https://www.rifkinassociates.com/dl-country-store
+,transition business brokers,transition business brokers,https://thetransitiongroup.biz/businesses-for-sale/
+,a' la carte real estate svcs,a' la carte real estate svcs,https://www.spencersperosrealty.com/my-active-listings
+,"aai financial group, llc","aai financial group, llc","https://aaifg.com/real-estate/residential-real-estate/
+
+https://aaifg.com/business-brokerage/"
+,acoma capital partners,acoma capital partners,https://www.acomacapitalpartners.com/commercial-properties
+,"adams cameron & co., realtors-commercial division","adams cameron & co., realtors-commercial division",https://danlyonnais.adamscameron.com/results/?ohouse=1
+,"alexander, covington & co.","alexander, covington & co.",https://www.alexandercovington.com/active-listings
+,avl business brokers,avl business brokers,https://www.avlrealestatesource.net/listing
+,bhhs ewm realty,bhhs ewm realty,https://thelisarosengroup.com/search/
+,black diamond realty services inc.,black diamond realty services inc.,https://www.blackdiamondrealty.net/for-sale/
+,bonanni realtors,bonanni realtors,https://bonannirealtors.com/our-properties/
+,buy direct real estate,buy direct real estate,https://www.gatsbyinvestment.com/properties-for-sale
+,"cline real estate advisors, inc","cline real estate advisors, inc",https://www.callteamcline.com/index.php?advanced=1&display=&custombox=&types%5B%5D=1&types%5B%5D=2&types%5B%5D=3&types%5B%5D=4&types%5B%5D=5&types%5B%5D=6&types%5B%5D=17&types%5B%5D=57&types%5B%5D=31&beds=0&baths=0&min=0&max=100000000&rtype=map#rslt
+,district realty group,district realty group,https://www.districtrealtygroup.com/copy-of-for-lease
+,divine fog realty company,divine fog realty company,https://divinefogrealtycompany.com/homes-for-sale-in-lynchburg-va
+,douglas elliman real estate,douglas elliman real estate,https://www.elliman.com/sales/new-york-ny
+,exp realty commercial - bicoastal investment,exp realty commercial - bicoastal investment,https://ky.exprealty.com/index.php?agentcodes=73858#rslt
+,"full sail commercial, kw","full sail commercial, kw",https://fullsailcre.com/for-sale/?saleOrLease=sale
+,gabriel realty group,gabriel realty group,https://www.homes.com/
+,global petro advisors,global petro advisors,https://www.crexi.com/properties?sort=Relevance&term=bill%20michailidis&pageSize=60
+,horizon down town realty,horizon down town realty,https://www.horizonfl.com/our-properties
+,horizon homes realty,horizon homes realty,https://horizonhomesrealty.com/property-search
+,houskor realty,houskor realty,https://www.har.com/houskor-realty--and-managementllc/office_listings_pkre01
+,investments limited,investments limited,https://investmentslimited.com/florida-residential-search/
+,keller williams costal,keller williams costal,https://kellerwilliamscoastal.yourkwoffice.com/search/sale?viewport=41.71419283583106%2C-71.44783275109863%2C41.681765076438026%2C-71.50739924890136
+,keller williams gateway,keller williams gateway,https://www.kwgatewayrealty.com/search-for-property
+,keyes company,keyes company,https://jimmyalor.keyes.com/resources/search-all-for-sale-and-lease-combined/?saleOrLease=sale&propertyType=3
+,kinlin grover commercial group,kinlin grover commercial group,https://kinlingrovercommercial.com/commercial-property-search-2/
+,mclane business brokers,mclane business brokers,https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go
+,oregon first | washington first,oregon first | washington first,https://tracyseo.oregonfirst.com/Featured-Listings
+,polaris integrated solutions,polaris integrated solutions,https://polarisintegrated.com/
+,re/max one,re/max one,https://www.tonypaone.com/
+,rock commercial real estate,rock commercial real estate,https://www.rockrealestate.net/properties/?_main_listings_sales_lease=sale
+,sam's realty and investment,sam's realty and investment,https://www.kibomrealtor.com/new-listings.html
+,seawinds investment realty. llc,seawinds investment realty. llc,https://brokersbiz.com/selling-a-business-in-florida/
+,the towner team,the towner team,https://www.townerteam.com/our-listings
+,tri-county business brokers,tri-county business brokers,https://tworld.ie/locations/tricounty/buy-a-business/active-business-listings/?s=submit&country=United%20States&state=New%20Jersey
+,us realty investment group,us realty investment group,https://usrealtyhome.com/listings
+,veld mergers & acquisitions,veld mergers & acquisitions,https://veldma.com/listing/
+,west shores realty,west shores realty,https://westshoresrealty.com/idx/listings/featured/
+,city center realty group,city center realty group,https://citycenterrg.com/homes-for-sale-featured/
+,north kendrick,north kendrick,https://www.northkendrick.com/listings
+,cobe real estate,cobe real estate,https://www.coberealestate.com/property-search/
+,first choice business brokers - irvine,first choice business brokers - irvine,https://orangecounty.fcbb.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1
+,high point business brokers,high point business brokers,https://hpbb.ca/business-listings/
+,pacific realty,pacific realty,https://pacreal.com/homes-for-sale-featured/?utm_source=chatgpt.com
+,paul kott realtors,paul kott realtors,https://pkrealtors.com/listings/
+,sesi realty,sesi realty,https://josephsesi.exprealty.com/
+,berkshire hathaway homeservices ambassador real estate,berkshire hathaway homeservices ambassador real estate,https://www.bhhsamb.com/Featured
+,black mountain valley realty,black mountain valley realty,https://www.blackmountainvalleyrealty.com/
+,businesses toronto,businesses toronto,https://businesses-toronto.com/
+,coldwell banker commercial blair,coldwell banker commercial blair,https://www.cbcblair.com/long-beach-commercial-real-estate-for-sale/
+,coldwell banker commercial cbs,coldwell banker commercial cbs,https://cbcmontana.com/properties/
+,drifka group,drifka group,https://www.drifkagroup.com/for-sale-properties
+,lane-harkins commercial real estate,lane-harkins commercial real estate,"https://laneharkins.com/listings/#/search/map@32.30286038363068,-90.18372256504708,9/?bounds=32.97243561837532,-89.79920108067208,31.628301168604427,-90.56824404942208"
+,llg business brokers,llg business brokers,https://businessbrokersllg.com/listings
+,metro florida realty,metro florida realty,https://mrcflorida.idxbroker.com/idx/results/listings?statusCategory=active&srt=newest
+,pham,pham,https://www.phamdevelopmentgroup.com/portfolio
+,powers land brokerage,powers land brokerage,"https://www.panaceaexp.com/properties
+
+https://www.panaceaexp.com/yachts-home
+
+https://www.panaceaexp.com/aircraft"
+,realty mark associates,realty mark associates,https://www.realtymarkllc.com/results/?aid=&oid=&aname=&aimg=&chome=&odoor=&agent_hasfeat=&state=42&newsearch=1&newsearchresults=1&saved_search=0&keySession=&sort_by=1&property_category=1&pricemin=&pricemax=&bedrooms=&bedmore=1&bath_full=&bath_thre=1&garages=&garages_alt=1&sqfoot_low=&sqfoot_high=&acres=&acres_h=&yb_l=&yb_h=&stories=&reducedpricedays=7&vtycount=2&pastdays=&cidonly=1&qsversion=2
+,semonin realtors,semonin realtors,https://www.semonin.com/realestate/search
+,the keyes company,the keyes company,https://www.keyescommercial.com/resources/search-all-for-sale-and-lease-combined
+,toscana properties,toscana properties,https://www.toscanapropertyny.com/idx/?search_photo=Y&feed=sibor&usersearch=1&bounds%5Bne%5D%5Blat%5D=40.676602257554464&bounds%5Bne%5D%5Blng%5D=-74.01300427358399&bounds%5Bsw%5D%5Blat%5D=40.48651790279634&bounds%5Bsw%5D%5Blng%5D=-74.28388592641602
+,trelleum real estate,trelleum real estate,https://www.trelleum.com/realestatehomes/tbl_mredilmlsall/
+,troy realty ltd,troy realty ltd,https://troyrealtyltd.com/commercial-properties
+,urban real estate,urban real estate,https://www.urbanrealty.net/featured-properties/
+,vista business group,vista business group,https://vistabusinessexchange.com/listings
+,carolinas commercial brokerage,carolinas commercial brokerage,https://carolinascommercialbrokerage.com/commercial-property-listings/
+,nai horizon,nai horizon,https://www.naihorizon.com/inventory/
+,a-1 agency,a-1 agency,https://www.a1agency.net/properties/
+,american business and commercial brokerage,american business and commercial brokerage,https://bbms.biz/cgi-bin/a-bus2.asp?forsale=go
+,hector olaya real estate broker llc,hector olaya real estate broker llc,https://www.coldwellbankerhomes.com/nj/princeton-junction/agent/hector-olaya/aid_258573/recent-sales/
+,trulantic - business broker,trulantic - business broker,https://www.exprealty.com/search
+,vanguard resource gr,vanguard resource gr,https://vrgsandiego.com/ - Showing just limited list
+,doyle & mcgrath real estate,doyle & mcgrath real estate,https://www.doylemcgrath.com/vacancies
+,dvb commercial realty llc,dvb commercial realty llc,https://www.dvbrealty.com/commercial-sale/
+,florida buy and sell,florida buy and sell,https://blog.invmagportal.com/en-businesses-for-sale
+,fortune realty advisor,fortune realty advisor,https://fortunerealtyadvisors.com/properties/
+,gas stations usa realty,gas stations usa realty,https://gasstationsusa.com/properties/
+,jason brice business marketing inc.,jason brice business marketing inc.,https://www.jason-brice.com/listings/
+,keller williams shore properties,keller williams shore properties,https://www.kwshoreproperties.com/featured-listings/
+,northeast realty & management,northeast realty & management,https://nernm.com/new-jersey
+,sea glass properties,sea glass properties,https://www.seaglassproperties.com/us-virgin-islands-real-estate/
+,the magnolia firm,the magnolia firm,https://www.themagnoliafirm.com/current-listings
+,white crow real estate,white crow real estate,https://whitecrowrealestate.com/search/
+,alexander anderson,alexander anderson,https://commercial.alexander-anderson.com/properties/
+,amg realty,amg realty,https://amgrealty.net/for-sale/
+,berkshire hathaway homeservices nv,berkshire hathaway homeservices nv,https://nevadacommercialsales.com/buy-lease-request-form/
+,better homes & gardens the masiello group,better homes & gardens the masiello group,https://www.masiello.com/residential/
+,blessed property llc,blessed property llc,https://www.blessedproperty.com/search/results/?city=Killeen&beds_min=all&baths_min=all&list_price_min=all&list_price_max=all&type=res
+,burke and manna real estate agency,burke and manna real estate agency,https://burkemanna.com/new-listings
+,canterbury realty group,canterbury realty group,https://www.liveinalabama.com/listing/listingsearch.aspx
+,catapult solutions group inc,catapult solutions group inc,https://www.catapultsgi.com/deal-corner - Need to contact
+,"commercial real estate professionals, inc.","commercial real estate professionals, inc.",https://orlandocommercialrealestate.idxbroker.com/idx/featured?srt=newest
+,dickson commercial group (dcg),dickson commercial group (dcg),https://dicksoncg.com/property-search/
+,energy exchange,energy exchange,https://www.energy-xchange.com/available-sites/
+,equity1 advisory corp,equity1 advisory corp,https://equity1advisorycorp.com/
+,friedman real estate,friedman real estate,https://www.friedmanrealestate.com/property-search/
+,general realty group inc.,general realty group inc.,https://www.generalrealty.com/forsale/
+,gilsenan & company,gilsenan & company,http://www.gilsenanandcompany.com/idx.cfm?action=dsp.results&city=&county=&state=&maxprice=400000&minprice=150000&beds=3&baths=0&propType=&waterfront=&shortsale=&foreclosure=&onlyTours=false&recent=false&sortBy=listdate&office=false&new=false&mlsnum=&agent=false&listingSystem=.&location=&zipcode=&latitude=&longitude=&searchType=default&radius=&adult=&status=A
+,gre land and commercial real estate,gre land and commercial real estate,https://grecre.com/
+,hospitality real estate brokers,hospitality real estate brokers,https://www.hospitalityrealty.net/featured-listings/
+,ivy realty co.,ivy realty co.,https://ivy-realty.com/portfolio/
+,keller william realty studio city,keller william realty studio city,https://studiocity.yourkwoffice.com/search
+,klassen ingalls,klassen ingalls,https://www.klasseningalls.com/forsale/
+,kw atlanta partners,kw atlanta partners,https://kwstockbridge.yourkwoffice.com/search/sale?viewport=33.52569535183143%2C-84.19027856591795%2C33.48976891948246%2C-84.24864343408201
+,kw commercial-br,kw commercial-br,https://kwcommercialbr.com/sale/
+,kw commercial tampa bay,kw commercial tampa bay,https://cretb.com/featured-listings/
+,lance vermeulen real estate,lance vermeulen real estate,https://lancerealestate.com/lvre-commercial-listings/
+,langner management,langner management,https://langnermanagement.com/businesses-for-sale/
+,laura sanders realty,laura sanders realty,https://laurasandersteam.com/properties/sale
+,"lawyers realty co., llc","lawyers realty co., llc","https://lawyersrealtyco.com/properties/#/search/map@38.69068205537138,-90.47825159786531,9/?bounds=39.248021449458776,-90.01407923458406,38.12896663753389,-90.94242396114656"
+,liberty realty,liberty realty,https://www.libertyrealtyandauction.com/real-estate-listings/
+,lucas business brokers,lucas business brokers,https://brokers.interexo.com/search?
+,maximum one realty greater atlanta,maximum one realty greater atlanta,https://www.maximumonegreateratlanta.com/index.php?showagency=1&rtype=map
+,"pedersen consulting group, inc.","pedersen consulting group, inc.",https://www.dnb.com/en-us/products/dnb-business-listing.html
+,premier property group,premier property group,https://2seeproperties.com/our-listings
+,progressive real estates partners,progressive real estates partners,https://progressiverep.com/property-search-all/
+,prostar realty,prostar realty,https://www.prostarrealty.com/search/results/?county=Maricopa&city=Phoenix&list_price_min=400000&list_price_max=all&beds_min=all&baths_min=all&type=res&type=con&type=lnd&type=com
+,realty one group future,realty one group future,https://future.myrealtyonegroup.com/commercial
+,remax riverside,remax riverside,https://www.remax-riverside-maine.com/index.php?showagency=1#rslt
+,resource realty group,resource realty group,https://rrcre.com/properties/
+,rockwater of kw commercial,rockwater of kw commercial,https://rockwaterme.com/
+,serrano & associates real estate llc,serrano & associates real estate llc,https://www.serranoandassociates.com/commercial-listings/
+,signature associates,signature associates,"https://www.signatureassociates.com/search-properties/#/search/map@39.094218174714534,-89.84529719474925,5/?bounds=48.149928260711924,-73.51961360099925,28.70788908739472,-106.17098078849925"
+,"skyline properties, inc. - bellevue, wa","skyline properties, inc. - bellevue, wa",https://www.skylineproperties.com/search/results/?county=King&city=Bellevue&zip=all&neighborhood=all&type=res&type=con&list_price_min=50000&list_price_max=all&area_min=all&beds_min=all&baths_min=all&lot_size_min=all&style=all&short_sale=all&school_district=all&year_built_min=all&waterfront=all
+,sotheby's international realty canada,sotheby's international realty canada,https://sothebysrealty.ca/en/
+,svn the masiello group,svn the masiello group,https://svnmasiellogroup.com/property-search/
+,the real estate factory,the real estate factory,https://realestatefactorysfl.com/search/?type=condo&deal=sale&cities=undefined&price_min=min&price_max=max
+,the right realty group,the right realty group,https://www.realtor.com/realestateforsale
+,toke properties,toke properties,https://www.tokcommercial.com/properties
+,touchstone business advisors,touchstone business advisors,https://www.tokcommercial.com/properties
+,triple oaks realty,triple oaks realty,https://tripleoaksrealty.com/listings/
+,union bay group,union bay group,https://www.unionbaygroup.com/listings?show=all
+,young's home and business realty,young's home and business realty,https://www.youngrealestate.com/search/results/
+,west usa realty commercial division,west usa realty commercial division,https://westusa.com/commercial-division/featured-commercial-properties/
+,gatsby advisors brokerage,gatsby advisors brokerage,"https://www.gatsbyadvisors.com/katy-vibes
+
+https://www.gatsbyadvisors.com/westheimerproperty"
+,trustmark mergers & acquisitions / carolina business advisory services,trustmark mergers & acquisitions / carolina business advisory services,https://www.carolinaadvisory.com/how-we-market
+,darmanin group- kw commercial,darmanin group- kw commercial,https://thedarmaningroupcre.com/featured-listings/
+,ilia martinez & associates,ilia martinez & associates,https://theimateam.com/search/
+,real estate force inc,real estate force inc,https://resf.com/exclusive-listings/
+,align right realty,align right realty,https://www.alignrightrealty.com/listing/listingSearch.aspx?Search=be77778f-df53-4086-ad47-a4b1ba5762f7&ts=638860008752201670&Sort=6
+,assisted living properties tx,assisted living properties tx,https://assistedlivingpropertiestx.com/properties
+,bomic real estate,bomic real estate,https://bomicrealestate.com//buy/residential/
+,brc real estate,brc real estate,https://www.brcrealestate.com/crelistings
+,"coldwell banker real estate group, inc.","coldwell banker real estate group, inc.",https://www.coldwellbanker.com/
+,crye leike executive realty,crye leike executive realty,https://www.crye-leike.com/results/
+,dascoulias realty group,dascoulias realty group,https://dascouliasrealtygroup.com/homes-for-sale/
+,"deblis group, inc","deblis group, inc",https://www.deblisgroup.com/
+,engel & voelkers melbourne,engel & voelkers melbourne,https://melbourne.evrealestate.com/properties/our-listings?currentPage=1&sort=priceDesc&view=list
+,executive realty group,executive realty group,https://www.theexecutivegrouprealty.com/index.php?showagency=1#rslt
+,febbraio commercial,febbraio commercial,https://www.febbraiocommercial.com/#featuredlistings-section
+,fiduciarre,fiduciarre,https://www.fiduciarre.com/
+,houston re king,houston re king,https://read-king.com/properties
+,kachemak keller williams realty alaska group,kachemak keller williams realty alaska group,https://www.kachemakgrouprealestate.com/search#?q_limit=36&mlsId=366&price=100000:&multi_search=99603%7C99556%7C99639%7C99663&multi_cat=Zip%7CZip%7CZip%7CZip&propertyType=Residential|Multi-Family|Land|Condo/Townhouse&status=1|3&q_sort=createdAt-&q_offset=0
+,keller williams realty north west mt,keller williams realty north west mt,https://kwnorthwest.yourkwoffice.com/search
+,king capital commercial real estate,king capital commercial real estate,https://kingcapitalcre.com/properties/
+,"market south properties, inc","market south properties, inc",https://www.marketsouthpropertiesinc.com/index.php?showagency=1#rslt
+,mba real estate,mba real estate,https://www.mba-realestate.com/featured/
+,my realty group,my realty group,https://www.prbizhomesgroup.com/profile#listings
+,nai norwood group,nai norwood group,https://www.nainorwoodgroup.com/properties/#/search/grid/
+,@ properties,@ properties,https://www.atproperties.com/chicagoland/search/55613/chicago-il
+,re/max commercial,re/max commercial,https://www.remaxcommercial.com/company-listing/
+,real brokerage firm,real brokerage firm,https://onereal.com/listings?_gl=1*4xphgp*_ga*MTcwOTkwMzUxLjE3NTA0MjM5MDU.*_ga_PP8BM8CBST*czE3NTA0MjM5MDUkbzEkZzAkdDE3NTA0MjM5MDUkajYwJGwwJGgw
+,regional real estate inc.,regional real estate inc.,https://www.regionco.com/our-listings/
+,smith realty group,smith realty group,https://www.smithrealtygaylord.com/featured/
+,sunshine realty group,sunshine realty group,https://www.sunshinerealtyoffice.com/vacancies
+,tiffani lambro & co.- havasu realty,tiffani lambro & co.- havasu realty,https://www.sellinghavasu.com/search#?q_limit=36&mlsId=490|705&price=10000:&propertyType=Condo/Townhome|Multi-Family|Residential&status=1|3&q_sort=createdAt-&q_offset=0
+,win business advisors,win business advisors,https://winbusinessadvisors.com/
+,benjamin ross group,benjamin ross group,https://www.benjaminrossgroup.com/businesses-for-sale
+,coldwell banker tomlinson,coldwell banker tomlinson,https://cbt-tc.com/search/#!/defaultsearch:true
+,ibr group,ibr group,https://www.ibrgroupcorp.com/buying
+,"kramer commercial realty, llc","kramer commercial realty, llc",https://www.kramercommercial.com/#featured
+,suriki commercial investment real estate,suriki commercial investment real estate,https://www.crexi.com/profile/mahmoud-mustafa-mahmoudmus
+,"tuscany realty, inc.","tuscany realty, inc.",https://tuscanyconstruction.com/commercial_properties.html
+,atlanta communities,atlanta communities,https://akberbhamani.atlcommunities.com/index.php?showagent=1#rslt
+,atlantic business realty,atlantic business realty,https://atlanticbusinessrealty.com/
+,ballpark realty,ballpark realty,https://ballpark-realty.com/properties
+,brg realty,brg realty,https://www.brgrealtycorp.com/
+,dunes advisors,dunes advisors,https://www.axial.net/forum/companies/new-york-business-brokers/
+,equity business brokers,equity business brokers,https://www.axial.net/forum/companies/new-york-business-brokers/
+,hawaii business sales,hawaii business sales,https://www.hawaiibusinesssales.com/portfolio
+,hayden outdoors,hayden outdoors,https://www.haydenoutdoors.com/land-for-sale/
+,illiana properties,illiana properties,https://www.illianaproperties.com/properties
+,mazzglobal llc,mazzglobal llc,https://mazzglobalconsulting.com/franchises/
+,no coast business advisors llc,no coast business advisors llc,http://nocoastbusinessadvisors.com/search-results/?#bbcrm-listings-searchresults
+,"oak brook realty & investments, ii, llc","oak brook realty & investments, ii, llc",https://www.oakbrookrealty.net/featured-properties-and-homes-listings
+,platinum real estate,platinum real estate,https://contactplatinum.com/properties/
+,re/max alliance,re/max alliance,https://www.remaxcommercial.com/company-listing/
+,re/max roots,re/max roots,https://www.winchesterroots.com/index.php?showagency=1#rslt
+,signature real estate group,signature real estate group,https://www.signaturenevada.com/listings/
+,vision home real estate,vision home real estate,https://vision-realestate.net/en/sale
+,1st working capital realty inc.,1st working capital realty inc.,https://housesinsouthfl.com/search/For_Sale/Parkland_3_FL/map_dhwvsg4s3;dhwvyuug8
+,absolute investment realty,absolute investment realty,https://go-absolute.net/property/property-listings/?status=Active&sortby=Both
+,ace realty,ace realty,https://acerealty.net/search/?SavedSearch=20131024213023784831000000#
+,align healthcare real estate,align healthcare real estate,"https://www.alignhealthcarepractices.com/property-listings
+
+https://www.alignhealthcarepractices.com/listings"
+,alpha realtors,alpha realtors,https://alpharealtors.net/commercial/
+,capstone business brokerage,capstone business brokerage,"https://capstonecompanies.net/steinbach-crossings/
+
+https://capstonecompanies.net/102086-2/"
+,catalyst commercial,catalyst commercial,https://catalyst-cre.com/properties/
+,coletta commercial realty,coletta commercial realty,https://colettacommercial.com/listings/
+,coral international realty,coral international realty,https://eddysotero.com/warehouse-for-sale
+,cressy commercial,cressy commercial,https://cressy.com/astro-search/
+,deausen realty,deausen realty,https://deausenrealty.idxbroker.com/idx/results/listings?idxID=b004&pt=1
+,diversified partners,diversified partners,https://dpcre.com/wp-content/uploads/2022/08/25-0220-Listing-Sheet.pdf
+,esoteric realty,esoteric realty,https://esotericrealty.idxbroker.com/idx/results/listings?pt=sfr&lp=200000&hp=800000&ccz=city&per=10&srt=prd
+,feather real estate group,feather real estate group,https://www.featherrealestategroup.com/commercial_business.phtml
+,fisher business brokers,fisher business brokers,https://www.fishergroup.co/businesslistings
+,"focal 5 group, llc","focal 5 group, llc",https://www.focal5.com/s-projects-side-by-side
+,gerspacher real estate group,gerspacher real estate group,https://gerspachergroup.com/properties/?saleOrLease
+,henry s. miller,henry s. miller,https://henrysmiller.com/our-properties/
+,j realty group,j realty group,https://www.jrealtygroup.net/listings-search
+,jyp realty,jyp realty,https://www.jypre.com/buy/ - Need to contact office for the listing
+,key real estate services llc,key real estate services llc,https://www.keyvestre.com/searches/new
+,king & newton,king & newton,https://kingnewton.com/properties/ - All Sold
+,kona blue plantations,kona blue plantations,https://konablueplantations.com/businesses-for-sale?utm_source=chatgpt.com
+,lafayette realty group,lafayette realty group,https://www.lafayetterealty.net/featuredlistings/
+,nai puget sound properties,nai puget sound properties,https://www.nai-psp.com/properties
+,nai united,nai united,https://www.naiunited.com/inventory/
+,nexthome greater tri cities,nexthome greater tri cities,https://www.nexthomegreatertricities.com/index.php?showagency=1#rslt
+,"o'brien real estate, inc.","o'brien real estate, inc.",https://www.obriensoldmine.com/our-listings
+,oceans luxury realty,oceans luxury realty,https://www.oceansluxuryrealty.com/exclusive-listings/
+,omni real estate.,omni real estate.,https://omni-re.com/properties
+,piccolo realty,piccolo realty,https://www.zillow.com/browse/homes/
+,premier commercial realty,premier commercial realty,https://www.premiercommercialrealty.com/search-properties/
+,quantum realty group,quantum realty group,https://www.qrgtx.com/property-offering/
+,remax crossroads,remax crossroads,https://www.mrsold.com/residential
+,remax lakeshore,remax lakeshore,https://www.remax-lakeshore.com/index.php?showagency=1#rslt
+,resources real estate,resources real estate,https://www.resourcesrealestate.com/search-current-listings/
+,rpg commercial,rpg commercial,https://rpg-realty.com/residential/#searchsection
+,southeast florida realty & management,southeast florida realty & management,https://www.sfrmc.com/our_listings
+,"strategic realty services, llc","strategic realty services, llc",http://www.strategicrealty.com/search-properties/
+,suchman retail group,suchman retail group,https://searealtygroup.net/properties-2/
+,texas ranches for sale,texas ranches for sale,https://www.texasranchesforsale.com/
+,the miller group of saginaw inc.,the miller group of saginaw inc.,https://themillergrp.com/listings
+,the sokol group,the sokol group,https://thesokolgroup.idxbroker.com/idx/results/listings?
+,"thomas realty, inc.","thomas realty, inc.",https://thinkmapleshade.com/directory/
+,treasure property group llc,treasure property group llc,https://www.treasurepropertygroup.com/search#?q_limit=36&mlsId=371|267|28|55&price=10000:&propertyType=Condo/Townhome|Multi-Family|Residential&status=1|3&q_sort=createdAt-&q_offset=0
+,true business brokerage,true business brokerage,https://search.truecommercialmn.com/idx/featured
+,united brokers group llc,united brokers group llc,https://unitedbrokersgrp.com/our-listings
+,vandermade commercial,vandermade commercial,https://vmade.com/purchase/
+,windermere real estate lane co.,windermere real estate lane co.,https://windermerelaneco.com/listings/active-listings
+,livmo,livmo,https://livmo.com/listings/
+,pickett sprouse commercial real estate,pickett sprouse commercial real estate,https://pickettsprouse.com/properties?view=list&sort=listdate&direction=desc&
+,rich commercial group,rich commercial group,https://richcommercialgroup.com/rcg-properties/?status=for-sale
+,horizon commercial realty group,horizon commercial realty group,https://www.horizoncommercialrealty.com/listings
+,john garland real estate,john garland real estate,https://www.johngarlandrealestate.com/properties/
+,meek realty group,meek realty group,https://www.meekrealtygroup.com/featured/
+,renaud consulting,renaud consulting,https://renaudconsulting.net/properties/
+,zenappy realty,zenappy realty,https://zenappy.com/active-listings/
+,amazing realty,amazing realty,https://www.amazingrealty.com/search-results/?purchase_types=Buy&sort_field=days_on_market&sort_direction=desc&search_num_results=12
+,arkbest business advisors,arkbest business advisors,https://arkbestrealty.idxbroker.com/idx/featured
+,capitol equities realty,capitol equities realty,https://capitolequities.com/properties-2/property-search/
+,"casabella miami realty, inc.","casabella miami realty, inc.","https://www.casabellamiamirealty.com/our_listings
+
+https://www.casabellamiamirealty.com/1218/commercial_search/1219"
+,century 21 myers realty - haines city,century 21 myers realty - haines city,https://myersrealtycommercial.c21.com/#widget-newlistings
+,diamond realty group,diamond realty group,https://casschies.com/properties/sale
+,dreammore realty llc,dreammore realty llc,https://dreammorerealty.net/property-search
+,gilco realty llc,gilco realty llc,https://gilcorealty.com/listings/
+,grant-murray real estate llc,grant-murray real estate llc,https://grantmurrayre.com/commercial-listings/
+,hdn real estate,hdn real estate,https://hdnrealestate.com/listings
+,keller williams boston metrowest,keller williams boston metrowest,https://metrowest.kw.com/search/sale?viewport=42.315395073544146%2C-71.37039962939453%2C42.28320881348368%2C-71.43288437060546
+,keller williams prosperity realty,keller williams prosperity realty,https://www.kwprosperity.com/search-results/?paged=1&purchase_types=Buy&sort_field=price&sort_direction=desc&search_num_results=122
+,keller williams realty west monmouth,keller williams realty west monmouth,https://kwwestmonmouth.yourkwoffice.com/search
+,kw evolution,kw evolution,https://www.kwevolution.com/listings/
+,magic realty,magic realty,https://magicalrealty.com/all-listings/
+,"michael group, llc","michael group, llc",https://themichaelgroup.com/search-listings
+,one sotheby's international realty,one sotheby's international realty,https://www.onesothebysrealty.com/listings/
+,pinnacle real estate advisors,pinnacle real estate advisors,https://pinnaclerea.com/properties/
+,prescott commercial real estate,prescott commercial real estate,https://prescottcommercialrealestate.idxbroker.com/i/featured-properties
+,re/max whatcom county inc,re/max whatcom county inc,https://www.remax.com/real-estate-offices/remax-whatcom-county-inc-bellingham-wa/100430588
+,svn north star,svn north star,https://svnnorthstar.com/listings/
+,westshire group,westshire group,https://westshiregroup.com/
+,bean group/ commercial real estate of maine brokered by exp,bean group/ commercial real estate of maine brokered by exp,https://www.beangroup.com/properties/?perRow=auto&limit=800&layout=map&searchtype=forsale&statuses=0%7C55&priceMin=400000&order=listingdate%7Cdesc&page=1&limited=true&propertyTypes=1%7C2%7C56
+,p.j. morgan business group,p.j. morgan business group,https://pjmorgan.com/buy/commercial/
+,aim digital group,aim digital group,https://aimdigitalgroup.com/buy/
+,"cascadia prime, llc","cascadia prime, llc",https://cascadiaprimecommercial.com/
+,century 21 commercial parker & scroggins realty,century 21 commercial parker & scroggins realty,https://commercial.century21.com/find-a-property
+,first colorado realty,first colorado realty,https://www.firstcoloradorealty.com/featured-properties/
+,knm realty,knm realty,https://kmrealty.net/properties
+,"las vegas business broker, michael cash, benchmark business advisors","las vegas business broker, michael cash, benchmark business advisors",https://www.bbanv.com/listings
+,prime realty,prime realty,https://primerealtysc.com/commercial/
+,rms and company,rms and company,https://www.rmsandcompany.com/database
+,steinborn/tcn commercial real estate,steinborn/tcn commercial real estate,https://steinborntcn.com/#/search/map/
+,the brokerage real estate,the brokerage real estate,https://www.the-brokerage.net/index.php?showagency=1#rslt
+,1st & main partners,1st & main partners,https://www.isellyour.biz/copy-of-featured-listings
+,alliance real estate group llc,alliance real estate group llc,https://www.alliance-real-estate.com/cgi-bin/real?pge=newsearch&state=na&widget=true&sortby=price&area=&price_lo=0&price_hi=100000000&tot_bed_lo=0&tot_bath_lo=0&htype=ALL
+,ayranto real estate - re/max crosstown realty,ayranto real estate - re/max crosstown realty,https://wesayranto.com/buyers/listings/
+,berkshire hathaway homeservices floberg real estate,berkshire hathaway homeservices floberg real estate,https://www.bhhsfloberg.com/search?SearchType=Empty&PropertyType=1%2C2&ApplicationType=FOR_SALE&ListingStatus=1&NewListing=false&Sort=PRICE_DESCENDING&PageSize=32&Page=1&isAgentPage=false&isFranchisePage=true&franchiseeCode=MT301
+,berkshire hathaway homeservices knight and gardner realty,berkshire hathaway homeservices knight and gardner realty,https://www.bhhsfloridakeys.com/search?SearchType=Empty&PropertyType=1%2C2%2C3%2C4%2C5&ApplicationType=FOR_SALE&ListingStatus=1&NewListing=false&Sort=PRICE_DESCENDING&PageSize=32&Page=1&isAgentPage=false&isFranchisePage=true&franchiseeCode=FL309
+,berkshire hathaway hudson valley properties,berkshire hathaway hudson valley properties,https://www.bhhshudsonvalley.com/listings/sale/rent/state-;ny/dsort-n
+,bridgewater commercial real estate,bridgewater commercial real estate,https://www.bridgewatercommercial.com/available-properties
+,"bright star realty, llc","bright star realty, llc","https://brightstarres.com/realty/
+
+https://brightstarres.com/business-opportunities/"
+,brummel properties,brummel properties,https://www.brummelproperties.com/our-listings-2/?paged=1&search_num_results=12&property_type=Commercial+Lease%2CCommercial+Sale&oname=Brummel+Properties&sort_field=price&sort_direction=asc
+,capstone properties,capstone properties,https://capstonebrevard.com/commercial-real-estate/active-listings/
+,century 21 classic homes,century 21 classic homes,https://www.century21classichomes.com/listing/listingsearchresultsonly.aspx?Search=e6aeb88d-9409-488f-912b-8484693bc05e&SearchType=AgentHome&InternalAgentCd=&OfficeCds=&AgentHomePageSearchType=AllMyOfficeListings&ListingType=&ListingDistrictTypeID=&PriorSales=&Sort=6
+,city realty company,city realty company,https://www.cityrealty.net/properties/for-sale/
+,coldwell banker vanguard realty,coldwell banker vanguard realty,https://hammondfamilygroup.com/listings/featured-properties
+,commercial realty associates of southwest florida,commercial realty associates of southwest florida,https://cra.us/featured-listings
+,corcoran country living,corcoran country living,https://www.corcoran.com/commercial/search/for-sale?viewBox=82.87245167099084%2C126.15061084739864%2C-83.99999999999999%2C-170.56813915260136
+,cottonwood commercial,cottonwood commercial,https://www.cottonwood.com/idx/?feed=caar&feed_title=Charlottesville%20Area%20Association%20of%20Realtors&sort_by=DESC-timestamp_created&latitude=38.065669069270925&longitude=-78.47995600000003&zoom=12&usersearch=1&bounds%5Bne%5D%5Blat%5D=38.09621208387235&bounds%5Bne%5D%5Blng%5D=-78.39981337512206&bounds%5Bsw%5D%5Blat%5D=38.00280297488949&bounds%5Bsw%5D%5Blng%5D=-78.54315062487792
+,cres corp intl/pharus group,cres corp intl/pharus group,https://www.crescorpintl.com/search-commercial-properties
+,"delta real estate, llc","delta real estate, llc",https://www.deltarealtyllc.com/listings.php?county_match[]=dunklin&county_match[]=new%20madrid
+,destinations realty,destinations realty,https://downtowndelraybeach.com/search/all/all/all
+,domain realty,domain realty,https://domainrealty.com/listing?_gl=1*1xtt5f1*_up*MQ..*_ga*MTYyNzE3Nzc4Ny4xNzUwMTYxMjM3*_ga_SJ4YWRX3RY*czE3NTAxNjEyMzYkbzEkZzAkdDE3NTAxNjEyMzYkajYwJGwwJGgw*_ga_L655GSM8FD*czE3NTAxNjEyMzYkbzEkZzAkdDE3NTAxNjEyMzYkajYwJGwwJGgw*_ga_50BX6YT24D*czE3NTAxNjEyMzYkbzEkZzAkdDE3NTAxNjEyMzYkajYwJGwwJGgxNjA1ODg4NzE2
+,don wright & associates,don wright & associates,https://search.donwrightcommercialrealestate.com/i/search-commercial-listings
+,driggers commercial group,driggers commercial group,https://properties.driggerscommercial.com/idx/featured
+,fesette realty,fesette realty,https://www.fesetterealty.com/new-real-estate-listings
+,gordon real estate group,gordon real estate group,https://ylopo-branded-site-9ch9.squarespace.com/
+,grand mesa real estate services,grand mesa real estate services,https://www.grandmesares.com/our-active-listings
+,"harmony real estate group, llc","harmony real estate group, llc",http://austinharmony.com/
+,"hershey realty, inc.","hershey realty, inc.",https://www.hersheyrealtynj.com/properties/
+,honest real estate,honest real estate,https://honestrealestate.com/listing?searchId=xQKAH_2egbTF
+,houlihan lawrence,houlihan lawrence,https://www.houlihanlawrence.com/realestate/search
+,"house of realty, inc.","house of realty, inc.",https://houseofrealty.com/idx/?url=https%3A%2F%2Flink.flexmls.com%2F1o96mftbu7a2%2C10
+,john r. coughlin realtors,john r. coughlin realtors,https://keenehomes.com/homes-for-sale-search-advanced/23/
+,keller williams commercial - hudson valley united,keller williams commercial - hudson valley united,https://www.kellerwilliamsunited.com/
+,keller williams greater nassau,keller williams greater nassau,https://www.kwgreaternassau.com/search/
+,keller williams key west compass realty,keller williams key west compass realty,https://buysellkeywest.kw.com/search
+,keller williams on the water,keller williams on the water,https://kwonthewater.com/exclusive-properties
+,keller williams realty glendale,keller williams realty glendale,https://glendale.yourkwoffice.com/search/sale?viewport=34.16478808333383%2C-118.22076529602049%2C34.12479518367591%2C-118.29406470397947
+,"kw commercial, faulkner commercial group","kw commercial, faulkner commercial group",https://faulknercommercial.com/commercial-real-estate/
+,kw vermont,kw vermont,https://vermontkw.com/home-search/
+,lahaina realty,lahaina realty,https://www.era.com/property/all
+,lashley land and recreational brokers,lashley land and recreational brokers,https://lashleyland.com/homes-for-sale/
+,lillian montalto signature properties,lillian montalto signature properties,https://search.andoverhomes.com/
+,marchand realty llc,marchand realty llc,https://www.marchandrealty.com/search/results/?city=Miami&type=res&type=con&type=twn&list_price_min=50000&list_price_max=all&area_min=all&beds_min=all&baths_min=all&waterfront_yn=all&year_built_min=all&view=all&short_sale=all&pool=all
+,merrigan & lefebvre realty,merrigan & lefebvre realty,https://merriganlefebvre.idxbroker.com/idx/results/listings?pt=all&srt=newest
+,nai harmon group,nai harmon group,https://www.naiharmon.com/search-properties/
+,optimus commercial real estate investment advisors,optimus commercial real estate investment advisors,http://nnninvestmentsource.com/listings/
+,page olson commercial & business brokerage,page olson commercial & business brokerage,https://048a144.netsolhost.com/business-listings/
+,pall spera,pall spera,https://www.pallspera.com/properties/new/
+,"pd properties, llc","pd properties, llc",https://pdpropertiesnyc.com/portfolio/
+,premium properties real estate services,premium properties real estate services,"https://premiumproperties.com/homes-for-sale-featured/?propertyType=SFR,CND,LL,RI,MH,COM&featuredOnlyYn=true&status=active,pending&sort=statusV10Featured"
+,prosmart realty,prosmart realty,https://www.prosmartrealty.com/properties
+,ray haiber | arizona business broker,ray haiber | arizona business broker,https://www.azbop.com/-/featured/
+,re/max river & ranch,re/max river & ranch,https://www.remaxriverandranchflorida.com/index.php?advanced=1&types%5B0%5D=1&types%5B1%5D=2&types%5B2%5D=3&types%5B3%5D=4&types%5B4%5D=5&types%5B5%5D=17&types%5B6%5D=20&types%5B7%5D=55&types%5B8%5D=56&beds=0&baths=0&min=0&max=100000000&rtype=map
+,remax sunset realty,remax sunset realty,https://www.remaxsunsetrealty.com/index.php?showagency=1#rslt
+,"singer business brokers, llc","singer business brokers, llc",https://www.singerbusiness.com/services-9
+,ssignature premier properties,ssignature premier properties,https://www.signaturepremier.com/properties/?perRow=auto&limit=800&page=1&limited=true&order=visits%7Cdesc&statuses=0&layout=map&propertyTypes=1%7C2%7C3%7C4%7C5%7C6%7C43%7C55%7C56%7C57
+,"td texas realty, llc","td texas realty, llc",https://www.tdtexasrealty.com/search/results/?city=all&market_area=all&list_price_min=all&list_price_max=all&beds_min=all&baths_min=all&type=res&type=con&type=lnd&type=mul
+,team wickham at united real estate,team wickham at united real estate,https://sallyjowickham.unitedrealestateproperties.com/index.php?showagent=1&rtype=map
+,u.s.realty group inc.,u.s.realty group inc.,https://www.usrealtygroupinc.net/contact_us
+,v.g. diaz & associates llc,v.g. diaz & associates llc,https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go
+,william davis realty,william davis realty,https://www.mywdr.com/realestatehomes/
+,zeitlin sotheby's international realty,zeitlin sotheby's international realty,https://www.sothebysrealty.com/zeitlinsir/eng/sales/tn-usa
+,green tree commercial llc,green tree commercial llc,https://www.greentreecommercial.com/properties/
+,linorp business advisors,linorp business advisors,https://linorp.com/listings
+,florida realty investments,florida realty investments,https://flarealtyinvestments.com/find-a-property/income-property-search/
+,next mergers & aquisitions,next mergers & aquisitions,https://www.next-ma.com/active-listings
+,re/max results,re/max results,https://results.net/real-estate/
+,407 commercial real estate,407 commercial real estate,https://www.407cre.com/our-listings/
+,allfirst commercial,allfirst commercial,https://www.allfirstcommercial.net/featured-listings
+,betts real estate,betts real estate,https://bettsrealestatene.com/homes-for-sale/
+,brixwood,brixwood,https://www.brixwood.com/real-estate/
+,brokerocity inc. real estate brokerage,brokerocity inc. real estate brokerage,https://www.brokerocity.com/
+,carey commercial inc,carey commercial inc,https://www.careycommercial.com/current-listings
+,century 21 shea realtors,century 21 shea realtors,https://c21shearealty.com/listings/our-company-s-active-listings
+,"coldwell banker apex, realtors","coldwell banker apex, realtors",https://www.cbapex.com/apex-listings
+,coldwell banker sky ridge realty,coldwell banker sky ridge realty,https://www.cbskyridge.com/search-listings/#/
+,crown real estate alaska inc,crown real estate alaska inc,https://www.myfairbanksrealestate.com/my-listings
+,da vinci realty,da vinci realty,https://www.davincirealty.com/site/page/view/propertySearch
+,erealty advisors,erealty advisors,https://www.erealtyadvisors.com/new-real-estate-listings
+,florida homes realty & mortgage,florida homes realty & mortgage,https://www.yourfhrm.com/exclusives.php?type=Exclusive
+,fnbc iowa,fnbc iowa,https://fnbciowa.com/listings/
+,funari realty,funari realty,https://funarirealty.com/featured-homes/
+,future in site realty,future in site realty,https://futureinsiterealty.com/wp-content/uploads/2024/01/Market-Report-22-vs-23.pdf
+,keller williams greater brunswick,keller williams greater brunswick,https://kwgreaterbrunswick.yourkwoffice.com/search
+,keller williams lynchburg,keller williams lynchburg,https://lynchburg.yourkwoffice.com/search
+,maclons capital business brokers,maclons capital business brokers,https://maclons.com/FeaturedListings
+,marty & huggins realty,marty & huggins realty,https://martyhugginsrealty.com/properties/
+,maxfield & company real estate,maxfield & company real estate,https://www.maxfieldre.com/idx/search/homes-for-sale/any
+,memphis commercial & industrial real estate,memphis commercial & industrial real estate,https://memphisci.com/listings
+,"mhw brokerage services, llc.","mhw brokerage services, llc.",https://www.mhwre.com/listings
+,montana property angels,montana property angels,https://montanapropertyangels.com/properties/
+,premier plus realty,premier plus realty,https://www.premiereplusrealty.com/new-real-estate-listings
+,prestige realty,prestige realty,https://prestigerealty.idxbroker.com/i/other-properties
+,re/max bayshore,re/max bayshore,https://www.remax-bayshore.com/index.php?showagency=1#rslt
+,re/max select associates,re/max select associates,https://yusuf-azar.remax.com/index.php?showagent=1#rslt
+,royal lepage little oak,royal lepage little oak,https://www.littleoakrealty.com/properties
+,samson properties,samson properties,http://samsonproperties.net/samson/?perRow=auto&order=listingdate%7Cdesc&ourListings=1&page=1&limited=true&limit=800&layout=card
+,success cre brokered by exp commercial,success cre brokered by exp commercial,https://www.listedbysuccess.com/
+,the jrp realty group,the jrp realty group,https://www.jrprealtygrp.com/index.php?showagency=1#rslt
+,the obsidian group,the obsidian group,https://www.obsidianregroup.com/
+,true inmobiliaria,true inmobiliaria,https://trueinmobiliaria.com/properties/sale
+,tula real estate team,tula real estate team,https://www.tularerealestateteam.com/index.php?showagent=1#rslt
+,"maxwell & associates, pllc","maxwell & associates, pllc",https://maxwellassc.com/portfolio/
+,midtown properties inc,midtown properties inc,https://midtownboston.com/?page_id=53
+,first choice business brokers of nw florida,first choice business brokers of nw florida,https://panamacitybeach.fcbb.com/businesses-for-sale?sort=FeaturedLocalBusinesses&page=1
+,"gilligan commercial, llc","gilligan commercial, llc",https://gilligancommercial.com/projects/
+,"best boston realty, llc","best boston realty, llc",https://www.yougotlistings.com/client/idx.php?agent_id=102022&agency_id=9729&page=1&per_page=10&view=list
+,mohave realty inc.,mohave realty inc.,https://mohaverealtyinc.idxbroker.com/idx/results/listings?statusCategory=active&srt=prd
+,objectif usa,objectif usa,https://bizmls.com/cgi-bin/a-bus2.asp?forsale=go
+,stein team realty,stein team realty,https://steinteamrealty.com/listing
+,#1 properties,#1 properties,https://www.cheyennehomes.com/index.php?showagency=1&rtype=map
+,"75 jackson, llc","75 jackson, llc",https://75jacksonproperties.com/portfolio
+,alg commercial,alg commercial,https://algcommercial.com/listings/
+,almon commercial real estate,almon commercial real estate,https://www.almoncommercial.com/listings/
+,"american business brokers group, llc","american business brokers group, llc",https://www.americanbusinessbrokersgroup.com/current-clients
+,beacon,beacon,https://www.viabeacon.com/listings
+,"bear down brokerage, inc.","bear down brokerage, inc.",https://www.beardownbrokerage.com/ - Needs sign up
+,berkshire hathaway california realty commercial division,berkshire hathaway california realty commercial division,https://www.vinoddesar.com/properties.html
+,big block realty,big block realty,https://bigblockrealty.com/buy/
+,blue stone business group,blue stone business group,https://us.businessesforsale.com/us/agents/blue-stone-business-group
+,bnd business brokerage,bnd business brokerage,"https://bndcommercial.com/listings/#/search/map@38.06709037357077,-95.8675,3/?bounds=66.33837062133277,-42.60578125000001,-7.098752435317703,-149.12921875"
+,cap’s grand marais bucket list realty,cap’s grand marais bucket list realty,https://www.bucketlistrealty.com/featured-listings
+,cardinal realty brokerage corporation,cardinal realty brokerage corporation,https://cardinalrealty.com/#listing
+,chiles realty,chiles realty,https://www.thechilesteamrealestate.com/listings
+,"chris fucci associates, ltd.","chris fucci associates, ltd.",https://www.fucciassociates.com/listings
+,coldwell banker hallmark realty,coldwell banker hallmark realty,https://cbhallmark.com/properties-search/
+,corporate investment international of north fl,corporate investment international of north fl,https://ciiteam.com/cii-listings/
+,diamond real estate,diamond real estate,https://diamond-real-estate.com/agent-listings/
+,e lucero co inc,e lucero co inc,https://lucerorealestate.com/neighborhoods
+,edgar-roman properties,edgar-roman properties,https://www.edgarromanpropertiesrealestate.com/listings
+,equity inc,equity inc,https://www.equitynet.com/browse-companies/?regions=north-america&p=1
+,exit realty hilton head island,exit realty hilton head island,https://exitrealtyhhi.com/featured-properties
+,first team commercial,first team commercial,https://firstcommercial.net/property-listings/
+,golden tree realty,golden tree realty,http://goldtreerealty.net/office-listings
+,hartford business brokers,hartford business brokers,https://www.hbbus.com/business-listings%3Econnecticut-businesses-for-sale
+,haven realty,haven realty,https://havenseniorinvestments.com/haven-senior-investment-properties-list/
+,hunt realty group,hunt realty group,https://www.huntrealestate.com/HUNT-Properties
+,investors team realty inc itrrealty,investors team realty inc itrrealty,https://www.itrrealty.com/property/by-office/2693
+,jch consulting group inc,jch consulting group inc,https://thejchgroup.com/inventory/
+,keller williams black hills,keller williams black hills,https://www.rapidcitycommercial.com/listings
+,keller williams coastal and lakes & mountains,keller williams coastal and lakes & mountains,https://newenglandcoastal.yourkwoffice.com/search/sale?viewport=43.07302407453395%2C-70.73641113995362%2C43.035142821628796%2C-70.80498986004639
+,keller williams commercial legacy group,keller williams commercial legacy group,https://www.duttoncompany.com/search-northeast-ohio-real-estate/
+,keller williams real estate- the james balliet property group,keller williams real estate- the james balliet property group,https://jbpropertygroup.com/for-sale-listings
+,"kelley & katzer real estate, llc","kelley & katzer real estate, llc",https://kelleyandkatzerrealestate.com/find-your-new-home/
+,leesa byrnes business brokers,leesa byrnes business brokers,https://www.leesabyrnesrealty.com/residential-listings-2
+,lighthouse commercial properties,lighthouse commercial properties,https://www.moodyscre.com/marketplace/agent/53353
+,long and foster - blue bell,long and foster - blue bell,https://www.longandfoster.com/new-listings
+,metrobizpros,metrobizpros,https://www.metrobizpros.com/category/all-products
+,mnb realty llc,mnb realty llc,https://mnb.realty/properties/
+,momentum real estate group,momentum real estate group,https://search.mymomentumteam.com/idx/results/listings?idxID=d032&pt=1&lp=200000&hp=800000
+,nexthome perkins realty group,nexthome perkins realty group,https://www.perkinsproperties903.com/index.php?showagency=1#rslt
+,pioneer realty group llp,pioneer realty group llp,https://my.flexmls.com/jasonalonabaugh/search/idx_links/20170504184025023294000000/listings
+,premier realty of tampa,premier realty of tampa,https://www.premierrealtyoftampa.com/fine/real/estate/newsearch
+,professional realty group of bhhs ambassador,professional realty group of bhhs ambassador,"https://www.prg-ne.com/search#?q_limit=200&mlsId=274|274&multi_search=Lincoln,%20NE&multi_cat=CityState&status=1|3&q_sort=featured&q_offset=0"
+,re/max equity group,re/max equity group,https://www.equitygroup.com/property-search-map/sale/status-active/dsort-p/lat-42.002303-49.001743000000005/lon-_124.612609-_116.736873
+,re/max finest,re/max finest,https://finest-crossville-tn.remax.com/index.php?showagency=1&rtype=map
+,re/max mountain brokers,re/max mountain brokers,https://mountain-brokers-estes-park-co.remax.com/index.php?showagency=1#rslt
+,re/max ultimate coastal properties,re/max ultimate coastal properties,https://www.ultimatecoastalproperties.com/index.php?showagency=1#rslt
+,real living wareck d'ostilio,real living wareck d'ostilio,https://wareck.idxbroker.com/idx/results/listings?idxID=b028&pt=1&ccz=city&widgetReferer=true
+,red 1 realty,red 1 realty,https://www.red1realty.com/index.php?showagency=1#rslt
+,red carpet real estate pros.,red carpet real estate pros.,https://www.redcarpetrealestate.com/property_find_results?country=203&CountyID=&price_from=0&price_to=NULL&propertyClass=Any&
+,"remax dynamic properties, inc.","remax dynamic properties, inc.",https://remaxdynamicproperties.com/properties/sale
+,richard realty,richard realty,https://richardrealty.com/idx/listings/featured-properties/
+,"sage commercial properties & business brokerage, inc.","sage commercial properties & business brokerage, inc.",https://www.sagefla.com/
+,salem real estate,salem real estate,https://salemrealestate.biz/idx/listings/our-listings/
+,"schwarz & baskin business and commercial brokers, inc.","schwarz & baskin business and commercial brokers, inc.",https://schwarzbaskin.net/#0286cf07-ff70-4c8d-a0f8-422d4a5f9864
+,signature commercial real estate,signature commercial real estate,https://www.signatureres.com/properties
+,silverstone company-texas car wash brokers,silverstone company-texas car wash brokers,https://texascarwashbrokers.com/properties/
+,sofos realty corporation,sofos realty corporation,https://sofosrealty.com/for-sale/ -- Access Denied
+,success business services,success business services,https://sharpbizbrokers.com/for-sale/
+,swann real estate,swann real estate,https://swanngroupsf.com/properties/sale
+,taylor real estate,taylor real estate,https://www.taylorrealtors.net/real-estate/search/
+,the scott varley team at keller williams,the scott varley team at keller williams,https://www.scottvarley.com/search-all-properties/
+,the spurlock group,the spurlock group,https://www.thespurlockgroup.com/
+,"toles, temple, & wright","toles, temple, & wright",https://tolestemple.com/idx/listings/latest-residential-listings/
+,western states commercial real estate,western states commercial real estate,https://www.ws-cre.com/
+,wisconsin dells realty,wisconsin dells realty,https://www.bunburyrealtors.com/homes-for-sale/0_search-price-low/3500000_search-price-high/P_lp-cd-presentation/1_public/sc_l_listing_price+ASC/sd_S2/sn_SEARCH_LISTING_P/
+,tsg premier realty,tsg premier realty,https://tsgpremier.com/featured-listings
+,43 north realty,43 north realty,"https://43northrealty.com/residential.php?oid=17733
+
+https://43northrealty.com/multifamily.php?oid=17733
+
+https://43northrealty.com/land.php?oid=17733
+
+https://43northrealty.com/commercial.php?oid=17733
+
+https://43northrealty.com/residential.php"
+,milato realty group,milato realty group,https://milatorealtygroup.com/listings/active-listings/
+,miranda executive realty,miranda executive realty,https://www.mymxrealty.com/index.php?showagency=1#rslt
+,robert lilley brokerage,robert lilley brokerage,https://www.robertlilley.com/
+,advance real estate management,advance real estate management,https://advance.managebuilding.com/Resident/Public/Rentals?bedrooms=0&bathrooms=0
+,ashley capital advisory,ashley capital advisory,https://ashleycapital.com/properties/
+,aspire realty,aspire realty,https://aspirerealtylr.com/listings
+,berkshire hathaway homeservices ca properties,berkshire hathaway homeservices ca properties,https://www.bhhscalifornia.com/for-sale/listdate_dsort/
+,bogatov realty,bogatov realty,https://bogatovrealty.com/
+,business and real estate advisor.,business and real estate advisor.,https://www.avisonyoung.us/properties-for-sale?_gl=1*d7rn93*_up*MQ..*_ga*MTIzMTM3Njg5MS4xNzUwNDUwMjk4*_ga_NB1T86YXFD*czE3NTA0NTAyOTckbzEkZzAkdDE3NTA0NTAyOTckajYwJGwwJGgw
+,century 21 hometown brokers,century 21 hometown brokers,https://www.century21hometown.com/property-listings/
+,"csg commercial, affiliate of kw commercial","csg commercial, affiliate of kw commercial",https://www.christianswann.com/search#?q_limit=36&mlsId=254|282&price=100000:&propertyType=Condo/Townhome|Multi-Family|Residential&status=1|3&q_sort=createdAt-&q_offset=0
+,first capital property group,first capital property group,https://fcpg.com/properties/
+,genesis realty,genesis realty,https://www.genesisrealtyco.com/our-active-listings
+,hageman realty group,hageman realty group,https://hagemanrealty.com/properties/
+,keller williams coastal bend,keller williams coastal bend,https://kwcoastalbend.com/idx/listings/listings/
+,luxury wealth group,luxury wealth group,https://luxurywealthgroup.com/cat_apartment/exclusive-listings/
+,nbi realty,nbi realty,https://nbirealtyllc.net/properties/
+,premiere at real,premiere at real,https://realagentsonduty.com/?s=
+,property professionals realty,property professionals realty,https://www.getthepros.com/index.php?showagency=1&rtype=map
+,r&r commercial realty inc.,r&r commercial realty inc.,https://www.randrcommercialrealty.com/listings/
+,rahman realty,rahman realty,https://www.rahmanrealty.com/
+,real estate professionals inc.,real estate professionals inc.,https://serhant.com/buy
+,realamerica realty,realamerica realty,https://bizmls.com/cgi-bin/a-bus2ff.asp?forsale=go
+,realty concepts,realty concepts,https://jazz.realtyconcepts.com/index.php?showagency=1#rslt
+,rencorprealty,rencorprealty,https://rencorprealty.com/residential/
+,signature properties of new england,signature properties of new england,https://propertiesct.com/featured-listings-1
+,simplihom,simplihom,https://simplihom.com/listing?condition=%7B%7D
+,slifer smith and frampton,slifer smith and frampton,"https://www.ssfcommercial.com/business-listings
+
+http://ssfcommercial.com/for-sale-1"
+,the jason mitchell group,the jason mitchell group,https://thejasonmitchellgroup.com/buy/
+,triangle commercial advisors,triangle commercial advisors,https://trianglecommercialadvisors.com/listings
+,wolf co. realty,wolf co. realty,https://www.wolfco-re.com/featured-listings/
+50427,routeconsultant.com,routeconsultant.com,https://routeconsultant.com/search
+50428,sunbeltmidwest.com,sunbeltmidwest.com,https://sunbeltmidwest.com/buy-a-business/search-businesses-for-sale
+50429,realtecbusinessbrokers.com,realtecbusinessbrokers.com,https://realtecbusinessbrokers.com/scholarship-opportunities/undergraduate-scholarship/
+50430,ubibiz.com,ubibiz.com,https://ubibiz.com/buy-a-business
+50431,ibainc.com,ibainc.com,https://ibainc.com/businesses-for-sale
+50432,vantageseattle.com,vantageseattle.com,https://vantageseattle.com/commercial-lease-listings
+50434,thesmithpro.com,thesmithpro.com,https://thesmithpro.com/davids-all-current-listings/
+50435,mibizbroker.com,mibizbroker.com,https://mibizbroker.com/listings
+50436,sunbeltwi.com,sunbeltwi.com,https://sunbeltwi.com/listings?statuses=ACTIVE
+50437,sunbeltcharleston.com,sunbeltcharleston.com,https://sunbeltcharleston.com/businesses-for-sale
+50440,lloydtucker.com,lloydtucker.com,https://lloydtucker.com/home-search/listings?search_type=envelope&south=39.36213587342921&west=-107.11379273198241&north=39.409633644822286&east=-107.05096466801757&property_type%5B%5D=Residential&property_type%5B%5D=Townhouse&property_type%5B%5D=Residential&property_type%5B%5D=Townhouse&status%5B%5D=Active&status_days%5BActive%5D=36500&status%5B%5D=Under+Contract&status_days%5BUnder+Contract%5D=36500&status%5B%5D=Pending&status_days%5BPending%5D=36500&status_days%5BSold%5D=180&mailer_schedule=instant&order=price%3Adesc&page=1

@@ -148,26 +148,6 @@ A source that stops producing looks identical to a source with nothing new. The 
 
 Our credibility is that we say what the data shows, including when it undercuts us. Vending is 25 listings, not 200. Asking multiples are not sold multiples, and we label them as asking. Every honest caveat we publish is one a competitor can't copy without also being honest.
 
-### 13. Never replace a whole file from a stale clone
-
-On 1–2 Sep, full-file versions of `dealledger_scraper_v6.py` were pasted in from a clone at commit `637947d`, silently reverting three later commits and costing a reconciliation session.
-
-**This is not a one-off.** The same clone reverted `scrapers/run_specialized.py`'s `listing_key()` (commit `12f1b16`), which held execbb.com and vestedbb.com's id stability — the revert alone produced 1,058 duplicate rows on the next run, three weeks later, with nothing pointing at the cause until someone noticed the uniqueness rate. Same mistake, same source, second file, second incident.
-
-**Any file handed over from outside the repo gets applied as a patch and verified with `git log --oneline <base>..HEAD -- <file>` first** — never dropped in whole. Surgical patches only, applied to whatever is actually in the working tree.
-
-### 14. A scrape must never undo a manual correction
-
-Rows retired by hand were flipped back to active by the next run, because the upsert overwrote `status` unconditionally — no specialized scraper has ever reported a status, so every row got `"active"` by default, every time, regardless of what a human had just set it to. Restoring `listing_key()`'s id stability made this worse, not better: once an id reliably matched its original row again, the upsert found that row every run and stamped over the correction every time.
-
-**Any field a human can set, a scraper must not blindly overwrite — it needs positive evidence, not a default.** The fix mirrors the `first_seen` guard: an existing row keeps whatever value it has unless this run's own data says otherwise.
-
-### 15. Two code paths writing the same concept must write the same field
-
-`export_discovered_ok.py` read `listings_url` from `broker_discovery`. A separate discovery write path had been populating `url` instead — same concept, different column name — so 18 rows with `status='ok'` and a real, working URL were silently skipped on every export. Nothing errored: the query succeeded, it just found fewer rows than existed.
-
-**When two writers produce the same concept, they must agree on the field that holds it — or the reader that bridges them must explicitly check every column either side might have used, and log what it skips.** A bridge that silently drops rows it doesn't recognize is indistinguishable from a bridge that works.
-
 ---
 
 ## What "better every day" means concretely
@@ -192,7 +172,6 @@ If a week passes where none of these moved, that week didn't count.
 - **Never inject our own listings into the warehouse.** DealLedger is a neutral registry. Sosville-brokered inventory lives in the app database and is clearly marked on the sites.
 - **Direct broker sourcing is the moat.** BizBuySell scraping is permanently dead (Akamai). BizQuest is a pass-through with the same listing numbers and is the path for cross-reference.
 - **Every published number has a stated method.** DOM comes from anchored interpolation, and the anchors are public. If we can't explain how we got a number, we don't publish it.
-- **Reading GitHub is free, writing is a decision.** `gh` is installed and authenticated. Don't push to main, edit or disable a workflow, trigger a run (`gh workflow run` — the broker scrape takes hours and burns Actions minutes), create or modify secrets, open PRs/issues/releases, or touch repo settings/visibility without asking first. `gh repo delete` is never acceptable. Commit locally, describe what's ready, wait for it to be pushed.
 
 ---
 
@@ -205,7 +184,3 @@ Assume the system is more broken than it looks, and that the breakage is silent.
 3. Has someone already built this in another repo or another project? There are five Supabase projects and several overlapping tables. Look before creating.
 
 And when something doesn't work: **find the call path before forming a theory.** Most of the time the answer is that a function nobody suspected is never invoked at all.
-
-**Check whether the job ran before reasoning about why it didn't.** `gh run list --workflow=broker_scrape.yml --limit 10` tells you if the nightly scrape actually ran and passed; `gh run view <id> --log` (or `--log-failed`) reads the real output instead of guessing at it; `gh workflow list` shows what's scheduled and enabled; `gh secret list` shows which secrets exist (names only). Most of this week's mysteries — tworld sitting at 977 rows for six weeks, `crawl_failures` staying empty — would have been answered in one command by looking at run history instead of reasoning about the code.
-
-**Always `git pull origin main` at the start of a session.** The local tree drifts from origin, and changes get pushed from elsewhere between sessions.
