@@ -168,6 +168,8 @@ Rows retired by hand were flipped back to active by the next run, because the up
 
 **When two writers produce the same concept, they must agree on the field that holds it — or the reader that bridges them must explicitly check every column either side might have used, and log what it skips.** A bridge that silently drops rows it doesn't recognize is indistinguishable from a bridge that works.
 
+**A human negative beating a machine positive is a signal to check the machine, not the human.** Of 40 domains where a person had verified no listings page existed but `broker_discovery` said `status='ok'`, 35 traced to one bad fallback — a WordPress blog's `/posts` endpoint being accepted as listings with no content check — and Sanny was right on all 35. When a person who looked at a site says there's nothing there and the scraper disagrees, investigate the extraction before trusting the extraction.
+
 ---
 
 ## What "better every day" means concretely
