@@ -162,6 +162,12 @@ Rows retired by hand were flipped back to active by the next run, because the up
 
 **Any field a human can set, a scraper must not blindly overwrite — it needs positive evidence, not a default.** The fix mirrors the `first_seen` guard: an existing row keeps whatever value it has unless this run's own data says otherwise.
 
+### 15. Two code paths writing the same concept must write the same field
+
+`export_discovered_ok.py` read `listings_url` from `broker_discovery`. A separate discovery write path had been populating `url` instead — same concept, different column name — so 18 rows with `status='ok'` and a real, working URL were silently skipped on every export. Nothing errored: the query succeeded, it just found fewer rows than existed.
+
+**When two writers produce the same concept, they must agree on the field that holds it — or the reader that bridges them must explicitly check every column either side might have used, and log what it skips.** A bridge that silently drops rows it doesn't recognize is indistinguishable from a bridge that works.
+
 ---
 
 ## What "better every day" means concretely

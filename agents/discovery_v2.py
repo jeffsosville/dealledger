@@ -30,6 +30,8 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import re
+import time
 import requests
 from bs4 import BeautifulSoup, Comment
 
@@ -84,10 +86,30 @@ API_PROBES = [
 
 GRAPHQL_PROBES = ["/graphql", "/gql", "/api/graphql", "/v1/graphql", "/__graphql"]
 
+# Ordered by how often each path actually appears across the 751 broker URLs
+# already in data/brokers_clean.csv. Cheapest correct guess first.
 LISTINGS_PATHS = [
-    "/listings", "/businesses-for-sale", "/business-listings",
-    "/buy-a-business", "/available-businesses", "/for-sale",
-    "/search", "/results", "/buy", "/properties", "/businesses",
+    "/businesses-for-sale",      # 170
+    "/listings",                 # 117
+    "/business-listings",        # 23
+    "/business-for-sale",        # 19  (singular - distinct from the plural)
+    "/buy-a-business",           # 15
+    "/current-listings",         # 14
+    "/our-listings",             # 10
+    "/for-sale",                 # 8
+    "/all-listings",             # 6
+    "/listings.html",            # 6
+    "/featured-listings",        # 6
+    "/search",                   # 6
+    "/buy",                      # 5
+    "/opportunities",            # 5
+    "/businesses",               # 5
+    "/practices-for-sale",       # 5  (dental, CPA, veterinary brokers)
+    "/available-businesses",
+    "/results",
+    "/properties",
+    "/business-opportunities",
+    "/inventory",
 ]
 
 # v4 CSS container patterns
@@ -197,13 +219,82 @@ def fetch_json(url, **kwargs):
         return None, str(e)
 
 
-def head_ok(url):
-    """Quick check if URL returns 200."""
+def head_ok(url, explain=False):
+    """
+    Does this URL look like a real listings page?
+
+    Two things the old version got wrong:
+
+      - It used HEAD. Plenty of broker sites answer HEAD with 405 or 403 while
+        GET works fine, so real pages were being skipped.
+      - It only checked the status code. Soft-404s return 200 with "page not
+        found" in the body, and those were being accepted as listings pages.
+
+    So: GET, follow redirects, and require the body to look like a listing
+    index rather than an error page or a homepage.
+    """
+    def out(ok, why=""):
+        return (ok, why) if explain else ok
+
     try:
-        r = requests.head(url, headers=HEADERS, timeout=8, allow_redirects=True)
-        return r.status_code == 200
-    except:
-        return False
+        r = requests.get(url, headers=HEADERS, timeout=12, allow_redirects=True)
+    except Exception as exc:
+        return out(False, type(exc).__name__)
+
+    if r.status_code == 202:
+        # Some WAFs answer 202 Accepted while they decide about you.
+        # baystatebusinessbrokers.com returned it on every path.
+        return out(False, "HTTP 202 (bot check)")
+    if r.status_code != 200:
+        # 403/503 is a wall, not an absent page. Worth distinguishing - a
+        # blocked broker needs a proxy, an absent one needs a different path.
+        return out(False, f"HTTP {r.status_code}")
+
+    body = (r.text or "")[:200_000]
+    low = body.lower()
+
+    if any(m in low for m in ("cf-browser-verification", "just a moment",
+                              "checking your browser", "attention required",
+                              "access denied", "request blocked")):
+        return out(False, "blocked")
+
+    # Soft 404 / placeholder
+    if any(m in low for m in (
+        "page not found", "404 error", "page you requested",
+        "doesn't exist", "does not exist", "coming soon",
+        "under construction", "no listings found", "no results found",
+    )):
+        return out(False, "soft 404")
+
+    if len(body) < 2000:
+        return out(False, "thin page")
+
+    # A listings index usually shows several prices, or repeats listing
+    # language. One price is a homepage teaser, not an index.
+    prices = len(re.findall(r"\$\s?[\d,]{4,}", body))
+    cues = sum(low.count(c) for c in (
+        "listing", "for sale", "asking price", "cash flow", "sde", "ebitda",
+    ))
+    if prices >= 3 or cues >= 8:
+        return out(True, "content match")
+
+    # Client-rendered pages have neither in the raw HTML. Transworld and
+    # Sunbelt franchise sites both failed here despite carrying 100+ listings.
+    # If the shell looks like an app AND the URL is a strong listings path,
+    # accept it and let the Playwright stage decide.
+    js_shell = any(m in low for m in (
+        "__next_data__", "__nuxt__", "window.__initial_state__",
+        'id="root"', 'id="app"', "data-reactroot", "ng-app", "wp-json",
+    ))
+    strong_path = re.search(
+        r"/(businesses?-for-sale|listings?|business-listings|"
+        r"buy-a-business|current-listings|our-listings|all-listings|"
+        r"featured-listings|practices-for-sale|opportunities)\b",
+        url, re.I,
+    )
+    if js_shell and strong_path:
+        return out(True, "js shell + listings path")
+    return out(False, f"no listing signal ({prices} prices, {cues} cues)")
 
 
 def parse_html(html):
@@ -309,7 +400,11 @@ def try_wordpress(base_url):
     ]
 
     for pt in post_type_candidates:
-        url = f"{base_url}/wp-json/wp/v2/{pt}?per_page=10"
+        # per_page=10 is the WP default and it made every WordPress broker
+        # report exactly 10 listings regardless of how many they have -
+        # clandbiz claims 67, mibizbroker 39, both "found 10". Ask for 100 so
+        # discovery learns the real shape of the source.
+        url = f"{base_url}/wp-json/wp/v2/{pt}?per_page=100"
         items, err = fetch_json(url)
         if items and isinstance(items, list) and len(items) > 0:
             # Probe max page size
@@ -322,9 +417,16 @@ def try_wordpress(base_url):
                 "sample_count": len(items),
             }
 
-    # Fallback: standard posts
-    items, err = fetch_json(f"{base_url}/wp-json/wp/v2/posts?per_page=10")
-    if items and isinstance(items, list) and len(items) > 0:
+    # Fallback: standard posts. This is the risky one - `/posts` is the
+    # site's BLOG, not necessarily its listings, and a non-empty blog was
+    # enough to mark 35 sites "ok" that a human (Sanny) had separately
+    # verified had no listings page at all - cgkbusinesssales.com and
+    # pavilionservices.com among them. A blog with articles about selling a
+    # business looks exactly like this endpoint returning non-empty.
+    # Require actual listing content - a price or a sale-specific term - in
+    # a real share of the sample before trusting it.
+    items, err = fetch_json(f"{base_url}/wp-json/wp/v2/posts?per_page=100")
+    if items and isinstance(items, list) and len(items) > 0 and _wp_posts_look_like_listings(items):
         return {
             "method": "wordpress_api",
             "endpoint": "/wp-json/wp/v2/posts",
@@ -333,6 +435,25 @@ def try_wordpress(base_url):
             "sample_count": len(items),
         }
     return None
+
+
+def _wp_posts_look_like_listings(items, min_hit_ratio=0.3):
+    """Does a /wp-json/wp/v2/posts sample look like business listings rather
+    than blog articles? Require a real share of the sample to carry a price
+    or sale-specific term in its title/excerpt."""
+    sample = items[:20]
+    hits = 0
+    for it in sample:
+        title = it.get("title")
+        title = title.get("rendered", "") if isinstance(title, dict) else str(title or "")
+        excerpt = it.get("excerpt")
+        excerpt = excerpt.get("rendered", "") if isinstance(excerpt, dict) else str(excerpt or "")
+        blob = f"{title} {excerpt}".lower()
+        if re.search(r"\$\s?[\d,]{4,}", blob) or any(
+            c in blob for c in ("asking price", "cash flow", "sde", "ebitda", "for sale")
+        ):
+            hits += 1
+    return bool(sample) and (hits / len(sample)) >= min_hit_ratio
 
 
 def try_shopify(base_url):
@@ -762,13 +883,131 @@ def is_js_rendered(html):
     return False
 
 
-def find_listings_page(base_url):
-    """Try common listing URL patterns, return first 200 OK."""
+def find_listings_page(base_url, verbose=False):
+    """
+    Find a broker's listings index.
+
+    HOMEPAGE FIRST, then guesses. The original order was 21 sequential GETs
+    against a domain before ever loading its homepage, which is both slow and
+    reads as a path scan - Cloudflare and friends start returning 403 partway
+    through, and every subsequent probe fails for a reason that has nothing to
+    do with whether the page exists. 18 of 25 brokers came back
+    "nothing matched" that way, including four Transworld franchises that
+    plainly do have listings pages.
+
+    One homepage fetch answers it for most sites, because the nav is the site
+    telling you where its listings are. Guessing is the fallback, not the
+    opening move.
+    """
+    reasons = []
+
+    def try_url(url):
+        ok, why = head_ok(url, explain=True)
+        if not ok:
+            reasons.append(f"{urlparse(url).path or '/'}: {why}")
+        return ok
+
+    # ── Stage 1: read the homepage nav ──
+    home_blocked = False
+    try:
+        r = requests.get(base_url, headers=HEADERS, timeout=15,
+                         allow_redirects=True)
+        if r.status_code != 200:
+            reasons.append(f"homepage: HTTP {r.status_code}")
+            home_blocked = r.status_code in (202, 403, 429, 503)
+        else:
+            low_home = r.text.lower()
+            if any(m in low_home for m in ("just a moment", "checking your browser",
+                                           "attention required", "access denied")):
+                reasons.append("homepage: blocked")
+                home_blocked = True
+            else:
+                soup = BeautifulSoup(r.text, "html.parser")
+                seen, scored = set(), []
+                for a in soup.find_all("a", href=True):
+                    href = a["href"].strip()
+                    if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
+                        continue
+                    full = urljoin(base_url, href)
+                    if urlparse(full).netloc != urlparse(base_url).netloc:
+                        continue
+                    if full in seen:
+                        continue
+                    seen.add(full)
+
+                    label = a.get_text(" ", strip=True).lower()
+                    path = urlparse(full).path.lower()
+                    blob = f"{label} {path}"
+
+                    score = 0
+                    for kw, pts in (
+                        ("businesses for sale", 6), ("business for sale", 6),
+                        ("businesses-for-sale", 6), ("business-for-sale", 6),
+                        ("current listings", 5), ("our listings", 5),
+                        ("all listings", 5), ("buy a business", 5),
+                        ("buy-a-business", 5), ("listings", 4), ("listing", 3),
+                        ("for sale", 3), ("opportunities", 3), ("inventory", 3),
+                        ("browse", 2), ("search", 2),
+                    ):
+                        if kw in blob:
+                            score = max(score, pts)
+
+                    # A narrowed subset is not the index. abbrokers.com sent us
+                    # to /visa-qualified-businesses.asp, which is a filtered
+                    # view of a fraction of their inventory.
+                    for narrowing in ("visa", "e-2", "e2 ", "franchis", "sold",
+                                      "featured", "spotlight", "testimonial",
+                                      "how-to", "how to", "guide", "blog",
+                                      "faq", "financing", "valuation",
+                                      # commercial real estate, not businesses
+                                      "lease", "for rent", "rental", "property",
+                                      "properties", "real estate", "land",
+                                      "office space", "retail space"):
+                        if narrowing in blob:
+                            score -= 4
+                            break
+
+                    # A detail page is not an index.
+                    if re.search(r"/(listing|business)[-/][\w-]{8,}", path):
+                        score -= 3
+
+                    if score >= 3:
+                        scored.append((score, full))
+
+                for _, cand in sorted(scored, reverse=True)[:6]:
+                    if try_url(cand):
+                        if verbose:
+                            print(f"      found via homepage nav: {cand}")
+                        return cand
+    except Exception as exc:
+        reasons.append(f"homepage: {type(exc).__name__}")
+
+    # If the homepage itself is walled, guessing paths will not get through
+    # and will only make the block worse.
+    if home_blocked:
+        if verbose:
+            print("      homepage blocked - skipping path probes "
+                  "(needs a proxy or a browser fetch)")
+        return None
+
+    # ── Stage 2: guess, politely ──
     for path in LISTINGS_PATHS:
-        url = base_url + path
-        if head_ok(url):
-            return url
+        if try_url(base_url + path):
+            if verbose:
+                print(f"      found by path: {base_url + path}")
+            return base_url + path
+        time.sleep(0.3)
+
+    if verbose:
+        blocked = sum(1 for r in reasons if "403" in r or "blocked" in r or "429" in r)
+        if blocked:
+            print(f"      nothing matched - {blocked} of {len(reasons)} probes were blocked")
+        else:
+            print(f"      nothing matched ({len(reasons)} probes)")
+        for r in reasons[:4]:
+            print(f"        {r}")
     return None
+
 
 # ── Supabase ───────────────────────────────────────────────────────────────────
 
@@ -803,6 +1042,7 @@ def cache_set_discovery(domain, url, result):
         row = {
             "domain": domain,
             "url": url,
+            "listings_url": url,
             "method": result.get("method", "unknown"),
             "endpoint": result.get("endpoint"),
             "pagination": result.get("pagination"),
@@ -826,6 +1066,10 @@ def cache_set_discovery(domain, url, result):
 # ── Main discovery logic ───────────────────────────────────────────────────────
 
 _haiku_tokens = 0
+_haiku_calls = 0
+# Per-process cap on paid Haiku fallback calls, so a big discover_backlog.py
+# batch (LIMIT=200) can't silently run 200 Haiku calls. 0/unset = unlimited.
+MAX_AI = int(os.environ.get("MAX_AI", "0") or 0)
 
 def discover(url, verbose=True):
     """Run full discovery on a URL. Returns discovery result dict."""
@@ -984,8 +1228,10 @@ def discover(url, verbose=True):
         return css_result
 
     # ── Step 12: Haiku fallback ───────────────────────────────────
-    if HAS_ANTHROPIC and os.environ.get("ANTHROPIC_API_KEY"):
+    global _haiku_calls
+    if HAS_ANTHROPIC and os.environ.get("ANTHROPIC_API_KEY") and (MAX_AI <= 0 or _haiku_calls < MAX_AI):
         log(f"   🤖 Calling Haiku (last resort)...")
+        _haiku_calls += 1
         haiku_result = try_haiku(url, html)
         if haiku_result:
             global _haiku_tokens
@@ -994,6 +1240,8 @@ def discover(url, verbose=True):
             haiku_result.update({"platform": platform, "status": "ok", "domain": domain, "url": url})
             cache_set_discovery(domain, url, haiku_result)
             return haiku_result
+    elif HAS_ANTHROPIC and os.environ.get("ANTHROPIC_API_KEY"):
+        log(f"   ⏭️  Haiku budget exhausted ({MAX_AI}/run) — skipping")
     else:
         log(f"   ⚠️  Haiku not available (no ANTHROPIC_API_KEY)")
 
@@ -1024,10 +1272,35 @@ _PW_CONTAINER_KEYS = ["items","results","data","listings","businesses","records"
 _PW_TRACKING = {"utm_source","utm_medium","utm_campaign","utm_term","utm_content","gclid","fbclid","msclkid"}
 
 def _pw_score_list(lst):
-    if not lst or not isinstance(lst, list) or not isinstance(lst[0], dict): return 0
+    """
+    Score a JSON array on how much it looks like listings.
+
+    The length term used to stand alone: score = matched_keys*10 + len(lst).
+    With zero matched keys a 49-item array still scored 49, which is how a
+    cookie-consent endpoint (/api/v1/snippets/websites/.../cookies) was
+    accepted as websiteclosers.com's listings source.
+
+    Length is a tiebreaker, never a qualification. No listing-shaped keys, no
+    score.
+    """
+    if not lst or not isinstance(lst, list) or not isinstance(lst[0], dict):
+        return 0
     keys = set()
-    for it in lst[:5]: keys |= set(it.keys())
-    return len(keys & _PW_LISTING_KEYS) * 10 + min(len(lst), 200)
+    for it in lst[:5]:
+        keys |= set(it.keys())
+    matched = len(keys & _PW_LISTING_KEYS)
+    if matched == 0:
+        return 0
+    return matched * 10 + min(len(lst), 200)
+
+
+# Endpoints that are never listings, whatever shape they return.
+_PW_URL_DENY = re.compile(
+    r"/(cookie|consent|gdpr|ccpa|privacy|analytics|telemetry|beacon|"
+    r"gtm|gtag|pixel|track|gyro|session|heartbeat|ping|health|"
+    r"recaptcha|captcha|font|sprite|translation|i18n|locale)s?\b",
+    re.I,
+)
 
 def _pw_find_best_list(obj):
     best, best_score = [], 0
@@ -1092,6 +1365,7 @@ def try_playwright_network(url, timeout_ms=25000):
             req = resp.request
             if req.resource_type not in ("xhr","fetch"): return
             if resp.status >= 400: return
+            if _PW_URL_DENY.search(req.url): return
             ctype = (resp.headers.get("content-type") or "").lower()
             if "json" not in ctype and "text/plain" not in ctype: return
             body = resp.text()
