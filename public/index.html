@@ -437,6 +437,17 @@ function domBadge(listingNumber, fallbackDom) {
     return '<span class="dom-badge dom-normal">—</span>';
 }
 
+function domFromEstListed(l) {
+    // days_on_market is unreliable: the bridge recomputes it from
+    // listings_direct.first_seen, which the scraper resets on re-scrape.
+    // estimated_listed_date survives, so derive the floor from that.
+    if (!l.estimated_listed_date) return null;
+    const d = new Date(l.estimated_listed_date + 'T00:00:00Z');
+    if (isNaN(d)) return null;
+    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    return days >= 0 ? days : null;
+}
+
 function domClass(days) {
     if (days <= 30)  return 'dom-fresh';
     if (days <= 90)  return 'dom-normal';
@@ -485,7 +496,7 @@ function applyFilters() {
         if (priceMin && (l.price||0) < priceMin) return false;
         if (priceMax && (l.price||0) > priceMax) return false;
         const _d = domByNumber[l.listing_number];
-        const dom = _d ? (_d.days === null ? 99999 : _d.days) : (l.days_on_market ?? null);
+        const dom = _d ? (_d.days === null ? 99999 : _d.days) : domFromEstListed(l);
         if (domFilter !== 'all' && dom === null) return false;
         if (domFilter === 'fresh'  && dom > 30)  return false;
         if (domFilter === 'new'    && dom > 90)  return false;
@@ -554,7 +565,7 @@ function renderListings() {
     body.innerHTML = page.map(l => {
         const href  = l.source_url || '#';
         const _dd    = domByNumber[l.listing_number];
-        const dom   = _dd ? _dd.days : (l.days_on_market ?? null);
+        const dom   = _dd ? _dd.days : domFromEstListed(l);
         const views = l.listing_views;
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
@@ -566,7 +577,7 @@ function renderListings() {
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
-            <td class="col-price">${domBadge(l.listing_number, l.days_on_market)}</td>
+            <td class="col-price">${domBadge(l.listing_number, domFromEstListed(l))}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
         </tr>`;
     }).join('');
