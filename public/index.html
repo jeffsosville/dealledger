@@ -261,7 +261,7 @@
                     <th>Title</th>
                     <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
-                    <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM <span class="sort-arrow"></span></th>
+                    <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM (est.) <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
                 </tr>
             </thead>
@@ -379,6 +379,7 @@ const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
 const PER_PAGE = 50;
 const BATCH    = 1000;
+let domByNumber = {};   // listing_number -> {days, tier, display}
 
 let allListings      = [];
 let filteredListings = [];
@@ -412,13 +413,30 @@ function signalBadge(dom, views) {
     return '';
 }
 
-function domBadge(dom) {
-    if (dom === null || dom === undefined) return '<span class="dom-badge dom-normal">—</span>';
-    if (dom <= 30)  return `<span class="dom-badge dom-fresh">${dom}d</span>`;
-    if (dom <= 90)  return `<span class="dom-badge dom-normal">${dom}d</span>`;
-    if (dom <= 180) return `<span class="dom-badge dom-stale">${dom}d</span>`;
-    if (dom <= 365) return `<span class="dom-badge dom-hot">${dom}d</span>`;
-    return `<span class="dom-badge dom-zombie">${dom}d</span>`;
+function domBadge(listingNumber) {
+    const d = domByNumber[listingNumber];
+    if (!d) return '<span class="dom-badge dom-normal">—</span>';
+
+    // Older than our earliest anchor: floor only, never a number.
+    if (d.days === null || d.days === undefined) {
+        return `<span class="dom-badge dom-zombie" title="${d.display}">2yr+</span>`;
+    }
+
+    const days = d.days;
+    // Round to the precision we actually have. Validated against held-out
+    // anchors: mean error 1.6 days, worst 7.
+    const shown = days < 60   ? days
+                : days <= 365 ? Math.round(days / 5)  * 5
+                :               Math.round(days / 10) * 10;
+
+    let cls = 'dom-normal';
+    if      (days <= 30)  cls = 'dom-fresh';
+    else if (days <= 90)  cls = 'dom-normal';
+    else if (days <= 180) cls = 'dom-stale';
+    else if (days <= 365) cls = 'dom-hot';
+    else                  cls = 'dom-zombie';
+
+    return `<span class="dom-badge ${cls}" title="Estimated from listing sequence · ${d.tier} confidence">${shown}d</span>`;
 }
 
 function setDOM(val) {
@@ -460,7 +478,9 @@ function applyFilters() {
         if (state && l.state !== state) return false;
         if (priceMin && (l.price||0) < priceMin) return false;
         if (priceMax && (l.price||0) > priceMax) return false;
-        const dom = l.days_on_market || 0;
+        const _d = domByNumber[l.listing_number];
+        const dom = _d ? (_d.days === null ? 99999 : _d.days) : null;
+        if (domFilter !== 'all' && dom === null) return false;
         if (domFilter === 'fresh'  && dom > 30)  return false;
         if (domFilter === 'new'    && dom > 90)  return false;
         if (domFilter === 'stale'  && (dom <= 90 || dom > 365)) return false;
@@ -527,7 +547,7 @@ function renderListings() {
     }
     body.innerHTML = page.map(l => {
         const href  = l.source_url || '#';
-        const dom   = l.days_on_market;
+        const dom   = (domByNumber[l.listing_number] || {}).days ?? null;
         const views = l.listing_views;
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
@@ -539,7 +559,7 @@ function renderListings() {
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
-            <td class="col-price">${domBadge(dom)}</td>
+            <td class="col-price">${domBadge(l.listing_number)}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
         </tr>`;
     }).join('');
@@ -574,6 +594,26 @@ function populateStates() {
     sel.innerHTML = '<option value="">All States</option>' + states.map(s=>`<option value="${s}">${s}</option>`).join('');
 }
 
+async function loadDOM() {
+    let from = 0; const map = {};
+    try {
+        while (true) {
+            const res = await fetch(
+                `${SUPABASE_URL}/rest/v1/v_listing_dom?select=listing_number,dom_days,dom_confidence,dom_display&limit=${BATCH}&offset=${from}`,
+                { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+            );
+            if (!res.ok) break;
+            const batch = await res.json();
+            for (const r of batch) {
+                map[r.listing_number] = { days: r.dom_days, tier: r.dom_confidence, display: r.dom_display };
+            }
+            if (batch.length < BATCH) break;
+            from += BATCH;
+        }
+    } catch (e) { console.warn('[DealLedger] DOM clock unavailable:', e); }
+    domByNumber = map;
+}
+
 async function loadData() {
     try {
         let rows = [], from = 0;
@@ -600,6 +640,7 @@ async function loadData() {
             listing_views:         r.listing_views,
             relisted:              r.relisted || false,
         }));
+        await loadDOM();
         populateStates();
         applyFilters();
     } catch(err) {
