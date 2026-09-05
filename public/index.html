@@ -413,30 +413,36 @@ function signalBadge(dom, views) {
     return '';
 }
 
-function domBadge(listingNumber) {
+function domBadge(listingNumber, fallbackDom) {
     const d = domByNumber[listingNumber];
-    if (!d) return '<span class="dom-badge dom-normal">—</span>';
 
-    // Older than our earliest anchor: floor only, never a number.
-    if (d.days === null || d.days === undefined) {
-        return `<span class="dom-badge dom-zombie" title="${d.display}">2yr+</span>`;
+    // Anchored estimate (marketplace listing number). The good one.
+    if (d) {
+        if (d.days === null || d.days === undefined) {
+            return `<span class="dom-badge dom-zombie" title="${d.display}">2yr+</span>`;
+        }
+        const days = d.days;
+        const shown = days < 60   ? days
+                    : days <= 365 ? Math.round(days / 5)  * 5
+                    :               Math.round(days / 10) * 10;
+        return `<span class="dom-badge ${domClass(days)}" title="Estimated from listing sequence · ${d.tier} confidence">${shown}d</span>`;
     }
 
-    const days = d.days;
-    // Round to the precision we actually have. Validated against held-out
-    // anchors: mean error 1.6 days, worst 7.
-    const shown = days < 60   ? days
-                : days <= 365 ? Math.round(days / 5)  * 5
-                :               Math.round(days / 10) * 10;
+    // No marketplace number (broker-direct). Fall back to days since we
+    // first observed it, which is a FLOOR, not an estimate. Marked with +.
+    if (fallbackDom !== null && fallbackDom !== undefined) {
+        return `<span class="dom-badge ${domClass(fallbackDom)}" title="Observed on our index for at least this long; true listing date unknown">${fallbackDom}d+</span>`;
+    }
 
-    let cls = 'dom-normal';
-    if      (days <= 30)  cls = 'dom-fresh';
-    else if (days <= 90)  cls = 'dom-normal';
-    else if (days <= 180) cls = 'dom-stale';
-    else if (days <= 365) cls = 'dom-hot';
-    else                  cls = 'dom-zombie';
+    return '<span class="dom-badge dom-normal">—</span>';
+}
 
-    return `<span class="dom-badge ${cls}" title="Estimated from listing sequence · ${d.tier} confidence">${shown}d</span>`;
+function domClass(days) {
+    if (days <= 30)  return 'dom-fresh';
+    if (days <= 90)  return 'dom-normal';
+    if (days <= 180) return 'dom-stale';
+    if (days <= 365) return 'dom-hot';
+    return 'dom-zombie';
 }
 
 function setDOM(val) {
@@ -479,7 +485,7 @@ function applyFilters() {
         if (priceMin && (l.price||0) < priceMin) return false;
         if (priceMax && (l.price||0) > priceMax) return false;
         const _d = domByNumber[l.listing_number];
-        const dom = _d ? (_d.days === null ? 99999 : _d.days) : null;
+        const dom = _d ? (_d.days === null ? 99999 : _d.days) : (l.days_on_market ?? null);
         if (domFilter !== 'all' && dom === null) return false;
         if (domFilter === 'fresh'  && dom > 30)  return false;
         if (domFilter === 'new'    && dom > 90)  return false;
@@ -547,7 +553,8 @@ function renderListings() {
     }
     body.innerHTML = page.map(l => {
         const href  = l.source_url || '#';
-        const dom   = (domByNumber[l.listing_number] || {}).days ?? null;
+        const _dd    = domByNumber[l.listing_number];
+        const dom   = _dd ? _dd.days : (l.days_on_market ?? null);
         const views = l.listing_views;
         return `<tr>
             <td class="col-date">${l.estimated_listed_date || '—'}</td>
@@ -559,7 +566,7 @@ function renderListings() {
             </td>
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
-            <td class="col-price">${domBadge(l.listing_number)}</td>
+            <td class="col-price">${domBadge(l.listing_number, l.days_on_market)}</td>
             <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
         </tr>`;
     }).join('');
