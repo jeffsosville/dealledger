@@ -180,6 +180,9 @@ def _money_to_float(num_str, suffix):
         val = float(s)
     except ValueError:
         return None
+    if suffix and (',' in num_str or val >= 1000):
+        suffix = None
+   
     mult = {'k': 1_000, 'm': 1_000_000, 'b': 1_000_000_000}.get((suffix or '').lower(), 1)
     return val * mult
 
