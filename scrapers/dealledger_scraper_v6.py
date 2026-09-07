@@ -146,7 +146,7 @@ LISTING_KEYWORDS = [
 MONEY_TOKEN = re.compile(
     r'\$\s*'
     r'(\d{1,3}(?:[.,\s]\d{3})*(?:\.\d{1,2})?|\d+(?:\.\d+)?)'
-    r'\s*([KkMmBb])?'
+    r'(?:\s?([KkMmBb])(?![A-Za-z0-9]))?'
 )
 
 
