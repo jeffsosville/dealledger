@@ -54,11 +54,10 @@
     "last_used": "2026-02-21T19:07:58.135605"
   },
   "goldstarbbaz.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 3,
-    "total_listings": 15,
-    "first_seen": "2026-02-18T14:04:28.731892",
-    "last_used": "2026-02-21T19:08:13.394544"
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
   },
   "salehgroup.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
@@ -88,11 +87,10 @@
     "last_used": "2026-02-21T19:33:14.188202"
   },
   "saintlouisgroup.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 3,
-    "total_listings": 14,
-    "first_seen": "2026-02-18T15:46:18.021947",
-    "last_used": "2026-02-21T19:59:48.405296"
+    "container_selector": "div.listing-info",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Family Medical Practice $160,000.00 Illinois Categories: Health/Medical , Professional Practice For Sale"
   },
   "sofrankoadvisors.com": {
     "pattern": "div|children:div|has_link|text:long",
@@ -109,11 +107,10 @@
     "last_used": "2026-02-21T20:00:48.434440"
   },
   "fusionadvantage.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 23,
-    "first_seen": "2026-02-18T16:06:45.823347",
-    "last_used": "2026-02-19T23:28:15.014052"
+    "container_selector": "div.col-sm-4",
+    "count": 18,
+    "score": 24,
+    "sample_text": "Previous"
   },
   "cibb.com": {
     "pattern": "div|children:div|has_link|text:long|has_price",
@@ -137,18 +134,16 @@
     "last_used": "2026-02-21T20:09:17.931660"
   },
   "baltimorebusinessbrokers.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 3,
-    "total_listings": 12,
-    "first_seen": "2026-02-18T16:08:47.655808",
-    "last_used": "2026-02-21T20:10:18.221816"
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
   },
   "pacificcommercialbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 3,
-    "total_listings": 6,
-    "first_seen": "2026-02-18T16:09:41.630274",
-    "last_used": "2026-02-21T20:11:01.304982"
+    "container_selector": "div.ere-item-wrap.property-item.mg-bottom-30",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Bar and Grill \u2013 Real Estate \u2013 Seattle $2,300,000 King County Business Opportunity Suzanne Cox 2 days ago Discover an exceptional opportunity to acquire a distinctive commercial property in one of King"
   },
   "coastalbizbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -214,11 +209,10 @@
     "last_used": "2026-02-21T20:12:19.398272"
   },
   "zoombusinessbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 10,
-    "first_seen": "2026-02-19T23:49:21.181471",
-    "last_used": "2026-02-21T20:13:56.025375"
+    "container_selector": "div.js-wpv-view-layout.js-wpv-layout-responsive.js-wpv-view-layout-603752",
+    "count": 46,
+    "score": 30,
+    "sample_text": "ZBB2150 Fiber Optics cable Construction Business for Sale in Southern California LOCATION: Southern California LISTING\n                                                                                 "
   },
   "excellencebusinessbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -235,11 +229,10 @@
     "last_used": "2026-02-21T20:14:48.369079"
   },
   "bizbrokeragehub.com": {
-    "pattern": "article|children:a,div|has_link|has_img|text:long|has_price",
-    "success_count": 2,
-    "total_listings": 24,
-    "first_seen": "2026-02-19T23:50:46.794213",
-    "last_used": "2026-02-21T20:15:03.971133"
+    "container_selector": "div.dr-card__body",
+    "count": 12,
+    "score": 24,
+    "sample_text": "New Exclusive Renovated Car Wash In Queens - 2801 Watch video\n\n\n\n\n\n\n\nNew Exclusive Renovated Car Wash for Sale \u2013 Queens, NYTurnkey, fully renovated car wash equipped with premium Motor City equipment."
   },
   "vikingmergers.com": {
     "pattern": "div|children:div,style|has_link|text:medium|has_price",
@@ -256,11 +249,10 @@
     "last_used": "2026-02-21T20:15:45.584150"
   },
   "michiganbusinessbroker.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 2,
-    "total_listings": 10,
-    "first_seen": "2026-02-19T23:52:07.481374",
-    "last_used": "2026-02-21T20:16:23.066263"
+    "container_selector": "div.col-sm-6.col-md-4.col-lg-3",
+    "count": 16,
+    "score": 30,
+    "sample_text": "Turnkey Laundromat Opportunity in Oakland County Asking: $299,999.00 Oakland County, MI More Details"
   },
   "fih.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -333,11 +325,10 @@
     "last_used": "2026-02-21T20:49:24.703716"
   },
   "naz-business.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 4,
-    "first_seen": "2026-02-20T04:46:19.485770",
-    "last_used": "2026-02-21T20:49:47.612603"
+    "container_selector": "div.x-el.c1-1.c1-2.c1-1q.c1-1r.c1-4n.c1-29.c1-2a.c1-5b.c1-88.c1-89.c1-8a.c1-8b.c1-8c.c1-8d.c1-8e.c1-8f.c1-8g.c1-8h.c1-8i.c1-8j.c1-8k.c1-8l.c1-8m.c1-8n.c1-8o.c1-8p.c1-8q.c1-8r.c1-8s.c1-8t.c1-8u.c1-8v.c1-8w.c1-8x.c1-8y.c1-8z.c1-90.c1-91.c1-92.c1-93.c1-4.c1-5u.c1-b.c1-c.c1-3y.c1-3e.c1-d.c1-e.c1-f.c1-g.x-rt",
+    "count": 32,
+    "score": 30,
+    "sample_text": "2246 Asking Price: \u00a0$ 200,000"
   },
   "practicetransitionsgroup.com": {
     "container_selector": "div[style*=\"margin-bottom: 2em\"]",
@@ -360,11 +351,10 @@
     "last_used": "2026-02-21T21:18:30.860252"
   },
   "missionpeakbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 12,
-    "first_seen": "2026-02-20T07:43:23.945907",
-    "last_used": "2026-02-21T21:18:46.301158"
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
   },
   "enlign.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -409,11 +399,10 @@
     "last_used": "2026-02-21T21:23:15.480200"
   },
   "tangentbrokerage.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 14,
-    "first_seen": "2026-02-20T08:03:52.895335",
-    "last_used": "2026-02-21T21:23:30.636672"
+    "container_selector": "div.col-12.listing-result",
+    "count": 37,
+    "score": 29,
+    "sample_text": "Administrative Management and General Management Consulting Services Screen Printer: Bring Embroidery In-house-grow margins & retention \u25cf Active DuPage, Illinois, USA Asking Price $600k Revenue $400k "
   },
   "manhattan.biz": {
     "pattern": "div|children:div|has_link|text:long",
@@ -423,11 +412,10 @@
     "last_used": "2026-02-21T21:23:53.405024"
   },
   "peakbusinessbrokersllc.com": {
-    "pattern": "div|children:div|has_link|has_img|text:medium",
-    "success_count": 2,
-    "total_listings": 2,
-    "first_seen": "2026-02-20T08:19:19.821477",
-    "last_used": "2026-02-21T21:24:15.351118"
+    "container_selector": "div.elementor-container.elementor-column-gap-default",
+    "count": 34,
+    "score": 30,
+    "sample_text": "Below is a current list of Businesses for Sale. Contact us today for more information about these listings. Show Listings in the Following State/Province Only: Show All State/Provences Arizona Califor"
   },
   "excelbusinessbrokersusa.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -458,11 +446,10 @@
     "last_used": "2026-02-21T21:25:35.957376"
   },
   "bizbuyandsellga.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 5,
-    "first_seen": "2026-02-20T09:34:31.897587",
-    "last_used": "2026-02-21T22:49:30.027790"
+    "container_selector": "div.pp-content-grid-inner.pp-content-body.clearfix",
+    "count": 10,
+    "score": 18,
+    "sample_text": "REDUCED! Conyers Coin Laundry for $259K! Open COAM!"
   },
   "crexi.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -654,11 +641,10 @@
     "last_used": "2026-02-22T03:04:57.363584"
   },
   "aspectbrokers.biz": {
-    "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
-    "success_count": 1,
-    "total_listings": 23,
-    "first_seen": "2026-02-22T03:05:18.701404",
-    "last_used": "2026-02-22T03:05:18.701411"
+    "container_selector": "div.block",
+    "count": 27,
+    "score": 30,
+    "sample_text": "Charlotte, NC - Subway for Sale Category : Subway AB7598 Listing Id Charlotte, NC Location $149,000 List Price"
   },
   "suncoastbiz.net": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
@@ -779,25 +765,22 @@
     "last_used": "2026-02-23T16:20:15.901098"
   },
   "atmbrokerage.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T16:20:42.222102",
-    "last_used": "2026-02-23T16:20:42.222163"
+    "container_selector": "div.grid-content",
+    "count": 48,
+    "score": 28,
+    "sample_text": "Alberta Canada Route\u00a0\u2013 ATM Portfolio \u2013 C$3,495,000.00!"
   },
   "hallmarkbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 3,
-    "first_seen": "2026-02-23T16:20:59.081921",
-    "last_used": "2026-02-23T16:20:59.081931"
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
   },
   "idx.michelephillipsrealtor.com": {
-    "pattern": "li|children:a,ul|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 24,
-    "first_seen": "2026-02-23T16:26:33.879727",
-    "last_used": "2026-02-23T16:26:33.879737"
+    "container_selector": "div.IDX-resultsCell",
+    "count": 25,
+    "score": 30,
+    "sample_text": "1214 Fern Ridge Road , Sherwood , Arkansas AR 72120 -2749 View Photo Gallery (40) Price $649,900 Bedrooms: 3 Total Baths: 3 Full Baths: 2 Partial Baths: 1 SqFt: 3,037 Acres: 0.74 Status: Active Well b"
   },
   "southeasternbb.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -807,11 +790,10 @@
     "last_used": "2026-02-23T16:27:11.126941"
   },
   "paradigmbb.com": {
-    "pattern": "div|children:div|has_link|has_img|text:medium|has_price",
-    "success_count": 1,
-    "total_listings": 16,
-    "first_seen": "2026-02-23T16:27:31.793621",
-    "last_used": "2026-02-23T16:27:31.793632"
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
   },
   "emadsalem.sellstatemetro.com": {
     "pattern": "div|children:div|has_link|text:long",
@@ -835,11 +817,10 @@
     "last_used": "2026-02-23T16:50:38.704737"
   },
   "lisitenassociates.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 25,
-    "first_seen": "2026-02-23T16:50:53.423231",
-    "last_used": "2026-02-23T16:50:53.423238"
+    "container_selector": "div.listing",
+    "count": 24,
+    "score": 35,
+    "sample_text": "JANITORIAL CLEANING SUPPLY PACKAGING SOLUTIONS PROVIDER AND FORMULATIONS MANUFACTURER WITH INTELLECTUAL PROPERTY Industry: CLEANING SUPPLIES, MFG/ DISTRIBUTER Location: PA Listed Price: $ 70,000,000 F"
   },
   "alliancebayrealty.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -912,11 +893,10 @@
     "last_used": "2026-02-23T21:24:45.985607"
   },
   "carmelbusinesssales.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 4,
-    "first_seen": "2026-02-23T16:56:30.368310",
-    "last_used": "2026-02-23T16:56:30.368317"
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
   },
   "atlantametro.fcbb.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
@@ -1024,11 +1004,10 @@
     "last_used": "2026-02-23T17:06:34.579521"
   },
   "landscapedepotinvestments.com": {
-    "pattern": "div|children:div|has_link|has_img|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T17:06:48.324594",
-    "last_used": "2026-02-23T17:06:48.324604"
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
   },
   "apex-cre.com": {
     "pattern": "div|children:a,h1|has_link|has_img|text:medium|has_price",
@@ -1507,11 +1486,10 @@
     "last_used": "2026-02-23T19:38:46.686762"
   },
   "us.businessesforsale.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 22,
-    "first_seen": "2026-02-23T19:39:20.275795",
-    "last_used": "2026-02-23T19:41:52.921630"
+    "container_selector": "div.result",
+    "count": 25,
+    "score": 35,
+    "sample_text": "Las Vegas Nevada Transmission Outfit Available Business Location: Las Vegas Nevada, Nevada, US Details: Asking Price: $275,000 Revenue: $775,000 Cash Flow: $250K - $500K Long-time Las Vegas, Nevada tr"
   },
   "mbbbiz.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -1542,11 +1520,10 @@
     "last_used": "2026-02-23T19:41:00.361384"
   },
   "gatewayconsultinggroup.com": {
-    "pattern": "div|children:div|has_link|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 9,
-    "first_seen": "2026-02-23T19:41:16.101130",
-    "last_used": "2026-02-23T19:41:16.101141"
+    "container_selector": "div.kv-ee-col-12.kv-ee-col-sm-6.kv-ee-item",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Central Tenured Allstate agency $6,841,000 combined Allstate & Brokered Premium Allstate Annual Premium: $4,963,000 Allstate\nBrokered Annual Premium: $1,878,000 Revenue $594,000 Asking Price:$1,249,00"
   },
   "wiltseybars.com": {
     "pattern": "div|children:article|has_link|has_img|text:medium",
@@ -1563,11 +1540,10 @@
     "last_used": "2026-02-23T19:42:36.283997"
   },
   "districtbusinessbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T19:42:51.631974",
-    "last_used": "2026-02-23T19:42:51.631985"
+    "container_selector": "div._15gGoQK1",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Lexington Park (St. Mary's County) Location: Positioned along a major commercial corridor in St. Mary's County, Maryland, this freestanding restaurant benefits from exceptional visibility, strong dail"
   },
   "cfbb.biz": {
     "pattern": "div|children:div|has_link|has_img|text:long",
@@ -1647,11 +1623,10 @@
     "last_used": "2026-02-23T19:47:31.366319"
   },
   "sellbuybrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 8,
-    "first_seen": "2026-02-23T19:49:47.113273",
-    "last_used": "2026-02-23T19:49:47.113280"
+    "container_selector": "div.elementor-container.elementor-column-gap-default",
+    "count": 34,
+    "score": 30,
+    "sample_text": "Below is a current list of Businesses for Sale. Contact us today for more information about these listings. Show Listings in the Following State/Province Only: Show All State/Provences Arizona Califor"
   },
   "bhhscrest.com": {
     "pattern": "div|children:div|has_link|text:long",
@@ -1661,11 +1636,10 @@
     "last_used": "2026-02-23T20:06:59.092368"
   },
   "montana406businessbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T20:07:22.213162",
-    "last_used": "2026-02-23T20:07:22.213172"
+    "container_selector": "div.clearfix.list-post",
+    "count": 29,
+    "score": 30,
+    "sample_text": "Under Contract\u2026.Premier Custom Cabinetry Business Manufacturing $1,400,000 Cash Flow: $466,113 Exceptional Reputation & Strong Profitability Rare opportunity to acquire one of Montana\u2019s premier custom"
   },
   "oldincsellsbusinesses.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1717,11 +1691,10 @@
     "last_used": "2026-02-23T21:23:54.213478"
   },
   "onesbs.com": {
-    "pattern": "div|children:div|has_link|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 1,
-    "first_seen": "2026-02-23T21:24:11.266600",
-    "last_used": "2026-02-23T21:24:11.266608"
+    "container_selector": "div.et_pb_text_inner",
+    "count": 22,
+    "score": 26,
+    "sample_text": "Looking for your next opportunity? Check out our current businesses for sale around Central Pennsylvania and beyond. Buying an established and thriving business is a fantastic way to generate a steady"
   },
   "nacommercialrealestate.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1745,11 +1718,10 @@
     "last_used": "2026-02-23T21:26:04.636451"
   },
   "siriusrealtyservices.com": {
-    "pattern": "div|children:div|has_link|has_img|text:medium",
-    "success_count": 1,
-    "total_listings": 4,
-    "first_seen": "2026-02-24T02:38:35.749579",
-    "last_used": "2026-02-24T02:38:35.749588"
+    "container_selector": "div.idx_results_data.idx_cf",
+    "count": 25,
+    "score": 30,
+    "sample_text": "$ 9,688,888 MLS# 1592704 Sunset, SC - 435 Peninsula Ridge The Reserve at Lake Keowee 5 Bedrooms, 5 Full Baths, and 2 Half Baths 6200-6399 Sq Ft on 0.82 acres Click Here to view all photos and details."
   },
   "ccochranconsulting.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -1794,11 +1766,10 @@
     "last_used": "2026-02-24T02:40:28.235249"
   },
   "sellmydeliveryroutes.com": {
-    "pattern": "div|children:div|has_link|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 1,
-    "first_seen": "2026-02-24T03:34:12.391889",
-    "last_used": "2026-02-24T03:34:12.391901"
+    "container_selector": "div.tbp_advanced_archive_wrap",
+    "count": 13,
+    "score": 26,
+    "sample_text": "For Sale 20 FedEx P&D Routes ( Carve-Out)-North Alabama Route ID 438 Asking Price $1,849,000 EBITDA $578,779 Revenue $2,108,203 Fleet Value $624,500 # of Vehicles 26 # of Employees 20 Financing Type C"
   },
   "californiabusinesssale.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1843,11 +1814,10 @@
     "last_used": "2026-02-24T03:37:13.072774"
   },
   "lionbusinessbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 1,
-    "first_seen": "2026-02-24T03:37:27.695353",
-    "last_used": "2026-02-24T03:37:27.695361"
+    "container_selector": "div.elementor-tab-content.elementor-clearfix",
+    "count": 16,
+    "score": 28,
+    "sample_text": "Profitable Residential HVAC Business in Austin, TX Established in 2008 , this business built its name servicing high-end residential properties across the Austin metro. Known for white-glove service a"
   },
   "northwoodswi.com": {
     "pattern": "div|children:div|has_link|has_img|text:long|has_price",
@@ -1857,11 +1827,10 @@
     "last_used": "2026-02-24T03:37:51.287874"
   },
   "lossrealtygroup.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 3,
-    "first_seen": "2026-02-24T03:38:29.708651",
-    "last_used": "2026-02-24T03:38:29.708659"
+    "container_selector": "div.sidx-require-auth",
+    "count": 20,
+    "score": 30,
+    "sample_text": "New Listing - yesterday 1 / 34 $249,900 Single Family Residence For Sale Active 3 BEDS 2 TOTAL BATHS 1,456 SQFT 6165 N Weber Road Whitehall , MI 49461 Listing courtesy of Jenny Locke of Five Star Real"
   },
   "accesscommercial.com": {
     "pattern": "div|children:div|has_link|has_img|text:medium",
@@ -1913,11 +1882,10 @@
     "last_used": "2026-02-24T07:30:25.410799"
   },
   "springfieldstrategies.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long|has_price",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-24T07:31:08.169159",
-    "last_used": "2026-02-24T07:31:08.169166"
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-6z.c1-6q.c1-78.c1-9e.c1-9k.c1-26.c1-7a.c1-3j.c1-7b.c1-z.c1-8j.c1-b.c1-c.c1-9l.c1-9m.c1-7f.c1-7g.c1-9f.c1-7i.c1-d.c1-9n.c1-9o.c1-e.c1-f.c1-g",
+    "count": 31,
+    "score": 27,
+    "sample_text": "Used Auto Dealership w/ Real Estate. $17.5mm in Revenue! $4,500,000 North Georgia Revenue: $17,500,000 Ideal location w/ approx 265 ft of high-visibility road frontage on main corridor."
   },
   "ecbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -2271,5 +2239,641 @@
     "count": 4,
     "score": 8,
     "sample_text": "Entertainment & Recreation \u00b7 North Louisiana Outdoor Adventure & Entertainment Venue Established outdoor adventure and family entertainment destination near Shreveport, in continuous operation for nea"
+  },
+  "members.franchiseclearly.com": {
+    "container_selector": "div.mt5.mb10",
+    "count": 50,
+    "score": 30,
+    "sample_text": "SBA Pre-Qualified! Seize the chance to acquire a premium Childcare Center franchise in Hamilton County TN. The real estate can be included in the purchase for an additional $6,750,000.00 - a huge oppo"
+  },
+  "www.commercialroutesforsale.com": {
+    "container_selector": "tr.even",
+    "count": 28,
+    "score": 30,
+    "sample_text": "6236 TastyKake $199,000 $89,000 $1,500 Voorhees NJ Net $1,500 a week after all expenses.....Gross weekly sales average over $10,000......This Tastykake Route for sale picks up product in Cherry Hill N"
+  },
+  "trufortebusinessgroup.com": {
+    "container_selector": "div.card",
+    "count": 16,
+    "score": 35,
+    "sample_text": "Hair Salon for Sale in Clearwater Listing #95151110 Asking: $90,000 Owner Benefit: $71,920 Pinellas & Hillsborough Counties Learn More"
+  },
+  "www.companysellers.com": {
+    "container_selector": "div.col-sm-12",
+    "count": 20,
+    "score": 30,
+    "sample_text": "LearningRx Center, WI | Established, Referral-Driven Skip the years it takes to build a brain-training center from scratch and step into an established LearningRx location with a trained team and proc"
+  },
+  "www.lbaweb.com": {
+    "container_selector": "div.post",
+    "count": 5,
+    "score": 12,
+    "sample_text": "Gas Station Sonoma Listing No: 4410 Status: Sold View Business"
+  },
+  "jhcallahan.com": {
+    "container_selector": "div.lazy-load.pl-result-property-area.pl-result-content-inner",
+    "count": 9,
+    "score": 14,
+    "sample_text": "$13 Status: Active Commercial Lease 1641  Robert Street S MN 55118 Beds | Baths Living Area: SqFt MLS Number 7094678 View Details"
+  },
+  "gabb.org": {
+    "container_selector": "div.p-4.flex.flex-col.flex-1",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Active Beauty & Personal Care Package Deal For 2 Profitable Tanning Salons with Strong Following GA Package Deal For 2 Profitable Tanning Salons with Strong Local Following Asking: $389,000"
+  },
+  "thecountyguys.com": {
+    "container_selector": "div.rps-property-result",
+    "count": 12,
+    "score": 16,
+    "sample_text": "For sale $189,000 Part Lot 31 South Street Loyalist, Ontario Royal LePage Proalliance Realty"
+  },
+  "www.reputedbrokerage.com": {
+    "container_selector": "div.property-inner",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Featured Active For Sale \ud83d\ude9b Right Off I-20, Louisiana \u2013 Truck Stop & Casino | Absentee Owned $5,100,000 / Net Income of Casino: $35 k Investments Reaz Rahman 2 years ago This branded truck stop and cas"
+  },
+  "www.clandbiz.com": {
+    "container_selector": "div.card",
+    "count": 100,
+    "score": 23,
+    "sample_text": "FOR LEASE 12570 Splendid Pl Orlando, FL  32821 3.1 - 5.7 Acres Negotiable 2 Spaces Retail"
+  },
+  "www.givingtreerealty.com": {
+    "container_selector": "div.listing__details",
+    "count": 12,
+    "score": 24,
+    "sample_text": "$1,195 / month Charlotte , NC Unknown 1842 Academy Street 3 Beds 1 Bath 0 Days on Market Share via Email Share via SMS Copy link"
+  },
+  "www.business-team.com": {
+    "container_selector": "div.listing_wrap",
+    "count": 91,
+    "score": 30,
+    "sample_text": "The Power Behind Resilience Listing #: SF11939 Category: N/A Location: N/A Gross Sales: $12,501,435 Adjusted Earnings: $3,092,143 Asking Price: N/A Details"
+  },
+  "sellingrestaurants.com": {
+    "container_selector": "div.listing-col2",
+    "count": 179,
+    "score": 30,
+    "sample_text": "#6916 PIZZA \u2013 Well Located Kitsap County Location Tacoma Restaurants For Sale Monthly Rent: $3,948 Annual Revenues: $370,051 Annual Adj. Net: $62,003 Square Feet: 1,024 Available $99,000 Add To Favori"
+  },
+  "www.azbusinessbrokers.com": {
+    "container_selector": "div.blog-basic-grid--text",
+    "count": 20,
+    "score": 30,
+    "sample_text": "Car & Truck Wash RuthAnn Wimmer 7/1/25 Car & Truck Wash RuthAnn Wimmer 7/1/25 State-of-the-Art Truck & RV Wash - Phoenix Metro Area Asking Price: $9,500,000 Read More"
+  },
+  "oibmn.com": {
+    "container_selector": "div.blog-card-content",
+    "count": 101,
+    "score": 30,
+    "sample_text": "Rare Opportunity to Acquire a Fishing Rod & Component Inventory $1,750,000 Denver, CO"
+  },
+  "preferredbrokers.com": {
+    "container_selector": "div.entry-content",
+    "count": 107,
+    "score": 30,
+    "sample_text": "This is s 20-year established internal medicine practice on the south side of metro Atlanta in the Peachtree City Area. Gross collections generated by the owner/practitioner and one part-time physicia"
+  },
+  "www.shumacher.com": {
+    "container_selector": "div.teasers_box",
+    "count": 28,
+    "score": 30,
+    "sample_text": "Midtown Atlanta GA Restaurant, Lounge & Hookah Bar for Sale \u2013 Hot Location \u2013 Keep or Convert \u2013 $100,000 #6598 Midtown Atlanta GA Upscale Restaurant, Lounge & Hookah Bar for Sale Hottest location in th"
+  },
+  "www.vikingmergers.com": {
+    "container_selector": "div.jet-engine-listing-overlay-wrap",
+    "count": 89,
+    "score": 30,
+    "sample_text": "Tenured, Profitable, Southeastern Metal Distributor #2057 Wholesale & Distribution Price: Market Price Revenues: $64,939,613 Cash Flow: $2,799,477 Location: Southeast U.S. More Info"
+  },
+  "restaurantsbarsforsale.com": {
+    "container_selector": "article.listing",
+    "count": 10,
+    "score": 17,
+    "sample_text": "SOLD \u2013 Denver Neighborhood Liquor Store for Sale \u2013 LOW, LOW RENT! 20260414 Location: Denver / Boulder Metro Price: 395,000 Reference Number: 10501 Property Type: Liquor Store Status: Sold/Leased Denve"
+  },
+  "www.sellingrestaurants.com": {
+    "container_selector": "div.listing-col2",
+    "count": 173,
+    "score": 30,
+    "sample_text": "#6781 Established Pizza restaurant for sale Near UC Berkeley San Francisco East Bay Restaurants For Sale Monthly Rent: $8,700 Square Feet: 1,200 In Escrow $150,000 Add To Favorites VIEW DETAILS"
+  },
+  "equitygroupmi.com": {
+    "container_selector": "div.brxe-osafeo.brxe-block.margin-bottom--l",
+    "count": 42,
+    "score": 16,
+    "sample_text": "Sale Pending Profitable Michigan-Based Commercial Excavation Contractor An exceptional opportunity to acquire a highly profitable and well-established commercial excavation and concrete services contr"
+  },
+  "www.caldergr.com": {
+    "container_selector": "div.business-listing-container",
+    "count": 34,
+    "score": 30,
+    "sample_text": "For Sale Midwest Electronics Distributor and Manufacturer Revenue: $4,855,647 Cash Flow: $682,940 Real Estate Lease: $34,711 Inquire Now For Sale Midwest Enterprise Video Solutions Company Revenue: $1"
+  },
+  "goldcommercial.net": {
+    "container_selector": "div.card",
+    "count": 100,
+    "score": 23,
+    "sample_text": "FOR LEASE 12570 Splendid Pl Orlando, FL  32821 3.1 - 5.7 Acres Negotiable 2 Spaces Retail"
+  },
+  "www.cibb.com": {
+    "container_selector": "div.listing-card",
+    "count": 37,
+    "score": 35,
+    "sample_text": "8% Cap Rate Potential \u2013 Income Producing Office Building for Sale Listing #: 90407417 Asking Price: $1,300,000 Owner Benefit: $92,800.00 CIBB Exclusives Florida Get Listing Details"
+  },
+  "www.edisonba.com": {
+    "container_selector": "li[class*=\"element_row\"]",
+    "count": 15,
+    "score": 30,
+    "sample_text": "Under Offer Marine Construction Southwest Florida More Info >> PRICE Undisclosed REVENUE $11,636,914 PROFITS $4,128,704"
+  },
+  "lakecountryadvisors.com": {
+    "container_selector": "div.col-sm-12",
+    "count": 20,
+    "score": 30,
+    "sample_text": "LearningRx Center, WI | Established, Referral-Driven Skip the years it takes to build a brain-training center from scratch and step into an established LearningRx location with a trained team and proc"
+  },
+  "dellingco.com": {
+    "container_selector": "article.listing",
+    "count": 14,
+    "score": 25,
+    "sample_text": "Sports Bar & Grill Katy-Cypress Area This is a well-known neighborhood sports bar with a loyal customer base and strong repeat business. The establishment has built a steady following through popular "
+  },
+  "unbroker.com": {
+    "container_selector": "div.listing-card-wrap",
+    "count": 63,
+    "score": 30,
+    "sample_text": "New $1.57M EBITDA Public Works Contractor, 25+ Yr. $7,950,000 Industry: Heavy Construction Location: CA Est.: 1999 Employees: 25 ID: C062401 A general engineering contractor based in California, provi"
+  },
+  "intermountainbusinessbrokers.com": {
+    "container_selector": "div.business-row.hide-for-small",
+    "count": 50,
+    "score": 28,
+    "sample_text": "Profitable Dog Behavior Training Business \u2013 20 Hrs/Wk \u2013 Seller Financing SOLD $120,000 $100,000 Jefferson County, CO Pet Services"
+  },
+  "www.ibexbeyond.com": {
+    "container_selector": "div.es-property-inner",
+    "count": 18,
+    "score": 24,
+    "sample_text": "Commercial Property For Sale Featured Call for price 12 Rare South Florida Portfolio: Four Vacant Freestanding Retail Assets Call for price Individual pricing shown within listing page Rare South Flor"
+  },
+  "ubcutah.com": {
+    "container_selector": "div.wpgb-card-wrapper",
+    "count": 6,
+    "score": 12,
+    "sample_text": "Sold Design and Install Landscaping Company **UNDER CONTRACT** Well-established design and install landscaping company catering to upscale residential and... View Details Asking price $5,500,000 2024 "
+  },
+  "riverbrokers.com": {
+    "container_selector": "div.propery-style-6",
+    "count": 83,
+    "score": 30,
+    "sample_text": "$ 79,000 Business-only Rent Business-only Dry Cleaners Business-only with Second Pickup Location in Lawrenceville | Metro-Atlanta, GA! Lawrenceville, GA Key Financials: \u00a0 Equipment is valued at above "
+  },
+  "exitequity.com": {
+    "container_selector": "div.col-12.listing-current",
+    "count": 5,
+    "score": 9,
+    "sample_text": "Aerospace & Defense Precision Manufacturer Strong, Multi-Year Backlog in a Growing Industry Ref. #44899 Revenue: $8,345,000 Adj. EBITDA: $2,560,000 Location: Canada LEARN MORE"
+  },
+  "century21semiao.com": {
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
+  },
+  "abausa.com": {
+    "container_selector": "div.post",
+    "count": 73,
+    "score": 33,
+    "sample_text": "Specialized Outdoorsman-Related Retail business for sale Available Price: $6,250,000 Location: Midwest Industry: Retail Listing ID: 1J241 Total Sales: $8,972,780 Cash Flow: $860,464 This business is v"
+  },
+  "specialtygroup.com": {
+    "container_selector": "div.card",
+    "count": 100,
+    "score": 23,
+    "sample_text": "FOR LEASE 12570 Splendid Pl Orlando, FL  32821 3.1 - 5.7 Acres Negotiable 2 Spaces Retail"
+  },
+  "radiusgroup.com": {
+    "container_selector": "div.item-content",
+    "count": 173,
+    "score": 16,
+    "sample_text": "Lease Oxnard 2000-2301 Outlet Center Dr, A-455 The Palms Medical Office Retail $1.80 NNN ($0.75) 1,213 SF"
+  },
+  "www.chiscagroup.com": {
+    "container_selector": "div.post-content-wrapper",
+    "count": 66,
+    "score": 30,
+    "sample_text": "SALE PENDING: Construction Business For Sale (NICHE): $4,615,400 Businesses for Sale Construction Business For Sale : $2,615,400 Listing ID: CGLA 001312 This is the most prestigious Construction busin"
+  },
+  "therouteexchange.com": {
+    "container_selector": "div.pdb-field.pdb-field-full_listing",
+    "count": 112,
+    "score": 15,
+    "sample_text": "Full Listing Full Listing"
+  },
+  "www.tlgbusinessbroker.com": {
+    "container_selector": "div.post-item.w-dyn-item",
+    "count": 71,
+    "score": 29,
+    "sample_text": "Absentee Owned Established Specialty Toy & Collectibles Franchise $165,000 Asking Price:$165,000 EBITDA:$91,950 Gross Revenue:$444,491 Business Description This is a rare opportunity to acquire an est"
+  },
+  "www.excelbusinessbrokersusa.com": {
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
+  },
+  "www.krbb.com": {
+    "container_selector": "div.CZ0KIs",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Event production company Price $250,000.00"
+  },
+  "bestrealestateco.com": {
+    "container_selector": "div.es-listing__content",
+    "count": 40,
+    "score": 30,
+    "sample_text": "339 OAKLEIGH DR, Collierville, TN, 38017 $3,000 339 OAKLEIGH DR, Collierville, TN, 38017 Looking for a beauty in Collierville for rent\u2026please come grab... 4 beds 2 baths 339 OAKLEIGH DR, Collierville,"
+  },
+  "therestaurantbroker.com": {
+    "container_selector": "div.elementor-container.elementor-column-gap-default",
+    "count": 34,
+    "score": 30,
+    "sample_text": "Below is a current list of Businesses for Sale. Contact us today for more information about these listings. Show Listings in the Following State/Province Only: Show All State/Provences Arizona Califor"
+  },
+  "www.nationalfranchisesales.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.westboundroad.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "towerbusinessbrokers.com": {
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
+  },
+  "www.preschoolexchange.com": {
+    "container_selector": "div.vc_column_container.col-md-9.mt-0.pt-0",
+    "count": 27,
+    "score": 29,
+    "sample_text": "FOR SALE/LEASE 4915 COIT RD, FRISCO, TX 75035 ASKING - $5,700,000 (SALE) ASKING- $29,000/M + NNN (LEASE) Vacant Childcare building in prime Frisco location with frontage on Coit Rd. 13,776 sqft buildi"
+  },
+  "eebb.ca": {
+    "container_selector": "div.column.column-4.wow.fadeInUp",
+    "count": 52,
+    "score": 30,
+    "sample_text": "#1 NATIONAL PET FOOD FRANCHISE *Price Reduced*  - 8 YRS ESTABLISHED $399,000.00 West of GTA A premium franchise opportunity in a specialized pet retailer focused on natural and organic products for al"
+  },
+  "www.hscbrokers.com": {
+    "container_selector": ".fusion-text p",
+    "count": 27,
+    "score": 50,
+    "sample_text": "Fantastic LI Car Wash with Real Estate ASKING PRICE: $10,500,000 GROSS REVENUE: $1,400,000 Rare opportunity to buy a Long Island car wash with real estate."
+  },
+  "www.equity55.com": {
+    "container_selector": "div.card",
+    "count": 24,
+    "score": 35,
+    "sample_text": "View Details Similar Properties Save Salem, IL $925K 6368 E Tonti Road Type Single Family 6368 E Tonti Road,  Salem, IL"
+  },
+  "www.benchmarkbusinessgroup.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "americangymtrader.com": {
+    "container_selector": "div.business-listing",
+    "count": 49,
+    "score": 35,
+    "sample_text": "Fitness Center Portfolio - WIlling to break up - Assumable SBA EIDL loan Asking Price: $1,800,000 Cash Flow: $501,000 Description: 7,000+ Active Members | $501K Cash Flow\n\nAmerican Gym Trader proudly "
+  },
+  "www.mnresortsalesnorth.com": {
+    "container_selector": "div.uk-card-body.uk-margin-remove-first-child",
+    "count": 48,
+    "score": 30,
+    "sample_text": "KOA Journey Bemidji Location: Bemidji Price: $1,300,000 MNRS #1960525 A prime location near Itasca State Park, the Mississippi Headwaters, and Chippewa National Forest places it within one of Minnesot"
+  },
+  "www.stoneridgepartners.com": {
+    "container_selector": "div.acadp-cg-body",
+    "count": 42,
+    "score": 28,
+    "sample_text": "ARIZONA SJP-5074 Medicare-certified home health agency Minimal census Medicaid contract in place In-network contracts with all major payors and VA No audits or recoupments Home Health / Arizona"
+  },
+  "midwaybb.com": {
+    "container_selector": "div.bt_bb_port",
+    "count": 46,
+    "score": 30,
+    "sample_text": "ABA Business for Sale Ohio Asking Price: Open To Offers Approx. 2026 Sales Through May: $2.2M Approx 2026 SDE Through May: $640K Business Description Open to Offers A growing ABA services business ope"
+  },
+  "thomashospitality.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.buffalobusinessbrokers.com": {
+    "container_selector": "div[class*=\"dmRespCol\"]",
+    "count": 14,
+    "score": 28,
+    "sample_text": "Children's Indoor Playground and Event Facility North Towns of Buffalo, NY Asking Price: $199,900 Large first class children\u2019s indoor playground and event facility Ages 0-8 years old Full caf\u00e9 and var"
+  },
+  "www.bigstarrealty.net": {
+    "container_selector": "div.viewgrid",
+    "count": 37,
+    "score": 29,
+    "sample_text": "$49,000 Goldfield | Goldfield 1 BEDS 0 BATHS 578 SQFT On Site 211 Days"
+  },
+  "accountingfirmsold.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "preschoolbusinesssolutions.dealrelations.com": {
+    "container_selector": "div.listings-element",
+    "count": 15,
+    "score": 30,
+    "sample_text": "Active Multi-Site Childcare Portfolio with Prime Real Estate Established three-campus early education portfolio available in one of Florida's strongest childcare markets. The offering includes four op"
+  },
+  "www.pbsbrokers.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.sellmorerestaurants.com": {
+    "container_selector": "div.p-2",
+    "count": 6,
+    "score": 12,
+    "sample_text": "Marietta, GA Marietta, GA Restaurant For Lease $10,000"
+  },
+  "www.smallbusinessdeal.com": {
+    "container_selector": "div.listing-menu-text",
+    "count": 50,
+    "score": 30,
+    "sample_text": "Agricultural Equipment Manufacturing & Distribution Company \u2013 Outside Saginaw and Bay City Business Category: Agriculture, Durable Goods, Industrial & Comm. Machinery, Manufacturing Businesses, and Wh"
+  },
+  "ccbusinessbrokers.com": {
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+    "count": 11,
+    "score": 16,
+    "sample_text": "Charming, Long-Time Coffee Shop on the Coast A rare opportunity to acquire a long-time, established specialty coffee business in a picturesque California Central Coast tourist town. Located in a prime"
+  },
+  "www.businessbroker.net": {
+    "container_selector": "div.listing",
+    "count": 60,
+    "score": 35,
+    "sample_text": "Featured Listing Asking Price: $199,000 Established Edible Arrangements - High Traffic Not Disclosed, CA San diego County Semi-Absentee Operation; Recognized National Brand with Multiple Revenue Strea"
+  },
+  "www.johnlscott.com": {
+    "container_selector": "div.row",
+    "count": 14,
+    "score": 23,
+    "sample_text": "Businesses For Sale"
+  },
+  "www.charlestonbusinessbrokers.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "fivestarbusinessbrokers.com": {
+    "container_selector": "div.elementor.elementor-407",
+    "count": 20,
+    "score": 30,
+    "sample_text": "Creative Graphic Design Firm for Sale Location: Palm Beach County Get More Information Asking Price: Gross Revenue: $ $ 499,000.00 850,033.00 Creative Graphic Design Firm for Sale Asking Price: $ 499,"
+  },
+  "bridgebusinessbrokers.ca": {
+    "container_selector": "div.listItem-body",
+    "count": 12,
+    "score": 24,
+    "sample_text": "Salon and Aesthetics Spa for Sale Looking for a thriving beauty business in the heart of Central Alberta? This established full-service salon is a fantastic opportunity for anyone wanting to step into"
+  },
+  "www.platzrealtygroup.com": {
+    "container_selector": "div.property-item.row-eq-height",
+    "count": 14,
+    "score": 26,
+    "sample_text": "Tobacco & Cigar Shop For Sale $399,000 Tobacco & Cigar Shop Reduced! Two retail tobacco and cigar shops in Columbiana and Mahoning Counties Sale includes inventory, POS system, and business assets Rea"
+  },
+  "bostonrestaurantgroup.com": {
+    "container_selector": ".fusion-text p",
+    "count": 27,
+    "score": 50,
+    "sample_text": "Fantastic LI Car Wash with Real Estate ASKING PRICE: $10,500,000 GROSS REVENUE: $1,400,000 Rare opportunity to buy a Long Island car wash with real estate."
+  },
+  "www.americanbusinessbrokers.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.appbusinessbrokers.com": {
+    "container_selector": "div.jet-engine-listing-overlay-wrap",
+    "count": 29,
+    "score": 30,
+    "sample_text": "Software Established Team Productivity & Insights SaaS Platform (Patent Pending) Revenue: $1,850,129 Profit: $542,253 Price: Offers Invited / Price Upon Request View Listing"
+  },
+  "www.businessbrokerclevelandoh.com": {
+    "container_selector": "div[class*=\"dmRespCol\"]",
+    "count": 14,
+    "score": 28,
+    "sample_text": "Children's Indoor Playground and Event Facility North Towns of Buffalo, NY Asking Price: $199,900 Large first class children\u2019s indoor playground and event facility Ages 0-8 years old Full caf\u00e9 and var"
+  },
+  "www.routebrokers.com": {
+    "container_selector": "div[class*=\"dmRespCol\"]",
+    "count": 14,
+    "score": 28,
+    "sample_text": "Children's Indoor Playground and Event Facility North Towns of Buffalo, NY Asking Price: $199,900 Large first class children\u2019s indoor playground and event facility Ages 0-8 years old Full caf\u00e9 and var"
+  },
+  "sperityventures.com": {
+    "container_selector": "div.premium-blog-post-outer-container",
+    "count": 27,
+    "score": 28,
+    "sample_text": "Established Richmond Restaurant \u2014 Award-Winning Concept Established Richmond Restaurant \u2014 Award-Winning Concept BUSINESS FOR SALE, NOT A REAL ESTATE TRANSACTION $375,000 \u2014 Asking Price Location: Richm"
+  },
+  "www.bizbrothers.net": {
+    "container_selector": "div.block-layout.block-layout--layout",
+    "count": 4,
+    "score": 5,
+    "sample_text": "Explore our Listings Established Yoghurt Franchise - High Traffic Location See more Asking Price: $150,000 Cash Flow: $5,000 Location: Houston, TX Profitable Ice Cream Franchise for Sale Asking Price:"
+  },
+  "www.dbi-businessadvisors.com": {
+    "container_selector": "article.business",
+    "count": 28,
+    "score": 10,
+    "sample_text": "$215,000 features upscale fast casual"
+  },
+  "arizonarestaurantsales.com": {
+    "container_selector": "div.post",
+    "count": 19,
+    "score": 35,
+    "sample_text": "Turnkey Tucson Restaurant & Bar for Sale \u2013 Stunning Buildout | Prime Location Price: $215,000 Tucson, AZ Highly Upgraded Restaurant & Agave Bar Opportunity \u2013 Fully Equipped & Ready for New Ownership R"
+  },
+  "www.jobahcri.com": {
+    "container_selector": "div.flex.flex-1.flex-col.p-6",
+    "count": 53,
+    "score": 30,
+    "sample_text": "Gas Station Gas Station, C Store with Real Estate Call for details,  Kern County $2,700,000 1,240 sqft"
+  },
+  "mcreek.com": {
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
+  },
+  "anglebusinessservices.com": {
+    "container_selector": "div.sidx-require-auth",
+    "count": 27,
+    "score": 30,
+    "sample_text": "1 / 31 $5,100,000 4 BEDS 5 TOTAL BATHS 4,650 SQFT 1343 BOHEMIA MILL ROAD MIDDLETOWN , DE 19709 Farm For Sale - Active Candyland \u2013 A Once-in-a-Generation Equestrian Estate in Middletown, Delaware\nWelco"
+  },
+  "www.northwoodswi.com": {
+    "container_selector": "div.listing-card",
+    "count": 30,
+    "score": 35,
+    "sample_text": "58726-90 Cala Neu Cala Neu \u00d7 Broker/Owner, REALTOR\u00ae, ABR, RSPS (715) 820-0636 cala@northwoodswi.com New \u00d7 For Sale $459,900 3 bd 3 ba 3,148 sqft N9076 Old Bridge Rd, Phillips, WI 54555 Cala Neu"
+  },
+  "tinsleymedicalpracticebrokers.com": {
+    "container_selector": "div.card__single-practice-inner",
+    "count": 15,
+    "score": 30,
+    "sample_text": "Profitable Physical Medicine & Rehabilitation Practice in Southern California Annual Gross Revenue \u2013 $993,494 Learn More"
+  },
+  "www.mbbbiz.com": {
+    "container_selector": "div.item",
+    "count": 9,
+    "score": 21,
+    "sample_text": "$ Seller Financing Not Available. $35,000 NO GOODWILL CORPORATE OWNED GAS STATION IN LOUISIANA , LA Industory: Gas Stations Business ID: MBB2024-23 ... Inquire View Details"
+  },
+  "thecbagroup.com": {
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
+  },
+  "billblau.com": {
+    "container_selector": "div.list.wow.fadeIn",
+    "count": 37,
+    "score": 30,
+    "sample_text": "Featured # 20085 \u2013 Citgo Gas Station w/C-Store & Repair Shop Price - $1,575,000 Location - Nassau, NY Facility: Gas Station, Snack Shop and a 2-Bay Repair Shop\n \tSupply: Currently Citgo Brand, but bei"
+  },
+  "pensacolabusinessbrokers.com": {
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
+  },
+  "www.cushmanwakefield.com": {
+    "container_selector": "div.card",
+    "count": 100,
+    "score": 23,
+    "sample_text": "FOR LEASE 12570 Splendid Pl Orlando, FL  32821 3.1 - 5.7 Acres Negotiable 2 Spaces Retail"
+  },
+  "www.bizex.net": {
+    "container_selector": "div.listing",
+    "count": 10,
+    "score": 25,
+    "sample_text": "Asking Price: $6,750,000 Gross Sales: $7,401,496 Cash Flow: $1,638,147 Grading & Excavation Construction Company-SoCAL Phelan, CA Well-established heavy civil construction company based in the San Ber"
+  },
+  "bwbrokerage.com": {
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-a1.c1-a2.c1-a3.c1-4.c1-1r.c1-1s.c1-b.c1-c.c1-d.c1-e.c1-f.c1-g",
+    "count": 16,
+    "score": 30,
+    "sample_text": "Community Oriented Coffee Shop-  - SOLD $45,000 Cecil County, Maryland Gross Revenue: $144,079 Established: 2021"
+  },
+  "healthcarebizbrokers.com": {
+    "container_selector": "div.shadcn-card.rounded-xl.border.text-card-foreground.shadow-sm.h-full.flex.flex-col.overflow-hidden.hover\\:shadow-xl.transition-all.duration-300.border-border\\/50.bg-white.group",
+    "count": 24,
+    "score": 30,
+    "sample_text": "Hearing Healthcare Practice Pasadena, CA Active Established Hearing Healthcare Practice \u2013 Pasadena Area, CA Asking Price: $650,000\n2025 Revenue: $535,381 *\n2025 Recast SDE: $298,115 *\n2025 Recast EBIT"
+  },
+  "rockymountainba.com": {
+    "container_selector": "div[class*=\"m28-1g\"]",
+    "count": 17,
+    "score": 29,
+    "sample_text": "Multi-Generational Grocery Chain Mountain Region of the US Asking Price: $3,000,000 Price includes $1,200,000 of inventory. Cash Flow (SDE): $450,000 Gross Revenue: $9.3MM Contact Us About This Listin"
+  },
+  "metrocbb.com": {
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-52.c1-5c.c1-5d.c1-5e.c1-t.c1-2e.c1-5f.c1-5g.c1-5h.c1-b.c1-c.c1-5i.c1-5j.c1-5k.c1-5l.c1-d.c1-e.c1-f.c1-g",
+    "count": 18,
+    "score": 7,
+    "sample_text": "45-02 Queens Blvd, sunnyside NEW MIX USE DEVELOPMENT UP TO 8,532 SF Available 4th Q 2025 Learn more"
+  },
+  "www.vistarealtync.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
+  },
+  "www.xerare.com": {
+    "container_selector": "div.card",
+    "count": 9,
+    "score": 23,
+    "sample_text": "Business for Sale $899,000 Business for Sale Freestanding Coffee Drive-Thru | FF&E & Real Estate Included $899,000 5720 University Blvd W, Jacksonville, FL 32216 1020 SF Coffee Shop Details Matt Demir"
+  },
+  "flow.unbroker.com": {
+    "container_selector": "div.listing-card-wrap",
+    "count": 63,
+    "score": 30,
+    "sample_text": "New $1.57M EBITDA Public Works Contractor, 25+ Yr. $7,950,000 Industry: Heavy Construction Location: CA Est.: 1999 Employees: 25 ID: C062401 A general engineering contractor based in California, provi"
+  },
+  "athariadvisors.com": {
+    "container_selector": "div.none.noBorder.radius0.none.bg.bgCover.vertical.inner",
+    "count": 17,
+    "score": 21,
+    "sample_text": ""
+  },
+  "cynergycsi.com": {
+    "container_selector": ".fusion-text p",
+    "count": 27,
+    "score": 50,
+    "sample_text": "Fantastic LI Car Wash with Real Estate ASKING PRICE: $10,500,000 GROSS REVENUE: $1,400,000 Rare opportunity to buy a Long Island car wash with real estate."
+  },
+  "www.businessbrokergeorge.com": {
+    "container_selector": "div.atw_info_col_details.wph_cell_level_sortable.ui-sortable",
+    "count": 25,
+    "score": 24,
+    "sample_text": "LD & HD Towco in Canada (Sale Pending) Large operator in multiple locations, 40 drivers, municipal and law enforcement contracts, lease property from the seller. $22m Asking Price"
+  },
+  "buysellgeo.com": {
+    "container_selector": "div[class*=\"elementor\"]",
+    "count": 18,
+    "score": 27,
+    "sample_text": "Business Listings Our Latest Listings We regularly publish new businesses for sale on our website. Top-Rated Children\u2019s Gym in Frisco \u2014 Turn-Key & Ready to Grow Read More February 9, 2026 Top-Rated Ch"
+  },
+  "www.tennbusinessbrokers.com": {
+    "container_selector": "div[class*=\"dmRespCol\"]",
+    "count": 14,
+    "score": 28,
+    "sample_text": "Children's Indoor Playground and Event Facility North Towns of Buffalo, NY Asking Price: $199,900 Large first class children\u2019s indoor playground and event facility Ages 0-8 years old Full caf\u00e9 and var"
+  },
+  "www.routeadvisors.com": {
+    "container_selector": "div.entry",
+    "count": 20,
+    "score": 35,
+    "sample_text": "SBA! FedEx 2.0 23 FedEx P&D Route #: 2547327 Location: Confidential, SC Asking Price: $1,895,000 Gross Revenue: $2,074,367 Cash Flow: $528,097 Financing Options: SBA Equipment: $1 Million + # of Vehic"
+  },
+  "www.beachfrontonline.com": {
+    "container_selector": "div.property-thumbnail",
+    "count": 20,
+    "score": 30,
+    "sample_text": "$237,000,000 Single Family"
+  },
+  "gottesman-company.com": {
+    "container_selector": "div[class*=\"listing-status-available\"]",
+    "count": 16,
+    "score": 30,
+    "sample_text": "Auto Wholesale Dealer & Service Center- Sales: $380M EBITDA: $7.5M Location: Southeast Available Listing Details"
   }
 }
