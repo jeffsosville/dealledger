@@ -1,7 +1,9 @@
 # DealLedger — Mission & Operating Context
 
 **Read this first, every session.**
-Last updated: 1 September 2026 (evening) · Target: 1 September 2027
+Last updated: 1 September 2026 (evening) · State/gap table corrected 3 September 2026 (verified live against `kqckuedsyyosmccushyd`) · Target: 1 September 2027
+
+This file is the single source of truth for mission and state. `DEALLEDGER_MISSION.md` used to duplicate most of this content and has been retired — two files independently claiming the same state table is exactly the two-writers problem in principle 15 below; one of them was bound to drift, and it did (see the 3 September correction).
 
 ---
 
@@ -29,20 +31,52 @@ Not displacing them. Becoming the layer everyone checks first — the reference 
 
 Be honest in every session. Overstating readiness produces bad decisions.
 
-| | 1 Sep 2026 | Needed |
+**Corrected 3 Sep 2026** — the previous version of this table overstated the
+remaining gap by roughly 3x. The BizBuySell/BizQuest figure it used (~133,000) was
+never a competitor-inventory measurement; it was `listings`' total accumulated
+row count (87,538 BizBuySell-sourced rows alone, eleven months of churn — every
+listing number ever observed, including sold and expired). Every number below is a
+live read against `kqckuedsyyosmccushyd` taken 3 Sep 2026; method is in each row so
+it can be re-checked and won't silently go stale the way the old figure did.
+
+| | 3 Sep 2026 (live-verified) | Needed |
 |---|---|---|
-| Broker-direct listings (active) | ~28,000 | Every active US listing |
-| Brokers producing | 155 of 740 crawled | 740, plus the long tail beyond |
-| Brokers known but never crawled | **1,171** (~10,000 listings) | Zero |
-| Untagged by vertical | ~21,800 | Near zero, continuously |
+| BBS/BizQuest live index | **43,629 active** (`bizquest_listings`, 44,174 total rows, snapshot crawled 2 Sep) | — |
+| Broker-direct listings (active, `listings_direct`) | 36,176 — **83% of the BBS index on the raw table** | Every active US listing |
+| ...of which actually bridged to the live site (`listings`, `source='broker_direct'`) | 26,505 — **61% of the BBS index** | Same as above |
+| Brokers producing (distinct `broker_domain`, `last_seen` within 7 days) | 221 | Every known domain, continuously |
+| Brokers known but never crawled (`v_broker_crawl_candidates`, `crawl_state='never_crawled'`) | 1,688 of 2,185 total candidates | Zero |
+| Untagged by vertical (active, `listings_direct.vertical IS NULL`) | 19,369 | Near zero, continuously |
 | DOM methodology | Anchored, piecewise, published | Same, validated against closed sales |
 | BBS/BQ comparison | Manual, single-listing lookup | Dynamic, whole-index |
 
-**Two gaps, and the second is the surprise.**
+**Three gaps, not two — and the biggest one is internal, not external.**
 
-BizBuySell's index is ~133,000. Direct broker coverage is ~28,000 active. `NO_PATTERN` on roughly half of successful fetches is the biggest lever on depth.
+The gap to raw-index parity with BizBuySell is small: 43,629 − 36,176 ≈ **7,500
+listings**, not the ~105,000 implied by the old 133,000 figure. Coverage is 83% on
+the raw table, not ~20%.
 
-But `broker_master` holds ~1,505 distinct broker domains and only ~334 appear in `listings_direct`. **1,171 brokers we already know about have never been crawled**, carrying roughly 10,000 active listings. Discovery was never the bottleneck — consumption was. `v_broker_crawl_candidates` is the queue; `agents/discover_backlog.py` works it.
+The real bottleneck is the **9,671 rows sitting in `listings_direct` that never
+reach the site** (36,176 active there vs. 26,505 bridged) — rejected by
+`looks_like_real_listing()` / `is_listing_junk()` in `bridge_direct_to_listings()`,
+or never bridged at all. That single internal gate loss is larger than the entire
+remaining gap to BizBuySell parity, and per operating principle 8 its false-reject
+rate has never been measured. See `claude/junk-rules-proposed.sql` for a first pass
+at quantifying and safely narrowing it (2026-09-02/03 session).
+
+Separately: `bizquest_listings.is_fsbo` reads true on 43,578 of 44,174 rows
+(98.6%), which cannot be correct for a predominantly broker-listed marketplace —
+flagged as a likely inverted/misparsed field, unfixed as of this writing. Until
+it's fixed, we can't say what share of the 43,629 competitor listings are even
+reachable by broker-direct sourcing.
+
+The broker-domain reconciliation itself is still messy: `broker_master` holds
+2,328 distinct `companyurl` values (not the ~1,505 previously cited), of which 515
+appear as active in `listings_direct` and 1,688 show as never-crawled in
+`v_broker_crawl_candidates` — those three numbers should sum closer than they do
+(2,328 vs. 515+1,688=2,203); reconcile before quoting any single one of them as
+"brokers known." `agents/discover_backlog.py` works `v_broker_crawl_candidates` as
+the queue; discovery was never the bottleneck, consumption and the gate were.
 
 ---
 
@@ -64,6 +98,10 @@ What does not:
 **SEO is the second channel, and it is seller-intent, not geo.** We do not have the inventory to win "cleaning business for sale in Ohio." We can own "what is my business worth" — because we can answer it with real comps and nobody else will.
 
 **The recurring publishable finding:** businesses that actually sell sit ~103 days. Advertised listings average 17. The market looks three times faster than it is, because the slow ones accumulate invisibly. That correction is the kind of thing trade press picks up, and it's ours.
+
+**Hold before republishing any DOM number (added 3 Sep 2026, updated):** `listings_direct`'s DOM aggregate was first measured this week at a median of ~2 days — not contamination from newly-crawled brokers as originally suspected, but a large share of rows with `days_on_market IS NULL` (no DOM ever computed) being treated as zero somewhere downstream instead of excluded. Excluding nulls, the real median on that table came back at 44 days. The ~103-day figure itself comes from a different population (BBS sequential-ID interpolation, per `docs/METHODOLOGY.md`) and has not been re-derived recently.
+
+**Then a second problem surfaced: `listings` is being written during measurement.** Two DOM queries taken an hour apart returned 27,844 active / median 41, then 32,567 active / median 23 — more active rows *and* a stricter filter, which is only possible if the underlying table changed mid-query. Any aggregate computed with a live query against a table under active write is a moving target, full stop. **Before any DOM number goes on the site or into a post: compute it from a frozen snapshot taken at one fixed timestamp — never a live query against a table that scrapers/bridges are actively writing to.** The direction is real and holds up under both measurements — currently-listed businesses sit around 23 days, departed ones around 228 — but neither exact figure is publishable until it's reproducible from a frozen snapshot. Detail in `claude/dom-contamination.md`.
 
 ---
 
@@ -176,7 +214,7 @@ Rows retired by hand were flipped back to active by the next run, because the up
 
 Not vague improvement. Four measurable things:
 
-**Coverage.** Brokers producing, weekly. 155 today. The `NO_PATTERN` failures are the biggest available gain — those brokers fetch fine and extract nothing.
+**Coverage.** Brokers producing, weekly. 221 today (live-verified 3 Sep 2026, distinct `broker_domain` with `last_seen` in the last 7 days). The `NO_PATTERN` failures are the biggest available gain — those brokers fetch fine and extract nothing.
 
 **Freshness.** Rows with `last_seen` inside 7 days, as a share of active. Anything stale is a lie by omission on a live site.
 
