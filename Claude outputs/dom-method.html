@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days on Market — Method — DealLedger</title>
+    <meta name="description" content="How DealLedger estimates how long a business has been listed for sale, the calibration anchors behind it, and what the number does not mean.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P8PBL3LPF2');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --accent: #c2410c;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+        .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+        .container-wide { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
+        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        nav a:hover { color: var(--text); }
+        nav a.active { color: var(--text); }
+        main { padding: 48px 0 64px; }
+        h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .lead { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; }
+        h2 { font-family: var(--mono); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text); margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+        h2:first-of-type { border-top: none; padding-top: 0; }
+        h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+        p { margin-bottom: 16px; color: var(--text); }
+        ul { margin: 0 0 16px 20px; }
+        li { margin-bottom: 8px; }
+        strong { font-weight: 600; }
+        .mono { font-family: var(--mono); font-size: 13px; }
+        .callout { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 24px 0; font-size: 14px; }
+        .callout strong { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 6px; }
+        .table-scroll { overflow-x: auto; margin: 16px 0; }
+        .field-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .field-table th, .field-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .field-table th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 500; background: var(--bg-alt); }
+        .field-table td.f { font-family: var(--mono); white-space: nowrap; }
+        .field-table td.n { font-family: var(--mono); text-align: right; white-space: nowrap; }
+        .field-table th.n { text-align: right; }
+        .tier { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 2px; background: var(--bg-alt); color: var(--text-muted); border: 1px solid var(--border); }
+        .tier-daily { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .tier-full { background: #f5f5f4; color: #57534e; }
+        .tier-sample { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        pre { background: var(--bg-alt); border: 1px solid var(--border); padding: 16px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; margin: 16px 0; }
+        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 64px; background: var(--bg-alt); }
+        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: var(--text); }
+        a.inline { color: var(--link); text-decoration: underline; }
+        a.inline:hover { color: var(--accent); }
+        .asof { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 24px; }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container-wide">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline">— An open ledger of every business for sale in America</span>
+            </div>
+            <nav>
+                <a href="/methodology.html">Methodology</a>
+                <a href="/dom-method.html" class="active">Days on Market</a>
+                <a href="/pulse.html">Market Pulse</a>
+                <a href="/brokers">Brokers</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Days on Market</h1>
+        <p class="lead">How we estimate how long a business has been listed for sale — the calibration behind the number, and what it does not mean.</p>
+        <p class="asof">Figures on this page measured 5 September 2026</p>
+
+        <h2>The number, in one sentence</h2>
+        <p>Business-for-sale marketplaces publish what is <em>for sale now</em>. They do not publish what has been <em>for sale since</em>. We estimate the second from a property of the listing identifier itself, and we publish the calibration so anyone can check it.</p>
+
+        <div class="callout">
+            <strong>What we found</strong>
+            Of the 43,609 listings live on the major marketplace as of 5 September 2026, half have been listed more than <strong>128 days</strong>. And 2,859 of them — about one in fifteen — carry identifiers older than our earliest calibration point, meaning they have been listed since before December 2024.
+        </div>
+
+        <h2>Why marketplaces don't show it</h2>
+        <p>A business-for-sale marketplace is an advertising product. Sellers pay for visibility. A prominent counter reading "listed 412 days ago" reduces the value of the inventory the platform is paid to display, and it invites the buyer to ask why.</p>
+        <p>This is a structural incentive, not an oversight. It is also the reason an independent clock is worth publishing.</p>
+
+        <h2>How the clock works</h2>
+        <p>The marketplace assigns each new listing a sequential numeric identifier, visible in the listing's public URL. Numbers are issued in the order listings are created. A listing with a lower number was created before a listing with a higher number.</p>
+        <p>That means a number implies a date — provided you know the correspondence between numbers and dates at enough points to interpolate between them.</p>
+        <p>We record those points. Each is an <strong>anchor</strong>: an identifier we observed on a specific date, at the edge of what then existed.</p>
+
+        <h2>Calibration anchors</h2>
+        <p>Every anchor we use is listed below. Confidence describes how the point was obtained: <span class="tier tier-daily">daily</span> from a daily observation of the highest live identifier, <span class="tier tier-full">full crawl</span> from a complete index pass, <span class="tier tier-sample">sample</span> from a partial pass, which is less precise about the exact edge.</p>
+
+        <div class="table-scroll">
+        <table class="field-table">
+            <thead>
+                <tr><th>Date</th><th class="n">Listing number</th><th>Confidence</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="f">2024-12-12</td><td class="n">2,312,165</td><td><span class="tier tier-sample">sample</span></td></tr>
+                <tr><td class="f">2025-04-18</td><td class="n">2,357,714</td><td><span class="tier tier-sample">sample</span></td></tr>
+                <tr><td class="f">2025-05-14</td><td class="n">2,367,857</td><td><span class="tier tier-full">full crawl</span></td></tr>
+                <tr><td class="f">2025-06-13</td><td class="n">2,378,502</td><td><span class="tier tier-sample">sample</span></td></tr>
+                <tr><td class="f">2025-11-03</td><td class="n">2,433,146</td><td><span class="tier tier-full">full crawl</span></td></tr>
+                <tr><td class="f">2025-11-25</td><td class="n">2,444,651</td><td><span class="tier tier-full">full crawl</span></td></tr>
+                <tr><td class="f">2025-12-10</td><td class="n">2,449,434</td><td><span class="tier tier-sample">sample</span></td></tr>
+                <tr><td class="f">2025-12-20</td><td class="n">2,451,523</td><td><span class="tier tier-sample">sample</span></td></tr>
+                <tr><td class="f">2025-12-27</td><td class="n">2,453,706</td><td><span class="tier tier-full">full crawl</span></td></tr>
+                <tr><td class="f">2026-03-17</td><td class="n">2,483,483</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-07-16</td><td class="n">2,529,247</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-08-27</td><td class="n">2,546,881</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-08-28</td><td class="n">2,547,322</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-08-29</td><td class="n">2,547,423</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-09-01</td><td class="n">2,548,349</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-09-02</td><td class="n">2,548,883</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-09-03</td><td class="n">2,549,350</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-09-04</td><td class="n">2,549,861</td><td><span class="tier tier-daily">daily</span></td></tr>
+                <tr><td class="f">2026-09-05</td><td class="n">2,550,137</td><td><span class="tier tier-daily">daily</span></td></tr>
+            </tbody>
+        </table>
+        </div>
+
+        <p>Anchors accumulate daily. This table is the current set; it only grows.</p>
+
+        <h2>Why not a single rate</h2>
+        <p>An earlier version of this method used one constant — roughly 374 new listings per day, anchored to a single observation. That is wrong, and the anchors show why. Listing creation is seasonal and uneven:</p>
+
+        <div class="table-scroll">
+        <table class="field-table">
+            <thead>
+                <tr><th>Segment</th><th class="n">Days</th><th class="n">Numbers issued</th><th class="n">Per day</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="f">2024-12-12 → 2025-04-18</td><td class="n">127</td><td class="n">45,549</td><td class="n">358.7</td></tr>
+                <tr><td class="f">2025-04-18 → 2025-05-14</td><td class="n">26</td><td class="n">10,143</td><td class="n">390.1</td></tr>
+                <tr><td class="f">2025-05-14 → 2025-06-13</td><td class="n">30</td><td class="n">10,645</td><td class="n">354.8</td></tr>
+                <tr><td class="f">2025-06-13 → 2025-11-03</td><td class="n">143</td><td class="n">54,644</td><td class="n">382.1</td></tr>
+                <tr><td class="f">2025-11-03 → 2025-11-25</td><td class="n">22</td><td class="n">11,505</td><td class="n">523.0</td></tr>
+                <tr><td class="f">2025-11-25 → 2025-12-10</td><td class="n">15</td><td class="n">4,783</td><td class="n">318.9</td></tr>
+                <tr><td class="f">2025-12-10 → 2025-12-20</td><td class="n">10</td><td class="n">2,089</td><td class="n">208.9</td></tr>
+                <tr><td class="f">2025-12-20 → 2025-12-27</td><td class="n">7</td><td class="n">2,183</td><td class="n">311.9</td></tr>
+                <tr><td class="f">2025-12-27 → 2026-03-17</td><td class="n">80</td><td class="n">29,777</td><td class="n">372.2</td></tr>
+                <tr><td class="f">2026-03-17 → 2026-07-16</td><td class="n">121</td><td class="n">45,764</td><td class="n">378.2</td></tr>
+                <tr><td class="f">2026-07-16 → 2026-08-27</td><td class="n">42</td><td class="n">17,634</td><td class="n">419.9</td></tr>
+            </tbody>
+        </table>
+        </div>
+
+        <p>The rate moves between about 209 and 523 per day across these segments. The December slowdown is visible and behaves the way a market should. A single constant applied across two years would misdate listings by weeks at the extremes, so we interpolate within segments instead.</p>
+        <p>Single-day segments in the recent anchor set are noisier still — daily issuance has ranged from 101 to 534 in the past week. We do not use one-day rates to date anything; they exist to keep the segment boundaries tight.</p>
+
+        <h2>The calculation</h2>
+        <p>For a listing with identifier <span class="mono">N</span>, find the two adjacent anchors that bracket it and interpolate linearly:</p>
+<pre>estimated_listed_date =
+    anchor_date
+  + (N - anchor_number)
+    / (next_anchor_number - anchor_number)
+    * (next_anchor_date - anchor_date)
+
+days_on_market = today - estimated_listed_date</pre>
+        <p>Listings numbered above the newest anchor are dated to that anchor. Listings numbered below the oldest anchor cannot be dated at all — we report them as a floor ("listed before 12 December 2024") and never as a figure.</p>
+
+        <h2>What the current index looks like</h2>
+        <p>Applying this to the 43,629 listings live on 3 September 2026:</p>
+
+        <div class="table-scroll">
+        <table class="field-table">
+            <thead><tr><th>Measure</th><th class="n">Value</th></tr></thead>
+            <tbody>
+                <tr><td>Live listings observed</td><td class="n">43,609</td></tr>
+                <tr><td>Datable from anchors</td><td class="n">40,750 (93.4%)</td></tr>
+                <tr><td>Older than earliest anchor (floored)</td><td class="n">2,859 (6.6%)</td></tr>
+                <tr><td><strong>Median days on market</strong></td><td class="n"><strong>128 days</strong></td></tr>
+            </tbody>
+        </table>
+        </div>
+
+
+        <h2>How confident each estimate is</h2>
+        <p>Not every estimate is equally good. Accuracy depends on how close a listing sits to a calibration anchor and how reliable those anchors are. Every figure we publish carries one of four labels, and the label is derived, not assigned by hand.</p>
+
+        <div class="table-scroll">
+        <table class="field-table">
+            <thead><tr><th>Label</th><th>Meaning</th><th class="n">Listings</th><th class="n">Median</th></tr></thead>
+            <tbody>
+                <tr><td><span class="tier tier-daily">high</span></td><td>Both bracketing anchors are direct observations, less than 45 days apart</td><td class="n">11,369</td><td class="n">29 days</td></tr>
+                <tr><td><span class="tier tier-full">medium</span></td><td>Both bracketing anchors are direct observations, up to 150 days apart</td><td class="n">23,345</td><td class="n">137 days</td></tr>
+                <tr><td><span class="tier tier-sample">low</span></td><td>A partial-crawl anchor sits at one edge of a wide segment</td><td class="n">6,036</td><td class="n">398 days</td></tr>
+                <tr><td><span class="tier">floor</span></td><td>Older than our earliest anchor — reported as a floor, never as a number</td><td class="n">2,859</td><td class="n">—</td></tr>
+            </tbody>
+        </table>
+        </div>
+
+        <p><strong>34,714 listings — 80% of the live index — carry a medium or high label.</strong></p>
+
+        <div class="callout">
+            <strong>Read the low tier with care</strong>
+            The low-confidence group shows a median of 398 days. We do not present that as a market finding. Those listings fall between partial-crawl anchors in 2025, and a coarse anchor spacing can bias an estimate in either direction. We publish the per-listing figure with its label and leave that group out of any headline number.
+        </div>
+
+        <h2>What this number is not</h2>
+        <p>This is the part most likely to be misread, so we state it plainly.</p>
+        <ul>
+            <li><strong>It is not time to sale.</strong> It measures how long currently-listed businesses have been listed. Listings that sell quickly leave the pool; slow ones accumulate in it. The median age of standing inventory is therefore <em>higher</em> than the median time a sold business took to sell. These are two different quantities and we do not use one to describe the other.</li>
+            <li><strong>It is not a sold-date record.</strong> We do not know when, whether, or at what price any listing sold. A listing that disappears may have sold, expired, been withdrawn, or been relisted.</li>
+            <li><strong>It resets on relisting.</strong> A relisted business receives a new identifier, so its clock starts over. We detect and flag relists separately; where we have not detected one, an estimate may understate true time on market.</li>
+            <li><strong>It is an estimate with real error.</strong> Accuracy depends on how far a listing sits from the nearest anchor and how much the true rate varied inside that segment. Our widest gaps — mid-2025, spanning 127 and 143 days — carry the largest uncertainty. Listings numbered after March 2026 fall between daily anchors and are accurate to within a few days.</li>
+            <li><strong>Asking is not sold.</strong> Where we publish prices or multiples alongside this figure, they are asking figures, labelled as such.</li>
+        </ul>
+
+        <h2>The assumption we are making</h2>
+        <p>The method rests on one claim: identifiers are issued in creation order and are not reused or backfilled. We test this continuously — every anchor we add is a check that the sequence still behaves monotonically, and every listing we observe with an identifier out of order would be evidence against it. We have not observed such a case. If we do, it will appear in the corrections below before it appears anywhere else.</p>
+
+        <h2>Check us</h2>
+        <p>Everything needed to reproduce this is on this page. Take any listing identifier from a public listing URL, find the bracketing anchors in the table above, apply the formula, and compare against what we publish. If your result differs from ours, we want to know.</p>
+        <p>The underlying dataset is released under <a class="inline" href="/">CC0</a> — no attribution required, no restrictions on use, including commercial use and including by the platforms this measures.</p>
+
+        <h2>Corrections</h2>
+        <p>We publish corrections to our own numbers rather than quietly restating them.</p>
+        <ul>
+            <li><strong>3 September 2026 — single-rate estimate retired.</strong> Earlier DOM figures used a constant of approximately 374 listings per day anchored to a single observation from May 2025. Segment analysis shows the true rate ranges from roughly 209 to 523 per day. All DOM figures are now piecewise-interpolated across the full anchor set. Estimates for listings created during high- or low-rate periods have changed, in some cases by several weeks.</li>
+            <li><strong>3 September 2026 — a previously circulated comparison withdrawn.</strong> We have previously referenced a contrast between the advertised age of listings and the time taken by businesses that actually sell. That figure depended on distinguishing sold listings from withdrawn and expired ones, which our observation record does not currently support. We have withdrawn it pending a method we can publish. The figures on this page do not depend on it.</li>
+        </ul>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container-wide">
+        <div class="footer-content">
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
+            <div class="footer-links">
+                <a href="/methodology.html">Methodology</a>
+                <a href="mailto:info@dealledger.org?subject=DOM%20Method%20Question">Report Issue</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

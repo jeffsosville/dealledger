@@ -136,15 +136,7 @@ Reading the homepage nav found `sunbeltmidwest.com/buy-a-business/search-busines
 
 Ordering the daily run by staleness put 155 never-scraped brokers at the front of every batch, so each run spent itself on the cohort that has never once succeeded while 40,000 known-good listings went unrefreshed. Sort by proven yield; sweep the dark ones as a separate job with a different success bar.
 
-### 11. A source that goes quiet is the failure nobody sees
-
-tworld.com sat at ~977 rows from 16 July until 2 September, then jumped to 4,535 in a single run. Nothing was broken — the specialized scraper simply had not completed a full pass in six weeks, and nothing anywhere said so. vestedbb.com, the second-largest source at 3,586 listings, last updated 23 August.
-
-A source that stops producing looks identical to a source with nothing new. The index quietly ages and every downstream number ages with it.
-
-**Per-source staleness is a monitor, not a spot check**: any broker whose newest row is more than three days old, ranked by how many listings it holds.
-
-### 12. Publish the correction, not the claim
+### 11. Publish the correction, not the claim
 
 Our credibility is that we say what the data shows, including when it undercuts us. Vending is 25 listings, not 200. Asking multiples are not sold multiples, and we label them as asking. Every honest caveat we publish is one a competitor can't copy without also being honest.
 

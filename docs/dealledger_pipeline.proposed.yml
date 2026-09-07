@@ -1,0 +1,149 @@
+name: DealLedger Daily Pipeline
+
+on:
+  # bbs_scrape is permanently dead (Akamai blocks BizBuySell scraping — see
+  # CLAUDE.md "Standing constraints"). It is kept below as a manual-only job in
+  # case Akamai's posture ever changes, but nothing downstream waits on it
+  # anymore: quality_score/relist_refresh/vertical_sync score and republish
+  # whatever is already in `listings`, which is populated by other means.
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC daily — ahead of broker_scrape (14:00 UTC)
+                           # and specialized_scrape (08:00 UTC) so scoring/sync
+                           # reflect the prior day's full data before the next
+                           # scrape cycle starts landing new rows.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  bbs_scrape:
+    name: BizBuySell Scrape
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    if: github.event_name == 'workflow_dispatch'   # never runs on schedule — Akamai-blocked
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install "curl_cffi==0.15.0" supabase requests colorama
+      - name: Run BBS all-states scraper
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/bbs_allstates.py fresh
+
+  quality_score:
+    name: Quality Scoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # needs: bbs_scrape removed — bbs_scrape is permanently dead (Akamai) and
+    # would otherwise make this job (and everything chained after it) skip
+    # forever on the scheduled run, since scheduled runs never execute
+    # bbs_scrape at all now.
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install supabase requests
+      - name: Score all listings
+        env:
+          SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CLEANINGEXITS_ANON_KEY:     ${{ secrets.CLEANINGEXITS_ANON_KEY }}
+          CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
+        run: python3 scrapers/quality_scorer.py 2>&1 | tee quality_score.log
+      - name: Assert scoring wrote cleanly
+        # quality_scorer.py already logs "Scoring N listings..." and
+        # "Scores written: X ok, Y errors" but never exits non-zero when
+        # Y > 0 (see scrapers/quality_scorer.py:upsert_scores) — this step is
+        # a stopgap until that script asserts on itself. Minimal script fix
+        # needed eventually: upsert_scores() should sys.exit(1) when err > 0,
+        # so this step becomes redundant instead of load-bearing.
+        run: |
+          set -e
+          FETCHED=$(grep -oP 'Scoring \K[0-9]+(?= listings)' quality_score.log | tail -1)
+          WRITTEN=$(grep -oP 'Scores written: \K[0-9]+(?= ok)' quality_score.log | tail -1)
+          ERRORS=$(grep -oP 'Scores written: [0-9]+ ok, \K[0-9]+(?= errors)' quality_score.log | tail -1)
+          echo "fetched=$FETCHED written=$WRITTEN errors=$ERRORS"
+          if [ -z "$FETCHED" ] || [ -z "$WRITTEN" ]; then
+            echo "::error::quality_scorer.py did not log expected fetch/write counts — treat as failure, not silent pass"
+            exit 1
+          fi
+          if [ "${ERRORS:-0}" != "0" ]; then
+            echo "::error::quality_scorer.py reported $ERRORS upsert errors"
+            exit 1
+          fi
+          if [ "$FETCHED" != "$WRITTEN" ]; then
+            echo "::error::rows fetched ($FETCHED) != rows written ($WRITTEN)"
+            exit 1
+          fi
+
+  relist_refresh:
+    name: Relist Refresh
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality_score
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install supabase
+      - name: Refresh relist flags (sticky)
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scrapers/relist_refresh.py 2>&1 | tee relist_refresh.log
+      - name: Assert matched_total reconciles
+        # relist_refresh.py already computes this and logs a "Count mismatch"
+        # warning (see relist_refresh.py:71-76) but returns 0 regardless.
+        # Minimal script fix needed eventually: return 2 instead of 0 when
+        # the counts disagree. Until then, this step fails the job on the
+        # same condition the script already detects and only warns about.
+        run: |
+          if grep -q "Count mismatch" relist_refresh.log; then
+            echo "::error::relist_refresh.py detected matched_total != already_flagged + newly_flagged"
+            exit 1
+          fi
+
+  vertical_sync:
+    name: Vertical Sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: relist_refresh
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install supabase requests
+      - name: Sync to CleaningExits
+        env:
+          SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY:       ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CLEANINGEXITS_SUPABASE_URL: ${{ secrets.CLEANINGEXITS_SUPABASE_URL }}
+          CLEANINGEXITS_SERVICE_KEY:  ${{ secrets.CLEANINGEXITS_SERVICE_KEY }}
+        run: python3 scrapers/vertical_sync.py --vertical all 2>&1 | tee vertical_sync.log
+      - name: Assert no upsert errors
+        # vertical_sync.py logs "Upsert error <status>: ..." per failed batch
+        # (see sync_vertical()) but never fails the job on it — the script
+        # only sys.exit(1)s when SUPABASE_SERVICE_KEY is missing entirely.
+        # Minimal script fix needed eventually: track a per-run error count
+        # and sys.exit(1) if nonzero. Until then, this step catches it.
+        run: |
+          if grep -q "Upsert error" vertical_sync.log; then
+            echo "::error::vertical_sync.py reported at least one upsert error"
+            exit 1
+          fi
