@@ -11,6 +11,7 @@ Usage:
 Requires .env with SUPABASE_URL and SUPABASE_SERVICE_KEY.
 """
 
+import hashlib
 import json
 import argparse
 import os
@@ -24,6 +25,23 @@ from supabase import create_client
 load_dotenv()
 
 BATCH_SIZE = 200
+
+
+def stable_listing_id(title: str, url: str, base_url: str, broker_domain: str) -> str:
+    """
+    Same identity scheme as stable_listing_id() in scrapers/dealledger_scraper_v6.py.
+    Recomputed here rather than trusted from the snapshot: older snapshots
+    (pre-2026-09-02) carry a 'hash' field built from sha256(title|asking_price|url),
+    which produces a new id on every price edit (CLAUDE.md operating principle 4).
+    Replaying one of those snapshots through this script must not re-inject that
+    scheme, so the id is always derived fresh from the URL, never taken from the
+    snapshot's stored 'hash'/'id' field.
+    """
+    if url and url != base_url:
+        key = url
+    else:
+        key = f"{broker_domain}|{(title or '').strip().lower()}"
+    return hashlib.sha256(key.encode()).hexdigest()[:16]
 
 LISTINGS_DIRECT_COLUMNS = {
     'id', 'title', 'url', 'broker_name', 'broker_domain',
@@ -46,17 +64,16 @@ def map_to_listings_direct(row):
     """Map a v5 snapshot record to listings_direct schema."""
     now = datetime.now(timezone.utc).isoformat()
 
-    # Build ID from hash (already a stable 16-char hex)
-    record_id = row.get('hash') or row.get('id')
-    if not record_id:
-        return None
-
     title = str(row.get('title', '') or '').strip()
     if not title:
         return None
 
     source_url = row.get('source_url') or row.get('url')
     broker_url = row.get('broker_url')
+    if not source_url:
+        return None
+
+    record_id = stable_listing_id(title, source_url, broker_url, get_domain(source_url))
 
     return {
         'id':            record_id,
