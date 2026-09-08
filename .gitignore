@@ -25,3 +25,4 @@ marketpulse sql queries for newsletter/
 *.pre_prune
 *.pre_urlfix
 supabase/
+claude/snapshot_first_sighting.csv
