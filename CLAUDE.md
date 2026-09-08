@@ -78,6 +78,44 @@ appear as active in `listings_direct` and 1,688 show as never-crawled in
 "brokers known." `agents/discover_backlog.py` works `v_broker_crawl_candidates` as
 the queue; discovery was never the bottleneck, consumption and the gate were.
 
+**The crawler's actual broker registry is `data/brokers_clean.csv`, not
+`broker_master` / `broker_discovery` / `v_broker_crawl_candidates`.** Those
+three tables are discovery/reconciliation state; nothing the daily scraper
+runs reads them directly. A domain only starts being crawled once it's a row
+in `data/brokers_clean.csv` — `_load_brokers()` in
+`scrapers/dealledger_scraper_v6.py` is the only thing that file feeds. The
+bridge is `agents/export_discovered_ok.py`, which appends `broker_discovery`
+rows with `status='ok'` into the CSV automatically; `fix_broker_urls.sh`
+edits the CSV directly in place (also automatic, a one-off URL-fix pass);
+and `agents/discover_backlog.py` prints a "ready for data/brokers_clean.csv"
+list that a person is expected to copy in by hand — three routes in, only
+two of them scripted. Confirmed 2026-09-08: pavilionservices.com never
+appeared in `data/brokers_clean.csv` in any commit and still wrote 1,201
+rows to production, because a manual `--broker` test run bypasses
+`_load_brokers()` (and therefore every domain filter) entirely — see
+principle 16.
+
+**`run_v6_daily.sh` (the local 08:30 EDT cron, `--top-n 250`) is retired as
+of 2026-09-08 — its crontab line has been removed, and the script itself
+now refuses to run.** It was overlapping itself: at `--top-n 250` a single
+run took 24–56h (`logs/v6_2026090{5,6,7}.log` last-write times), so the next
+day's 08:30 EDT firing started before the previous run finished. Multiple
+v6 processes were writing to production `listings_direct` concurrently for
+days — this script had no concurrency guard, unlike
+`.github/workflows/broker_scrape.yml`'s `concurrency:` block — and is very
+likely the mechanism behind the "listings is being written during
+measurement" note above, and behind the sagbrokerage/nebba junk bursts
+(principle 16's corollary).
+
+**Coverage consequence, unresolved:** `data/brokers_clean.csv` holds 1,705
+brokers. The surviving `.github/workflows/broker_scrape.yml` runs
+`--stale-first --top-n 100` once daily — a ~17-day full rotation, where the
+retired script covered 250/day. Do not just raise the workflow's `--top-n`
+to 250: a 250-broker pass needs 24h+, and the workflow's own guard
+(`timeout --signal=INT 285m`) sits inside a 350-minute job cap — it cannot
+fit a run that long. Reaching parity needs sharding across parallel jobs or
+more than one run per day; that is a separate decision, not made here.
+
 ---
 
 ## Distribution: Twitter and SEO. Nothing else.
@@ -207,6 +245,16 @@ Rows retired by hand were flipped back to active by the next run, because the up
 **When two writers produce the same concept, they must agree on the field that holds it — or the reader that bridges them must explicitly check every column either side might have used, and log what it skips.** A bridge that silently drops rows it doesn't recognize is indistinguishable from a bridge that works.
 
 **A human negative beating a machine positive is a signal to check the machine, not the human.** Of 40 domains where a person had verified no listings page existed but `broker_discovery` said `status='ok'`, 35 traced to one bad fallback — a WordPress blog's `/posts` endpoint being accepted as listings with no content check — and Sanny was right on all 35. When a person who looked at a site says there's nothing there and the scraper disagrees, investigate the extraction before trusting the extraction.
+
+### 16. A test gate that writes to production by default will, eventually
+
+`scrapers/dealledger_scraper_v6.py --broker <url>` exists as a single-URL test gate, but `use_supabase` defaulted to `True` and the `--broker` branch built its broker dict inline in `main()` — bypassing `_load_brokers()`, and with it every domain filter (`BLOCKLIST_DOMAINS`, `CRE_LEASE_DOMAINS`, `SPECIALIZED_DOMAINS`). **Only pavilionservices.com is actually explained by this** — confirmed absent from `data/brokers_clean.csv` in every commit, it wrote 1,201 rows in four minutes, an hour before the 14:00 UTC cron. www.sagbrokerage.com and businessesforsale.nebba.com are both real rows in that CSV (corrected 2026-09-08 — an earlier version of this note claimed otherwise) and came in through the ordinary local-cron rotation (see the retirement note below), not a `--broker` bypass; their junk output is a genuine extraction-quality bug in the generic v6 pattern-matcher on those two sites, not an artifact of skipping the domain filters. jhcallahan.com likewise came in through the real daily rotation.
+
+Fixed by extracting the filter into one `is_blocked(domain)` used by both `_load_brokers()` and the `--broker` branch, and by making `--broker` force `use_supabase = False` unless `--write` is passed explicitly.
+
+**A path built for testing is a production write path the moment it defaults to writing.** The domain filter existing in one function was never the guarantee it looked like — it only ever covered the callers that called that function.
+
+**Corollary, same investigation:** don't let a plausible mechanism stand in for a checked one. The first draft of this principle asserted three domains were CSV-absent because the shape (garbage title, high row count) matched the one confirmed case — sagbrokerage's actual timestamp (12:30 UTC = 08:30 EDT) matches the local cron exactly, not a manual run, and it was sitting in the CSV the whole time. Same failure mode as principle 3: check the call path, don't theorize from the symptom.
 
 ---
 

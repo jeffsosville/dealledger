@@ -21,6 +21,27 @@ SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                          "data", "brokers_clean.csv")
 
+# Confirmed no real listings page (CLAUDE.md principle 15 — a person verified
+# this by hand and was right). status='ok' for these domains is itself the
+# bug: discover_site() fell back to /wp-json/wp/v2/posts (the site's BLOG),
+# which reads as non-empty exactly like a real listings endpoint. pavilion's
+# blog posts are also "seeking to acquire" placeholder categories, not
+# listings at all. Block here so a status='ok' row for either domain never
+# reaches the live scraper, regardless of what broker_discovery says.
+KNOWN_BAD_DOMAINS = {
+    "pavilionservices.com",
+    "cgkbusinesssales.com",
+    # These two are a different mechanism (pagination loop / boilerplate
+    # title reuse, not the WP-blog fallback above) but the same outcome —
+    # confirmed junk (CLAUDE.md principle 7), measured 2026-09-08. Blocked
+    # here too so a future status='ok' re-discovery can't re-add them.
+    "sagbrokerage.com",
+    "businessesforsale.nebba.com",
+    # Real listings, wrong vertical (residential/commercial real estate, not
+    # business-for-sale) — see CRE_LEASE_DOMAINS in dealledger_scraper_v6.py.
+    "jhcallahan.com",
+}
+
 
 def sb_headers():
     return {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
@@ -88,10 +109,14 @@ def main():
     to_add = []
     skipped_dupe = 0
     skipped_no_url = 0
+    skipped_known_bad = 0
     rescued_from_url_col = 0
     for row in ok_rows:
         domain = (row.get("domain") or "").lower()
         bare = domain[4:] if domain.startswith("www.") else domain
+        if bare in KNOWN_BAD_DOMAINS:
+            skipped_known_bad += 1
+            continue
         if not bare or bare in seen:
             skipped_dupe += 1
             continue
@@ -114,7 +139,8 @@ def main():
 
     print(f"{skipped_dupe} already present, {len(to_add)} new rows to append "
           f"({rescued_from_url_col} rescued from the url column), "
-          f"{skipped_no_url} status='ok' with no URL in either column")
+          f"{skipped_no_url} status='ok' with no URL in either column, "
+          f"{skipped_known_bad} skipped (KNOWN_BAD_DOMAINS)")
 
     if to_add:
         with open(CSV_PATH, "a", newline="") as f:
