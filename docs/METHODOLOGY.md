@@ -10,7 +10,7 @@ Our methodology is public because the value of this dataset depends on transpare
 
 1. **Observable facts only** — We record what we observe: listing IDs, prices, dates, locations. We do not verify financials, judge quality, or rank listings.
 
-2. **Append-only history** — We never delete records. If a listing disappears, we mark it `removed`. The full history is always preserved.
+2. **Append-only history** — We never delete records. If a listing disappears, we flag it as no longer active rather than removing the row. The full history is always preserved.
 
 3. **Open data** — All data is published under CC0. Anyone can download, query, and build on it.
 

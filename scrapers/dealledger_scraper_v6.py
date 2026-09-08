@@ -222,6 +222,15 @@ _DETAIL_HREF_TOKENS = (
 # of the netloc.
 CRE_LEASE_DOMAINS = {
     "malonecb.com",
+    # Residential/commercial real-estate brokerage (Twin Cities), confirmed by
+    # fetching the live site 2026-09-08 — no business-for-sale content exists;
+    # "Our Listings" is IDX-syndicated property listings. Its detail pages all
+    # share one generic template title ("Listings Details - JH Callahan"),
+    # which is a symptom of scraping the wrong vertical, not a title-extraction
+    # bug to fix — each row has a distinct ListingId (real property listings),
+    # just none of them are businesses. 450 rows in listings_direct as of
+    # 2026-09-08, all from the 2026-09-02 discovery sweep.
+    "jhcallahan.com",
 }
 
 # Signature of a commercial-RE / lease listing (rate-per-SF pricing, cap rate,
@@ -582,6 +591,55 @@ def validate_listing_set(cards, url=""):
     return "ok", f"{with_data}/{n} cards carry data"
 
 
+# CLAUDE.md principle 7: "a broker that suddenly yields ten times its usual
+# count has broken, not grown." aria.net (343 rows for 3 listings, blocklisted
+# but never repaired), pavilionservices.com (1,201 rows — a WP blog's
+# placeholder-category posts, discovered 2026-09-08), and
+# businessesforsale.nebba.com (the same handful of cards re-crawled as new on
+# every page) all share one signature no matter the root cause: a very small
+# set of distinct titles carrying a very large row count. validate_listing_set
+# catches near-duplicates WITHIN a single check but doesn't gate on this
+# ratio directly, and it runs on the whole set at once rather than being
+# reusable against a threshold calibrated with known-good input.
+#
+# Threshold calibrated 2026-09-08 against live listings_direct (principle 8 —
+# tested against input that MUST pass, not just the bad case):
+#   MUST PASS (real brokers, moderate template repetition):
+#     execbb.com                 2,125 rows / 395 titles = 5.4
+#     restaurantrealty.com          843 rows / 136 titles = 6.2
+#     www.calhouncompanies.com      870 rows / 154 titles = 5.6
+#     corbettrestaurantgroup.com  1,111 rows / 160 titles = 6.9
+#   MUST REJECT (confirmed junk — index pages / blog posts / pagination loop):
+#     www.aria.net                  357 rows /  10 titles = 35.7
+#     jhcallahan.com                 (excluded via CRE_LEASE_DOMAINS instead —
+#                                     real listings, wrong vertical, not a
+#                                     title-repetition problem)
+#     www.sagbrokerage.com           96 rows /   2 titles = 48.0
+#     businessesforsale.nebba.com  254 rows /   5 titles = 50.8
+# 15 sits with room on both sides of that split. See scrapers/test_yield_gate.py.
+TITLE_REPETITION_THRESHOLD = 15
+
+
+def title_repetition_gate(cards, threshold=TITLE_REPETITION_THRESHOLD):
+    """
+    Reject a batch whose rows/distinct-title ratio is a "broken, not grown"
+    signature rather than real inventory. Returns (verdict, reason) in the
+    same shape as validate_listing_set: 'ok' or 'reject' (no 'review' tier —
+    this pattern has no legitimate soft case, unlike weak-signal cards).
+    """
+    n = len(cards)
+    if n == 0:
+        return "ok", "empty"
+    titles = {(c.get("title") or "")[:80].strip().lower() for c in cards}
+    titles.discard("")
+    if not titles:
+        return "ok", "no titles to compare"
+    ratio = n / len(titles)
+    if ratio > threshold:
+        return "reject", f"{n} rows / {len(titles)} titles = {ratio:.1f} rows/title (> {threshold})"
+    return "ok", f"{ratio:.1f} rows/title"
+
+
 # Words that only appear in site chrome. A "listing" whose title reads
 # "About Toggle child menu Expand" is a navigation dropdown.
 #
@@ -806,6 +864,27 @@ def build_proxy_url(sessid):
 
 BLOCKLIST_DOMAINS = {
     "aria.net",
+    # Confirmed no real listings page (CLAUDE.md principle 15). Its /opportunities
+    # page is "seeking to acquire" buyer-side placeholders, not for-sale listings —
+    # a past crawl produced 1,201 active rows of duplicate category-placeholder
+    # junk ("Manufacturing Company", "Distribution Company", ... each repeated
+    # with an identical suspiciously-round price). See claude/junk-rules-proposed.sql.
+    "pavilionservices.com",
+    # Confirmed junk, same "broken, not grown" shape (CLAUDE.md principle 7),
+    # measured 2026-09-08: 96 rows / 2 distinct titles ("SAG Hospitality
+    # Brokerage a UD Consulting Company" — site header text, not a listing —
+    # and "Buy or Sell a Liquor License" — a service/category page). Present
+    # in data/brokers_clean.csv (row for https://www.sagbrokerage.com/for-sale/)
+    # — the blocklist check strips "www." before comparing, so this catches it.
+    "sagbrokerage.com",
+    # Confirmed junk: 254 rows / 5 distinct titles, worst locally-sampled case
+    # of any domain here — 6,318 rows collapse to a handful of literal titles
+    # repeated ~950x each. Same card re-crawled as new on every page, aria's
+    # exact pagination-loop signature. Present in data/brokers_clean.csv under
+    # two different subpaths (Ohio and Texas) — this is the full netloc, not
+    # just "nebba.com", since businessesforsale.nebba.com never carries a
+    # "www." prefix to strip.
+    "businessesforsale.nebba.com",
 }
 
 
@@ -832,6 +911,29 @@ SPECIALIZED_DOMAINS = {
                                      # deliveryroutesforsale.com are DIFFERENT
                                      # companies; V6 must keep scraping those)
 }
+
+
+def is_blocked(domain: str) -> bool:
+    """
+    True if this domain must never be scraped for business-for-sale listings:
+    known junk (BLOCKLIST_DOMAINS), wrong vertical (CRE_LEASE_DOMAINS), or
+    owned by the specialized pipeline (SPECIALIZED_DOMAINS — matched by
+    domain-or-subdomain, since FCBB alone has ~10 city sites).
+
+    Single source of truth for BOTH _load_brokers() (the CSV batch path) and
+    the --broker single-URL path in main(). Those two used to disagree — the
+    --broker branch built its broker dict inline and never called this check
+    at all — which is exactly how pavilionservices.com, www.sagbrokerage.com
+    and businessesforsale.nebba.com reached production: a manual --broker
+    test run, not the daily CSV rotation. Confirmed from first_seen
+    timestamps 2026-09-08 — all three wrote a full batch within minutes, an
+    hour or more away from the 14:00 UTC cron, from domains that have never
+    appeared in data/brokers_clean.csv in any commit.
+    """
+    bare = domain[4:] if domain.startswith("www.") else domain
+    return (bare in BLOCKLIST_DOMAINS
+            or bare in CRE_LEASE_DOMAINS
+            or any(bare == d or bare.endswith("." + d) for d in SPECIALIZED_DOMAINS))
 
 
 # Domains known to hard-block — start them on the proxy immediately.
@@ -2103,10 +2205,7 @@ class DealLedgerScraper:
                 continue
             domain = urlparse(url).netloc
             # Skip known non-listing sites (agent directories, junk aggregators).
-            bare = domain[4:] if domain.startswith("www.") else domain
-            if (bare in BLOCKLIST_DOMAINS
-                    or any(bare == d or bare.endswith("." + d)
-                           for d in SPECIALIZED_DOMAINS)):
+            if is_blocked(domain):
                 skipped += 1
                 continue
             name = (str(row[name_col]).strip()
@@ -2542,6 +2641,29 @@ class DealLedgerScraper:
             for l in unique_cards:
                 l.pop("_detail_url", None)
 
+            # Guard: url_is_listing_specific must mean "unique to this
+            # listing", not just "differs from the list-page URL". A card
+            # whose best-guess link (_best_detail_link's candidates[0]
+            # fallback) resolves to a shared page - a category link, a
+            # generic CTA, anything that isn't actually per-listing - passes
+            # the per-card check yet ends up identical across many distinct
+            # titles. Same shape as the aria.net index-page bug (CLAUDE.md
+            # principle 7), just caught later, once the whole broker's set is
+            # known. Demote it here rather than leave every reader downstream
+            # to rediscover it.
+            url_titles: dict[str, set[str]] = {}
+            for l in unique_cards:
+                if l.get("url_is_listing_specific"):
+                    url_titles.setdefault(l["url"], set()).add((l.get("title") or "")[:80])
+            shared_urls = {u for u, titles in url_titles.items() if len(titles) > 1}
+            if shared_urls:
+                demoted = sum(1 for l in unique_cards if l["url"] in shared_urls)
+                print(f"   ⚠️  {len(shared_urls)} URL(s) shared by 2+ titles - "
+                      f"demoting {demoted} cards' url_is_listing_specific to False")
+                for l in unique_cards:
+                    if l["url"] in shared_urls:
+                        l["url_is_listing_specific"] = False
+
             if enriched:
                 print(f"   🔍 {enriched} detail pages → {states_gained} states gained")
 
@@ -2569,6 +2691,17 @@ class DealLedgerScraper:
                 print(f"   ⚠️  VALIDATION SOFT ({reason}) — writing but flagged for review")
                 for l in unique_cards:
                     l["needs_review"] = True
+
+            # YIELD-SHAPE GATE (2026-09-08, CLAUDE.md principle 7): catches the
+            # next pavilion/aria/nebba before anyone has to notice it by hand.
+            yv, yreason = title_repetition_gate(unique_cards)
+            if yv == "reject":
+                print(f"   🚫 YIELD GATE FAILED ({yreason}) — not writing, flagged for review")
+                self.stats["failure_types"]["TITLE_REPETITION_REJECT"] += 1
+                self.failures.append({"broker": name, "url": url,
+                                      "error": f"yield gate: {yreason}",
+                                      "type": "TITLE_REPETITION_REJECT"})
+                return []
 
             return unique_cards
 
@@ -2725,22 +2858,40 @@ def main():
                              "daily batch rotates through the whole registry")
     parser.add_argument("--output",      default="data/snapshots")
     parser.add_argument("--no-supabase", action="store_true")
+    parser.add_argument("--write",       action="store_true",
+                        help="Allow --broker to write to Supabase. Without this, "
+                             "--broker always runs with Supabase disabled — it is a "
+                             "test gate, not a production write path. Incident "
+                             "2026-09-08: pavilionservices.com, www.sagbrokerage.com "
+                             "and businessesforsale.nebba.com all wrote a full batch "
+                             "to production from a manual --broker run, because "
+                             "use_supabase defaulted to True and nothing forced it off.")
     args = parser.parse_args()
 
     print("=" * 60)
     print("DEALLEDGER SCRAPER V6")
     print("=" * 60)
 
+    use_supabase = not args.no_supabase
+    if args.broker and not args.write:
+        use_supabase = False
+
     scraper = DealLedgerScraper(
         output_dir=args.output,
-        use_supabase=not args.no_supabase,
+        use_supabase=use_supabase,
     )
 
     try:
         if args.broker:
-            print(f"🧪 SINGLE BROKER TEST\n")
-            brokers = [{"name": args.name, "url": args.broker,
-                        "domain": urlparse(args.broker).netloc}]
+            domain = urlparse(args.broker).netloc
+            if is_blocked(domain):
+                print(f"🚫 {domain} is blocked (BLOCKLIST_DOMAINS / CRE_LEASE_DOMAINS / "
+                      f"SPECIALIZED_DOMAINS) — refusing to run --broker against it.")
+                sys.exit(1)
+            print(f"🧪 SINGLE BROKER TEST"
+                  + ("" if use_supabase else " — Supabase disabled (pass --write to write to production)")
+                  + "\n")
+            brokers = [{"name": args.name, "url": args.broker, "domain": domain}]
         else:
             brokers = scraper._load_brokers(args.brokers)
 
