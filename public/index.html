@@ -262,11 +262,10 @@
                     <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
                     <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM (est.) <span class="sort-arrow"></span></th>
-                    <th class="sortable" style="text-align:right" onclick="setSort('listing_views')" id="th-views">Views <span class="sort-arrow"></span></th>
                 </tr>
             </thead>
             <tbody id="listings-body">
-                <tr><td colspan="6" class="loading">Loading listings...</td></tr>
+                <tr><td colspan="5" class="loading">Loading listings...</td></tr>
             </tbody>
         </table>
     </div>
@@ -428,19 +427,23 @@ function domBadge(listingNumber, fallbackDom) {
         return `<span class="dom-badge ${domClass(days)}" title="Estimated from listing sequence · ${d.tier} confidence">${shown}d</span>`;
     }
 
-    // No marketplace number (broker-direct). Fall back to days since we
-    // first observed it, which is a FLOOR, not an estimate. Marked with +.
+    // No marketplace number (broker-direct). Use days since we first observed
+    // it -- our own daily crawl, repaired 2026-09-08 back to 2026-02-18. It is
+    // still conservative where the snapshot archive did not reach a broker.
     if (fallbackDom !== null && fallbackDom !== undefined) {
-        return `<span class="dom-badge ${domClass(fallbackDom)}" title="Observed on our index for at least this long; true listing date unknown">${fallbackDom}d+</span>`;
+        return `<span class="dom-badge ${domClass(fallbackDom)}" title="Days since we first observed this listing, from our own daily crawl">${fallbackDom}d</span>`;
     }
 
     return '<span class="dom-badge dom-normal">—</span>';
 }
 
 function domFromEstListed(l) {
-    // days_on_market is unreliable: the bridge recomputes it from
-    // listings_direct.first_seen, which the scraper resets on re-scrape.
-    // estimated_listed_date survives, so derive the floor from that.
+    // days_on_market is now trustworthy. The identity hash used to include
+    // asking_price, so any price edit minted a new row and reset first_seen
+    // (fixed 2026-09-01, commit 239b156). The historical damage was repaired
+    // 2026-09-08 from true_first_seen plus the data/snapshots archive back to
+    // 2026-02-18. Prefer it; fall back to estimated_listed_date where absent.
+    if (typeof l.days_on_market === 'number') return l.days_on_market;
     if (!l.estimated_listed_date) return null;
     const d = new Date(l.estimated_listed_date + 'T00:00:00Z');
     if (isNaN(d)) return null;
@@ -533,7 +536,7 @@ function setSort(field) {
     if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = -1; }
     document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
     const arrow = sortDir === -1 ? '↓' : '↑';
-    const thMap = { estimated_listed_date:'listed', state:'state', price:'price', days_on_market:'dom', listing_views:'views' };
+    const thMap = { estimated_listed_date:'listed', state:'state', price:'price', days_on_market:'dom' };
     const th = document.getElementById('th-' + (thMap[field] || field));
     if (th) th.querySelector('.sort-arrow').textContent = arrow;
     sortListings();
@@ -559,7 +562,7 @@ function renderListings() {
     const page  = filteredListings.slice(start, start + PER_PAGE);
     const body  = document.getElementById('listings-body');
     if (page.length === 0) {
-        body.innerHTML = `<tr><td colspan="6" class="empty-state">No listings match your filters.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="5" class="empty-state">No listings match your filters.</td></tr>`;
         return;
     }
     body.innerHTML = page.map(l => {
@@ -578,7 +581,6 @@ function renderListings() {
             <td class="col-state">${l.state||'—'}</td>
             <td class="col-price">${formatPrice(l.price)}</td>
             <td class="col-price">${domBadge(l.listing_number, domFromEstListed(l))}</td>
-            <td class="col-price">${views > 0 ? views.toLocaleString() : '—'}</td>
         </tr>`;
     }).join('');
 }
@@ -663,7 +665,7 @@ async function loadData() {
         applyFilters();
     } catch(err) {
         console.error(err);
-        document.getElementById('listings-body').innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load listings. Please try again later.</td></tr>`;
+        document.getElementById('listings-body').innerHTML = `<tr><td colspan="5" class="empty-state">Failed to load listings. Please try again later.</td></tr>`;
     }
 }
 
