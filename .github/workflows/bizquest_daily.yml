@@ -41,8 +41,24 @@ jobs:
           WORKERS: "5"
         run: python3 scrapers/bizquest_views_refresh.py
 
-      # bizquest_combined.json feeds the weekly enrich run so it doesn't
-      # have to re-crawl all 50 states.
+      # Rebuild the homepage's materialized view so today's crawl actually
+      # shows up on the site. CONCURRENTLY keeps the page serving while it
+      # runs. always() so a partial crawl still publishes what it got.
+      - name: Refresh homepage view
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          curl -sS --fail-with-body -X POST \
+            "$SUPABASE_URL/rest/v1/rpc/refresh_listings_page" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+
+      # bizquest_raw.json feeds the weekly enrich run so it doesn't have to
+      # re-crawl all 50 states.
       - name: Upload crawl output
         if: always()
         uses: actions/upload-artifact@v4
