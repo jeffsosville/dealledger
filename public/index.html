@@ -794,6 +794,7 @@ loadData();
         }
 
         lkGo.disabled = true;
+        if (window.gtag) gtag('event', 'listing_lookup', { listing_number: ln });
         lkMsg.textContent = 'Looking up BW' + ln + '…';
 
         try {
