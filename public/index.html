@@ -662,8 +662,9 @@ async function loadData() {
             listing_views:         r.listing_views,
             relisted:              r.relisted || false,
         }));
-        await loadDOM();
         populateStates();
+        applyFilters();
+        await loadDOM();
         applyFilters();
     } catch(err) {
         console.error(err);
