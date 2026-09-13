@@ -20,7 +20,8 @@ Builds on V5 with three core upgrades:
 3. SUPABASE OUTPUT
    Writes directly to listings_direct in addition to local snapshots.
    Upserts on id so reruns are idempotent.
-   Preserves first_seen, always updates last_seen.
+   first_seen is protected by a DB trigger, not by this code — see
+   SupabaseWriter.upsert(). last_seen is always updated.
 
 4. PROXY SUPPORT (V6.1)
    Residential proxy via PROXY_URL env var.
@@ -1956,7 +1957,22 @@ class SupabaseWriter:
     def upsert(self, listings: list[dict]) -> int:
         """
         Upsert into listings_direct on conflict id.
-        Preserves first_seen on existing rows.
+
+        first_seen: DO NOT trust this code to protect it. Both extractors
+        hardcode "first_seen": now, so l.get("first_seen", now) below can
+        never see a prior value — the default branch is unreachable. Combined
+        with PostgREST upsert (which writes every column it is given) that
+        reset first_seen on every re-scrape of an existing row, silently, from
+        the 26 Aug revert until 13 Sep. 46,326 rows had to be repaired.
+
+        The invariant now lives in the database, where no client can bypass it:
+
+            trg_listings_direct_lock_first_seen  (BEFORE UPDATE)
+              new.first_seen := least(new.first_seen, old.first_seen)
+
+        first_seen may be corrected earlier; it can never move later. The value
+        sent below therefore only takes effect on INSERT of a genuinely new row.
+        If you remove that trigger, you reintroduce the bug.
         """
         now = datetime.now(timezone.utc).isoformat()
         rows = []
@@ -1977,6 +1993,8 @@ class SupabaseWriter:
                 "status":        l.get("status") or "active",
                 "needs_review":  bool(l.get("needs_review", False)),
                 "source":        "broker_direct",
+                # INSERT-only in practice; clamped by
+                # trg_listings_direct_lock_first_seen on UPDATE.
                 "first_seen":    l.get("first_seen", now),
                 "last_seen":     now,
                 "updated_at":    now,

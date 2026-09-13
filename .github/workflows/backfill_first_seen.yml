@@ -1,0 +1,47 @@
+name: Backfill first_seen from snapshot archive
+
+# Manual only. This is a repair tool, not a scheduled job.
+#
+# Safe to run and safe to re-run: the database trigger
+# trg_listings_direct_lock_first_seen clamps first_seen to
+# least(new, old), so this can only ever move a date earlier.
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Write the corrections (untick for a dry run)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: first-seen-backfill
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The whole point is the archive. A shallow checkout would silently
+          # read fewer snapshot dates and report fewer corrections.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Backfill
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/backfill_first_seen_from_snapshots.py \
+            ${{ inputs.apply && '--apply' || '' }}

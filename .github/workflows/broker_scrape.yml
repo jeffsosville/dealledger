@@ -32,11 +32,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      # 2026-09-09 (#154): playwright install-deps lost an apt mirror race
+      # ("Some index files failed to download", exit 100). No retry, so the
+      # scraper step was skipped entirely and the day produced nothing.
       - name: Install dependencies
         run: |
           pip install curl_cffi==0.13.0 pandas beautifulsoup4 playwright requests supabase colorama
           playwright install chromium
-          playwright install-deps chromium
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq || true
+            if playwright install-deps chromium; then
+              exit 0
+            fi
+            echo "::warning::playwright install-deps failed (attempt $attempt/3); retrying in 30s"
+            sleep 30
+          done
+          echo "::error::playwright install-deps failed three times"
+          exit 1
 
       # `timeout` sends SIGINT at 4h45m, well inside the 350-minute job
       # limit. Python raises KeyboardInterrupt, the scraper unwinds, and
