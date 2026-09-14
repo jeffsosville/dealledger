@@ -850,7 +850,7 @@ def _load_proxy_creds():
 PROXY_USER, PROXY_PASS, PROXY_HOST = _load_proxy_creds()
 PROXY_AVAILABLE = bool(PROXY_USER and PROXY_PASS)
 
-# Anti-block retry tuning (mirrors legacy_source.py).
+# Retry/backoff tuning.
 MAX_403_RETRIES = 3      # re-warm + retry this many times on a 403/429/503
 BACKOFF_BASE    = 3.0    # backoff = 3s, 6s, 12s (+ jitter)
 REQ_TIMEOUT     = 25     # per-request timeout; a dead proxy IP fails fast

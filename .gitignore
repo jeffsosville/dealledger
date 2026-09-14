@@ -26,3 +26,20 @@ marketpulse sql queries for newsletter/
 *.pre_urlfix
 supabase/
 claude/snapshot_first_sighting.csv
+
+# internal working notes — not for the public repo
+claude/
+Claude outputs/
+docs/incident-*
+docs/*-audit.md
+docs/*-bug.md
+docs/overnight-queue.md
+docs/pipeline-decouple.md
+docs/scrape-variance.md
+docs/dom-contamination.md
+docs/mission-doc-corrections.md
+docs/broker-coverage-*
+docs/dealledger_pipeline.proposed.yml
+docs/junk-rules-proposed.sql
+docs/bridge-loss-phase4-sample.md
+dealledger_first_edition.html

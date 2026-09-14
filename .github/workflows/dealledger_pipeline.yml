@@ -1,8 +1,8 @@
 name: DealLedger Daily Pipeline
 
 on:
-  # schedule:  # DISABLED — source disabled 2026-07-15
-    # - cron: '0 12 * * *'  # DISABLED — source disabled
+  # schedule:  # disabled
+    # - cron: '0 12 * * *'
   workflow_dispatch:
 
 permissions:
@@ -10,29 +10,10 @@ permissions:
 
 jobs:
 
-  legacy_job:
-    name: Legacy Job
-    runs-on: ubuntu-latest
-    timeout-minutes: 180
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-      - name: Install dependencies
-        run: pip install "curl_cffi==0.15.0" supabase requests colorama
-      - name: Run legacy job
-        env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python3 scrapers/legacy_source.py fresh
-
   quality_score:
     name: Quality Scoring
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: legacy_job
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6

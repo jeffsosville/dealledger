@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/why", "destination": "/why.html" },
-    { "source": "/hot", "destination": "/hot.html" }
+    { "source": "/why", "destination": "/why.html" }
   ]
 }

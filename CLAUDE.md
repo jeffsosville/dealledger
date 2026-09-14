@@ -41,7 +41,7 @@ it can be re-checked and won't silently go stale the way the old figure did.
 
 | | 3 Sep 2026 (live-verified) | Needed |
 |---|---|---|
-| BBS/BizQuest live index | **43,629 active** (`bizquest_listings`, 44,174 total rows, snapshot crawled 2 Sep) | — |
+| BBS/BizQuest live index | **43,629 active** (external estimate, Sep 2026) | — |
 | Broker-direct listings (active, `listings_direct`) | 36,176 — **83% of the BBS index on the raw table** | Every active US listing |
 | ...of which actually bridged to the live site (`listings`, `source='broker_direct'`) | 26,505 — **61% of the BBS index** | Same as above |
 | Brokers producing (distinct `broker_domain`, `last_seen` within 7 days) | 221 | Every known domain, continuously |
@@ -278,7 +278,7 @@ If a week passes where none of these moved, that week didn't count.
 
 - **CC0, always.** The data is free and unrestricted. That's what makes it citable, and citation is the distribution.
 - **Never inject our own listings into the warehouse.** DealLedger is a neutral registry. Sosville-brokered inventory lives in the app database and is clearly marked on the sites.
-- **Direct broker sourcing is the moat.** that source is no longer used. BizQuest is a pass-through with the same listing numbers and is the path for cross-reference.
+- **Direct broker sourcing is the moat.** DealLedger's index is built from broker websites that publish their own listings. Marketplace aggregators are not a source.
 - **Every published number has a stated method.** DOM comes from anchored interpolation, and the anchors are public. If we can't explain how we got a number, we don't publish it.
 - **Reading GitHub is free, writing is a decision.** `gh` is installed and authenticated. Don't push to main, edit or disable a workflow, trigger a run (`gh workflow run` — the broker scrape takes hours and burns Actions minutes), create or modify secrets, open PRs/issues/releases, or touch repo settings/visibility without asking first. `gh repo delete` is never acceptable. Commit locally, describe what's ready, wait for it to be pushed.
 

@@ -7,7 +7,7 @@
   },
   "pagination_next_selector": null,
   "confidence": "high",
-  "notes": "ABBEX does not host listings on their own site. They redirect to BizBuySell: https://www.bizbuysell.com/business-broker/jeff-herba/abbex-inc/31545/. This configuration captures the redirect link. To get actual listings, use their public profile. Contact: (941) 201-2485 or info@abbexinc.com. Location: 8 Sorrento Dr, Suite 9, Osprey, FL 34229",
+  "notes": "ABBEX does not host listings on their own site. They redirect to BizBuySell: https://www.bizbuysell.com/business-broker/jeff-herba/abbex-inc/31545/. This configuration captures the redirect link. To get actual listings, Listings are not available on their own site. Contact: (941) 201-2485 or info@abbexinc.com. Location: 8 Sorrento Dr, Suite 9, Osprey, FL 34229",
   "_meta": {
     "generated_at": "2026-02-27T19:18:06.137245+00:00",
     "generator": "dealledger-scraper-agent-v3"
