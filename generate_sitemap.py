@@ -37,7 +37,6 @@ STATIC_PAGES = [
     ("/brokers",          "daily",   "0.9"),
     ("/methodology.html", "monthly", "0.6"),
     ("/pulse.html",       "weekly",  "0.8"),
-    ("/hot.html",         "daily",   "0.7"),
 ]
 
 
