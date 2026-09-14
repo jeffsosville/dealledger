@@ -448,10 +448,28 @@ function domBadge(r) {
     const shown = days < 60   ? days
                 : days <= 365 ? Math.round(days / 5)  * 5
                 :               Math.round(days / 10) * 10;
-    const title = (r.dom_days !== null && r.dom_days !== undefined)
-        ? 'Estimated from listing sequence · ' + (r.dom_confidence || 'unknown') + ' confidence'
-        : 'Days since we first observed this listing, from our own daily crawl';
+
+    // dom_basis === 'floor' means the listing was already on the broker's site
+    // the first day we crawled that broker, so the age is a LOWER BOUND. It may
+    // be far older; it cannot be younger. Never print a bare number for one.
+    if (r.dom_basis === 'floor') {
+        return '<span class="dom-badge ' + domClass(days) + '" title="' +
+               esc(r.dom_display || 'At least this long. We cannot date it more precisely.') +
+               '">' + shown + 'd+</span>';
+    }
+
+    const title = r.dom_basis === 'observed'
+        ? 'Days since we first observed this listing, from our own daily crawl'
+        : 'Estimated from listing sequence · ' + (r.dom_confidence || 'unknown') + ' confidence';
     return '<span class="dom-badge ' + domClass(days) + '" title="' + title + '">' + shown + 'd</span>';
+}
+
+// The Est. Listed cell. A floored row gets "≤ date", never a bare date.
+function listedCell(r) {
+    if (!r.estimated_listed_date) return '—';
+    return r.dom_basis === 'floor'
+        ? '<span title="' + esc(r.dom_display || '') + '">≤ ' + r.estimated_listed_date + '</span>'
+        : r.estimated_listed_date;
 }
 
 function formatPrice(p) {
@@ -484,7 +502,8 @@ function buildQuery() {
     const p = new URLSearchParams();
     p.set('select',
       'listing_number,title,state,price,source_url,estimated_listed_date,' +
-      'listing_views,relisted,dom_days,dom_days_eff,dom_confidence,signal');
+      'listing_views,relisted,dom_days,dom_days_eff,dom_confidence,signal,' +
+      'dom_basis,dom_display');
 
     const state  = document.getElementById('filter-state').value;
     const signal = document.getElementById('filter-signal').value;
@@ -613,7 +632,7 @@ function renderListings(rows) {
     body.innerHTML = rows.map(r => {
         const href = r.source_url || '#';
         return '<tr>' +
-            '<td class="col-date">' + (r.estimated_listed_date || '—') + '</td>' +
+            '<td class="col-date">' + listedCell(r) + '</td>' +
             '<td class="col-title">' +
                 '<a href="/listing/' + r.listing_number + '">' + esc(truncate(r.title || 'Untitled', 60)) + '</a>' +
                 signalBadge(r.signal) +
