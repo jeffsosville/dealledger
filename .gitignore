@@ -43,3 +43,5 @@ docs/dealledger_pipeline.proposed.yml
 docs/junk-rules-proposed.sql
 docs/bridge-loss-phase4-sample.md
 dealledger_first_edition.html
+
+scrapers/*cookies*
