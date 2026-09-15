@@ -889,6 +889,21 @@ BLOCKLIST_DOMAINS = {
 }
 
 
+# Marketplace aggregators. CLAUDE.md standing constraint: "Direct broker
+# sourcing is the moat ... Marketplace aggregators are not a source." Matched
+# on the domain OR any subdomain (us.businessesforsale.com,
+# broker.bizbuysell.com), so a marketplace profile page pasted into
+# data/brokers_clean.csv is skipped instead of scraped. Added 2026-09-15 after
+# a bizbuysell.com broker-profile URL and four businessesforsale.com agent
+# pages were found in the CSV.
+MARKETPLACE_DOMAINS = {
+    "bizbuysell.com",
+    "bizquest.com",
+    "loopnet.com",
+    "businessesforsale.com",
+}
+
+
 # Owned by the specialized pipeline (scrapers/specialized_scrapers.py).
 # V6 must never scrape these: the specialized scrapers already cover them
 # properly, so a generic attempt is wasted budget AND risks writing worse
@@ -934,7 +949,8 @@ def is_blocked(domain: str) -> bool:
     bare = domain[4:] if domain.startswith("www.") else domain
     return (bare in BLOCKLIST_DOMAINS
             or bare in CRE_LEASE_DOMAINS
-            or any(bare == d or bare.endswith("." + d) for d in SPECIALIZED_DOMAINS))
+            or any(bare == d or bare.endswith("." + d)
+                   for d in SPECIALIZED_DOMAINS | MARKETPLACE_DOMAINS))
 
 
 # Domains known to hard-block — start them on the proxy immediately.

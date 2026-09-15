@@ -219,6 +219,40 @@ def fetch_json(url, **kwargs):
         return None, str(e)
 
 
+_BLOCK_MARKERS = ("cf-browser-verification", "just a moment",
+                  "checking your browser", "attention required",
+                  "access denied", "request blocked")
+
+
+def _looks_blocked(r):
+    if r.status_code in (202, 403, 429, 503):
+        return True
+    return r.status_code == 200 and any(
+        m in (r.text or "")[:200_000].lower() for m in _BLOCK_MARKERS)
+
+
+def get_page(url, timeout=15):
+    """Plain GET; if that hits a bot wall, retry once with a real-Chrome TLS
+    fingerprint (curl_cffi). Many broker sites 403 python-requests on sight
+    but serve curl_cffi fine - the daily scraper already relies on this."""
+    r = requests.get(url, headers=HEADERS, timeout=timeout, allow_redirects=True)
+    if HAS_CFFI and _looks_blocked(r):
+        try:
+            r2 = cffi_requests.get(url, impersonate="chrome131",
+                                   headers=HEADERS, timeout=timeout)
+            if not _looks_blocked(r2):
+                return r2
+        except Exception:
+            pass
+    return r
+
+
+# Why the last find_listings_page() call returned what it did. A None from a
+# walled site and a None from a site with no listings page need different
+# handling (proxy retry vs give up), and the return value alone can't say which.
+LAST_FIND = {"blocked": False, "reasons": [], "landed": None}
+
+
 def head_ok(url, explain=False):
     """
     Does this URL look like a real listings page?
@@ -237,7 +271,7 @@ def head_ok(url, explain=False):
         return (ok, why) if explain else ok
 
     try:
-        r = requests.get(url, headers=HEADERS, timeout=12, allow_redirects=True)
+        r = get_page(url, timeout=12)
     except Exception as exc:
         return out(False, type(exc).__name__)
 
@@ -900,6 +934,9 @@ def find_listings_page(base_url, verbose=False):
     opening move.
     """
     reasons = []
+    LAST_FIND["blocked"] = False
+    LAST_FIND["reasons"] = reasons
+    LAST_FIND["landed"] = None
 
     def try_url(url):
         ok, why = head_ok(url, explain=True)
@@ -910,8 +947,8 @@ def find_listings_page(base_url, verbose=False):
     # ── Stage 1: read the homepage nav ──
     home_blocked = False
     try:
-        r = requests.get(base_url, headers=HEADERS, timeout=15,
-                         allow_redirects=True)
+        r = get_page(base_url, timeout=15)
+        LAST_FIND["landed"] = getattr(r, "url", None) or base_url
         if r.status_code != 200:
             reasons.append(f"homepage: HTTP {r.status_code}")
             home_blocked = r.status_code in (202, 403, 429, 503)
@@ -924,12 +961,22 @@ def find_listings_page(base_url, verbose=False):
             else:
                 soup = BeautifulSoup(r.text, "html.parser")
                 seen, scored = set(), []
+                # Vanity domains often redirect (tworldhouston.com -> a
+                # franchise site, bare -> www). Judge links against where we
+                # landed, not the URL we asked for, or every nav link is
+                # discarded as "off-site".
+                def _bare(h):
+                    h = (h or "").lower()
+                    return h[4:] if h.startswith("www.") else h
+                site_hosts = {_bare(urlparse(base_url).netloc),
+                              _bare(urlparse(getattr(r, "url", "") or base_url).netloc)}
+                landed = getattr(r, "url", "") or base_url
                 for a in soup.find_all("a", href=True):
                     href = a["href"].strip()
                     if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
                         continue
-                    full = urljoin(base_url, href)
-                    if urlparse(full).netloc != urlparse(base_url).netloc:
+                    full = urljoin(landed, href)
+                    if _bare(urlparse(full).netloc) not in site_hosts:
                         continue
                     if full in seen:
                         continue
@@ -956,6 +1003,8 @@ def find_listings_page(base_url, verbose=False):
                     # to /visa-qualified-businesses.asp, which is a filtered
                     # view of a fraction of their inventory.
                     for narrowing in ("visa", "e-2", "e2 ", "franchis", "sold",
+                                      "previous", "past listing", "past-listing",
+                                      "closed", "recently", "archive",
                                       "featured", "spotlight", "testimonial",
                                       "how-to", "how to", "guide", "blog",
                                       "faq", "financing", "valuation",
@@ -985,6 +1034,7 @@ def find_listings_page(base_url, verbose=False):
     # If the homepage itself is walled, guessing paths will not get through
     # and will only make the block worse.
     if home_blocked:
+        LAST_FIND["blocked"] = True
         if verbose:
             print("      homepage blocked - skipping path probes "
                   "(needs a proxy or a browser fetch)")
@@ -998,8 +1048,12 @@ def find_listings_page(base_url, verbose=False):
             return base_url + path
         time.sleep(0.3)
 
+    blocked = sum(1 for r in reasons
+                  if "403" in r or "blocked" in r or "429" in r or "202" in r)
+    # Every probe walled = we learned nothing about whether the page exists.
+    if reasons and blocked == len(reasons):
+        LAST_FIND["blocked"] = True
     if verbose:
-        blocked = sum(1 for r in reasons if "403" in r or "blocked" in r or "429" in r)
         if blocked:
             print(f"      nothing matched - {blocked} of {len(reasons)} probes were blocked")
         else:
@@ -1035,6 +1089,10 @@ def cache_get_discovery(domain):
 
 
 def cache_set_discovery(domain, url, result):
+    # discover_backlog.py DRY_RUN=1 promises to write nothing; this cache write
+    # was the one path that ignored it.
+    if os.environ.get("DRY_RUN") == "1":
+        return
     sb = get_supabase()
     if not sb:
         return
