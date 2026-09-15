@@ -1,0 +1,105 @@
+name: Daily broker discovery
+
+# Finds listings pages for brokers in broker_sources that are still at
+# 1_needs_discovery (IBBA and other seed lists), records every result on
+# broker_sources, then appends the trusted 'ok' ones to data/brokers_clean.csv
+# so the 10am broker scrape picks them up the same day (never-scraped brokers
+# go first under --stale-first).
+#
+# The schedule is OFF until a few manual batches have been reviewed. To turn
+# it on, uncomment the two schedule lines below. Until then, run it from the
+# Actions tab ("Run workflow").
+
+on:
+  # schedule:
+  #   - cron: "0 11 * * *"   # 11:00 UTC = 7am ET, three hours before broker_scrape
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Domains to probe"
+        default: "50"
+      seed:
+        description: "Only broker_sources rows whose seed_source contains this (blank = all)"
+        default: "ibba"
+      export:
+        description: "Append new 'ok' results to data/brokers_clean.csv and push"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+# Same group as broker_scrape.yml: both push to this repo, and discovery must
+# finish (and push the CSV) before a scrape starts reading it.
+concurrency:
+  group: broker-scrape
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install curl_cffi==0.13.0 beautifulsoup4 playwright requests supabase
+          playwright install chromium
+          for attempt in 1 2 3; do
+            sudo apt-get update -qq || true
+            if playwright install-deps chromium; then
+              exit 0
+            fi
+            echo "::warning::playwright install-deps failed (attempt $attempt/3); retrying in 30s"
+            sleep 30
+          done
+          echo "::error::playwright install-deps failed three times"
+          exit 1
+
+      # Each domain has a 90s watchdog, so 50 domains is ~75 min worst case.
+      # timeout sends SIGINT well inside the job limit so the export and push
+      # below still run on whatever was resolved.
+      - name: Discover listings pages
+        id: discover
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SOURCE: broker_sources
+          SEED: ${{ github.event_name == 'schedule' && 'ibba' || inputs.seed }}
+          LIMIT: ${{ inputs.limit || '50' }}
+        run: |
+          set +e
+          timeout --signal=INT 120m python3 -u agents/discover_backlog.py
+          CODE=$?
+          set -e
+          if [ $CODE -ne 0 ]; then
+            echo "::warning::discover_backlog.py exited with code $CODE; exporting whatever was resolved."
+          fi
+
+      - name: Export crawl-ready brokers to CSV
+        if: always() && (github.event_name == 'schedule' || inputs.export)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 agents/export_discovered_ok.py
+
+      - name: Commit broker list
+        if: always() && (github.event_name == 'schedule' || inputs.export)
+        run: |
+          git config user.name "dealledger-bot"
+          git config user.email "bot@dealledger.org"
+          git add data/brokers_clean.csv
+          if git diff --staged --quiet; then
+            echo "No new brokers to add."
+            exit 0
+          fi
+          ADDED=$(git diff --staged --numstat data/brokers_clean.csv | cut -f1)
+          git diff --staged data/brokers_clean.csv | grep '^+[^+]' >> "$GITHUB_STEP_SUMMARY" || true
+          git commit -m "discovery: +${ADDED} brokers $(date -u +%Y-%m-%d)"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push || echo "::warning::Push failed; broker list is committed locally only."

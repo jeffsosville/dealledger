@@ -66,10 +66,18 @@ def fetch_ok_rows():
     return rows
 
 
+def norm_url(u):
+    """host (no www) + path, lower-cased, trailing slash dropped."""
+    p = urlparse(u.strip())
+    host = p.netloc.lower()
+    host = host[4:] if host.startswith("www.") else host
+    return host + p.path.rstrip("/").lower()
+
+
 def existing_domains():
-    domains = set()
+    domains, urls = set(), set()
     if not os.path.exists(CSV_PATH):
-        return domains
+        return domains, urls
     with open(CSV_PATH, newline="") as f:
         for row in csv.reader(f):
             for cell in row:
@@ -77,7 +85,23 @@ def existing_domains():
                     d = urlparse(cell).netloc.lower()
                     bare = d[4:] if d.startswith("www.") else d
                     domains.add(bare)
-    return domains
+                    urls.add(norm_url(cell))
+    return domains, urls
+
+
+def blocked_domains():
+    """broker_block is the database block list; honour it alongside KNOWN_BAD_DOMAINS."""
+    r = requests.get(f"{SUPABASE_URL}/rest/v1/broker_block",
+                     headers=sb_headers(),
+                     params={"select": "broker_domain", "limit": "10000"},
+                     timeout=60)
+    r.raise_for_status()
+    # broker_block stores some domains with "www." and some without.
+    out = set()
+    for x in r.json():
+        d = (x["broker_domain"] or "").strip().lower()
+        out.add(d[4:] if d.startswith("www.") else d)
+    return out
 
 
 def next_id(existing_ids):
@@ -91,8 +115,9 @@ def main():
     ok_rows = fetch_ok_rows()
     print(f"{len(ok_rows)} status='ok' rows in broker_discovery")
 
-    seen = existing_domains()
+    seen, seen_urls = existing_domains()
     print(f"{len(seen)} distinct domains already in {CSV_PATH}")
+    blocked = KNOWN_BAD_DOMAINS | blocked_domains()
 
     # Figure out the next free numeric id by scanning the first column.
     existing_ids = []
@@ -110,11 +135,12 @@ def main():
     skipped_dupe = 0
     skipped_no_url = 0
     skipped_known_bad = 0
+    skipped_same_page = 0
     rescued_from_url_col = 0
     for row in ok_rows:
         domain = (row.get("domain") or "").lower()
         bare = domain[4:] if domain.startswith("www.") else domain
-        if bare in KNOWN_BAD_DOMAINS:
+        if bare in blocked:
             skipped_known_bad += 1
             continue
         if not bare or bare in seen:
@@ -132,15 +158,24 @@ def main():
         if not url:
             skipped_no_url += 1
             continue
+        # A vanity domain that redirects to a franchise page already in the
+        # CSV would scrape the same listings twice under two broker domains.
+        host = urlparse(url).netloc.lower()
+        host = host[4:] if host.startswith("www.") else host
+        if norm_url(url) in seen_urls or host in blocked:
+            skipped_same_page += 1
+            continue
         name = row.get("notes") or bare
         to_add.append([nid, name, name, url])
         seen.add(bare)
+        seen_urls.add(norm_url(url))
         nid += 1
 
     print(f"{skipped_dupe} already present, {len(to_add)} new rows to append "
           f"({rescued_from_url_col} rescued from the url column), "
           f"{skipped_no_url} status='ok' with no URL in either column, "
-          f"{skipped_known_bad} skipped (KNOWN_BAD_DOMAINS)")
+          f"{skipped_known_bad} skipped (blocked), "
+          f"{skipped_same_page} skipped (listings page already crawled or blocked host)")
 
     if to_add:
         with open(CSV_PATH, "a", newline="") as f:
