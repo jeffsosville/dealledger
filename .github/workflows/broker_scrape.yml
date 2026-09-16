@@ -116,7 +116,14 @@ jobs:
           fi
           git commit -m "snapshot: $(date -u +%Y-%m-%d)${SUFFIX}"
           # Another workflow may have pushed while we ran.
-          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          # -X theirs: on a conflict, keep THIS run's copy of the generated
+          # file (in a rebase "theirs" is the commit being replayed). A plain
+          # rebase left the runner on a detached HEAD and lost the push
+          # (run #162, 2026-09-16: conflict in first_seen_baseline.json).
+          if ! git pull --rebase -X theirs --autostash origin ${{ github.ref_name }}; then
+            git rebase --abort || true
+            echo "::warning::Could not rebase onto origin; result is committed locally only."
+          fi
           git push || echo "Push failed — snapshot is committed locally only."
       # Rebuild the homepage's materialized view so new listings actually
       # appear on the site. CONCURRENTLY keeps the page serving during it.

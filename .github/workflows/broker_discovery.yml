@@ -90,6 +90,9 @@ jobs:
 
       - name: Commit broker list
         if: always() && (github.event_name == 'schedule' || inputs.export)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
@@ -101,5 +104,22 @@ jobs:
           ADDED=$(git diff --staged --numstat data/brokers_clean.csv | cut -f1)
           git diff --staged data/brokers_clean.csv | grep '^+[^+]' >> "$GITHUB_STEP_SUMMARY" || true
           git commit -m "discovery: +${ADDED} brokers $(date -u +%Y-%m-%d)"
-          git pull --rebase --autostash origin ${{ github.ref_name }} || true
-          git push || echo "::warning::Push failed; broker list is committed locally only."
+          # If the CSV changed on origin meanwhile, don't hand-merge it:
+          # rebuild the append on top of origin (the export is idempotent).
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash origin ${{ github.ref_name }} && git push; then
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            echo "::warning::push attempt $attempt failed; re-exporting on top of origin"
+            git fetch origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+            python3 agents/export_discovered_ok.py
+            git add data/brokers_clean.csv
+            if git diff --staged --quiet; then
+              echo "Nothing left to add after rebasing."
+              exit 0
+            fi
+            git commit -m "discovery: brokers $(date -u +%Y-%m-%d)"
+          done
+          echo "::warning::Push failed three times; broker list is committed locally only."
