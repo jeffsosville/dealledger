@@ -773,6 +773,20 @@ def positive_or_none(v):
 MAX_DETAIL_PAGES = 50
 DETAIL_DELAY     = (0.5, 1.5)   # seconds between detail fetches
 
+# SPEED (2026-09-16). Runs since 12 Sep stopped hitting 100 brokers in the
+# 285-minute window (run #162: 34 brokers), so every run ended on the timeout,
+# lost everything after its last flush, and never wrote crawl_failures.
+#
+# BROKER_TIME_BUDGET: seconds one broker may take before pagination and
+#   detail fetching stop and what was collected is written. One slow site can
+#   no longer eat the run.
+# SKIP_KNOWN_DETAILS: don't re-fetch detail pages for listings already in
+#   listings_direct with enriched data; carry the stored fields forward
+#   instead (the upsert writes every column, so they must be carried or they
+#   would be overwritten with card-only values).
+BROKER_TIME_BUDGET = int(os.environ.get("BROKER_TIME_BUDGET", "480"))
+SKIP_KNOWN_DETAILS = os.environ.get("SKIP_KNOWN_DETAILS", "1") != "0"
+
 US_STATES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
     "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
@@ -929,6 +943,13 @@ SPECIALIZED_DOMAINS = {
 }
 
 
+# Filled at startup from the broker_block table (DealLedgerScraper.__init__),
+# so a domain blocked in the database is skipped without a code change.
+# Found 2026-09-15: idx.michelephillipsrealtor.com was in broker_block yet
+# wrote 500 rows, because nothing in this file read that table.
+RUNTIME_BLOCKED: set = set()
+
+
 def is_blocked(domain: str) -> bool:
     """
     True if this domain must never be scraped for business-for-sale listings:
@@ -946,8 +967,10 @@ def is_blocked(domain: str) -> bool:
     hour or more away from the 14:00 UTC cron, from domains that have never
     appeared in data/brokers_clean.csv in any commit.
     """
+    domain = (domain or "").lower()
     bare = domain[4:] if domain.startswith("www.") else domain
     return (bare in BLOCKLIST_DOMAINS
+            or bare in RUNTIME_BLOCKED
             or bare in CRE_LEASE_DOMAINS
             or any(bare == d or bare.endswith("." + d)
                    for d in SPECIALIZED_DOMAINS | MARKETPLACE_DOMAINS))
@@ -2181,6 +2204,16 @@ class DealLedgerScraper:
 
             if self.supabase_writer:
                 try:
+                    rows = (self.supabase_writer.client.table("broker_block")
+                            .select("broker_domain").limit(10000).execute().data or [])
+                    for r in rows:
+                        d = (r.get("broker_domain") or "").strip().lower()
+                        if d:
+                            RUNTIME_BLOCKED.add(d[4:] if d.startswith("www.") else d)
+                    print(f"🚫 broker_block: {len(RUNTIME_BLOCKED)} domains")
+                except Exception as e:
+                    print(f"⚠️  broker_block unavailable: {e} — code blocklists only")
+                try:
                     self.failure_writer = CrawlFailureWriter(self.supabase_writer.client)
                 except Exception as e:
                     # Never let failure logging take down a listings run.
@@ -2372,6 +2405,25 @@ class DealLedgerScraper:
             print(f"⚠️  Staleness ordering failed ({e}) — falling back to CSV order")
         return brokers
 
+    def _stored_listings(self, ids: list) -> dict:
+        """id -> stored enriched fields from listings_direct (read-only)."""
+        if not (SKIP_KNOWN_DETAILS and self.supabase_writer and ids):
+            return {}
+        out = {}
+        try:
+            client = self.supabase_writer.client
+            for i in range(0, len(ids), 100):
+                rows = (client.table("listings_direct")
+                        .select("id,title,url,city,state,asking_price,cash_flow,"
+                                "revenue,description")
+                        .in_("id", ids[i:i + 100]).execute().data or [])
+                for r in rows:
+                    out[r["id"]] = r
+        except Exception as e:
+            print(f"   ⚠️  stored-listing lookup failed ({e}) — fetching all details")
+            return {}
+        return out
+
     def _recently_failed_domains(self, days: int = 7) -> set:
         """Bare domains with a crawl_failures row in the last `days` days.
 
@@ -2428,6 +2480,10 @@ class DealLedgerScraper:
         url       = broker["url"]
         domain    = broker["domain"]
         use_proxy = _needs_proxy(domain)
+        t_start = time.monotonic()
+
+        def over_budget():
+            return BROKER_TIME_BUDGET > 0 and time.monotonic() - t_start > BROKER_TIME_BUDGET
 
         print(f"\n{'='*60}")
         print(f"🔍 [{self.stats['brokers_attempted']+1}] {name}"
@@ -2625,6 +2681,10 @@ class DealLedgerScraper:
             MAX_CARDS_PER_BROKER = 2500
 
             while page_num <= max_pages:
+                if over_budget():
+                    print(f"   ⏱️  {BROKER_TIME_BUDGET}s budget reached on page {page_num} "
+                          f"- keeping {len(unique_cards)} cards")
+                    break
                 if len(unique_cards) >= MAX_CARDS_PER_BROKER:
                     print(f"   ⚠️  hit {MAX_CARDS_PER_BROKER}-card ceiling for this "
                           f"broker - stopping (suspect pagination loop)")
@@ -2721,19 +2781,59 @@ class DealLedgerScraper:
             print(f"   📋 {len(unique_cards)} cards ({page_num-1} pages)")
 
             # ── Phase 2: fetch detail pages ───────────────────────────────
-            detail_candidates = [
+            with_detail = [
                 c for c in unique_cards
                 if c.get("_detail_url") and c["_detail_url"] != url
-            ][:MAX_DETAIL_PAGES]
+            ]
+
+            # Listings already enriched on an earlier run: carry the stored
+            # detail fields forward instead of fetching the page again.
+            stored = self._stored_listings([c["id"] for c in with_detail])
+            reused = 0
+            fresh = []
+            for c in with_detail:
+                prev = stored.get(c["id"])
+                prev_desc = (prev or {}).get("description") or ""
+                if prev and (prev.get("state") or len(prev_desc) > len(c.get("description") or "")):
+                    if len(prev_desc) > len(c.get("description") or ""):
+                        c["description"] = prev_desc
+                    if len(prev.get("title") or "") > len(c.get("title") or ""):
+                        c["title"] = prev["title"]
+                    for f in ("asking_price", "cash_flow", "revenue", "state"):
+                        if not c.get(f) and prev.get(f):
+                            c[f] = prev[f]
+                    if not c.get("city") and prev.get("city"):
+                        c["city"] = prev["city"]
+                    c["url"] = c.pop("_detail_url")
+                    c["vertical"] = ListingExtractor.classify_vertical(
+                        (c.get("description") or "") + " " + (c.get("title") or ""))
+                    reused += 1
+                else:
+                    fresh.append(c)
+            if reused:
+                print(f"   ♻️  {reused} known listings reuse stored details")
+            detail_candidates = fresh[:MAX_DETAIL_PAGES]
+
+            # A list page that came back fine over plain HTTP doesn't need a
+            # headless browser for its detail pages; fetch() would escalate
+            # any detail page with fewer than two prices to Playwright (~30s).
+            plain_details = method not in ("playwright",)
 
             enriched = 0
             states_gained = 0
 
             for listing in detail_candidates:
+                if over_budget():
+                    print(f"   ⏱️  {BROKER_TIME_BUDGET}s budget reached - "
+                          f"{len(detail_candidates) - enriched} detail pages skipped")
+                    break
                 detail_url = listing.pop("_detail_url")
                 try:
                     time.sleep(random.uniform(*DETAIL_DELAY))
-                    detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
+                    if plain_details:
+                        detail_html = self.fetcher._fetch_http(detail_url, use_proxy=use_proxy)
+                    else:
+                        detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
                     had_state = bool(listing.get("state"))
                     listing = ListingExtractor.enrich_from_detail(listing, detail_html)
                     listing["url"] = detail_url
@@ -2831,7 +2931,7 @@ class DealLedgerScraper:
         # crashed mid-way wrote NOTHING, and the DB stayed empty for ~30-40 min
         # even on a healthy run. Now we flush to Supabase every FLUSH_EVERY
         # brokers, so rows land progressively and partial runs still persist.
-        FLUSH_EVERY = 20
+        FLUSH_EVERY = 5
         pending = []          # listings accumulated since last flush
         total_written = 0
 
@@ -2847,22 +2947,37 @@ class DealLedgerScraper:
                     print(f"   ❌ Supabase flush failed: {e}", flush=True)
             pending = []
 
-        for i, broker in enumerate(brokers, 1):
-            print(f"—— broker {i}/{total} —————————————————————————", flush=True)
-            listings = self.scrape_broker(broker)
-            self.all_listings.extend(listings)
-            pending.extend(listings)
-            for l in listings:
-                self.stats["verticals"][l.get("vertical", "other")] += 1
+        timings = []
+        try:
+            for i, broker in enumerate(brokers, 1):
+                print(f"—— broker {i}/{total} —————————————————————————", flush=True)
+                t0 = time.monotonic()
+                listings = self.scrape_broker(broker)
+                secs = time.monotonic() - t0
+                timings.append((round(secs), broker["domain"], len(listings)))
+                print(f"   ⏱️  {secs:.0f}s, {len(listings)} listings", flush=True)
+                self.all_listings.extend(listings)
+                pending.extend(listings)
+                for l in listings:
+                    self.stats["verticals"][l.get("vertical", "other")] += 1
 
-            # Flush periodically so writes land as we go, not all at the end.
-            if i % FLUSH_EVERY == 0:
-                _flush(f" [after {i}/{total}]")
+                # Flush periodically so writes land as we go, not all at the end.
+                if i % FLUSH_EVERY == 0:
+                    _flush(f" [after {i}/{total}]")
 
-            time.sleep(random.uniform(1, 2))   # trimmed from (2,5): proxy rotates IPs anyway
+                time.sleep(random.uniform(1, 2))   # trimmed from (2,5): proxy rotates IPs anyway
+        except KeyboardInterrupt:
+            # The workflow's `timeout --signal=INT` lands here. Before this,
+            # the interrupt skipped the final flush and _save_results(), so a
+            # timed-out run lost every broker since its last flush and never
+            # wrote crawl_failures (none recorded 12-16 Sep).
+            print("\n⏹️  interrupted - flushing and saving what was collected", flush=True)
+            self.stats["interrupted"] = True
 
         # Final flush for the remainder past the last batch boundary.
         _flush(" [final]")
+        self.stats["slowest_brokers"] = sorted(timings, reverse=True)[:15]
+        self.stats["seconds_total"] = sum(t[0] for t in timings)
 
         self.stats.update({
             "total_listings":         len(self.all_listings),
@@ -2934,6 +3049,12 @@ class DealLedgerScraper:
         print(f"  cf:      {s['listings_with_cashflow']}")
         print(f"  state:   {s['listings_with_state']}")
         print(f"  detail pages: {s['detail_pages_fetched']}")
+        if s.get("slowest_brokers"):
+            n = max(1, s["brokers_attempted"])
+            print(f"\nTime: {s.get('seconds_total', 0) // 60} min, "
+                  f"{s.get('seconds_total', 0) // n}s per broker. Slowest:")
+            for secs, dom, cnt in s["slowest_brokers"]:
+                print(f"  {secs:>5}s  {dom}  ({cnt} listings)")
         print(f"Patterns:  {s['patterns_cached']} cached  "
               f"{s['patterns_learned']} learned")
         if s.get("verticals"):
