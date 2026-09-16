@@ -79,7 +79,7 @@ import sys
 import time
 import traceback
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
 
 import pandas as pd
@@ -1878,12 +1878,16 @@ class PageFetcher:
         return self._fetch_http(url, use_proxy=True), "requests"
 
     def close(self):
-        if self.browser_plain:
-            self.browser_plain.close()
-        if self.browser_proxy:
-            self.browser_proxy.close()
-        if self.playwright:
-            self.playwright.stop()
+        # After the SIGINT from the 285-minute guard the Playwright driver is
+        # often already gone, and close() raised "Connection closed while
+        # reading from the driver" (run #162). Shutdown must never fail.
+        for label, closer in (("browser_plain", lambda: self.browser_plain and self.browser_plain.close()),
+                              ("browser_proxy", lambda: self.browser_proxy and self.browser_proxy.close()),
+                              ("playwright",    lambda: self.playwright and self.playwright.stop())):
+            try:
+                closer()
+            except Exception as e:
+                print(f"⚠️  {label} close ignored: {e}")
 
 
 # ============================================================
@@ -2315,6 +2319,7 @@ class DealLedgerScraper:
                 return brokers
 
             if order_mode == "yield":
+                csv_order = brokers
                 def key(b):
                     d = b["domain"]
                     produced = yield_by_domain.get(d, 0)
@@ -2325,6 +2330,37 @@ class DealLedgerScraper:
                                 if yield_by_domain.get(b["domain"], 0) > 0)
                 print(f"📊 ORDER=yield — {producing} producing brokers first, "
                       f"{len(brokers) - producing} never-scraped last")
+
+                # NEW-BROKER QUOTA. With --top-n 100 and ~670 producers,
+                # "never-scraped last" means a broker added to the CSV is
+                # never reached at all (found 2026-09-15: the first IBBA
+                # discovery batch would have sat unscraped indefinitely).
+                # Reserve a few slots at the front for never-scraped brokers,
+                # newest CSV rows first (discovery appends to the end), and
+                # skip any that already failed in the last 7 days so one dead
+                # site can't hold a slot forever and the backlog rotates.
+                quota = int(os.environ.get("NEW_BROKER_QUOTA", "5") or 0)
+                if quota > 0:
+                    cooled = self._recently_failed_domains(days=7)
+                    def _bare(d):
+                        d = (d or "").lower()
+                        return d[4:] if d.startswith("www.") else d
+                    fresh, seen_fresh = [], set()
+                    for b in reversed(csv_order):
+                        dom = b["domain"]
+                        if (yield_by_domain.get(dom, 0) == 0
+                                and _bare(dom) not in cooled
+                                and dom not in seen_fresh):
+                            fresh.append(b)
+                            seen_fresh.add(dom)
+                            if len(fresh) >= quota:
+                                break
+                    picked = {id(b) for b in fresh}
+                    brokers = fresh + [b for b in brokers if id(b) not in picked]
+                    print(f"🆕 NEW_BROKER_QUOTA={quota} — {len(fresh)} never-scraped "
+                          f"brokers moved to the front ({len(cooled)} on 7-day "
+                          f"failure cooldown): "
+                          + ", ".join(b["domain"] for b in fresh[:10]))
                 return brokers
 
             # Empty string sorts before any ISO timestamp => never-scraped first
@@ -2335,6 +2371,43 @@ class DealLedgerScraper:
         except Exception as e:
             print(f"⚠️  Staleness ordering failed ({e}) — falling back to CSV order")
         return brokers
+
+    def _recently_failed_domains(self, days: int = 7) -> set:
+        """Bare domains with a crawl_failures row in the last `days` days.
+
+        Read-only. Returns an empty set on any error so ordering never breaks
+        a run.
+        """
+        try:
+            client = self.supabase_writer.client
+            since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+            ids, start = set(), 0
+            while True:
+                rows = (client.table("crawl_failures")
+                        .select("broker_source_id")
+                        .gte("observed_at", since)
+                        .range(start, start + 999).execute().data or [])
+                ids.update(r["broker_source_id"] for r in rows if r.get("broker_source_id"))
+                if len(rows) < 1000:
+                    break
+                start += 1000
+            if not ids:
+                return set()
+            domains, start = set(), 0
+            while True:
+                rows = (client.table("broker_sources").select("id,domain")
+                        .range(start, start + 999).execute().data or [])
+                for r in rows:
+                    if r["id"] in ids:
+                        d = (r.get("domain") or "").lower()
+                        domains.add(d[4:] if d.startswith("www.") else d)
+                if len(rows) < 1000:
+                    break
+                start += 1000
+            return domains
+        except Exception as e:
+            print(f"⚠️  failure-cooldown lookup failed ({e}) — no cooldown applied")
+            return set()
 
     @staticmethod
     def _classify_failure(error: Exception,
