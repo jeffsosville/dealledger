@@ -69,6 +69,7 @@ Requirements:
 """
 
 import argparse
+import csv as _csv
 import hashlib
 import json
 import math
@@ -1343,6 +1344,62 @@ class PatternDetector:
         return candidates[0]
 
 
+
+def _sane_financials(price, cash_flow, revenue):
+    """
+    One number on a card cannot be three different financials.
+
+    extract_price() takes the largest price on the card and _money_near()
+    falls back to "the value just before the label", so a single page-level
+    figure satisfies all three extractors at once. That is how
+    companysellers.com wrote $1,000,000 as asking price AND cash flow AND
+    revenue on 455 listings (73% of its index), and how 828 rows across 131
+    domains ended up with three identical numbers (audit 2026-09-17).
+
+    Rules, in order:
+      * a value repeated across fields survives only as the asking price,
+        which is the figure brokers publish most reliably;
+      * cash flow at or above revenue means one of the two labels was
+        misread — "profit" and "net income" match far more loosely than
+        "gross revenue", so cash flow is the one dropped.
+
+    Dropping a field is the right failure here: a missing number is honest,
+    a wrong one is not.
+    """
+    if cash_flow is not None and cash_flow == price:
+        cash_flow = None
+    if revenue is not None and revenue == price:
+        revenue = None
+    if cash_flow is not None and revenue is not None and cash_flow == revenue:
+        cash_flow = None
+    if (cash_flow is not None and revenue is not None
+            and revenue > 0 and cash_flow >= revenue):
+        cash_flow = None
+    return price, cash_flow, revenue
+
+
+
+# Residential / IDX property feeds. Blocking these by DOMAIN only ever catches
+# the instance you already found: idx.michelephillipsrealtor.com was blocked on
+# 13 Sep and siriusrealtyservices.com — same IDX template, 1,411 rows, SC
+# street-address titles — took its place within two days (audit 2026-09-17).
+# So the test runs on the CONTENT of the card. An MLS number, a bedroom or
+# bath count, or a "City, ST - 123 Street Name" title is a house, not a
+# business for sale. Mirrored in SQL as public.is_residential_listing().
+_MLS_RE      = re.compile(r"mls\s*#|\bmls\s+\d{5,}", re.I)
+_BEDBATH_RE  = re.compile(r"\d+\s+(?:bed(?:room)?s?|full\s+baths?|half\s+baths?)\b", re.I)
+_ADDR_TITLE  = re.compile(r"^[^,]{2,40},\s*[A-Za-z]{2}\s*[-\u2013]\s*\d+\s+\w", re.I)
+_BDBA_TITLE  = re.compile(r"\b\d+\s*(?:bd|br|beds?|bedrooms?)\b.*\b(?:ba|baths?)\b", re.I)
+
+
+def looks_residential(title: str, text: str) -> bool:
+    """True when a card is a residential property listing, not a business."""
+    t = title or ""
+    body = text or ""
+    return bool(_ADDR_TITLE.search(t) or _BDBA_TITLE.search(t)
+                or _MLS_RE.search(body) or _BEDBATH_RE.search(body))
+
+
 # ============================================================
 # LISTING EXTRACTOR (V6)
 # ============================================================
@@ -1481,9 +1538,15 @@ class ListingExtractor:
         if is_junk_listing(title, detail_url or base_url):
             return None
 
+        # Residential/IDX row gate — see looks_residential() above.
+        if looks_residential(title, text):
+            return None
+
         asking_price = positive_or_none(cls.extract_price(text))
         cash_flow    = positive_or_none(cls.extract_cash_flow(text))
         revenue      = positive_or_none(cls.extract_revenue(text))
+        asking_price, cash_flow, revenue = _sane_financials(
+            asking_price, cash_flow, revenue)
         location     = LocationExtractor.extract(text)
         vertical     = cls.classify_vertical(text)
 
@@ -2290,6 +2353,38 @@ class DealLedgerScraper:
         print(msg)
         return brokers
 
+    # Brokers with a purpose-built scraper in scrapers/run_specialized.py.
+    # specialized_scrape.yml runs those every day at 08:00 UTC and they hold
+    # the majority of the active index, so the generic V6 crawl must not spend
+    # its nightly budget on them as well.
+    #
+    # The WordPress-REST set is read from the same CSV run_specialized.py
+    # registers from, so it cannot drift. The named franchise scrapers are
+    # listed here because they are classes, not rows; they change rarely, and
+    # a stale entry only costs one redundant crawl.
+    _FRANCHISE_DOMAINS = (
+        "tworld.com", "sunbeltnetwork.com", "fcbb.com", "murphybusiness.com",
+        "vrbusinessbrokers.com", "hedgestone.com", "linkbusiness.com",
+        "bodnergroup.com", "wesellrestaurants.com", "vestedbb.com",
+        "routesforsale.net",
+    )
+
+    def _specialized_domains(self) -> set:
+        """Bare domains already covered by the daily specialized run."""
+        out = {d for d in self._FRANCHISE_DOMAINS}
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "..", "data", "wp_rest_brokers.csv")
+        try:
+            with open(path) as f:
+                for row in _csv.DictReader(f):
+                    d = (row.get("domain") or "").strip().lower()
+                    if d:
+                        out.add(d[4:] if d.startswith("www.") else d)
+        except Exception as e:
+            print(f"⚠️  Could not read wp_rest_brokers.csv ({e}) — "
+                  f"excluding franchise domains only")
+        return out
+
     def _order_by_staleness(self, brokers: list[dict]) -> list[dict]:
         """
         Sort brokers so the least-recently-scraped come first.
@@ -2343,13 +2438,82 @@ class DealLedgerScraper:
             #
             # ORDER=stale restores the old behaviour for a deliberate sweep of
             # the dark ones. ORDER=never crawls only never-scraped brokers.
-            order_mode = os.environ.get("ORDER", "yield").lower()
+            order_mode = os.environ.get("ORDER", "weekly").lower()
 
             if order_mode == "never":
                 brokers = [b for b in brokers
                            if yield_by_domain.get(b["domain"], 0) == 0]
                 print(f"📊 ORDER=never — {len(brokers)} never-scraped brokers only")
                 return brokers
+
+            # WEEKLY ROTATION (default).
+            #
+            # ORDER=yield sorted producers by descending yield and took the top
+            # --top-n. With ~470 producers and --top-n 100 that is the SAME 100
+            # brokers every night, deterministically: across the 8 runs to
+            # 2026-09-16 the committed snapshots touched 190 distinct domains
+            # in total and 36 of them appeared in 7 of the 8. The queue could
+            # not rotate, so a broker added by discovery was never reached.
+            #
+            # A broker with 400 listings does not turn over in 24 hours. So:
+            # drop the brokers the daily specialized run already covers, then
+            # take the STALEST 1/7 of what is left. Every tail producer gets
+            # crawled once a week, on the same nightly budget, and the slots
+            # that frees go to never-scraped brokers.
+            #
+            # Staleness rather than a hash bucket, so a missed night catches up
+            # by itself and no bucket bookkeeping has to be stored anywhere.
+            if order_mode == "weekly":
+                spec = self._specialized_domains()
+                def _bare(d):
+                    d = (d or "").lower()
+                    return d[4:] if d.startswith("www.") else d
+
+                csv_order = brokers
+                tail = [b for b in brokers
+                        if yield_by_domain.get(b["domain"], 0) > 0
+                        and _bare(b["domain"]) not in spec]
+                skipped = sum(1 for b in brokers
+                              if yield_by_domain.get(b["domain"], 0) > 0
+                              and _bare(b["domain"]) in spec)
+                tail.sort(key=lambda b: latest.get(b["domain"], ""))
+
+                days = max(1, int(os.environ.get("REFRESH_CYCLE_DAYS", "7")))
+                slice_n = -(-len(tail) // days)          # ceil
+                due = tail[:slice_n]
+                print(f"📅 ORDER=weekly — {len(tail)} tail producers, "
+                      f"{skipped} left to the specialized run, "
+                      f"refreshing the stalest {len(due)} tonight "
+                      f"(1/{days} cycle)")
+
+                quota = int(os.environ.get("NEW_BROKER_QUOTA", "40") or 0)
+                fresh = []
+                if quota > 0:
+                    cooled = self._recently_failed_domains(days=7)
+                    seen_fresh = set()
+                    for b in reversed(csv_order):
+                        dom = b["domain"]
+                        if (yield_by_domain.get(dom, 0) == 0
+                                and _bare(dom) not in cooled
+                                and _bare(dom) not in spec
+                                and dom not in seen_fresh):
+                            fresh.append(b)
+                            seen_fresh.add(dom)
+                            if len(fresh) >= quota:
+                                break
+                    print(f"🆕 NEW_BROKER_QUOTA={quota} — {len(fresh)} "
+                          f"never-scraped brokers ({len(cooled)} on 7-day "
+                          f"failure cooldown)")
+                # REFRESH FIRST, discovery second (2026-09-17). The nightly
+                # run is killed at the 285-minute guard often enough that
+                # order decides what actually happens: with never-scraped
+                # brokers at the front, a truncated run spends its whole
+                # budget on the cohort that mostly yields NO_PATTERN and the
+                # weekly refresh silently doesn't happen. The audit found 344
+                # of 485 live domains unrefreshed for more than 7 days, some
+                # for 70. Due-first means a short night costs us discovery,
+                # which can wait, instead of freshness, which can't.
+                return due + fresh
 
             if order_mode == "yield":
                 csv_order = brokers
