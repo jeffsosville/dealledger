@@ -45,3 +45,8 @@ docs/bridge-loss-phase4-sample.md
 dealledger_first_edition.html
 
 scrapers/*cookies*
+
+# private — never in the public repo
+CLAUDE.md
+nohup.out
+private/
