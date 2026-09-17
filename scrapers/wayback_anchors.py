@@ -79,61 +79,67 @@ def _get(params, retries=5):
 
 def fetch_year(pattern, year, pause):
     """
-    All captures for one year, page by page.
+    All captures of that year, in ONE request, with a long rest afterwards.
 
-    CDX returns page counts for a query when asked, and serves fixed-size
-    pages — the documented way to pull a large result set without asking the
-    index to materialise it all at once.
+    Two failed approaches are recorded here so nobody tries them again:
+
+    1. One unpaged request per year, fired back to back (2026-09-17). The
+       first year returned 25,391 captures and then the Archive throttled
+       us: 2020 came back with 187, 2024 with 121, and by 2025 the host was
+       refusing connections. The QUERY was right; the pace was wrong.
+
+    2. CDX's pagination API (2026-09-17, twice). It cannot serve a query
+       carrying collapse=, filter= — or, as the second attempt showed,
+       from=/to=. It answers "0 pages" and the run looks like an empty
+       archive, which is the worst possible failure: plausible and false.
+
+    So: the unpaged query, one per year, slowly. Sixteen requests total.
+    A year that still fails is split into quarters, which are smaller asks.
     """
-    # NO collapse=, NO filter= here. The CDX pagination API can't serve a
-    # query that carries either one: it answers "0 pages" and the run looks
-    # like an empty archive (first paged attempt, 2026-09-17, reported no
-    # pages for every year of both sites while an unpaged query had already
-    # returned 25,391 captures for 2019 alone). Both jobs are done in Python
-    # below — the status code is read off each row, and duplicate URLs
-    # collapse naturally when we keep the earliest capture per listing number.
-    base = {
-        "url": pattern,
-        "matchType": "prefix",
-        "output": "json",
-        "fl": "original,timestamp,statuscode",
-        "from": str(year),
-        "to": str(year),
-        "pageSize": "5",
-    }
-
-    meta = _get(dict(base, showNumPages="true"))
-    if meta is None:
-        print(f"   {year}: could not read page count — skipping")
-        return []
-    try:
-        pages = int(meta.strip() or 0)
-    except ValueError:
-        pages = 0
-    if pages == 0:
-        print(f"   {year}: no pages")
-        return []
-
-    rows = []
-    for page in range(pages):
-        text = _get(dict(base, page=str(page)))
-        if text is None:
-            print(f"   {year}: page {page + 1}/{pages} failed — keeping what we have")
-            break
-        text = text.strip()
-        if text:
+    def ask(frm, to, label):
+        params = {
+            "url": pattern,
+            "matchType": "prefix",
+            "output": "json",
+            "fl": "original,timestamp,statuscode",
+            "from": frm,
+            "to": to,
+            "limit": "150000",
+        }
+        delay = 60
+        for attempt in range(1, 5):
             try:
-                chunk = json.loads(text)
-            except json.JSONDecodeError:
-                print(f"   {year}: page {page + 1} was not JSON — skipping")
-                chunk = []
-            if chunk and chunk[0][:1] == ["original"]:
-                chunk = chunk[1:]
-            chunk = [r for r in chunk if len(r) < 3 or r[2] == "200"]
-            rows.extend(chunk)
-        print(f"   {year}: page {page + 1}/{pages}, {len(rows)} rows so far")
+                r = requests.get(CDX, params=params, headers=HEADERS, timeout=300)
+                if r.status_code == 200:
+                    text = r.text.strip()
+                    rows = json.loads(text) if text else []
+                    if rows and rows[0][:1] == ["original"]:
+                        rows = rows[1:]
+                    return [x for x in rows if len(x) < 3 or x[2] == "200"]
+                print(f"      {label}: HTTP {r.status_code} "
+                      f"(attempt {attempt}/4) — resting {delay}s")
+            except Exception as exc:                   # noqa: BLE001
+                print(f"      {label}: {type(exc).__name__} "
+                      f"(attempt {attempt}/4) — resting {delay}s")
+            time.sleep(delay)
+            delay = min(delay * 2, 600)
+        return None
+
+    rows = ask(str(year), str(year), str(year))
+    if rows is not None:
+        return rows
+
+    print(f"   {year}: retrying as quarters")
+    out = []
+    for q, (frm, to) in enumerate(
+            [(f"{year}01", f"{year}03"), (f"{year}04", f"{year}06"),
+             (f"{year}07", f"{year}09"), (f"{year}10", f"{year}12")], 1):
+        chunk = ask(frm, to, f"{year}Q{q}")
+        if chunk:
+            out.extend(chunk)
+            print(f"   {year}Q{q}: {len(chunk)} captures")
         time.sleep(pause)
-    return rows
+    return out
 
 
 def collect(from_year, to_year, pause, writer=None):
@@ -213,9 +219,10 @@ def main():
     ap.add_argument("--from-year", type=int, default=2019)
     ap.add_argument("--to-year", type=int, default=datetime.now().year)
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--pause", type=float, default=12.0,
-                    help="Seconds between Archive requests (default 12)")
+    ap.add_argument("--pause", type=float, default=45.0,
+                    help="Seconds between Archive requests (default 45; do not go below 30)")
     args = ap.parse_args()
+    args.pause = max(args.pause, 30.0)   # below this the Archive stops answering
 
     url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SERVICE_KEY")
     checkpoint = None
