@@ -36,6 +36,21 @@ nav a:hover{color:var(--text)}
 .hero{padding:34px 0 22px}
 h1{font-size:26px;line-height:1.25;font-weight:600;letter-spacing:-.4px;max-width:20ch}
 .hero p{color:var(--text-muted);margin-top:8px;max-width:62ch}
+.lookup{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.lookup input{flex:1 1 380px;min-width:0;font-family:var(--mono);font-size:13px;padding:13px 14px;border:2px solid var(--text);background:#fff;color:var(--text);outline:none}
+.lookup input::placeholder{color:#a8a29e}
+.lookup button{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:13px 22px;background:var(--text);color:var(--bg);border:2px solid var(--text);cursor:pointer}
+.lookup button:disabled{opacity:.5;cursor:default}
+.lk-msg{font-family:var(--mono);font-size:12px;color:var(--text-muted);min-height:18px;margin-top:8px}
+.lk-msg.err{color:#991b1b}
+.lk-card{border:1px solid var(--border);background:#fff;padding:18px 20px;margin-top:10px}
+.lk-kind{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:6px}
+.lk-head{font-size:17px;font-weight:600;margin-bottom:4px}
+.lk-big{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1.1;margin:10px 0 2px}
+.lk-sub{font-size:13px;color:var(--text-muted)}
+.lk-meta{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:8px}
+.rule{display:flex;align-items:center;gap:12px;margin:26px 0 0;color:var(--text-muted);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.rule:before,.rule:after{content:"";flex:1;height:1px;background:var(--border)}
 .search-wrap{margin-top:20px}
 .search-bar{width:100%;font-family:var(--sans);font-size:16px;padding:14px 16px;border:2px solid var(--text);background:#fff;color:var(--text);outline:none}
 .search-bar::placeholder{color:#a8a29e}
@@ -94,6 +109,16 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   <section class="hero">
     <h1>How long has it really been for sale?</h1>
     <p>Every business listed by a broker we track, with the date we first saw it and every change since. Free, open, updated daily.</p>
+    <form class="lookup" id="lkForm">
+      <input id="lkInput" type="text" inputmode="url" autocomplete="off"
+             placeholder="Paste a listing URL — a broker's page, BizBuySell or BizQuest">
+      <button id="lkGo" type="submit">Check</button>
+    </form>
+    <div class="lk-msg" id="lkMsg"></div>
+    <div id="lkOut"></div>
+
+    <div class="rule">or browse the ledger</div>
+
     <div class="search-wrap">
       <input id="q" class="search-bar" type="search" placeholder="Search listings — laundromat, HVAC, Texas, vending route…" autocomplete="off">
       <div class="controls">
@@ -283,6 +308,70 @@ $('reset').addEventListener('click', () => {
 });
 $('prev').addEventListener('click', () => { if (page > 1) { page--; load(); window.scrollTo({top:0}); } });
 $('next').addEventListener('click', () => { page++; load(); window.scrollTo({top:0}); });
+
+/* ---- lookup ------------------------------------------------------ */
+const lkForm = $('lkForm'), lkInput = $('lkInput'), lkGo = $('lkGo'), lkMsg = $('lkMsg'), lkOut = $('lkOut');
+
+function lkDays(d, basis){
+  if (d === null || d === undefined) return '—';
+  return d.toLocaleString() + (basis === 'floor' ? '+' : '') + ' days';
+}
+
+function lkCard(d){
+  if (d.kind === 'direct') {
+    return '<div class="lk-card">' +
+      '<div class="lk-kind">In the ledger</div>' +
+      '<div class="lk-head">' + esc(d.title || 'Untitled') + (d.state ? ' · ' + esc(d.state) : '') + '</div>' +
+      '<div class="lk-big">' + lkDays(d.days, d.basis) + '</div>' +
+      '<div class="lk-sub">' + (d.basis === 'floor' ? 'At least — ' : '') + 'first seen ' +
+        esc(d.first_seen || '—') + (d.price ? ' · asking ' + price(d.price) : '') + '</div>' +
+      '<div class="lk-meta">' + esc(d.note || '') +
+        ' <a href="/listing/' + encodeURIComponent(d.listing_number) + '">Full record →</a></div>' +
+    '</div>';
+  }
+  if (d.kind === 'estimate' && d.found) {
+    return '<div class="lk-card">' +
+      '<div class="lk-kind">Estimated from the listing number</div>' +
+      '<div class="lk-big">≈ ' + lkDays(d.days) + '</div>' +
+      '<div class="lk-sub">Listed around ' + esc(d.estimated_listed_date) + '</div>' +
+      '<div class="lk-meta">' + esc(d.note || '') + '</div>' +
+    '</div>';
+  }
+  return '<div class="lk-card">' +
+    '<div class="lk-kind">No answer yet</div>' +
+    '<div class="lk-sub">' + esc(d.note || 'We can’t date that one.') + '</div>' +
+    (d.domain && d.tracked === false
+      ? '<div class="lk-meta"><a href="mailto:info@dealledger.org?subject=Track%20' + encodeURIComponent(d.domain) + '">Ask us to track ' + esc(d.domain) + ' →</a></div>'
+      : '') +
+  '</div>';
+}
+
+lkForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = lkInput.value.trim();
+  lkOut.innerHTML = '';
+  lkMsg.className = 'lk-msg';
+  if (!v) { lkMsg.textContent = 'Paste a listing URL first.'; return; }
+  lkGo.disabled = true;
+  lkMsg.textContent = 'Checking…';
+  if (window.gtag) gtag('event', 'listing_lookup');
+  try {
+    const res = await fetch(API + '/rpc/dl_lookup', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, HEAD),
+      body: JSON.stringify({ q: v })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    lkMsg.textContent = '';
+    lkOut.innerHTML = lkCard(d || {});
+  } catch (err) {
+    lkMsg.className = 'lk-msg err';
+    lkMsg.textContent = 'Lookup failed. Try again in a moment.';
+  } finally {
+    lkGo.disabled = false;
+  }
+});
 
 load();
 </script>
