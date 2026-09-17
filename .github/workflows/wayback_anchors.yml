@@ -1,0 +1,40 @@
+name: Wayback anchor backfill
+
+# Manual only. The Archive is slow and this is not something to run nightly —
+# the calibration moves when we deliberately extend it, not on a cron.
+on:
+  workflow_dispatch:
+    inputs:
+      from_year:
+        description: "First year of Archive captures to read"
+        default: "2019"
+      to_year:
+        description: "Last year"
+        default: "2026"
+      dry_run:
+        description: "Set to 1 to print the anchors without writing them"
+        default: ""
+
+jobs:
+  anchors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Collect anchors from the Internet Archive
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/wayback_anchors.py \
+            --from-year ${{ inputs.from_year || '2019' }} \
+            --to-year ${{ inputs.to_year || '2026' }} \
+            ${{ inputs.dry_run == '1' && '--dry-run' || '' }}
