@@ -1,7 +1,19 @@
 #!/usr/bin/env python3
 """
-export_discovered_ok.py — append broker_discovery status='ok' rows to
-data/brokers_clean.csv, deduping against what's already there.
+export_discovered_ok.py — append resolved brokers to data/brokers_clean.csv,
+deduping against what's already there.
+
+Two sources, because a broker can be resolved by either path:
+  * broker_discovery, status='ok'
+  * broker_sources, discovery_stage='4_producing' with a listing_url
+
+The second was missing until 2026-09-17 and it cost real coverage: seven
+domains holding 395 active listings — vtcommercial.com (200), nashbb.com (62),
+plus.nebba.org (35), plethorabusinesses.com (27) and three dealrelations.com
+sub-brands — sat at 4_producing with a known listings URL and were never in the
+CSV, so nothing refreshed them. vtcommercial.com had gone 15 days; some of the
+others far longer. The scraper only ever reads the CSV, so anything resolved
+but unexported is invisible to it no matter what the database says.
 
 Written for the discover_backlog.py follow-up: once discovery has resolved a
 domain's listings_url, the daily scraper only picks it up if it's in the CSV
@@ -66,6 +78,38 @@ def fetch_ok_rows():
     return rows
 
 
+def fetch_producing_sources():
+    """broker_sources rows that are resolved and have a listings URL.
+
+    4_producing means discovery already proved the site yields listings. If
+    such a row is not in the CSV, nothing crawls it — the database says the
+    broker is live and the scraper never sees it.
+    """
+    rows, offset = [], 0
+    while True:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/broker_sources",
+            headers=sb_headers(),
+            params={"select": "domain,listing_url,homepage_url,company_name,broker_name",
+                    "discovery_stage": "eq.4_producing",
+                    "listing_url": "not.is.null",
+                    "limit": "1000", "offset": str(offset)},
+            timeout=60,
+        )
+        r.raise_for_status()
+        batch = r.json()
+        rows.extend(batch)
+        if len(batch) < 1000:
+            break
+        offset += 1000
+    # Normalise into the same shape fetch_ok_rows() returns.
+    return [{"domain": x.get("domain"),
+             "listings_url": x.get("listing_url"),
+             "url": x.get("homepage_url"),
+             "notes": x.get("company_name") or x.get("broker_name")}
+            for x in rows]
+
+
 def norm_url(u):
     """host (no www) + path, lower-cased, trailing slash dropped."""
     p = urlparse(u.strip())
@@ -114,6 +158,10 @@ def main():
 
     ok_rows = fetch_ok_rows()
     print(f"{len(ok_rows)} status='ok' rows in broker_discovery")
+    src_rows = fetch_producing_sources()
+    print(f"{len(src_rows)} discovery_stage='4_producing' rows in broker_sources")
+    # broker_discovery first: its listings_url has been probed most recently.
+    ok_rows = ok_rows + src_rows
 
     seen, seen_urls = existing_domains()
     print(f"{len(seen)} distinct domains already in {CSV_PATH}")
