@@ -1,0 +1,45 @@
+name: Back up DOM anchors
+
+# The calibration is the one asset that cannot be rebuilt by re-running a
+# scraper: 474 anchors assembled by hand and by archive lookup, spanning
+# 2009-2026. It lives in two Supabase tables and nowhere else. This dumps
+# both to a downloadable artifact, weekly and on demand.
+#
+# Deliberately NOT committed to the repo: the repo is public and the anchor
+# values are the calibration. Download the artifact and keep a copy somewhere
+# that isn't the database.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"        # Mondays, 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Export both anchor tables
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p anchors
+          for t in dom_anchors wayback_anchors; do
+            curl -sS --fail \
+              "$SUPABASE_URL/rest/v1/$t?select=*&limit=100000" \
+              -H "apikey: $SUPABASE_SERVICE_KEY" \
+              -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+              -H "Accept: text/csv" \
+              -o "anchors/$t.csv"
+            echo "$t: $(( $(wc -l < anchors/$t.csv) - 1 )) rows"
+          done
+          date -u +"exported %Y-%m-%dT%H:%M:%SZ" > anchors/README.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: dealledger-anchors-${{ github.run_id }}
+          path: anchors/
+          retention-days: 90
