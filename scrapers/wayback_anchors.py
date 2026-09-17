@@ -85,13 +85,18 @@ def fetch_year(pattern, year, pause):
     pages — the documented way to pull a large result set without asking the
     index to materialise it all at once.
     """
+    # NO collapse=, NO filter= here. The CDX pagination API can't serve a
+    # query that carries either one: it answers "0 pages" and the run looks
+    # like an empty archive (first paged attempt, 2026-09-17, reported no
+    # pages for every year of both sites while an unpaged query had already
+    # returned 25,391 captures for 2019 alone). Both jobs are done in Python
+    # below — the status code is read off each row, and duplicate URLs
+    # collapse naturally when we keep the earliest capture per listing number.
     base = {
         "url": pattern,
         "matchType": "prefix",
         "output": "json",
-        "fl": "original,timestamp",
-        "filter": "statuscode:200",
-        "collapse": "urlkey",
+        "fl": "original,timestamp,statuscode",
         "from": str(year),
         "to": str(year),
         "pageSize": "5",
@@ -124,6 +129,7 @@ def fetch_year(pattern, year, pause):
                 chunk = []
             if chunk and chunk[0][:1] == ["original"]:
                 chunk = chunk[1:]
+            chunk = [r for r in chunk if len(r) < 3 or r[2] == "200"]
             rows.extend(chunk)
         print(f"   {year}: page {page + 1}/{pages}, {len(rows)} rows so far")
         time.sleep(pause)
