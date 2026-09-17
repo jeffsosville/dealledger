@@ -33,10 +33,16 @@ header{border-bottom:1px solid var(--border);padding:18px 0}
 nav{display:flex;gap:20px}
 nav a{font-family:var(--mono);font-size:12px;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:.5px}
 nav a:hover{color:var(--text)}
-.hero{padding:34px 0 22px}
-h1{font-size:26px;line-height:1.25;font-weight:600;letter-spacing:-.4px;max-width:20ch}
+.hero{padding:44px 0 26px}
+h1{font-size:34px;line-height:1.15;font-weight:600;letter-spacing:-.6px;max-width:22ch}
 .hero p{color:var(--text-muted);margin-top:8px;max-width:62ch}
-.lookup{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tagline{font-size:13px;color:var(--text-muted)}
+.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:14px}
+.lede{font-size:16px;color:var(--text-muted);margin-top:10px;max-width:56ch}
+.proof{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:12px}
+.proof strong{color:var(--text)}
+.lookup{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
 .lookup input{flex:1 1 380px;min-width:0;font-family:var(--mono);font-size:13px;padding:13px 14px;border:2px solid var(--text);background:#fff;color:var(--text);outline:none}
 .lookup input::placeholder{color:#a8a29e}
 .lookup button{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:13px 22px;background:var(--text);color:var(--bg);border:2px solid var(--text);cursor:pointer}
@@ -91,7 +97,8 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 .foot a{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);text-decoration:none;margin-right:16px}
 .foot a:hover{color:var(--text)}
 @media(max-width:640px){
-  h1{font-size:22px}
+  h1{font-size:25px}
+  h1 br{display:none}
   .hide-sm{display:none}
   .container{padding:0 16px}
 }
@@ -101,7 +108,10 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 
 <header>
   <div class="container header-content">
-    <a href="/" class="logo">DealLedger</a>
+    <div class="brand">
+      <a href="/" class="logo">DealLedger</a>
+      <span class="tagline">The public record of businesses for sale</span>
+    </div>
     <nav>
       <a href="/why.html">Why</a>
       <a href="/methodology.html">Methodology</a>
@@ -112,8 +122,9 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 
 <div class="container">
   <section class="hero">
-    <h1>How long has it really been for sale?</h1>
-    <p>Every business listed by a broker we track, with the date we first saw it and every change since. Free, open, updated daily.</p>
+    <div class="eyebrow">Open data · Updated daily · No logins, no lead forms</div>
+    <h1>How long has it<br>really been for sale?</h1>
+    <p class="lede">Brokers don’t post listing dates. We write down the day we first see a listing, and every change after it.</p>
     <form class="lookup" id="lkForm">
       <input id="lkInput" type="text" inputmode="url" autocomplete="off"
              placeholder="Paste a listing URL — a broker's page, BizBuySell or BizQuest">
@@ -121,6 +132,8 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     </form>
     <div class="lk-msg" id="lkMsg"></div>
     <div id="lkOut"></div>
+
+    <p class="proof"><strong id="nHero">—</strong> listings from <strong>485</strong> broker sites, recorded daily since March 2026.</p>
 
     <div class="rule">or browse the ledger</div>
 
@@ -270,6 +283,10 @@ function paint(rows){
   const body = $('rows');
   body.classList.remove('is-busy');
   $('n').textContent = total.toLocaleString();
+  const heroN = $('nHero');
+  if (heroN && !q && domFilter === 'all' && !$('fState').value && !$('fMin').value && !$('fMax').value) {
+    heroN.textContent = total.toLocaleString();
+  }
   if (!rows.length) {
     body.innerHTML = '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
   } else {
