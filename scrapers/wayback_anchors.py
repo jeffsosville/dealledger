@@ -53,39 +53,89 @@ SITES = {
 HEADERS = {"User-Agent": "DealLedger anchor builder (dealledger.org; info@dealledger.org)"}
 
 
-def fetch_year(pattern, year, retries=4):
-    """One CDX page per year. Collapsed by urlkey so each listing appears once."""
-    params = {
+def _get(params, retries=5):
+    """
+    One CDX request, with the backoff the Archive expects.
+
+    Their rate limiter answers a burst of large queries with 504s and then
+    refuses connections outright (run 2026-09-17: 2019 returned 25,391 rows,
+    2020 came back with 187, and by 2025 the host stopped answering). Slow and
+    paged finishes; fast and greedy gets cut off with a plausible-looking but
+    wrong result, which is worse than failing.
+    """
+    delay = 30
+    for attempt in range(1, retries + 1):
+        try:
+            r = requests.get(CDX, params=params, headers=HEADERS, timeout=300)
+            if r.status_code == 200:
+                return r.text
+            print(f"      HTTP {r.status_code} (attempt {attempt}/{retries}), waiting {delay}s")
+        except Exception as exc:                       # noqa: BLE001
+            print(f"      {type(exc).__name__} (attempt {attempt}/{retries}), waiting {delay}s")
+        time.sleep(delay)
+        delay = min(delay * 2, 300)
+    return None
+
+
+def fetch_year(pattern, year, pause):
+    """
+    All captures for one year, page by page.
+
+    CDX returns page counts for a query when asked, and serves fixed-size
+    pages — the documented way to pull a large result set without asking the
+    index to materialise it all at once.
+    """
+    base = {
         "url": pattern,
+        "matchType": "prefix",
         "output": "json",
         "fl": "original,timestamp",
         "filter": "statuscode:200",
         "collapse": "urlkey",
         "from": str(year),
         "to": str(year),
-        "limit": "150000",
+        "pageSize": "5",
     }
-    for attempt in range(1, retries + 1):
-        try:
-            r = requests.get(CDX, params=params, headers=HEADERS, timeout=180)
-            if r.status_code == 200:
-                text = r.text.strip()
-                return json.loads(text) if text else []
-            print(f"   CDX {year}: HTTP {r.status_code} (attempt {attempt}/{retries})")
-        except Exception as exc:                       # noqa: BLE001
-            print(f"   CDX {year}: {exc} (attempt {attempt}/{retries})")
-        time.sleep(15 * attempt)
-    return []
+
+    meta = _get(dict(base, showNumPages="true"))
+    if meta is None:
+        print(f"   {year}: could not read page count — skipping")
+        return []
+    try:
+        pages = int(meta.strip() or 0)
+    except ValueError:
+        pages = 0
+    if pages == 0:
+        print(f"   {year}: no pages")
+        return []
+
+    rows = []
+    for page in range(pages):
+        text = _get(dict(base, page=str(page)))
+        if text is None:
+            print(f"   {year}: page {page + 1}/{pages} failed — keeping what we have")
+            break
+        text = text.strip()
+        if text:
+            try:
+                chunk = json.loads(text)
+            except json.JSONDecodeError:
+                print(f"   {year}: page {page + 1} was not JSON — skipping")
+                chunk = []
+            if chunk and chunk[0][:1] == ["original"]:
+                chunk = chunk[1:]
+            rows.extend(chunk)
+        print(f"   {year}: page {page + 1}/{pages}, {len(rows)} rows so far")
+        time.sleep(pause)
+    return rows
 
 
-def collect(from_year, to_year):
+def collect(from_year, to_year, pause, writer=None):
     """{listing_number: {'site':…, 'earliest': 'YYYY-MM-DD', 'captures': n}}"""
     found = {}
     for site, (pattern, number_re) in SITES.items():
         for year in range(from_year, to_year + 1):
-            rows = fetch_year(pattern, year)
-            if rows and rows[0][:1] == ["original"]:
-                rows = rows[1:]
+            rows = fetch_year(pattern, year, pause)
             hits = 0
             for row in rows:
                 if len(row) < 2:
@@ -105,7 +155,11 @@ def collect(from_year, to_year):
                         rec["earliest"] = day
                 hits += 1
             print(f"{site} {year}: {len(rows)} captures, {hits} with a listing number")
-            time.sleep(3)                              # be polite to the Archive
+            # Checkpoint after every year, so a run cut short by the rate
+            # limiter still banks what it collected.
+            if writer and found:
+                writer(sweep(found))
+            time.sleep(pause)
     return found
 
 
@@ -127,7 +181,7 @@ def sweep(found):
     return out
 
 
-def write(rows, url, key, chunk=500):
+def write(rows, url, key, chunk=500, quiet=False):
     endpoint = f"{url.rstrip('/')}/rest/v1/wayback_anchors"
     headers = {
         "apikey": key,
@@ -143,7 +197,8 @@ def write(rows, url, key, chunk=500):
             print(f"❌ write failed at row {i}: HTTP {r.status_code} {r.text[:300]}")
             return written
         written += len(batch)
-        print(f"   wrote {written}/{len(rows)}")
+        if not quiet:
+            print(f"   wrote {written}/{len(rows)}")
     return written
 
 
@@ -152,10 +207,18 @@ def main():
     ap.add_argument("--from-year", type=int, default=2019)
     ap.add_argument("--to-year", type=int, default=datetime.now().year)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--pause", type=float, default=12.0,
+                    help="Seconds between Archive requests (default 12)")
     args = ap.parse_args()
 
-    print(f"Collecting Archive captures {args.from_year}–{args.to_year}…")
-    found = collect(args.from_year, args.to_year)
+    url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SERVICE_KEY")
+    checkpoint = None
+    if not args.dry_run and url and key:
+        checkpoint = lambda rows: write(rows, url, key, quiet=True)
+
+    print(f"Collecting Archive captures {args.from_year}–{args.to_year} "
+          f"({args.pause}s between requests)…")
+    found = collect(args.from_year, args.to_year, args.pause, checkpoint)
     if not found:
         print("No captures found — nothing written.")
         return 1
@@ -171,7 +234,6 @@ def main():
             print(f"   {r['listing_number']:>9}  ≤ {r['bound_date']}  ({r['site']})")
         return 0
 
-    url, key = os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_SERVICE_KEY")
     if not (url and key):
         print("SUPABASE_URL / SUPABASE_SERVICE_KEY not set — printing only.")
         return 1

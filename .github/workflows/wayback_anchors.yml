@@ -14,11 +14,14 @@ on:
       dry_run:
         description: "Set to 1 to print the anchors without writing them"
         default: ""
+      pause:
+        description: "Seconds between Archive requests (raise if it gets throttled)"
+        default: "12"
 
 jobs:
   anchors:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -37,4 +40,5 @@ jobs:
           python3 scrapers/wayback_anchors.py \
             --from-year ${{ inputs.from_year || '2019' }} \
             --to-year ${{ inputs.to_year || '2026' }} \
+            --pause ${{ inputs.pause || '12' }} \
             ${{ inputs.dry_run == '1' && '--dry-run' || '' }}
