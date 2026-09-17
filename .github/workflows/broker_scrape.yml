@@ -12,6 +12,12 @@ on:
       top_n:
         description: "Brokers to attempt"
         default: "100"
+      order:
+        description: "weekly (default) | yield | stale | never"
+        default: "weekly"
+      new_broker_quota:
+        description: "Never-scraped brokers to put at the front"
+        default: "40"
 
 # The commit step pushes back to the repo, so the token needs write.
 permissions:
@@ -61,6 +67,13 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
+          # ORDER=weekly: skip the brokers specialized_scrape.yml already
+          # crawls at 08:00 UTC, refresh the stalest 1/7 of the remaining
+          # producers, and give the freed slots to never-scraped brokers.
+          # ORDER=yield restores the old same-100-every-night behaviour.
+          ORDER: ${{ inputs.order || 'weekly' }}
+          NEW_BROKER_QUOTA: ${{ inputs.new_broker_quota || '40' }}
+          REFRESH_CYCLE_DAYS: "7"
         run: |
           set +e
           timeout --signal=INT 285m \
