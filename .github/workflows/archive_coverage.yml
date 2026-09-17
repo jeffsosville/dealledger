@@ -1,0 +1,35 @@
+name: Archive coverage check
+
+# Read-only measurement: how many of our floor-dated listings did the Internet
+# Archive capture before we started crawling? Decides whether backfilling real
+# ages from the Archive is worth building. Writes nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: "How many broker domains to check (by floor count)"
+        default: "25"
+      pause:
+        description: "Seconds between Archive requests"
+        default: "8"
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Measure
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scrapers/archive_coverage.py \
+            --domains ${{ inputs.domains || '25' }} \
+            --pause ${{ inputs.pause || '8' }} | tee -a "$GITHUB_STEP_SUMMARY"
