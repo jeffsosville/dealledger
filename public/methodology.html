@@ -135,12 +135,62 @@
         </ul>
 
         <h2>Date recovery</h2>
-        <p>Most marketplaces and brokers do not publish the original date a listing was created. To approximate it, DealLedger uses a proprietary methodology that combines listing identifiers, observed appearance dates across collection cycles, and source-specific patterns to estimate when each listing first went live.</p>
-        <p>Estimated listing dates carry a mean error of approximately ±12 days against ground-truth listings where the original date is known. They are intended for relative comparisons (which listing is older, how stale is this inventory) rather than legal or regulatory use.</p>
+        <p>Almost nobody publishes the date a listing went up. We produce two different kinds of date, and we label which is which, because they are not equally strong.</p>
+
+        <p><strong>Observed dates.</strong> For a listing on a broker's own site, the date is simply the first day we saw it. That is an observation, not an estimate. Where a listing was already up the first time we crawled that broker, we can only say the listing is <em>at least</em> that old, and we show it as a floor — <span class="mono">176+ days</span> rather than a bare number.</p>
+
+        <p><strong>Estimated dates.</strong> Marketplace listings carry sequential listing numbers: number 2,400,000 was created before 2,450,000. Given pairs of (number, date) we can place any other number on that line. We call those pairs anchors, and we hold 474 of them, spanning listing 170,683 in 2009 to 2,446,967 in 2026.</p>
+
+        <p>Anchors come from two independent places. Some are listings we watched appear during our own daily crawl. The rest come from the Internet Archive: a capture of a listing page proves that listing existed on the capture date, which makes the capture an upper bound on when it went up. Since numbers are sequential, a capture of a higher number also bounds every lower one, so we sweep from the highest number down and keep the tightest bound each number inherits. Dates derived this way are bounds, so the age they imply is a floor — the listing has been up at least that long, possibly longer.</p>
+
         <div class="callout">
-            <strong>Note</strong>
-            We do not publish the full date-recovery algorithm. The methodology is proprietary, but the resulting estimates are visible in every record as the <span class="mono">estimated_listed_date</span> field.
+            <strong>What we publish and what we don't</strong>
+            The method is described here in full. The anchor values themselves are not published — that is the calibration. Every record carries its resulting <span class="mono">estimated_listed_date</span>, and the lookup on the home page labels each answer as observed, estimated, or a floor.
         </div>
+
+        <h2>How accurate the dates are</h2>
+        <p>We test the estimates rather than asserting a figure, and we publish the results including the parts that don't flatter us.</p>
+
+        <p><strong>Test one: against our own observations.</strong> Where we watched a marketplace listing appear during routine crawling, we can compare what the listing number predicts against the day we actually saw it. Roughly 49,000 pairs, grouped by the month we first saw the listing:</p>
+
+        <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;">
+            <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:6px 8px;" class="mono">First seen</th>
+                <th style="text-align:right;padding:6px 8px;" class="mono">Pairs</th>
+                <th style="text-align:right;padding:6px 8px;" class="mono">Median error</th>
+                <th style="text-align:right;padding:6px 8px;" class="mono">Within 12 days</th>
+            </tr>
+            <tr><td style="padding:6px 8px;">Mar 2026</td><td style="text-align:right;padding:6px 8px;">2,172</td><td style="text-align:right;padding:6px 8px;">72 days</td><td style="text-align:right;padding:6px 8px;">10%</td></tr>
+            <tr><td style="padding:6px 8px;">Apr 2026</td><td style="text-align:right;padding:6px 8px;">3,707</td><td style="text-align:right;padding:6px 8px;">82 days</td><td style="text-align:right;padding:6px 8px;">11%</td></tr>
+            <tr><td style="padding:6px 8px;">May 2026</td><td style="text-align:right;padding:6px 8px;">31,024</td><td style="text-align:right;padding:6px 8px;">66 days</td><td style="text-align:right;padding:6px 8px;">20%</td></tr>
+            <tr><td style="padding:6px 8px;"><strong>Jun 2026</strong></td><td style="text-align:right;padding:6px 8px;">6,860</td><td style="text-align:right;padding:6px 8px;"><strong>1 day</strong></td><td style="text-align:right;padding:6px 8px;"><strong>89%</strong></td></tr>
+            <tr><td style="padding:6px 8px;"><strong>Jul 2026</strong></td><td style="text-align:right;padding:6px 8px;">749</td><td style="text-align:right;padding:6px 8px;"><strong>8 days</strong></td><td style="text-align:right;padding:6px 8px;"><strong>76%</strong></td></tr>
+        </table>
+
+        <p>The March to May rows are not a measure of the model. Those months include a bulk ingest of listings that had been up for a long time before we first saw them, so our sighting is late by construction and the estimate looks early. June and July are steady-state crawling, where our sighting lands close to the real posting date — and there the estimate is accurate to within a day or two, with three quarters to nine tenths of listings inside ±12 days.</p>
+
+        <p><strong>Test two: against an independent source.</strong> Eight Internet Archive captures carry listing numbers inside our calibrated range, so the archive and the calibration can be compared on the same listings. A capture must fall on or after the day a listing went up, so every gap below should be positive:</p>
+
+        <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;">
+            <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left;padding:6px 8px;" class="mono">Listing</th>
+                <th style="text-align:left;padding:6px 8px;" class="mono">Archive capture</th>
+                <th style="text-align:left;padding:6px 8px;" class="mono">Our estimate</th>
+                <th style="text-align:right;padding:6px 8px;" class="mono">Gap</th>
+            </tr>
+            <tr><td style="padding:6px 8px;">2,346,203</td><td style="padding:6px 8px;">Apr 4, 2025</td><td style="padding:6px 8px;">Mar 16, 2025</td><td style="text-align:right;padding:6px 8px;">+19 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,446,967</td><td style="padding:6px 8px;">Dec 18, 2025</td><td style="padding:6px 8px;">Dec 2, 2025</td><td style="text-align:right;padding:6px 8px;">+16 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,341,158</td><td style="padding:6px 8px;">Apr 4, 2025</td><td style="padding:6px 8px;">Mar 2, 2025</td><td style="text-align:right;padding:6px 8px;">+33 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,405,299</td><td style="padding:6px 8px;">Sep 24, 2025</td><td style="padding:6px 8px;">Aug 22, 2025</td><td style="text-align:right;padding:6px 8px;">+33 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,338,082</td><td style="padding:6px 8px;">Apr 4, 2025</td><td style="padding:6px 8px;">Feb 22, 2025</td><td style="text-align:right;padding:6px 8px;">+41 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,394,113</td><td style="padding:6px 8px;">Jan 2, 2026</td><td style="padding:6px 8px;">Jul 23, 2025</td><td style="text-align:right;padding:6px 8px;">+163 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,334,126</td><td style="padding:6px 8px;">Sep 24, 2025</td><td style="padding:6px 8px;">Feb 11, 2025</td><td style="text-align:right;padding:6px 8px;">+225 days</td></tr>
+            <tr><td style="padding:6px 8px;">2,434,006</td><td style="padding:6px 8px;">Oct 31, 2025</td><td style="padding:6px 8px;">Nov 4, 2025</td><td style="text-align:right;padding:6px 8px;">−4 days</td></tr>
+        </table>
+
+        <p>Seven of the eight are positive, and the tight cluster — 16 to 41 days — is the informative part: the Archive captured those pages a few weeks after we say they were listed, which is how archive crawling behaves. The two large gaps are listings the Archive simply reached months later. The single negative is four days, inside the rounding of interpolation between anchors, and it is the only case where our estimate falls later than a capture proves the listing existed.</p>
+
+        <p>What this does and does not show: two methods built from different evidence — our own crawl, and a public archive — agree to within a few weeks on the same listings, and neither is systematically early or late by months. It is not a certified accuracy figure, the sample of eight is small, and the estimates remain estimates.</p>
 
         <h2>Relist detection</h2>
         <p>When a listing disappears and a new listing for what appears to be the same business appears later, DealLedger flags the new listing as relisted. Detection is based on a combination of broker identity, geography, price band, category, and content fingerprinting. Relisting is meaningful — it indicates that a business returned to market, often at a different price, after failing to sell the first time.</p>
@@ -175,13 +225,15 @@
         <p>DealLedger is a best-effort observational record, not an authoritative registry. Specifically:</p>
         <ul>
             <li>Coverage is incomplete. Brokers not yet in our source list, off-market deals, and listings on social media or in private networks are not captured.</li>
-            <li>Estimated listing dates carry meaningful error and should not be relied on for legal, regulatory, or transactional purposes.</li>
+            <li>Estimated listing dates carry meaningful error and should not be relied on for legal, regulatory, or transactional purposes. Measured accuracy, and the conditions it holds under, are published above.</li>
+            <li>Dates derived from Internet Archive captures are upper bounds, not exact dates. A listing shown as "at least 783 days" may well be older; it cannot be newer.</li>
+            <li>Between listing 2,199,972 (May 2024) and 2,312,165 (December 2024) we hold no anchor, and dates in that range are interpolated across the gap.</li>
             <li>Marketplace listings can be reposted, refreshed, or boosted in ways that affect apparent listing age. We attempt to detect these but do not catch all of them.</li>
             <li>Listing content (price, headline, category) reflects what the source publishes. If a broker publishes inflated or stale information, we record what we observe.</li>
         </ul>
 
         <p style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted);">
-            Last updated: <span class="mono">May 2026</span>.
+            Last updated: <span class="mono">September 2026</span>.
             Questions: <a href="mailto:info@dealledger.org" class="inline">info@dealledger.org</a>.
         </p>
     </div>
