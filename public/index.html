@@ -1,401 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DealLedger — Public Record of Businesses for Sale</title>
-    <meta name="description" content="An open public ledger of every business for sale in America.">
-    <link rel="canonical" href="https://dealledger.org/">
-
-    <!-- Warm up the API socket before any JS runs. Saves ~100-200ms on the
-         first data request, which is now on the critical path. -->
-    <link rel="preconnect" href="https://kqckuedsyyosmccushyd.supabase.co" crossorigin>
-    <link rel="dns-prefetch" href="https://kqckuedsyyosmccushyd.supabase.co">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Analytics deferred: it was blocking nothing useful but competing for
-         connections during first paint. -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-P8PBL3LPF2');
-    </script>
-
-    <style>
-        :root {
-            --bg: #fafaf9;
-            --bg-alt: #f5f5f4;
-            --border: #d4d4d4;
-            --text: #1c1917;
-            --text-muted: #78716c;
-            --link: #0c4a6e;
-            --accent: #c2410c;
-            --mono: 'IBM Plex Mono', monospace;
-            --sans: 'IBM Plex Sans', sans-serif;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        th.sortable { cursor: pointer; user-select: none; }
-        th.sortable:hover { color: #0c4a6e; }
-        .sort-arrow { font-size: 11px; margin-left: 3px; color: #c2410c; }
-        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
-        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
-        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
-        .tagline { font-size: 13px; color: var(--text-muted); }
-        nav { display: flex; gap: 24px; }
-        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
-        nav a:hover { color: var(--text); }
-        .stats-bar { border-bottom: 1px solid var(--border); padding: 16px 0; background: var(--bg-alt); }
-        .search-section { border-bottom: 1px solid var(--border); padding: 20px 0 0; background: var(--bg); }
-        .search-bar-wrap { position: relative; margin-bottom: 14px; }
-        .search-bar { width: 100%; font-family: var(--sans); font-size: 15px; padding: 12px 90px 12px 16px; border: 2px solid var(--border); background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
-        .search-bar:focus { border-color: var(--text); }
-        .search-bar::placeholder { color: #a8a29e; }
-        .search-actions { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; gap: 6px; }
-        .btn-search { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 14px; border: 1px solid var(--border); background: var(--bg-alt); color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
-        .btn-search:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .filter-strip { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding-bottom: 14px; }
-        .filter-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
-        .filter-select { font-family: var(--mono); font-size: 12px; padding: 6px 28px 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2378716c' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
-        .filter-range { display: flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: var(--bg); padding: 0 8px; }
-        .filter-range input { font-family: var(--mono); font-size: 12px; width: 80px; padding: 6px 0; border: none; background: transparent; color: var(--text); outline: none; }
-        .filter-range input::placeholder { color: #a8a29e; }
-        .filter-range span { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
-        .dom-btns { display: flex; gap: 4px; }
-        .dom-btn { font-family: var(--mono); font-size: 11px; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; letter-spacing: 0.03em; transition: all 0.12s; white-space: nowrap; }
-        .dom-btn:hover { border-color: var(--text); color: var(--text); }
-        .dom-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .results-count { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
-        .btn-clear { font-family: var(--mono); font-size: 11px; padding: 6px 10px; border: 1px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; }
-        .btn-clear:hover { color: var(--text); }
-        .signal-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 0 14px; border-top: 1px solid var(--border); }
-        .legend-item { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; color: var(--text-muted); }
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border); background: var(--bg-alt); white-space: nowrap; }
-        td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        tr:hover td { background: var(--bg-alt); }
-        .col-date { font-family: var(--mono); font-size: 12px; color: var(--text-muted); white-space: nowrap; }
-        .col-title { max-width: 300px; }
-        .col-title a { color: var(--text); text-decoration: none; }
-        .col-title a:hover { text-decoration: underline; }
-        .col-state { font-family: var(--mono); font-size: 12px; }
-        .col-price { font-family: var(--mono); font-size: 12px; text-align: right; white-space: nowrap; }
-        .dom-badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 2px; }
-        .dom-fresh  { background: #dcfce7; color: #166534; }
-        .dom-normal { background: #f5f5f4; color: #78716c; }
-        .dom-stale  { background: #fef3c7; color: #92400e; }
-        .dom-hot    { background: #ffedd5; color: #c2410c; }
-        .dom-zombie { background: #fee2e2; color: #991b1b; }
-        .sig-relisted { background:#fef3c7; color:#92400e; border:1px solid #f59e0b; font-size:10px; padding:2px 6px; border-radius:3px; font-family:var(--mono); }
-        .sig-badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 2px; margin-left: 5px; white-space: nowrap; }
-        .sig-gem        { background: #d1fae5; color: #065f46; }
-        .sig-hot        { background: #fee2e2; color: #991b1b; }
-        .sig-overpriced { background: #fef3c7; color: #92400e; }
-        .sig-dead       { background: #f5f5f4; color: #a8a29e; }
-        .pagination { padding: 20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .page-btn { font-family: var(--mono); font-size: 12px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; text-decoration: none; }
-        .page-btn:hover { background: var(--bg-alt); }
-        .page-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 40px; }
-        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
-        .footer-text { font-size: 12px; color: var(--text-muted); }
-        .footer-links { display: flex; gap: 20px; }
-        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
-        .footer-links a:hover { color: var(--text); }
-        .notice { font-family: var(--mono); font-size: 11px; color: var(--text-muted); padding: 12px 16px; background: var(--bg-alt); border: 1px solid var(--border); margin: 20px 0; }
-        .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); font-family: var(--mono); font-size: 13px; }
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-        .about-section { border-top: 1px solid var(--border); padding: 48px 0; margin-top: 48px; background: var(--bg-alt); }
-        .about-content { max-width: 680px; }
-        .about-title { font-family: var(--mono); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 24px; color: var(--text); }
-        .about-text { font-size: 14px; line-height: 1.7; color: var(--text); }
-        .about-text p { margin-bottom: 16px; }
-        .about-text strong { font-weight: 600; }
-        .about-links { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
-        .about-link { font-family: var(--mono); font-size: 12px; color: var(--link); text-decoration: none; }
-        .about-link:hover { text-decoration: underline; }
-
-        /* Skeleton rows during fetch. Holding the table's height stops the
-           page jumping when real rows land. */
-        .skel td { padding: 10px 16px; }
-        .skel span {
-            display: block; height: 11px; border-radius: 2px;
-            background: linear-gradient(90deg,#eeecea 25%,#e2dfdc 37%,#eeecea 63%);
-            background-size: 400% 100%;
-            animation: shimmer 1.3s ease-in-out infinite;
-        }
-        @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
-        @media (prefers-reduced-motion: reduce) { .skel span { animation: none; } }
-
-        /* Dim the table while a new page is in flight, so filter clicks feel
-           acknowledged instantly even before data returns. */
-        #listings-body.is-busy { opacity: .45; transition: opacity .12s; }
-
-        /* ---------- Listing lookup ---------- */
-        .lookup-section { border-bottom: 1px solid var(--border); padding: 36px 0; background: #ffffff; }
-        .lookup-inner { max-width: 760px; }
-        .lookup-title { font-family: var(--mono); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: var(--text); }
-        .lookup-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px; }
-        .lookup-form { display: flex; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
-        .lookup-input { flex: 1 1 340px; min-width: 0; padding: 11px 14px; font-family: var(--mono); font-size: 13px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
-        .lookup-input:focus { border-color: var(--text); }
-        .lookup-input::placeholder { color: #a8a29e; }
-        .lookup-btn { padding: 11px 22px; font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--text); color: var(--bg); border: 1px solid var(--text); cursor: pointer; white-space: nowrap; }
-        .lookup-btn:disabled { opacity: 0.5; cursor: default; }
-        .lookup-msg { font-family: var(--mono); font-size: 12px; color: var(--text-muted); min-height: 18px; }
-        .lookup-msg.is-error { color: #991b1b; }
-
-        .lk-card { margin-top: 18px; border: 1px solid var(--border); background: var(--bg); }
-        .lk-head { padding: 18px 20px 0; }
-        .lk-title { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 6px; }
-        .lk-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-muted); display: flex; gap: 14px; flex-wrap: wrap; }
-        .lk-counter { padding: 20px 20px 0; display: flex; align-items: baseline; gap: 11px; }
-        .lk-days { font-family: var(--mono); font-weight: 600; font-size: clamp(46px, 11vw, 68px); line-height: 0.88; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--lk-sig, var(--text)); }
-        .lk-days-label { font-size: 13px; color: var(--text-muted); }
-        .lk-since { font-family: var(--mono); font-size: 11.5px; color: var(--text-muted); padding: 9px 20px 0; }
-        .lk-rail { padding: 16px 20px 20px; }
-        .lk-track { position: relative; height: 3px; background: var(--border); }
-        .lk-fill { position: absolute; top: 0; left: 0; height: 3px; width: 0; background: var(--lk-sig, var(--text)); transition: width 0.7s cubic-bezier(0.2, 0.7, 0.3, 1); }
-        .lk-ticks { display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; color: #a8a29e; }
-        .lk-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
-        .lk-cell { padding: 14px 20px; border-right: 1px solid var(--border); }
-        .lk-cell:nth-child(2n) { border-right: 0; }
-        .lk-cell:nth-child(n+3) { border-top: 1px solid var(--border); }
-        .lk-k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
-        .lk-v { font-family: var(--mono); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
-        .lk-v span { font-family: var(--sans); font-size: 11px; font-weight: 400; color: var(--text-muted); margin-left: 5px; }
-        .lk-note { padding: 12px 20px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text-muted); line-height: 1.5; }
-        @media (prefers-reduced-motion: reduce) { .lk-fill { transition: none; } }
-
-        @media (max-width: 768px) {
-            .header-content { flex-direction: column; align-items: flex-start; }
-            .filter-strip { flex-direction: column; align-items: flex-start; }
-            .results-count { margin-left: 0; }
-            th, td { padding: 8px 10px; }
-            .col-title { max-width: 180px; }
-        }
-        @media (max-width: 600px) {
-            .lk-grid { grid-template-columns: 1fr; }
-            .lk-cell { border-right: 0; }
-            .lk-cell:nth-child(n+2) { border-top: 1px solid var(--border); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DealLedger — How long has it really been for sale?</title>
+<meta name="description" content="Every business listed for sale by a broker, with the date we first saw it. Open data, updated daily.">
+<link rel="canonical" href="https://dealledger.org/">
+<link rel="preconnect" href="https://kqckuedsyyosmccushyd.supabase.co" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-P8PBL3LPF2');
+</script>
+<style>
+:root{
+  --bg:#fafaf9; --bg-alt:#f5f5f4; --border:#d4d4d4; --text:#1c1917;
+  --text-muted:#78716c; --link:#0c4a6e; --accent:#c2410c;
+  --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+a{color:var(--link)}
+header{border-bottom:1px solid var(--border);padding:18px 0}
+.header-content{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+.logo{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+nav{display:flex;gap:20px}
+nav a{font-family:var(--mono);font-size:12px;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:.5px}
+nav a:hover{color:var(--text)}
+.hero{padding:44px 0 26px}
+h1{font-size:34px;line-height:1.15;font-weight:600;letter-spacing:-.6px;max-width:22ch}
+.hero p{color:var(--text-muted);margin-top:8px;max-width:62ch}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tagline{font-size:13px;color:var(--text-muted)}
+.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:14px}
+.lede{font-size:16px;color:var(--text-muted);margin-top:10px;max-width:56ch}
+.proof{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:12px}
+.proof strong{color:var(--text)}
+.lookup{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
+.lookup input{flex:1 1 380px;min-width:0;font-family:var(--mono);font-size:13px;padding:13px 14px;border:2px solid var(--text);background:#fff;color:var(--text);outline:none}
+.lookup input::placeholder{color:#a8a29e}
+.lookup button{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:13px 22px;background:var(--text);color:var(--bg);border:2px solid var(--text);cursor:pointer}
+.lookup button:disabled{opacity:.5;cursor:default}
+.lk-msg{font-family:var(--mono);font-size:12px;color:var(--text-muted);min-height:18px;margin-top:8px}
+.lk-msg.err{color:#991b1b}
+.lk-card{border:1px solid var(--border);background:#fff;padding:18px 20px;margin-top:10px}
+.lk-kind{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:6px}
+.lk-head{font-size:17px;font-weight:600;margin-bottom:4px}
+.lk-big{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1.1;margin:10px 0 2px}
+.lk-sub{font-size:13px;color:var(--text-muted)}
+.lk-meta{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:8px}
+.rule{display:flex;align-items:center;gap:12px;margin:26px 0 0;color:var(--text-muted);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.rule:before,.rule:after{content:"";flex:1;height:1px;background:var(--border)}
+.search-wrap{margin-top:20px}
+.search-bar{width:100%;font-family:var(--sans);font-size:16px;padding:14px 16px;border:2px solid var(--text);background:#fff;color:var(--text);outline:none}
+.search-bar::placeholder{color:#a8a29e}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+select,input[type=text].num{font-family:var(--mono);font-size:12px;padding:7px 8px;border:1px solid var(--border);background:#fff;color:var(--text)}
+input[type=text].num{width:96px}
+.chips{display:flex;gap:6px}
+.chip{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:7px 11px;border:1px solid var(--border);background:#fff;color:var(--text-muted);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:var(--bg)}
+.reset{font-family:var(--mono);font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+.count{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin:16px 0 8px}
+.count strong{color:var(--text)}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border)}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg-alt);white-space:nowrap}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--text)}
+.sort-arrow{color:var(--accent);margin-left:3px}
+td.num,th.num{text-align:right;font-family:var(--mono);white-space:nowrap}
+td.state{font-family:var(--mono);color:var(--text-muted)}
+.title a{color:var(--text);text-decoration:none;font-weight:500}
+.title a:hover{text-decoration:underline}
+.src{margin-left:6px;font-size:12px;text-decoration:none}
+.days{font-family:var(--mono);font-weight:600}
+.d0{color:#15803d}.d1{color:var(--text)}.d2{color:#b45309}.d3{color:#b91c1c}
+.foot-note{font-size:12px;color:var(--text-muted);margin-top:10px}
+.about{border-top:1px solid var(--border);padding:28px 0 6px;max-width:72ch}
+.about h2{font-family:var(--mono);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.about p{margin-bottom:10px;color:var(--text-muted)}
+.about strong{color:var(--text)}
+.pager{display:flex;gap:10px;align-items:center;justify-content:center;padding:18px 0 40px;font-family:var(--mono);font-size:12px}
+.pager button{font-family:var(--mono);font-size:12px;padding:7px 14px;border:1px solid var(--border);background:#fff;cursor:pointer}
+.pager button:disabled{opacity:.4;cursor:default}
+.empty{padding:40px;text-align:center;color:var(--text-muted)}
+.is-busy{opacity:.45}
+footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 0;margin-top:20px}
+.foot{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;font-size:13px;color:var(--text-muted)}
+.foot a{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);text-decoration:none;margin-right:16px}
+.foot a:hover{color:var(--text)}
+@media(max-width:640px){
+  h1{font-size:25px}
+  h1 br{display:none}
+  .hide-sm{display:none}
+  .container{padding:0 16px}
+}
+</style>
 </head>
 <body>
 
 <header>
-    <div class="container">
-        <div class="header-content">
-            <div>
-                <a href="/" class="logo">DealLedger</a>
-                <span class="tagline">— An open ledger of every business for sale in America</span>
-            </div>
-            <nav>
-                <a href="/methodology.html">Methodology</a>
-                <a href="#about">About</a>
-                <a href="/pulse.html">Market Pulse</a>
-                <a href="/brokers">Brokers</a>
-            </nav>
-        </div>
+  <div class="container header-content">
+    <div class="brand">
+      <a href="/" class="logo">DealLedger</a>
+      <span class="tagline">The public record of businesses for sale</span>
     </div>
+    <nav>
+      <a href="/why.html">Why</a>
+      <a href="/methodology.html">Methodology</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
 </header>
 
-<div class="search-section">
-    <div class="container">
-        <div class="search-bar-wrap">
-            <input type="text" class="search-bar" id="searchInput" placeholder="Search by keyword, category, or location..." autocomplete="off">
-            <div class="search-actions">
-                <button class="btn-search" onclick="runKeywordSearch()">Search</button>
-            </div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Open data · Updated daily · No logins, no lead forms</div>
+    <h1>How long has it<br>really been for sale?</h1>
+    <p class="lede">We read every broker site we can find and write down what we see: when a listing appeared, what changed, when it came down.</p>
+    <form class="lookup" id="lkForm">
+      <input id="lkInput" type="text" inputmode="url" autocomplete="off"
+             placeholder="Paste a listing URL — a broker's page, BizBuySell or BizQuest">
+      <button id="lkGo" type="submit">Check</button>
+    </form>
+    <div class="lk-msg" id="lkMsg"></div>
+    <div id="lkOut"></div>
+
+    <p class="proof"><strong id="nHero">—</strong> listings on the record since March 2026. Data is CC0, the code is public.</p>
+
+    <div class="rule">or browse the ledger</div>
+
+    <div class="search-wrap">
+      <input id="q" class="search-bar" type="search" placeholder="Search listings — laundromat, HVAC, Texas, vending route…" autocomplete="off">
+      <div class="controls">
+        <select id="fState"><option value="">All states</option></select>
+        <input id="fMin" class="num" type="text" placeholder="Min $" inputmode="numeric">
+        <input id="fMax" class="num" type="text" placeholder="Max $" inputmode="numeric">
+        <div class="chips" role="group" aria-label="Days listed">
+          <button class="chip" data-dom="all" aria-pressed="true">Any age</button>
+          <button class="chip" data-dom="fresh" aria-pressed="false">New (30d)</button>
+          <button class="chip" data-dom="recent" aria-pressed="false">90 days</button>
+          <button class="chip" data-dom="stale" aria-pressed="false">90d+</button>
         </div>
-        <div class="filter-strip">
-            <span class="filter-label">Filter:</span>
-            <select id="filter-state" class="filter-select" onchange="applyFilters()">
-                <option value="">All States</option>
-            </select>
-            <div class="filter-range">
-                <input type="text" id="fPriceMin" placeholder="Price min" oninput="debouncedFilter()">
-                <span>–</span>
-                <input type="text" id="fPriceMax" placeholder="max" oninput="debouncedFilter()">
-            </div>
-            <div class="dom-btns">
-                <button class="dom-btn active" id="domAll"    onclick="setDOM('all')">All</button>
-                <button class="dom-btn"        id="domFresh"  onclick="setDOM('fresh')"  title="≤30 days">Fresh</button>
-                <button class="dom-btn"        id="domNew"    onclick="setDOM('new')"    title="≤90 days">&lt;90d</button>
-                <button class="dom-btn"        id="domStale"  onclick="setDOM('stale')"  title="90–365 days">Stale</button>
-                <button class="dom-btn"        id="domZombie" onclick="setDOM('zombie')" title="365+ days">Zombie</button>
-            </div>
-            <select id="filter-signal" class="filter-select" onchange="applyFilters()">
-                <option value="">Any Signal</option>
-                <option value="gem">★ Hidden Gem</option>
-                <option value="hot">🔥 Hot</option>
-                <option value="overpriced">⚠ Overpriced?</option>
-                <option value="dead">• Dead</option>
-                <option value="relisted">↩ Previously Listed</option>
-            </select>
-            <button class="btn-clear" onclick="clearAll()">✕ Clear</button>
-            <span class="results-count"><span id="filtered-count">—</span> results</span>
-        </div>
-        <div class="signal-legend">
-            <div class="legend-item"><span class="sig-badge sig-gem">★ Hidden Gem</span> Low DOM + low views — under the radar</div>
-            <div class="legend-item"><span class="sig-badge sig-hot">🔥 Hot</span> Low DOM + high views — moving fast</div>
-            <div class="legend-item"><span class="sig-badge sig-overpriced">⚠ Overpriced?</span> High DOM + high views — sitting despite interest</div>
-            <div class="legend-item"><span class="sig-badge sig-dead">• Dead</span> High DOM + low views — ignored</div>
-            <div class="legend-item"><span class="sig-relisted">↩ Previously Listed</span> Previously listed with a different ID</div>
-        </div>
+        <button id="reset" class="reset">Reset</button>
+      </div>
     </div>
+  </section>
+
+  <div class="count"><strong id="n">—</strong> listings</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="sortable" data-sort="estimated_listed_date">First seen<span class="sort-arrow" data-for="estimated_listed_date"></span></th>
+        <th>Business</th>
+        <th class="hide-sm">State</th>
+        <th class="num sortable" data-sort="price">Price<span class="sort-arrow" data-for="price"></span></th>
+        <th class="num sortable" data-sort="days">Days<span class="sort-arrow" data-for="days"></span></th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p class="foot-note">“Days” counts from the first time we saw the listing. A <strong>+</strong> means it was already up when we started tracking that broker, so it is at least that old.</p>
+
+  <div class="pager">
+    <button id="prev">← Prev</button>
+    <span id="pageInfo"></span>
+    <button id="next">Next →</button>
+  </div>
+
+  <section id="about" class="about">
+    <h2>About DealLedger</h2>
+    <p><strong>The problem.</strong> There is no public registry of small businesses for sale. Listing dates are hidden, the same business turns up on several sites under different numbers, and stale listings inflate every count.</p>
+    <p><strong>What this is.</strong> An open record of businesses listed for sale by brokers. We read every broker site we can find — 485 and increasing daily — write down what we see, and keep the history: when a listing appeared, what changed, when it came down. The data is CC0 and the code is public.</p>
+    <p><strong>What this isn’t.</strong> We don’t rank listings, recommend brokers, capture leads or broker deals. A record, not a marketplace.</p>
+    <p><strong>How the dates work.</strong> Days listed counts from the first time we saw a listing ourselves, starting March 2026. A <strong>+</strong> means it was already up when we first crawled that broker, so it is at least that old. Paste a BizBuySell or BizQuest URL into the box above and we estimate the date from where its listing number falls between our calibration points — labelled as an estimate, because that is what it is.</p>
+  </section>
 </div>
 
-<!-- ============================ LISTING LOOKUP ============================ -->
-<section id="lookup" class="lookup-section">
-    <div class="container">
-        <div class="lookup-inner">
-            <h2 class="lookup-title">How long has it really been listed?</h2>
-            <p class="lookup-sub">Paste any business-for-sale listing URL. You'll get the date it went up, how long it's been sitting, and how much traffic it's getting.</p>
-            <form class="lookup-form" id="lkForm">
-                <input type="text" class="lookup-input" id="lkInput" inputmode="url" autocomplete="off"
-                       placeholder="listing URL or number" aria-label="Listing URL or number">
-                <button type="submit" class="lookup-btn" id="lkGo">Look up</button>
-            </form>
-            <div class="lookup-msg" id="lkMsg"></div>
-            <div id="lkOut"></div>
-        </div>
-    </div>
-</section>
-
-<main class="container">
-    <div class="notice" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-        <span>Observed from public sources. Normalized for consistency. No rankings. No promotion. No lead capture.
-        <a href="/methodology.html">Read methodology →</a></span>
-        <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">Get the weekly data report →</span>
-            <a href="/pulse.html" style="font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;padding:6px 14px;background:var(--text);color:var(--bg);text-decoration:none;border:1px solid var(--text);">Market Pulse</a>
-        </div>
-    </div>
-    <div class="table-container">
-        <table id="listings-table">
-            <thead>
-                <tr>
-                    <th class="sortable" onclick="setSort('estimated_listed_date')" id="th-listed">Est. Listed <span class="sort-arrow">↓</span></th>
-                    <th>Title</th>
-                    <th class="sortable" onclick="setSort('state')" id="th-state">State <span class="sort-arrow"></span></th>
-                    <th class="sortable" style="text-align:right" onclick="setSort('price')" id="th-price">Price <span class="sort-arrow"></span></th>
-                    <th class="sortable" style="text-align:right" onclick="setSort('days_on_market')" id="th-dom">DOM (est.) <span class="sort-arrow"></span></th>
-                </tr>
-            </thead>
-            <tbody id="listings-body"></tbody>
-        </table>
-    </div>
-    <div class="pagination" id="pagination"></div>
-</main>
-
-<!-- SUBMIT BROKER -->
-<section id="submit" style="border-top:1px solid #d4d4d4;padding:48px 0;background:#fff7ed;">
-    <div class="container"><div style="max-width:680px;">
-        <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Submit a Broker</h2>
-        <p style="font-size:14px;color:#78716c;margin-bottom:20px;line-height:1.6;">Know a business broker with listings online? Submit their URL and we'll add them to the ledger.</p>
-        <form id="brokerForm" style="display:flex;gap:10px;margin-bottom:10px;">
-            <input type="url" id="brokerUrl" placeholder="https://broker-website.com/listings" required style="flex:1;padding:10px 14px;font-family:var(--mono);font-size:13px;border:1px solid #d4d4d4;background:#fafaf9;color:#1c1917;">
-            <button type="submit" style="padding:10px 20px;font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:#1c1917;color:#fafaf9;border:1px solid #1c1917;cursor:pointer;white-space:nowrap;">Submit URL</button>
-        </form>
-        <div style="font-family:var(--mono);font-size:11px;color:#78716c;">We review submissions weekly.</div>
-        <div id="submitStatus" style="font-family:var(--mono);font-size:12px;margin-top:10px;display:none;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;"></div>
-    </div></div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section style="border-top:1px solid #d4d4d4;padding:48px 0;">
-    <div class="container">
-        <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:24px;">How It Works</h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
-                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">01 — OBSERVE</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Collect + normalize</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">Listings collected daily from major business marketplaces and 1,700+ individual broker websites. Two sources, one ledger.</p>
-            </div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
-                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">02 — TIMESTAMP</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Recover listing dates</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">Marketplaces hide listing dates. We recover them from the marketplace's own listing sequence, calibrated against dated crawl snapshots going back to December 2024.</p>
-            </div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
-                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">03 — TRACK</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Append-only history</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">Every listing change is recorded. Removals, relists, price changes — nothing is overwritten or deleted.</p>
-            </div>
-            <div style="padding:20px;border:1px solid #d4d4d4;background:#fafaf9;">
-                <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:#c2410c;margin-bottom:6px;">04 — MEASURE</div>
-                <h3 style="font-size:15px;font-weight:600;margin-bottom:4px;">Liquidity intelligence</h3>
-                <p style="font-size:13px;color:#78716c;line-height:1.5;">Days on market, zombie rate, disappearance detection, state-level liquidity index. Published monthly in the SMB Liquidity Report.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PRINCIPLES -->
-<section style="border-top:1px solid #d4d4d4;padding:48px 0;background:#f5f5f4;">
-    <div class="container"><div style="max-width:680px;">
-        <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">Principles</h2>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Source-linked.</strong> <span style="color:#78716c;">Every record links back to its original source listing.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Timestamped.</strong> <span style="color:#78716c;">First seen, last seen, and every change in between.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Documented.</strong> <span style="color:#78716c;">The methodology is public. Every field is defined.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>Append-only.</strong> <span style="color:#78716c;">We do not edit history. Removals are recorded, not deleted.</span></p>
-        <p style="font-size:14px;line-height:2;"><span style="font-family:var(--mono);font-size:12px;color:#c2410c;">→</span> <strong>No opinions.</strong> <span style="color:#78716c;">We do not rank brokers. We publish what we observe.</span></p>
-    </div></div>
-</section>
-
-<!-- WHAT THIS IS -->
-<section style="border-top:1px solid #d4d4d4;padding:48px 0;">
-    <div class="container">
-        <h2 style="font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:20px;">What This Is — and Is Not</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#d4d4d4;border:1px solid #d4d4d4;max-width:500px;">
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A marketplace</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ A public record</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">Lead generation</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ Market intelligence</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A marketplace competitor</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ EDGAR for Main Street</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#78716c;text-decoration:line-through;">A product</div>
-            <div style="padding:12px 16px;font-family:var(--mono);font-size:12px;background:#fafaf9;color:#166534;">✓ Infrastructure</div>
-        </div>
-    </div>
-</section>
-
-<section id="about" class="about-section">
-    <div class="container"><div class="about-content">
-        <h2 class="about-title">About DealLedger</h2>
-        <div class="about-text">
-            <p><strong>The problem:</strong> There is no public registry for small business transactions. The same listing appears across multiple sites, listing dates are hidden, and inventory numbers are inflated by stale and zombie listings. The market is opaque by design.</p>
-            <p><strong>What this is:</strong> DealLedger is an open public ledger for businesses for sale. We collect listings from major marketplaces and broker websites, recover listing dates through our proprietary methodology, and publish everything as open data.</p>
-            <p><strong>What this isn't:</strong> We don't rank listings. We don't recommend brokers. We don't capture leads. We don't broker deals. This is a record, not a marketplace.</p>
-            <p><strong>How it works:</strong> Two data layers — marketplace listings (40k+ records, daily updates) and broker-direct listings from 1,700+ broker sites. The methodology is documented. Anyone can verify what we observe.</p>
-        </div>
-        <div class="about-links">
-            <a href="/methodology.html" class="about-link">→ Read the methodology</a>
-            <a href="/brokers" class="about-link">→ See all tracked brokers</a>
-            <a href="/pulse.html" class="about-link">→ Market Pulse (weekly report)</a>
-        </div>
-    </div></div>
-</section>
-
 <footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
-            <div class="footer-links">
-                <a href="/methodology.html">Methodology</a>
-                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
-            </div>
-        </div>
+  <div class="container foot">
+    <div>
+      <a href="/why.html">Why</a>
+      <a href="/methodology.html">Methodology</a>
+      <a href="mailto:info@dealledger.org?subject=Add%20our%20listings%20to%20DealLedger">Add your listings</a>
+      <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report an issue</a>
     </div>
+    <div>Open data, CC0. Source on <a href="https://github.com/jeffsosville/dealledger">GitHub</a>.</div>
+  </div>
 </footer>
 
 <script>
@@ -405,496 +204,206 @@ const API  = SUPABASE_URL + '/rest/v1';
 const HEAD = { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON };
 const PER_PAGE = 50;
 
-/* The page used to download the entire index before rendering anything --
-   31 requests for listings plus 44 for the DOM view, with nothing on screen
-   until both finished. Everything now comes from mv_listings_page one page
-   at a time, with Postgres doing the filtering, sorting and counting. */
+const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
-let currentPage   = 1;
-let totalRows     = 0;
-let sortField     = 'estimated_listed_date';
-let sortDir       = -1;
-let domFilter     = 'all';
-let keywordFilter = '';
-let debounceTimer = null;
-let reqToken      = 0;                  // discards out-of-order responses
-const pageCache   = new Map();          // key -> {rows,total}, cleared on filter change
+let page = 1, total = 0, sortField = 'days', sortDir = -1, domFilter = 'all', q = '';
+let token = 0, timer = null;
+const cache = new Map();
 
-/* ---------------------------------------------------------------- */
-/* formatting                                                        */
-/* ---------------------------------------------------------------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => v ? (parseInt(String(v).replace(/[^0-9]/g,''),10) || null) : null;
 
-function signalBadge(sig) {
-    if (sig === 'gem')        return '<span class="sig-badge sig-gem">★ Hidden Gem</span>';
-    if (sig === 'hot')        return '<span class="sig-badge sig-hot">🔥 Hot</span>';
-    if (sig === 'overpriced') return '<span class="sig-badge sig-overpriced">⚠ Overpriced?</span>';
-    if (sig === 'dead')       return '<span class="sig-badge sig-dead">• Dead</span>';
-    return '';
+function price(p){
+  if (!p) return '—';
+  if (p >= 1000000) return '$' + (p/1000000).toFixed(1) + 'M';
+  if (p >= 1000) return '$' + Math.round(p/1000) + 'K';
+  return '$' + p.toLocaleString();
+}
+function cut(t, n){ if (!t) return 'Untitled'; return t.length <= n ? t : t.slice(0,n) + '…'; }
+function dayClass(d){ return d <= 30 ? 'd0' : d <= 90 ? 'd1' : d <= 365 ? 'd2' : 'd3'; }
+function daysCell(r){
+  const d = r.dom_days_eff;
+  if (d === null || d === undefined) return '<span class="days">—</span>';
+  const shown = d < 60 ? d : d <= 365 ? Math.round(d/5)*5 : Math.round(d/10)*10;
+  const floor = r.dom_basis === 'floor';
+  const title = floor
+    ? 'Already listed when we started tracking this broker — at least this long'
+    : 'Days since we first saw this listing on the broker’s site';
+  return '<span class="days ' + dayClass(d) + '" title="' + title + '">' + shown + (floor ? '+' : '') + '</span>';
+}
+function seenCell(r){
+  if (!r.estimated_listed_date) return '—';
+  const d = new Date(r.estimated_listed_date + 'T00:00:00');
+  const s = isNaN(d) ? r.estimated_listed_date : d.toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
+  return (r.dom_basis === 'floor' ? '≤ ' : '') + s;
 }
 
-function domClass(days) {
-    if (days <= 30)  return 'dom-fresh';
-    if (days <= 90)  return 'dom-normal';
-    if (days <= 180) return 'dom-stale';
-    if (days <= 365) return 'dom-hot';
-    return 'dom-zombie';
+function query(){
+  const p = new URLSearchParams();
+  p.set('select','listing_number,title,state,price,source_url,estimated_listed_date,dom_days_eff,dom_basis');
+  p.append('source','eq.broker_direct');
+  const st = $('fState').value, lo = num($('fMin').value), hi = num($('fMax').value);
+  if (st) p.append('state','eq.' + st);
+  if (lo) p.append('price','gte.' + lo);
+  if (hi) p.append('price','lte.' + hi);
+  if (q) p.append('title_lc','like.*' + q.toLowerCase().replace(/[*,()]/g,'') + '*');
+  if (domFilter === 'fresh')  p.append('dom_days_eff','lte.30');
+  if (domFilter === 'recent') p.append('dom_days_eff','lte.90');
+  if (domFilter === 'stale')  p.append('dom_days_eff','gt.90');
+  const col = sortField === 'days' ? 'dom_days_eff' : sortField;
+  p.set('order', col + '.' + (sortDir === -1 ? 'desc' : 'asc') + '.nullslast');
+  return p.toString();
 }
 
-function domBadge(r) {
-    const days = r.dom_days_eff;
-    if (days === null || days === undefined) return '<span class="dom-badge dom-normal">—</span>';
-    // Round past 60 days: the estimate isn't precise enough to justify a
-    // to-the-day figure, and a round number reads as the estimate it is.
-    const shown = days < 60   ? days
-                : days <= 365 ? Math.round(days / 5)  * 5
-                :               Math.round(days / 10) * 10;
-
-    // dom_basis === 'floor' means the listing was already on the broker's site
-    // the first day we crawled that broker, so the age is a LOWER BOUND. It may
-    // be far older; it cannot be younger. Never print a bare number for one.
-    if (r.dom_basis === 'floor') {
-        return '<span class="dom-badge ' + domClass(days) + '" title="' +
-               esc(r.dom_display || 'At least this long. We cannot date it more precisely.') +
-               '">' + shown + 'd+</span>';
-    }
-
-    const title = r.dom_basis === 'observed'
-        ? 'Days since we first observed this listing, from our own daily crawl'
-        : 'Estimated from listing sequence · ' + (r.dom_confidence || 'unknown') + ' confidence';
-    return '<span class="dom-badge ' + domClass(days) + '" title="' + title + '">' + shown + 'd</span>';
-}
-
-// The Est. Listed cell. A floored row gets "≤ date", never a bare date.
-function listedCell(r) {
-    if (!r.estimated_listed_date) return '—';
-    return r.dom_basis === 'floor'
-        ? '<span title="' + esc(r.dom_display || '') + '">≤ ' + r.estimated_listed_date + '</span>'
-        : r.estimated_listed_date;
-}
-
-function formatPrice(p) {
-    if (!p) return '—';
-    if (p >= 1000000) return '$' + (p / 1000000).toFixed(1) + 'M';
-    if (p >= 1000)    return '$' + Math.round(p / 1000) + 'K';
-    return '$' + p.toLocaleString();
-}
-
-function truncate(text, len) {
-    if (!text) return '—';
-    return text.length <= len ? text : text.slice(0, len) + '…';
-}
-
-function esc(s) {
-    return String(s).replace(/[&<>"']/g, c =>
-        ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-
-function parseNum(val) {
-    if (!val) return null;
-    return parseInt(val.toString().replace(/,/g, '')) || null;
-}
-
-/* ---------------------------------------------------------------- */
-/* query                                                             */
-/* ---------------------------------------------------------------- */
-
-function buildQuery() {
-    const p = new URLSearchParams();
-    p.set('select',
-      'listing_number,title,state,price,source_url,estimated_listed_date,' +
-      'listing_views,relisted,dom_days,dom_days_eff,dom_confidence,signal,' +
-      'dom_basis,dom_display');
-
-    const state  = document.getElementById('filter-state').value;
-    const signal = document.getElementById('filter-signal').value;
-    const min    = parseNum(document.getElementById('fPriceMin').value);
-    const max    = parseNum(document.getElementById('fPriceMax').value);
-
-    if (state) p.append('state', 'eq.' + state);
-    if (min)   p.append('price', 'gte.' + min);
-    if (max)   p.append('price', 'lte.' + max);
-
-    if (signal === 'relisted') p.append('relisted', 'is.true');
-    else if (signal)           p.append('signal', 'eq.' + signal);
-
-    if (keywordFilter) {
-        p.append('title_lc', 'like.*' + keywordFilter.replace(/[*,()]/g, '') + '*');
-    }
-
-    if (domFilter === 'fresh')  { p.append('dom_days_eff', 'lte.30'); }
-    if (domFilter === 'new')    { p.append('dom_days_eff', 'lte.90'); }
-    if (domFilter === 'stale')  { p.append('dom_days_eff', 'gt.90'); p.append('dom_days_eff', 'lte.365'); }
-    if (domFilter === 'zombie') { p.append('dom_days_eff', 'gt.365'); }
-
-    const dir = sortDir === -1 ? 'desc' : 'asc';
-    const col = sortField === 'days_on_market' ? 'dom_days_eff' : sortField;
-    p.set('order', col + '.' + dir + '.nullslast');
-
-    return p;
-}
-
-/* ---------------------------------------------------------------- */
-/* fetch + render                                                    */
-/* ---------------------------------------------------------------- */
-
-function showSkeleton(n) {
-    const body = document.getElementById('listings-body');
-    if (body.children.length) { body.classList.add('is-busy'); return; }
-    let html = '';
-    for (let i = 0; i < n; i++) {
-        html += '<tr class="skel">' +
-            '<td><span style="width:70px"></span></td>' +
-            '<td><span style="width:' + (55 + (i * 7) % 35) + '%"></span></td>' +
-            '<td><span style="width:24px"></span></td>' +
-            '<td><span style="width:52px;margin-left:auto"></span></td>' +
-            '<td><span style="width:36px;margin-left:auto"></span></td></tr>';
-    }
-    body.innerHTML = html;
-}
-
-async function fetchPage() {
-    const token = ++reqToken;
-    const qs    = buildQuery().toString();
-    const from  = (currentPage - 1) * PER_PAGE;
-    const key   = qs + '|' + from;
-
-    // Serve instantly from cache when paging back over ground already covered.
-    if (pageCache.has(key)) {
-        const c = pageCache.get(key);
-        totalRows = c.total;
-        paint(c.rows);
-        prefetchNext(qs);
-        return;
-    }
-
-    showSkeleton(PER_PAGE);
-
-    try {
-        const res = await fetch(API + '/mv_listings_page?' + qs, {
-            headers: Object.assign({}, HEAD, {
-                Range: from + '-' + (from + PER_PAGE - 1),
-                'Range-Unit': 'items',
-                Prefer: 'count=exact'
-            })
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const cr = res.headers.get('content-range') || '';   // "0-49/30926"
-        const t  = cr.split('/')[1];
-        const total = (t && t !== '*') ? parseInt(t, 10) : 0;
-
-        const rows = await res.json();
-        if (token !== reqToken) return;                       // superseded
-
-        pageCache.set(key, { rows, total });
-        totalRows = total;
-        paint(rows);
-        prefetchNext(qs);
-    } catch (err) {
-        if (token !== reqToken) return;
-        console.error(err);
-        document.getElementById('listings-body').classList.remove('is-busy');
-        document.getElementById('listings-body').innerHTML =
-            '<tr><td colspan="5" class="empty-state">Failed to load listings. Please try again.</td></tr>';
-    }
-}
-
-// Quietly warm the next page so Next feels instant.
-function prefetchNext(qs) {
-    const from = currentPage * PER_PAGE;
-    if (from >= totalRows) return;
-    const key = qs + '|' + from;
-    if (pageCache.has(key)) return;
-    fetch(API + '/mv_listings_page?' + qs, {
-        headers: Object.assign({}, HEAD, {
-            Range: from + '-' + (from + PER_PAGE - 1),
-            'Range-Unit': 'items'
-        })
-    })
-    .then(r => r.ok ? r.json() : null)
-    .then(rows => { if (rows) pageCache.set(key, { rows, total: totalRows }); })
-    .catch(() => {});
-}
-
-function paint(rows) {
-    renderListings(rows);
-    renderPagination();
-    document.getElementById('filtered-count').textContent = totalRows.toLocaleString();
-}
-
-function renderListings(rows) {
-    const body = document.getElementById('listings-body');
-    body.classList.remove('is-busy');
-    if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="5" class="empty-state">No listings match your filters.</td></tr>';
-        return;
-    }
-    body.innerHTML = rows.map(r => {
-        const href = r.source_url || '#';
-        return '<tr>' +
-            '<td class="col-date">' + listedCell(r) + '</td>' +
-            '<td class="col-title">' +
-                '<a href="/listing/' + r.listing_number + '">' + esc(truncate(r.title || 'Untitled', 60)) + '</a>' +
-                signalBadge(r.signal) +
-                (r.relisted ? '<span class="sig-relisted">↩ Previously Listed</span>' : '') +
-                (href !== '#' ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" title="View source listing" style="margin-left:6px">↗</a>' : '') +
-            '</td>' +
-            '<td class="col-state">' + (r.state || '—') + '</td>' +
-            '<td class="col-price">' + formatPrice(r.price) + '</td>' +
-            '<td class="col-price">' + domBadge(r) + '</td>' +
-        '</tr>';
-    }).join('');
-}
-
-function renderPagination() {
-    const totalPages = Math.ceil(totalRows / PER_PAGE);
-    const el = document.getElementById('pagination');
-    if (totalPages <= 1) { el.innerHTML = ''; return; }
-
-    let html = '<button class="page-btn" ' + (currentPage === 1 ? 'disabled' : '') +
-               ' onclick="goToPage(' + (currentPage - 1) + ')">← Prev</button>';
-    const maxShow = 7;
-    let s = Math.max(1, currentPage - 3), e = Math.min(totalPages, s + maxShow - 1);
-    if (e - s < maxShow - 1) s = Math.max(1, e - maxShow + 1);
-    if (s > 1) {
-        html += '<button class="page-btn" onclick="goToPage(1)">1</button>';
-        if (s > 2) html += '<span class="page-btn" style="border:none;cursor:default">…</span>';
-    }
-    for (let i = s; i <= e; i++)
-        html += '<button class="page-btn ' + (i === currentPage ? 'active' : '') +
-                '" onclick="goToPage(' + i + ')">' + i + '</button>';
-    if (e < totalPages) {
-        if (e < totalPages - 1) html += '<span class="page-btn" style="border:none;cursor:default">…</span>';
-        html += '<button class="page-btn" onclick="goToPage(' + totalPages + ')">' + totalPages + '</button>';
-    }
-    html += '<button class="page-btn" ' + (currentPage === totalPages ? 'disabled' : '') +
-            ' onclick="goToPage(' + (currentPage + 1) + ')">Next →</button>';
-    el.innerHTML = html;
-}
-
-/* ---------------------------------------------------------------- */
-/* controls                                                          */
-/* ---------------------------------------------------------------- */
-
-function applyFilters() {
-    pageCache.clear();
-    currentPage = 1;
-    fetchPage();
-}
-
-function debouncedFilter() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(applyFilters, 350);
-}
-
-function setDOM(val) {
-    domFilter = val;
-    ['domAll','domFresh','domNew','domStale','domZombie']
-        .forEach(id => document.getElementById(id).classList.remove('active'));
-    const map = { all:'domAll', fresh:'domFresh', new:'domNew', stale:'domStale', zombie:'domZombie' };
-    document.getElementById(map[val]).classList.add('active');
-    applyFilters();
-}
-
-function runKeywordSearch() {
-    keywordFilter = document.getElementById('searchInput').value.trim().toLowerCase();
-    applyFilters();
-}
-
-function clearAll() {
-    document.getElementById('searchInput').value   = '';
-    document.getElementById('filter-state').value  = '';
-    document.getElementById('filter-signal').value = '';
-    document.getElementById('fPriceMin').value     = '';
-    document.getElementById('fPriceMax').value     = '';
-    keywordFilter = '';
-    setDOM('all');
-}
-
-function setSort(field) {
-    if (sortField === field) { sortDir *= -1; } else { sortField = field; sortDir = -1; }
-    document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
-    const arrow = sortDir === -1 ? '↓' : '↑';
-    const thMap = { estimated_listed_date:'listed', state:'state', price:'price', days_on_market:'dom' };
-    const th = document.getElementById('th-' + (thMap[field] || field));
-    if (th) th.querySelector('.sort-arrow').textContent = arrow;
-    pageCache.clear();
-    currentPage = 1;
-    fetchPage();
-}
-
-function goToPage(p) {
-    currentPage = p;
-    fetchPage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-window.goToPage = goToPage;
-
-async function loadStates() {
-    try {
-        const res = await fetch(API + '/v_listing_states?select=state', { headers: HEAD });
-        if (!res.ok) return;
-        const rows = await res.json();
-        document.getElementById('filter-state').innerHTML =
-            '<option value="">All States</option>' +
-            rows.map(r => '<option value="' + r.state + '">' + r.state + '</option>').join('');
-    } catch (e) {
-        console.warn('[DealLedger] state list unavailable:', e);
-    }
-}
-
-document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); runKeywordSearch(); }
-});
-
-// TEMPORARY: mailto fallback for broker submissions.
-document.getElementById('brokerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const url = document.getElementById('brokerUrl').value;
-    if (!url) return;
-    let host = url;
-    try { host = new URL(url).hostname; } catch (err) {}
-    const subject = encodeURIComponent('Broker submission: ' + host);
-    const body    = encodeURIComponent('Broker URL:\n' + url + '\n\nSubmitted via dealledger.org.');
-    window.location.href = 'mailto:info@dealledger.org?subject=' + subject + '&body=' + body;
-    const s = document.getElementById('submitStatus');
-    s.style.display = 'block';
-    s.textContent = 'Opening your email client to send the submission.';
-    document.getElementById('brokerUrl').value = '';
-});
-
-// Both fire immediately and independently -- the table no longer waits on
-// the state list, or on anything else.
-fetchPage();
-loadStates();
-
-/* ======================== LISTING LOOKUP ======================== */
-(function(){
-    const lkForm  = document.getElementById('lkForm');
-    const lkInput = document.getElementById('lkInput');
-    const lkGo    = document.getElementById('lkGo');
-    const lkMsg   = document.getElementById('lkMsg');
-    const lkOut   = document.getElementById('lkOut');
-
-    function parseListingNumber(s) {
-        s = (s || '').trim();
-        if (/^\d{6,8}$/.test(s)) return parseInt(s, 10);
-        const m = s.match(/(?:BW)?(\d{6,8})(?:\/|\?|$)/i);
-        return m ? parseInt(m[1], 10) : null;
-    }
-
-    const lkNum   = n => n == null ? null : n.toLocaleString('en-US');
-    const lkMoney = n => (n == null || n === 0) ? null : '$' + Math.round(n).toLocaleString('en-US');
-    const lkDate  = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : null;
-
-    function lkTone(days) {
-        if (days == null) return '#78716c';
-        if (days <= 30)  return '#166534';
-        if (days <= 90)  return '#78716c';
-        if (days <= 180) return '#92400e';
-        if (days <= 365) return '#c2410c';
-        return '#991b1b';
-    }
-
-    function lkRender(d) {
-        const days = d.days_on_market;
-        const sig  = lkTone(days);
-        const pct  = days == null ? 0 : Math.min(100, days / 730 * 100);
-
-        const meta = ['BW' + d.listing_number];
-        if (d.location) meta.push(d.location);
-        if (d.relisted) meta.push('previously listed');
-
-        let since = '';
-        if (d.date_precision === 'floor') {
-            since = 'Listed before December 2024 — exact date predates our records.';
-        } else if (d.listed_on) {
-            since = 'Listed ' + lkDate(d.listed_on) + (d.date_precision === 'provisional' ? ' (provisional)' : '');
-        }
-
-        const cells = [];
-        if (lkMoney(d.price))     cells.push(['Asking price', lkMoney(d.price)]);
-        if (lkMoney(d.cash_flow)) cells.push(['Cash flow', lkMoney(d.cash_flow)]);
-        if (d.views_total   != null) cells.push(['Total views', lkNum(d.views_total)]);
-        if (d.views_per_day != null) cells.push(['Views per day', d.views_per_day + '<span>measured</span>']);
-        if (cells.length % 2) cells.push(['','']);
-
-        const cellHTML = cells.map(c =>
-            '<div class="lk-cell">' + (c[0] ? '<div class="lk-k">' + c[0] + '</div><div class="lk-v">' + c[1] + '</div>' : '') + '</div>'
-        ).join('');
-
-        lkOut.innerHTML =
-            '<div class="lk-card" style="--lk-sig:' + sig + '">' +
-                '<div class="lk-head">' +
-                    '<p class="lk-title">' + (d.header ? d.header.trim() : 'Listing ' + d.listing_number) + '</p>' +
-                    '<div class="lk-meta">' + meta.map(m => '<span>' + m + '</span>').join('') + '</div>' +
-                '</div>' +
-                '<div class="lk-counter">' +
-                    '<div class="lk-days" id="lkCtr">0</div>' +
-                    '<div class="lk-days-label">days on market</div>' +
-                '</div>' +
-                '<div class="lk-since">' + since + '</div>' +
-                '<div class="lk-rail">' +
-                    '<div class="lk-track"><div class="lk-fill" id="lkFill"></div></div>' +
-                    '<div class="lk-ticks"><span>LISTED</span><span>1 YEAR</span><span>2 YEARS</span></div>' +
-                '</div>' +
-                (cells.length ? '<div class="lk-grid">' + cellHTML + '</div>' : '') +
-            '</div>';
-
-        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        requestAnimationFrame(() => { document.getElementById('lkFill').style.width = pct + '%'; });
-
-        const ctr = document.getElementById('lkCtr');
-        if (days == null) { ctr.textContent = '—'; return; }
-        if (reduce) { ctr.textContent = lkNum(days); return; }
-        const t0 = performance.now(), dur = 700;
-        (function tick(t){
-            const p = Math.min(1, (t - t0) / dur);
-            ctr.textContent = lkNum(Math.round(days * (1 - Math.pow(1 - p, 3))));
-            if (p < 1) requestAnimationFrame(tick);
-        })(t0);
-    }
-
-    lkForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        lkOut.innerHTML = '';
-        lkMsg.className = 'lookup-msg';
-        lkMsg.textContent = '';
-
-        const ln = parseListingNumber(lkInput.value);
-        if (!ln) {
-            lkMsg.className = 'lookup-msg is-error';
-            lkMsg.textContent = "That doesn't look like a listing URL. Paste the full address, or just the listing number.";
-            return;
-        }
-
-        lkGo.disabled = true;
-        if (window.gtag) gtag('event', 'listing_lookup', { listing_number: ln });
-        lkMsg.textContent = 'Looking up BW' + ln + '…';
-
-        try {
-            const res = await fetch(API + '/rpc/listing_lookup', {
-                method: 'POST',
-                headers: Object.assign({ 'Content-Type': 'application/json' }, HEAD),
-                body: JSON.stringify({ ln })
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const d = await res.json();
-            if (!d || !d.found) {
-                lkMsg.textContent = 'BW' + ln + " isn't in the ledger yet. New listings are added daily.";
-                return;
-            }
-            lkMsg.textContent = '';
-            lkRender(d);
-        } catch (err) {
-            console.error(err);
-            lkMsg.className = 'lookup-msg is-error';
-            lkMsg.textContent = 'Lookup failed. Try again in a moment.';
-        } finally {
-            lkGo.disabled = false;
-        }
+async function load(){
+  const me = ++token, qs = query(), from = (page-1)*PER_PAGE, key = qs + '|' + from;
+  if (cache.has(key)) { const c = cache.get(key); total = c.total; paint(c.rows); return; }
+  $('rows').classList.add('is-busy');
+  try {
+    const res = await fetch(API + '/mv_listings_page?' + qs, {
+      headers: Object.assign({}, HEAD, { Range: from + '-' + (from+PER_PAGE-1), 'Range-Unit':'items', Prefer:'count=exact' })
     });
-})();
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const cr = res.headers.get('content-range') || '';
+    const t = cr.split('/')[1];
+    const rows = await res.json();
+    if (me !== token) return;
+    total = (t && t !== '*') ? parseInt(t,10) : rows.length;
+    cache.set(key, { rows, total });
+    paint(rows);
+  } catch (e) {
+    if (me !== token) return;
+    $('rows').classList.remove('is-busy');
+    $('rows').innerHTML = '<tr><td colspan="5" class="empty">Couldn’t load listings. Please try again.</td></tr>';
+  }
+}
+
+function paint(rows){
+  const body = $('rows');
+  body.classList.remove('is-busy');
+  $('n').textContent = total.toLocaleString();
+  const heroN = $('nHero');
+  if (heroN && !q && domFilter === 'all' && !$('fState').value && !$('fMin').value && !$('fMax').value) {
+    heroN.textContent = total.toLocaleString();
+  }
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
+  } else {
+    body.innerHTML = rows.map(r =>
+      '<tr>' +
+        '<td>' + seenCell(r) + '</td>' +
+        '<td class="title"><a href="/listing/' + encodeURIComponent(r.listing_number) + '">' + esc(cut(r.title, 70)) + '</a>' +
+          (r.source_url ? '<a class="src" href="' + esc(r.source_url) + '" target="_blank" rel="noopener" title="Open the broker’s listing">↗</a>' : '') +
+        '</td>' +
+        '<td class="state hide-sm">' + esc(r.state || '—') + '</td>' +
+        '<td class="num">' + price(r.price) + '</td>' +
+        '<td class="num">' + daysCell(r) + '</td>' +
+      '</tr>').join('');
+  }
+  const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+  $('pageInfo').textContent = 'Page ' + page + ' of ' + pages.toLocaleString();
+  $('prev').disabled = page <= 1;
+  $('next').disabled = page >= pages;
+  document.querySelectorAll('.sort-arrow').forEach(el => {
+    el.textContent = el.dataset.for === sortField ? (sortDir === -1 ? '↓' : '↑') : '';
+  });
+}
+
+function refresh(){ page = 1; cache.clear(); load(); }
+
+STATES.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; $('fState').appendChild(o); });
+
+$('q').addEventListener('input', e => {
+  clearTimeout(timer);
+  timer = setTimeout(() => { q = e.target.value.trim(); refresh(); }, 250);
+});
+['fState','fMin','fMax'].forEach(id => $(id).addEventListener('change', refresh));
+document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => {
+  domFilter = btn.dataset.dom;
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  refresh();
+}));
+document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+  const f = th.dataset.sort;
+  if (f === sortField) sortDir = -sortDir; else { sortField = f; sortDir = -1; }
+  refresh();
+}));
+$('reset').addEventListener('click', () => {
+  q = ''; $('q').value = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
+  domFilter = 'all';
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dom === 'all')));
+  sortField = 'days'; sortDir = -1;
+  refresh();
+});
+$('prev').addEventListener('click', () => { if (page > 1) { page--; load(); window.scrollTo({top:0}); } });
+$('next').addEventListener('click', () => { page++; load(); window.scrollTo({top:0}); });
+
+/* ---- lookup ------------------------------------------------------ */
+const lkForm = $('lkForm'), lkInput = $('lkInput'), lkGo = $('lkGo'), lkMsg = $('lkMsg'), lkOut = $('lkOut');
+
+function lkDays(d, basis){
+  if (d === null || d === undefined) return '—';
+  return d.toLocaleString() + (basis === 'floor' ? '+' : '') + ' days';
+}
+
+function lkCard(d){
+  if (d.kind === 'direct') {
+    return '<div class="lk-card">' +
+      '<div class="lk-kind">In the ledger</div>' +
+      '<div class="lk-head">' + esc(d.title || 'Untitled') + (d.state ? ' · ' + esc(d.state) : '') + '</div>' +
+      '<div class="lk-big">' + lkDays(d.days, d.basis) + '</div>' +
+      '<div class="lk-sub">' + (d.basis === 'floor' ? 'At least — ' : '') + 'first seen ' +
+        esc(d.first_seen || '—') + (d.price ? ' · asking ' + price(d.price) : '') + '</div>' +
+      '<div class="lk-meta">' + esc(d.note || '') +
+        ' <a href="/listing/' + encodeURIComponent(d.listing_number) + '">Full record →</a></div>' +
+    '</div>';
+  }
+  if (d.kind === 'estimate' && d.found) {
+    return '<div class="lk-card">' +
+      '<div class="lk-kind">Estimated from the listing number</div>' +
+      '<div class="lk-big">≈ ' + lkDays(d.days) + '</div>' +
+      '<div class="lk-sub">Listed around ' + esc(d.estimated_listed_date) + '</div>' +
+      '<div class="lk-meta">' + esc(d.note || '') + '</div>' +
+    '</div>';
+  }
+  return '<div class="lk-card">' +
+    '<div class="lk-kind">No answer yet</div>' +
+    '<div class="lk-sub">' + esc(d.note || 'We can’t date that one.') + '</div>' +
+    (d.domain && d.tracked === false
+      ? '<div class="lk-meta"><a href="mailto:info@dealledger.org?subject=Track%20' + encodeURIComponent(d.domain) + '">Ask us to track ' + esc(d.domain) + ' →</a></div>'
+      : '') +
+  '</div>';
+}
+
+lkForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = lkInput.value.trim();
+  lkOut.innerHTML = '';
+  lkMsg.className = 'lk-msg';
+  if (!v) { lkMsg.textContent = 'Paste a listing URL first.'; return; }
+  lkGo.disabled = true;
+  lkMsg.textContent = 'Checking…';
+  if (window.gtag) gtag('event', 'listing_lookup');
+  try {
+    const res = await fetch(API + '/rpc/dl_lookup', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, HEAD),
+      body: JSON.stringify({ q: v })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    lkMsg.textContent = '';
+    lkOut.innerHTML = lkCard(d || {});
+  } catch (err) {
+    lkMsg.className = 'lk-msg err';
+    lkMsg.textContent = 'Lookup failed. Try again in a moment.';
+  } finally {
+    lkGo.disabled = false;
+  }
+});
+
+load();
 </script>
 </body>
 </html>
