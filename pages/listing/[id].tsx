@@ -309,22 +309,23 @@ export default function ListingPage({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
         />
       </Head>
 
       <style jsx global>{`
         :root {
-          --bg: #faf8f4;
-          --bg-card: #f4f0e8;
-          --ink: #1a1612;
-          --ink-soft: #4a4036;
-          --ink-mute: #8a7e6e;
-          --rule: #d8d0c0;
-          --accent: #b7361a;
-          --link: #1a1612;
-          --serif: 'Lora', Georgia, serif;
-          --mono: 'JetBrains Mono', ui-monospace, monospace;
+          --bg: #fafaf9;
+          --bg-card: #f5f5f4;
+          --ink: #1c1917;
+          --ink-soft: #57534e;
+          --ink-mute: #78716c;
+          --rule: #d4d4d4;
+          --accent: #c2410c;
+          --link: #0c4a6e;
+          /* Named --serif for historical reasons; the site is IBM Plex Sans. */
+          --serif: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+          --mono: 'IBM Plex Mono', ui-monospace, monospace;
         }
         * { box-sizing: border-box; }
         body {
