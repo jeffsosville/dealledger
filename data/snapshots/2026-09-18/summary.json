@@ -1,0 +1,115 @@
+{
+  "started": "2026-09-18T17:33:02.445660+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 63,
+  "brokers_failed": 35,
+  "total_listings": 4047,
+  "listings_with_price": 3966,
+  "listings_with_cashflow": 2331,
+  "listings_with_state": 3517,
+  "detail_pages_fetched": 150,
+  "patterns_cached": 447,
+  "patterns_learned": 20,
+  "verticals": {
+    "technology": 588,
+    "restaurant": 869,
+    "healthcare": 531,
+    "other": 877,
+    "automotive": 185,
+    "retail": 518,
+    "cleaning": 71,
+    "construction": 174,
+    "manufacturing": 75,
+    "electrical": 38,
+    "hvac": 41,
+    "landscaping": 34,
+    "roofing": 18,
+    "plumbing": 20,
+    "vending": 5,
+    "pest_control": 3
+  },
+  "failure_types": {
+    "NO_PATTERN": 11,
+    "FETCH_ERROR": 19,
+    "EMBED_BBS": 2
+  },
+  "slowest_brokers": [
+    [
+      1253,
+      "www.azbusinessbrokers.com",
+      55
+    ],
+    [
+      847,
+      "coastalbizbrokers.com",
+      0
+    ],
+    [
+      441,
+      "www.buysellarestaurant.com",
+      0
+    ],
+    [
+      428,
+      "www.affordablebusinessconcepts.com",
+      0
+    ],
+    [
+      428,
+      "quietlight.com",
+      0
+    ],
+    [
+      427,
+      "bristolgrouponline.com",
+      0
+    ],
+    [
+      426,
+      "prime100businessbrokers.com",
+      0
+    ],
+    [
+      426,
+      "kmfbusinessadvisors.dealrelations.com",
+      0
+    ],
+    [
+      426,
+      "businessmodificationgroup.com",
+      0
+    ],
+    [
+      425,
+      "restaurantrealty.com",
+      0
+    ],
+    [
+      403,
+      "missionpeakbrokers.com",
+      0
+    ],
+    [
+      403,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      403,
+      "greenlifebusiness.com",
+      0
+    ],
+    [
+      402,
+      "www.routeadvisors.com",
+      0
+    ],
+    [
+      402,
+      "www.franbiznetwork.com",
+      0
+    ]
+  ],
+  "seconds_total": 13511,
+  "completed": "2026-09-18T21:21:02.519335+00:00"
+}
