@@ -95,6 +95,11 @@ try:
 except Exception:
     pass
 
+# Per-broker crawl_run logging. Imported after load_dotenv() above; the module
+# reads SUPABASE_* at call time rather than import time, so ordering here is
+# not load-bearing either way.
+from crawl_run_log import start_run, finish_run
+
 # curl_cffi impersonates a real Chrome TLS/JA3 fingerprint — the same fix that
 # unblocked the collector (plain requests gets 403'd). Falls back to
 # stdlib requests if unavailable.
@@ -2640,6 +2645,47 @@ class DealLedgerScraper:
         return "FETCH_ERROR"
 
     def scrape_broker(self, broker: dict) -> list[dict]:
+        """crawl_run wrapper around _scrape_broker_inner.
+
+        The inner method has SEVEN exit points that all `return []` and never
+        re-raise, so a try/except around the call site can't tell failure from
+        an empty broker. Rather than instrument all seven, classify from the
+        side effects the inner method already produces:
+
+          - len(self.failures) grew  -> a real failure (covers all six failure
+            paths: HTTPError, both NO_PATTERN sites, VALIDATION_REJECT,
+            TITLE_REPETITION_REJECT, and the catch-all)
+          - listings returned        -> 'ok'
+          - neither                  -> 'empty' (e.g. the EMBED_BBS return at
+            2785, which is not a failure but is not coverage either)
+
+        Deliberately NOT keyed on stats['brokers_success'], which is incremented
+        before the validation and yield gates — both of which reject and return
+        []. Keying on it would log a successful crawl for a broker whose
+        listings were thrown away, telling v_dom_direct it had coverage on a day
+        it wrote nothing.
+
+        Note stats['brokers_failed'] is ALSO wrong for this: the two gate
+        rejections append to self.failures but never increment it.
+        """
+        run_id = start_run("v6", broker.get("domain"))
+        failures_before = len(self.failures)
+        try:
+            listings = self._scrape_broker_inner(broker)
+        except Exception as e:                       # inner shouldn't raise, but
+            finish_run(run_id, "failed", error=str(e))
+            raise
+
+        if len(self.failures) > failures_before:
+            ftype = self.failures[-1].get("type", "UNKNOWN")
+            finish_run(run_id, "failed", error=ftype)
+        elif listings:
+            finish_run(run_id, "ok", len(listings), len(listings))
+        else:
+            finish_run(run_id, "empty", 0, 0)
+        return listings
+
+    def _scrape_broker_inner(self, broker: dict) -> list[dict]:
         name      = broker["name"]
         url       = broker["url"]
         domain    = broker["domain"]

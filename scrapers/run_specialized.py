@@ -28,6 +28,7 @@ import requests as http_requests
 # Add parent dir to path so we can import specialized_scrapers
 sys.path.insert(0, os.path.dirname(__file__))
 import csv as _csv
+from crawl_run_log import start_run, finish_run
 from junk_filter import is_junk_title, title_from_slug
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
@@ -529,12 +530,22 @@ def run(broker_filter: list[str] | None, dry_run: bool):
 
         broker_meta = BROKERS[name]
         log.info(f"\n{'='*60}\nScraping: {name.upper()} ({broker_meta['display_name']})\n{'='*60}")
+
+        # crawl_run: opened once the broker's domain is known (the registry
+        # entry has no domain field, so it comes from the first listing).
+        # Declared out here so the except block can still close the row when
+        # broker_meta["fn"]() is what raised. finish_run(None, ...) no-ops.
+        run_id = None
         try:
             listings = broker_meta["fn"]()
             log.info(f"[{name}] Got {len(listings)} listings")
             results[name] = len(listings)
 
+            bdom = derive_broker_domain(listings[0]) if listings else None
+            run_id = start_run("specialized", bdom)
+
             if dry_run:
+                finish_run(run_id, "dry_run", len(listings), 0)
                 if listings:
                     sample = listings[0]
                     log.info(
@@ -549,6 +560,14 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             log.info(f"[{name}] Upserted {upserted} rows")
             grand_total += upserted
 
+            # 'ok' is load-bearing: v_dom_direct filters status='ok' to find the
+            # last successful crawl before a listing appeared. An empty crawl is
+            # not a coverage window, so it must not claim to be one.
+            finish_run(run_id,
+                       "ok" if listings else "empty",
+                       urls_fetched=len(listings),
+                       listings_seen=upserted)
+
             # Post-upsert cleanup of legacy index-page rows for We Sell Restaurants
             if name == "wesell":
                 cleanup_stale_wesell_rows()
@@ -556,6 +575,7 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         except Exception as e:
             log.error(f"[{name}] Failed: {e}")
             results[name] = 0
+            finish_run(run_id, "failed", error=str(e))
 
     log.info(f"\n{'='*60}")
     log.info(f"DONE — {grand_total} total listings upserted to listings_direct")
