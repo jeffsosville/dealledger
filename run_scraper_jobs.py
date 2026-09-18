@@ -30,6 +30,11 @@ from urllib.parse import urlparse, urljoin
 import requests as req_lib
 from bs4 import BeautifulSoup
 
+# scrapers/ is not a package (no __init__.py), so add it to the path to reach
+# the shared crawl_run logger from this root-level script.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scrapers"))
+from crawl_run_log import start_run, finish_run  # noqa: E402
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -381,10 +386,13 @@ def process_broker(target: dict) -> dict:
 
     log.info(f"  [{listings_est:4d}] {name[:45]:<45} {url[:55]}")
 
+    run_id = start_run("v7", domain)
+
     try:
         listings = scrape_with_selectors(url, fp, name, domain, acct)
     except Exception as e:
         log.error(f"  Scrape error: {e}")
+        finish_run(run_id, "failed", error=str(e))
         sb_patch("broker_sources", {"id": b_id}, {
             "strategy_status": "failed",
             "last_error_type": "SCRAPE_ERROR",
@@ -394,27 +402,40 @@ def process_broker(target: dict) -> dict:
 
     if not listings:
         log.warning(f"  No listings found for {domain}")
+        # 'empty' not 'ok': a crawl that returned nothing is not evidence that
+        # we had working coverage of this broker, and v_dom_direct must not
+        # treat it as an observation window.
+        finish_run(run_id, "empty", 0, 0)
         sb_patch("broker_sources", {"id": b_id}, {
             "last_error_type": "EMPTY_RESULTS",
             "last_listing_count": 0,
         })
         return {"broker": name, "success": True, "found": 0}
 
-    # Upsert to listings_broker
-    total_ok = total_err = 0
-    for i in range(0, len(listings), BATCH_SIZE):
-        batch = listings[i: i + BATCH_SIZE]
-        ok, err = sb_upsert("listings_broker", batch)
-        total_ok  += ok
-        total_err += err
+    # Upsert to listings_broker. Wrapped so a raise from sb_upsert can't escape
+    # past this function and leave the run row stuck at 'running' — that path
+    # previously landed in the pool handler, which has no broker identity.
+    try:
+        total_ok = total_err = 0
+        for i in range(0, len(listings), BATCH_SIZE):
+            batch = listings[i: i + BATCH_SIZE]
+            ok, err = sb_upsert("listings_broker", batch)
+            total_ok  += ok
+            total_err += err
 
-    now = datetime.now(timezone.utc).isoformat()
-    sb_patch("broker_sources", {"id": b_id}, {
-        "strategy_status":   "stable",
-        "last_success_at":   now,
-        "last_listing_count": len(listings),
-        "consecutive_failures": 0,
-    })
+        now = datetime.now(timezone.utc).isoformat()
+        sb_patch("broker_sources", {"id": b_id}, {
+            "strategy_status":   "stable",
+            "last_success_at":   now,
+            "last_listing_count": len(listings),
+            "consecutive_failures": 0,
+        })
+    except Exception as e:
+        log.error(f"  Upsert error: {e}")
+        finish_run(run_id, "failed", urls_fetched=len(listings), error=str(e))
+        raise
+
+    finish_run(run_id, "ok", urls_fetched=len(listings), listings_seen=total_ok)
 
     log.info(f"  ✓ {len(listings)} listings found, {total_ok} upserted, {total_err} errors")
     return {"broker": name, "success": True, "found": len(listings), "upserted": total_ok}
