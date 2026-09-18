@@ -541,7 +541,20 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             log.info(f"[{name}] Got {len(listings)} listings")
             results[name] = len(listings)
 
-            bdom = derive_broker_domain(listings[0]) if listings else None
+            # derive_broker_domain takes a URL STRING, not a listing dict, and
+            # swallows its own errors -- passing a dict returns None silently.
+            # Scan for the first listing that actually has a URL; some rows
+            # arrive without one and are dropped later in upsert_listings.
+            bdom = next(
+                (d for d in (
+                    derive_broker_domain(l.get("listing_url") or l.get("url") or "")
+                    for l in listings
+                ) if d),
+                None,
+            )
+            if bdom is None and listings:
+                log.warning(f"[{name}] crawl_run: no broker_domain derivable — "
+                            f"row will not join in v_dom_direct")
             run_id = start_run("specialized", bdom)
 
             if dry_run:
