@@ -3,7 +3,7 @@ name: Scraper Regression Check
 on:
   schedule:
     # 15:00 UTC = 11:00am ET — after the daily scrapers (8am ET) have finished.
-    - cron: "0 15 * * *"
+    - cron: "9 15 * * *"   # :09, not :00 - GitHub queues top-of-hour crons and can drop them.
   workflow_dispatch: {}
 
 jobs:
