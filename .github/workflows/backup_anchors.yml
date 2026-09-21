@@ -11,7 +11,7 @@ name: Back up DOM anchors
 
 on:
   schedule:
-    - cron: "0 6 * * 1"        # Mondays, 06:00 UTC
+    - cron: "26 6 * * 1"   # Mondays, 06:26 UTC. Off :00 - GitHub queues top-of-hour crons and can drop them.
   workflow_dispatch:
 
 jobs:
