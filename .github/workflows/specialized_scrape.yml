@@ -2,7 +2,7 @@ name: Specialized franchise scrapers
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 8 * * *'    # 8am UTC daily — matches the local cron it replaces
+    - cron: '41 7 * * *'    # 07:41 UTC. Was 08:00; minute-0 crons sit in GitHub's queue (2026-09-21 this ran 6h46m late).
 
 # The baseline-commit step pushes back to the repo, so the token needs write.
 permissions:
