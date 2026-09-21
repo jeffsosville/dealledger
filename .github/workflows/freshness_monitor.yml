@@ -3,7 +3,7 @@ name: Freshness Monitor
 on:
   schedule:
     # 13:00 UTC = 9:00am ET (EDT). Daily coverage-staleness check.
-    - cron: "0 13 * * *"
+    - cron: "13 13 * * *"   # :13, not :00 - GitHub queues top-of-hour crons and can drop them.
   workflow_dispatch: {}
 
 jobs:
