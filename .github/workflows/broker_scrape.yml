@@ -2,7 +2,7 @@ name: Daily broker scrape
 
 on:
   schedule:
-    - cron: "0 14 * * *"   # 14:00 UTC = 10am ET daily
+    - cron: "23 14 * * *"   # 14:23 UTC. Deliberately off :00 - GitHub queues top-of-hour crons and can drop them; 2026-09-21 was skipped entirely.
   workflow_dispatch:
     inputs:
       stale_first:
