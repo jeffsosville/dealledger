@@ -1,0 +1,115 @@
+{
+  "started": "2026-09-23T18:27:56.080093+00:00",
+  "brokers_attempted": 100,
+  "brokers_success": 63,
+  "brokers_failed": 35,
+  "total_listings": 4031,
+  "listings_with_price": 3952,
+  "listings_with_cashflow": 2383,
+  "listings_with_state": 3591,
+  "detail_pages_fetched": 29,
+  "patterns_cached": 447,
+  "patterns_learned": 20,
+  "verticals": {
+    "technology": 591,
+    "restaurant": 883,
+    "healthcare": 531,
+    "other": 847,
+    "automotive": 185,
+    "retail": 515,
+    "construction": 173,
+    "landscaping": 35,
+    "hvac": 39,
+    "manufacturing": 78,
+    "plumbing": 19,
+    "cleaning": 71,
+    "roofing": 18,
+    "electrical": 38,
+    "vending": 5,
+    "pest_control": 3
+  },
+  "failure_types": {
+    "NO_PATTERN": 11,
+    "FETCH_ERROR": 19,
+    "EMBED_BBS": 2
+  },
+  "slowest_brokers": [
+    [
+      1335,
+      "www.appbusinessbrokers.com",
+      29
+    ],
+    [
+      848,
+      "coastalbizbrokers.com",
+      0
+    ],
+    [
+      615,
+      "www.azbusinessbrokers.com",
+      54
+    ],
+    [
+      429,
+      "bristolgrouponline.com",
+      0
+    ],
+    [
+      428,
+      "quietlight.com",
+      0
+    ],
+    [
+      427,
+      "www.buysellarestaurant.com",
+      0
+    ],
+    [
+      427,
+      "kmfbusinessadvisors.dealrelations.com",
+      0
+    ],
+    [
+      427,
+      "businessmodificationgroup.com",
+      0
+    ],
+    [
+      426,
+      "www.affordablebusinessconcepts.com",
+      0
+    ],
+    [
+      404,
+      "prime100businessbrokers.com",
+      0
+    ],
+    [
+      404,
+      "biz-depot.co",
+      0
+    ],
+    [
+      403,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      402,
+      "www.routeadvisors.com",
+      0
+    ],
+    [
+      402,
+      "premierbb.com",
+      0
+    ],
+    [
+      402,
+      "mycarwashbroker.com",
+      0
+    ]
+  ],
+  "seconds_total": 13815,
+  "completed": "2026-09-23T22:21:02.565337+00:00"
+}
