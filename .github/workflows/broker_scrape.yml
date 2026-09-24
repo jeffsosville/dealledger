@@ -10,7 +10,7 @@ on:
         type: boolean
         default: true
       top_n:
-        description: "Brokers to attempt"
+        description: "Brokers per shard (4 shards)"
         default: "100"
       order:
         description: "weekly (default) | yield | stale | never"
@@ -19,19 +19,91 @@ on:
         description: "Never-scraped brokers to put at the front"
         default: "40"
 
-# The commit step pushes back to the repo, so the token needs write.
+# Layout (2026-09-24):
+#
+#   plan ──► scrape (4 parallel shards) ──► commit
+#
+# plan    builds the broker list from broker_sources, orders it ONCE via the
+#         broker_last_seen() RPC, and uploads the ordered list. Ordering is
+#         fatal: if it fails the job fails and no shard runs. (Before this,
+#         a failed ordering fell back to CSV order silently.)
+# scrape  shard i of 4 takes every 4th broker of that one ordering
+#         (round-robin, so every shard starts on the most-due brokers) and
+#         crawls --top-n of them. No shared state, no concurrency group.
+# commit  merges the shard snapshots into data/snapshots/<date>/, checks the
+#         first_seen invariant, commits, refreshes the homepage view. This is
+#         the only job that pushes, so it is the only one in a concurrency
+#         group.
+#
+# ROOT CAUSE of the 2026-09-18..23 "CSV rows 1-110" snapshots: the old step
+# built the flag with ${{ (inputs.stale_first == false) && ' ' || '--stale-first' }}.
+# On a scheduled run `inputs` is empty, and GitHub's loose equality coerces
+# null == false to true (both become 0), so every SCHEDULED run dropped
+# --stale-first and crawled the CSV in file order. Manual runs were fine,
+# which is why it looked intermittent. The flag is now decided in bash from
+# an env var that is '' on schedule and only 'false' when explicitly unticked.
+
 permissions:
   contents: write
 
-# Never let two scrapes run at once — they'd fight over data/snapshots/.
-concurrency:
-  group: broker-scrape
-  cancel-in-progress: false
-
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install curl_cffi==0.13.0 pandas beautifulsoup4 playwright requests supabase colorama
+
+      - name: Build broker list from broker_sources
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python3 scripts/export_brokers_csv.py --out data/brokers_clean.csv
+
+      - name: Order brokers (fatal on failure)
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ORDER: ${{ inputs.order || 'weekly' }}
+          NEW_BROKER_QUOTA: ${{ inputs.new_broker_quota || '40' }}
+          REFRESH_CYCLE_DAYS: "7"
+          STALE_FIRST: ${{ inputs.stale_first }}   # '' on schedule
+          TOP_N: ${{ inputs.top_n || '100' }}
+        run: |
+          FLAG="--stale-first"
+          if [ "$STALE_FIRST" = "false" ]; then
+            FLAG=""
+            echo "::warning::stale_first unticked - control run in CSV order"
+          fi
+          python3 -u scrapers/dealledger_scraper_v6.py \
+            --brokers data/brokers_clean.csv $FLAG \
+            --top-n $(( TOP_N * 4 )) \
+            --plan-out plan/ordered_brokers.csv
+          echo "Planned $(($(wc -l < plan/ordered_brokers.csv) - 1)) brokers"
+          head -6 plan/ordered_brokers.csv
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: broker-plan
+          path: |
+            plan/ordered_brokers.csv
+            data/brokers_clean.csv
+          retention-days: 30
+          if-no-files-found: error
+
   scrape:
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -56,63 +128,86 @@ jobs:
           echo "::error::playwright install-deps failed three times"
           exit 1
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: broker-plan
+
       # `timeout` sends SIGINT at 4h45m, well inside the 350-minute job
       # limit. Python raises KeyboardInterrupt, the scraper unwinds, and
-      # the commit step still gets a chance to run. Exit code 124 means
-      # we hit that limit; treat it as a partial success, not a failure.
-      - name: Run V6 scraper
-        id: scrape
+      # the upload step still runs. Exit 124 = hit that limit (partial).
+      # Output goes to out/snapshots, not data/snapshots, so the artifact
+      # holds only this run's shard and not the whole committed history.
+      - name: Run V6 scraper (shard ${{ matrix.shard }}/4)
         env:
           PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
-          # ORDER=weekly: skip the brokers specialized_scrape.yml already
-          # crawls at 08:00 UTC, refresh the stalest 1/7 of the remaining
-          # producers, and give the freed slots to never-scraped brokers.
-          # ORDER=yield restores the old same-100-every-night behaviour.
-          ORDER: ${{ inputs.order || 'weekly' }}
-          NEW_BROKER_QUOTA: ${{ inputs.new_broker_quota || '40' }}
-          REFRESH_CYCLE_DAYS: "7"
         run: |
           set +e
           timeout --signal=INT 285m \
           python3 -u scrapers/dealledger_scraper_v6.py \
-            --brokers data/brokers_clean.csv \
-            ${{ (inputs.stale_first == false) && ' ' || '--stale-first' }} \
+            --brokers plan/ordered_brokers.csv \
+            --shard ${{ matrix.shard }}/4 \
             --top-n ${{ inputs.top_n || '100' }} \
-            --output data/snapshots
+            --output out/snapshots
           CODE=$?
           set -e
           if [ $CODE -eq 124 ]; then
-            echo "::warning::Scraper hit the 285-minute guard and was stopped early. Committing partial results."
-            echo "partial=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Shard ${{ matrix.shard }} hit the 285-minute guard and was stopped early. Keeping partial results."
           elif [ $CODE -ne 0 ]; then
-            echo "::warning::Scraper exited with code $CODE. Committing whatever landed."
-            echo "partial=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "partial=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Shard ${{ matrix.shard }} exited with code $CODE. Keeping whatever landed."
           fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: snapshot-shard-${{ matrix.shard }}
+          path: out/snapshots/
+          retention-days: 30
+          if-no-files-found: warn
+
+  commit:
+    needs: [plan, scrape]
+    if: always() && needs.plan.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # The only job that pushes. Serialises against other runs of this
+    # workflow's commit step; shards never wait on it.
+    concurrency:
+      group: broker-scrape-commit
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: snapshot-shard-*
+          path: shards
+
+      - name: Merge shard snapshots
+        run: |
+          mkdir -p shards merged
+          python3 scripts/merge_snapshot_shards.py shards merged
+          cp -R merged/. data/snapshots/
 
       # Fails the job if any active row's first_seen moved later than the
       # baseline committed by the last run — the exact regression that cost
       # a week of DOM accuracy on execbb/fcbb/murphybusiness (CLAUDE.md #11,
-      # #13). if: always() so a scraper failure still gets checked against
-      # whatever it did manage to write.
+      # #13).
       - name: Check first_seen invariant
-        if: always()
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python3 scrapers/first_seen_monitor.py
 
-      # always() so a cancelled or failed scrape still saves its work.
-      # This is the fix for the run that lost 97 brokers' output.
-      #
+      # always() so a failed invariant check still saves the scrape's work.
       # Also commits the first_seen baseline the invariant check just wrote.
-      # It has to survive between runs to mean anything — a fresh container
-      # every run with no persisted state would never have a prior value to
-      # diff against; committing it here is what closes that gap.
       - name: Commit snapshot
         if: always()
         run: |
@@ -124,20 +219,19 @@ jobs:
             exit 0
           fi
           SUFFIX=""
-          if [ "${{ steps.scrape.outputs.partial }}" = "true" ]; then
+          if [ "${{ needs.scrape.result }}" != "success" ] || \
+             grep -qs '"interrupted": true' data/snapshots/$(date -u +%Y-%m-%d)/summary.json; then
             SUFFIX=" (partial)"
           fi
           git commit -m "snapshot: $(date -u +%Y-%m-%d)${SUFFIX}"
-          # Another workflow may have pushed while we ran.
           # -X theirs: on a conflict, keep THIS run's copy of the generated
-          # file (in a rebase "theirs" is the commit being replayed). A plain
-          # rebase left the runner on a detached HEAD and lost the push
-          # (run #162, 2026-09-16: conflict in first_seen_baseline.json).
+          # file (run #162, 2026-09-16: conflict in first_seen_baseline.json).
           if ! git pull --rebase -X theirs --autostash origin ${{ github.ref_name }}; then
             git rebase --abort || true
             echo "::warning::Could not rebase onto origin; result is committed locally only."
           fi
           git push || echo "Push failed — snapshot is committed locally only."
+
       # Rebuild the homepage's materialized view so new listings actually
       # appear on the site. CONCURRENTLY keeps the page serving during it.
       - name: Refresh homepage view
@@ -152,13 +246,28 @@ jobs:
             -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
             -H "Content-Type: application/json" \
             -d '{}'
-      # Second copy of the output, independent of git. If the push ever
-      # fails, the data is still downloadable from the run page for 30 days.
-      - name: Upload snapshot artifact
+
+      # Sweep crawl_run rows left 'running' > 6h (pg_cron also does this
+      # hourly; running it here keeps the scorecard honest right after a run).
+      - name: Expire stale crawl_run rows
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          curl -sS --fail-with-body -X POST \
+            "$SUPABASE_URL/rest/v1/rpc/expire_stale_crawl_runs" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}' || echo "::warning::expire_stale_crawl_runs failed"
+
+      # Second copy of the merged output, independent of git.
+      - name: Upload merged snapshot artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: snapshots-${{ github.run_number }}
-          path: data/snapshots/
+          path: merged/
           retention-days: 30
           if-no-files-found: warn

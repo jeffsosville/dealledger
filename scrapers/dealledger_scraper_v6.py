@@ -2254,6 +2254,14 @@ class CrawlFailureWriter:
 # MAIN SCRAPER
 # ============================================================
 
+class OrderingError(RuntimeError):
+    """--stale-first could not order the brokers. Fatal: main() exits 3.
+
+    A silent fallback to CSV order is worse than a failed job — it ran for
+    at least 2026-09-11..23 with every nightly crawl hitting CSV rows 1-110.
+    """
+
+
 class DealLedgerScraper:
 
     def __init__(self, output_dir="data/snapshots", use_supabase=True):
@@ -2399,39 +2407,52 @@ class DealLedgerScraper:
         which sorts to the very front — so dark brokers are picked up first.
 
         This is READ-ONLY against listings_direct and never touches the
-        BizBuySell `listings` table. If anything fails, we fall back to the
-        original CSV order and the run proceeds unchanged.
+        BizBuySell `listings` table.
+
+        FAILURE IS FATAL (2026-09-24). This used to catch everything and fall
+        back to CSV order, so a broken ordering looked exactly like a working
+        one: --top-n just took CSV rows 1-110 every night and the job stayed
+        green. Now any failure raises OrderingError and main() exits 3.
+
+        Keys are BARE domains (www. stripped) on both sides: the
+        broker_last_seen() RPC strips it server-side, and every lookup here
+        goes through _bare(). Before, "www.x.com" in the CSV never matched
+        "x.com" in listings_direct and the broker looked never-scraped.
         """
         if not self.supabase_writer:
-            print("ℹ️  --stale-first requested but Supabase unavailable — keeping CSV order")
-            return brokers
+            raise OrderingError("--stale-first requested but Supabase is unavailable")
+
+        def _bare(d):
+            d = (d or "").strip().lower()
+            return d[4:] if d.startswith("www.") else d
 
         try:
             latest: dict[str, str] = {}
             yield_by_domain: dict[str, int] = {}
-            # Page through listings_direct in chunks (PostgREST caps rows/req)
+            # One RPC, grouped server-side: bare_domain, max(last_seen), count(*).
+            # Paged only because PostgREST caps any response at 1000 rows and
+            # there are ~775 domains today; ordered by bare_domain so pages
+            # are stable.
             page_size = 1000
             start = 0
             while True:
-                resp = (self.supabase_writer.client
-                        .table("listings_direct")
-                        .select("broker_domain,last_seen")
+                rows = (self.supabase_writer.client
+                        .rpc("broker_last_seen", {})
                         .range(start, start + page_size - 1)
-                        .execute())
-                rows = resp.data or []
-                if not rows:
-                    break
+                        .execute().data) or []
                 for row in rows:
-                    d = row.get("broker_domain")
-                    ls = row.get("last_seen") or ""
-                    if not d:
-                        continue
-                    if d not in latest or ls > latest[d]:
-                        latest[d] = ls
-                    yield_by_domain[d] = yield_by_domain.get(d, 0) + 1
+                    d = row.get("bare_domain")
+                    if d:
+                        latest[d] = row.get("last_seen") or ""
+                        yield_by_domain[d] = int(row.get("n") or 0)
                 if len(rows) < page_size:
                     break
                 start += page_size
+            if not latest:
+                raise OrderingError("broker_last_seen() returned no rows")
+            print(f"📊 broker_last_seen(): {len(latest)} domains, "
+                  f"{sum(yield_by_domain.values())} listings_direct rows")
+
 
             # PRODUCERS FIRST, unless explicitly told otherwise.
             #
@@ -2447,7 +2468,7 @@ class DealLedgerScraper:
 
             if order_mode == "never":
                 brokers = [b for b in brokers
-                           if yield_by_domain.get(b["domain"], 0) == 0]
+                           if yield_by_domain.get(_bare(b["domain"]), 0) == 0]
                 print(f"📊 ORDER=never — {len(brokers)} never-scraped brokers only")
                 return brokers
 
@@ -2470,18 +2491,15 @@ class DealLedgerScraper:
             # by itself and no bucket bookkeeping has to be stored anywhere.
             if order_mode == "weekly":
                 spec = self._specialized_domains()
-                def _bare(d):
-                    d = (d or "").lower()
-                    return d[4:] if d.startswith("www.") else d
 
                 csv_order = brokers
                 tail = [b for b in brokers
-                        if yield_by_domain.get(b["domain"], 0) > 0
+                        if yield_by_domain.get(_bare(b["domain"]), 0) > 0
                         and _bare(b["domain"]) not in spec]
                 skipped = sum(1 for b in brokers
-                              if yield_by_domain.get(b["domain"], 0) > 0
+                              if yield_by_domain.get(_bare(b["domain"]), 0) > 0
                               and _bare(b["domain"]) in spec)
-                tail.sort(key=lambda b: latest.get(b["domain"], ""))
+                tail.sort(key=lambda b: latest.get(_bare(b["domain"]), ""))
 
                 days = max(1, int(os.environ.get("REFRESH_CYCLE_DAYS", "7")))
                 slice_n = -(-len(tail) // days)          # ceil
@@ -2498,7 +2516,7 @@ class DealLedgerScraper:
                     seen_fresh = set()
                     for b in reversed(csv_order):
                         dom = b["domain"]
-                        if (yield_by_domain.get(dom, 0) == 0
+                        if (yield_by_domain.get(_bare(dom), 0) == 0
                                 and _bare(dom) not in cooled
                                 and _bare(dom) not in spec
                                 and dom not in seen_fresh):
@@ -2518,18 +2536,37 @@ class DealLedgerScraper:
                 # of 485 live domains unrefreshed for more than 7 days, some
                 # for 70. Due-first means a short night costs us discovery,
                 # which can wait, instead of freshness, which can't.
-                return due + fresh
+                #
+                # FILL THE BUDGET (2026-09-24). due + fresh is ~110 brokers,
+                # sized for one --top-n 100 job. The workflow now runs four
+                # shards (400/day), so after the priority prefix append the
+                # rest of the tail (stalest first) and then the rest of the
+                # never-scraped cohort. --top-n still slices, so the head of
+                # the list is unchanged for a single 100-broker run.
+                picked = {id(b) for b in due + fresh}
+                rest_tail = [b for b in tail[slice_n:] if id(b) not in picked]
+                rest_new = [b for b in reversed(csv_order)
+                            if id(b) not in picked
+                            and yield_by_domain.get(_bare(b["domain"]), 0) == 0
+                            and _bare(b["domain"]) not in spec]
+                ordered, seen = [], set()
+                for b in due + fresh + rest_tail + rest_new:
+                    k = _bare(b["domain"])
+                    if k not in seen:
+                        seen.add(k)
+                        ordered.append(b)
+                return ordered
 
             if order_mode == "yield":
                 csv_order = brokers
                 def key(b):
                     d = b["domain"]
-                    produced = yield_by_domain.get(d, 0)
+                    produced = yield_by_domain.get(_bare(d), 0)
                     # Never-scraped go last in this mode, not first.
-                    return (0 if produced else 1, -produced, latest.get(d, ""))
+                    return (0 if produced else 1, -produced, latest.get(_bare(d), ""))
                 brokers = sorted(brokers, key=key)
                 producing = sum(1 for b in brokers
-                                if yield_by_domain.get(b["domain"], 0) > 0)
+                                if yield_by_domain.get(_bare(b["domain"]), 0) > 0)
                 print(f"📊 ORDER=yield — {producing} producing brokers first, "
                       f"{len(brokers) - producing} never-scraped last")
 
@@ -2544,13 +2581,10 @@ class DealLedgerScraper:
                 quota = int(os.environ.get("NEW_BROKER_QUOTA", "5") or 0)
                 if quota > 0:
                     cooled = self._recently_failed_domains(days=7)
-                    def _bare(d):
-                        d = (d or "").lower()
-                        return d[4:] if d.startswith("www.") else d
                     fresh, seen_fresh = [], set()
                     for b in reversed(csv_order):
                         dom = b["domain"]
-                        if (yield_by_domain.get(dom, 0) == 0
+                        if (yield_by_domain.get(_bare(dom), 0) == 0
                                 and _bare(dom) not in cooled
                                 and dom not in seen_fresh):
                             fresh.append(b)
@@ -2566,12 +2600,14 @@ class DealLedgerScraper:
                 return brokers
 
             # Empty string sorts before any ISO timestamp => never-scraped first
-            brokers.sort(key=lambda b: latest.get(b["domain"], ""))
-            never = sum(1 for b in brokers if b["domain"] not in latest)
+            brokers.sort(key=lambda b: latest.get(_bare(b["domain"]), ""))
+            never = sum(1 for b in brokers if _bare(b["domain"]) not in latest)
             print(f"🔄 Ordered by staleness — {len(latest)} known domains, "
                   f"{never} never-scraped brokers moved to front")
+        except OrderingError:
+            raise
         except Exception as e:
-            print(f"⚠️  Staleness ordering failed ({e}) — falling back to CSV order")
+            raise OrderingError(f"Staleness ordering failed: {type(e).__name__}: {e}") from e
         return brokers
 
     def _stored_listings(self, ids: list) -> dict:
@@ -2682,7 +2718,11 @@ class DealLedgerScraper:
         elif listings:
             finish_run(run_id, "ok", len(listings), len(listings))
         else:
-            finish_run(run_id, "empty", 0, 0)
+            # 'empty' is not an allowed status (crawl_run_status_check:
+            # running/ok/failed/partial/backfill). The PATCH was rejected and
+            # the row stayed 'running' forever. Zero listings is not a
+            # coverage window, so it closes as failed.
+            finish_run(run_id, "failed", 0, 0, error="EMPTY")
         return listings
 
     def _scrape_broker_inner(self, broker: dict) -> list[dict]:
@@ -3295,6 +3335,17 @@ def main():
                              "listings_direct) BEFORE applying --top-n, so the "
                              "daily batch rotates through the whole registry")
     parser.add_argument("--output",      default="data/snapshots")
+    parser.add_argument("--shard",       metavar="I/N",
+                        help="Take every Nth broker starting at I (0-based) from "
+                             "the ordered list BEFORE --top-n. Round-robin, so "
+                             "each shard starts on the most-due brokers and a "
+                             "shard dying early loses low-priority tail only.")
+    parser.add_argument("--plan-out",    metavar="CSV",
+                        help="Order (+ --top-n), write the resulting broker list "
+                             "to CSV and exit without scraping. The workflow's "
+                             "plan job uses this so all shards slice ONE "
+                             "ordering instead of each re-reading a "
+                             "listings_direct the other shards are writing to.")
     parser.add_argument("--no-supabase", action="store_true")
     parser.add_argument("--write",       action="store_true",
                         help="Allow --broker to write to Supabase. Without this, "
@@ -3336,7 +3387,26 @@ def main():
             # Order by staleness BEFORE slicing, so --top-n takes the most
             # stale / never-scraped brokers rather than the same first N rows.
             if args.stale_first:
-                brokers = scraper._order_by_staleness(brokers)
+                try:
+                    brokers = scraper._order_by_staleness(brokers)
+                except OrderingError as e:
+                    print(f"❌ {e}", flush=True)
+                    print("::error::Staleness ordering failed — refusing to fall "
+                          "back to CSV order", flush=True)
+                    sys.exit(3)
+                if not brokers:
+                    print("❌ Staleness ordering returned 0 brokers", flush=True)
+                    sys.exit(3)
+
+            if args.shard:
+                try:
+                    i, n = (int(x) for x in args.shard.split("/"))
+                    assert n > 0 and 0 <= i < n
+                except Exception:
+                    print(f"❌ --shard must be I/N with 0 <= I < N, got {args.shard!r}")
+                    sys.exit(2)
+                brokers = brokers[i::n]
+                print(f"🧩 shard {i}/{n}: {len(brokers)} brokers")
 
             if args.test:
                 brokers = brokers[:5]
@@ -3350,6 +3420,16 @@ def main():
             else:
                 print("Specify --test, --top-n N, or --all")
                 sys.exit(1)
+
+            if args.plan_out:
+                os.makedirs(os.path.dirname(os.path.abspath(args.plan_out)), exist_ok=True)
+                pd.DataFrame(
+                    [{"broker_name": b["name"], "listing_url": b["url"],
+                      "domain": b["domain"]} for b in brokers],
+                    columns=["broker_name", "listing_url", "domain"],
+                ).to_csv(args.plan_out, index=False)
+                print(f"🗺️  plan: wrote {len(brokers)} ordered brokers to {args.plan_out}")
+                return
 
         scraper.run(brokers)
     finally:
