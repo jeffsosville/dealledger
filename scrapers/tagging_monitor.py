@@ -24,7 +24,7 @@ Env (matches the rest of this repo):
   SUPABASE_URL          required
   SUPABASE_SERVICE_KEY  required
   RESEND_API_KEY        optional — emails on failure if set
-  ALERT_EMAIL_TO        optional — defaults to jeff@sosville.co
+  ALERT_EMAIL_TO        optional — defaults to info@dealledger.org
   ALERT_EMAIL_FROM      optional — defaults to alerts@dealledger.org
   DRY_RUN               optional — "1" to skip sending mail
 
@@ -40,7 +40,7 @@ import requests
 SUPABASE_URL         = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 RESEND_API_KEY       = os.environ.get("RESEND_API_KEY", "")
-ALERT_EMAIL_TO       = os.environ.get("ALERT_EMAIL_TO", "jeff@sosville.co")
+ALERT_EMAIL_TO       = os.environ.get("ALERT_EMAIL_TO", "info@dealledger.org")
 ALERT_EMAIL_FROM     = os.environ.get("ALERT_EMAIL_FROM", "alerts@dealledger.org")
 DRY_RUN              = os.environ.get("DRY_RUN", "") == "1"
 

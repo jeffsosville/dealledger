@@ -45,7 +45,7 @@ SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 ALERT_FROM = os.environ.get("DL_ALERT_FROM", "alerts@dealledger.org")
-ALERT_TO = os.environ.get("DL_ALERT_TO", "jeff@dealledger.org")
+ALERT_TO = os.environ.get("DL_ALERT_TO", "info@dealledger.org")
 
 # Alert thresholds
 STALE_WEEK_THRESHOLD = 20000        # trip if stale_over_week exceeds this
