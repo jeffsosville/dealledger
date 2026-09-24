@@ -48,6 +48,10 @@ def _key() -> str:
     )
 
 
+# Must match crawl_run_status_check.
+_VALID_STATUS = {"running", "ok", "failed", "partial", "backfill"}
+
+
 def _headers(key: str) -> dict:
     return {
         "apikey": key,
@@ -96,15 +100,21 @@ def finish_run(
     """Close a run row.
 
     status MUST be 'ok' on success — v_dom_direct filters on exactly that
-    string. Use 'failed' for an exception, 'empty' for a clean crawl that
-    returned nothing (that is not a coverage gap, so it should not count as
-    a successful observation window either way you decide to treat it).
+    string. Use 'failed' for an exception or a crawl that returned nothing
+    (error='EMPTY'). Allowed values are _VALID_STATUS; there is no 'empty'.
     """
     key = _key()
     if run_id is None or not key:
         return
+    if status not in _VALID_STATUS:
+        # crawl_run_status_check rejects anything else, and a rejected PATCH
+        # leaves the row 'running' forever (96 zombie rows by 2026-09-24,
+        # all from status='empty'). Coerce rather than lose the close.
+        log.warning("crawl_run: status %r not allowed, closing as 'failed'", status)
+        error = error or f"status:{status}"
+        status = "failed"
     try:
-        requests.patch(
+        r = requests.patch(
             f"{_url()}/rest/v1/crawl_run",
             headers=_headers(key),
             params={"id": f"eq.{run_id}"},
@@ -117,5 +127,32 @@ def finish_run(
             },
             timeout=15,
         )
+        if not r.ok:
+            log.warning("crawl_run finish HTTP %s for id=%s: %s",
+                        r.status_code, run_id, r.text[:200])
     except Exception as e:                                  # never raise
         log.warning("crawl_run finish failed: %s", e)
+
+
+def expire_stale_runs(max_age: str = "6 hours") -> int:
+    """Mark crawl_run rows still 'running' after `max_age` as failed/timeout.
+
+    Calls public.expire_stale_crawl_runs() (pg_cron also runs it hourly).
+    Returns the number of rows closed; 0 on any error. Never raises.
+    """
+    key = _key()
+    if not key:
+        return 0
+    try:
+        r = requests.post(
+            f"{_url()}/rest/v1/rpc/expire_stale_crawl_runs",
+            headers=_headers(key),
+            json={"max_age": max_age},
+            timeout=30,
+        )
+        if r.ok:
+            return int(r.json() or 0)
+        log.warning("expire_stale_crawl_runs HTTP %s: %s", r.status_code, r.text[:200])
+    except Exception as e:                                  # never raise
+        log.warning("expire_stale_crawl_runs failed: %s", e)
+    return 0

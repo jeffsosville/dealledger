@@ -28,7 +28,7 @@ import requests as http_requests
 # Add parent dir to path so we can import specialized_scrapers
 sys.path.insert(0, os.path.dirname(__file__))
 import csv as _csv
-from crawl_run_log import start_run, finish_run
+from crawl_run_log import start_run, finish_run, expire_stale_runs
 from junk_filter import is_junk_title, title_from_slug
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
@@ -49,58 +49,73 @@ SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 #   account      → numeric account ID (matches broker_master / past data)
 #   display_name → real broker name written to listings_direct.broker_name
 #   fn           → callable that runs the scraper and returns List[Dict]
+#   domain       → bare domain for crawl_run.broker_domain. Needed up front:
+#                  a crawl that returns nothing (or raises) has no listing URL
+#                  to derive it from, and those were exactly the rows left
+#                  'running' with broker_domain NULL (96 of them by 09-24).
 BROKERS = {
     "transworld": {
+        "domain": "tworld.com",
         "account": "28148",
         "display_name": "Transworld Business Advisors",
         "fn": lambda: TransworldScraper().scrape("28148", max_pages=450, workers=8),
     },
     "sunbelt": {
+        "domain": "sunbeltnetwork.com",
         "account": "1001",
         "display_name": "Sunbelt Business Brokers",
         "fn": lambda: SunbeltScraper().scrape("1001", max_pages=130),
     },
     "fcbb": {
+        "domain": "fcbb.com",
         "account": "1002",
         "display_name": "First Choice Business Brokers (FCBB)",
         "fn": lambda: FCBBScraper().scrape("1002", max_pages=79),
     },
     "murphy": {
+        "domain": "murphybusiness.com",
         "account": "1003",
         "display_name": "Murphy Business",
         "fn": lambda: MurphyScraper.scrape("1003", max_pages=50),
     },
     "vr": {
+        "domain": "vrbusinessbrokers.com",
         "account": "1004",
         "display_name": "VR Business Brokers",
         "fn": lambda: VRScraper().scrape("1004", max_pages=40),
     },
     "hedgestone": {
+        "domain": "hedgestone.com",
         "account": "28149",
         "display_name": "Hedgestone Business Advisors",
         "fn": lambda: HedgestoneScraper().scrape("28149", max_pages=40),
     },
     "link": {
+        "domain": "linkbusiness.com",
         "account": "1005",
         "display_name": "Link Business",
         "fn": lambda: LinkBusinessScraper().scrape("1005", max_pages=60),
     },
     "bodner": {
+        "domain": "bodnergroup.com",
         "account": "1006",
         "display_name": "Executive Business Brokers (Larry Bodner)",
         "fn": lambda: LarryBodnerScraper().scrape("1006"),
     },
     "wesell": {
+        "domain": "wesellrestaurants.com",
         "account": "2900",
         "display_name": "We Sell Restaurants",
         "fn": lambda: WeSellRestaurantsScraper().scrape("2900", max_pages=40),
     },
     "vested": {
+        "domain": "vestedbb.com",
         "account": "1593",
         "display_name": "Vested Business Brokers",
         "fn": lambda: VestedScraper().scrape("1593", max_pages=130),
     },
     "routesforsale": {
+        "domain": "routesforsale.net",
         "account": "13461",
         "display_name": "Routes For Sale",
         "fn": lambda: RoutesForSaleScraper().scrape("13461"),
@@ -127,6 +142,7 @@ def _register_wp_rest_brokers():
             account = acct or key
             display = (row.get("display_name") or "").strip() or domain
             BROKERS[key] = {
+                "domain": domain.replace("www.", "").lower(),
                 "account": account,
                 "display_name": display,
                 "fn": (lambda d=domain, rb=rest, a=account:
@@ -517,6 +533,11 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         log.error("Set SUPABASE_SERVICE_KEY env var")
         sys.exit(1)
 
+    if not dry_run:
+        n = expire_stale_runs()
+        if n:
+            log.info(f"crawl_run: marked {n} row(s) running > 6h as failed/timeout")
+
     to_run = broker_filter if broker_filter else list(BROKERS.keys())
     log.info(f"Running {len(to_run)} specialized scrapers: {', '.join(to_run)}")
 
@@ -531,34 +552,26 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         broker_meta = BROKERS[name]
         log.info(f"\n{'='*60}\nScraping: {name.upper()} ({broker_meta['display_name']})\n{'='*60}")
 
-        # crawl_run: opened once the broker's domain is known (the registry
-        # entry has no domain field, so it comes from the first listing).
-        # Declared out here so the except block can still close the row when
-        # broker_meta["fn"]() is what raised. finish_run(None, ...) no-ops.
-        run_id = None
+        # crawl_run (2026-09-24): every row this opens is closed, ok or
+        # failed, with broker_domain set.
+        #   - opened BEFORE the scrape, with the registry domain, so a crash
+        #     or kill leaves a 'running' row the 6h sweep turns into
+        #     failed/timeout rather than no row at all;
+        #   - 0 listings closes as failed/EMPTY. The old code sent 'empty',
+        #     which crawl_run_status_check rejects - the PATCH 400'd silently
+        #     and the row stayed 'running' forever;
+        #   - the finally: catches KeyboardInterrupt/SystemExit too, which
+        #     `except Exception` did not.
+        #   - dry runs open no row at all ('dry_run' is not a valid status
+        #     either).
+        run_id = None if dry_run else start_run("specialized", broker_meta.get("domain"))
+        outcome = ("failed", 0, 0, "interrupted")
         try:
             listings = broker_meta["fn"]()
             log.info(f"[{name}] Got {len(listings)} listings")
             results[name] = len(listings)
 
-            # derive_broker_domain takes a URL STRING, not a listing dict, and
-            # swallows its own errors -- passing a dict returns None silently.
-            # Scan for the first listing that actually has a URL; some rows
-            # arrive without one and are dropped later in upsert_listings.
-            bdom = next(
-                (d for d in (
-                    derive_broker_domain(l.get("listing_url") or l.get("url") or "")
-                    for l in listings
-                ) if d),
-                None,
-            )
-            if bdom is None and listings:
-                log.warning(f"[{name}] crawl_run: no broker_domain derivable — "
-                            f"row will not join in v_dom_direct")
-            run_id = start_run("specialized", bdom)
-
             if dry_run:
-                finish_run(run_id, "dry_run", len(listings), 0)
                 if listings:
                     sample = listings[0]
                     log.info(
@@ -569,17 +582,17 @@ def run(broker_filter: list[str] | None, dry_run: bool):
                     log.info(f"  Would write as broker_name='{broker_meta['display_name']}'")
                 continue
 
+            if not listings:
+                outcome = ("failed", 0, 0, "EMPTY: scraper returned 0 listings")
+                continue
+
             upserted = upsert_listings(listings, display_name=broker_meta["display_name"])
             log.info(f"[{name}] Upserted {upserted} rows")
             grand_total += upserted
 
             # 'ok' is load-bearing: v_dom_direct filters status='ok' to find the
-            # last successful crawl before a listing appeared. An empty crawl is
-            # not a coverage window, so it must not claim to be one.
-            finish_run(run_id,
-                       "ok" if listings else "empty",
-                       urls_fetched=len(listings),
-                       listings_seen=upserted)
+            # last successful crawl before a listing appeared.
+            outcome = ("ok", len(listings), upserted, None)
 
             # Post-upsert cleanup of legacy index-page rows for We Sell Restaurants
             if name == "wesell":
@@ -588,7 +601,11 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         except Exception as e:
             log.error(f"[{name}] Failed: {e}")
             results[name] = 0
-            finish_run(run_id, "failed", error=str(e))
+            outcome = ("failed", 0, 0, f"{type(e).__name__}: {e}")
+        finally:
+            status, fetched, seen, err = outcome
+            finish_run(run_id, status, urls_fetched=fetched,
+                       listings_seen=seen, error=err)
 
     log.info(f"\n{'='*60}")
     log.info(f"DONE — {grand_total} total listings upserted to listings_direct")
