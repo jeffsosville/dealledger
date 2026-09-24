@@ -1,39 +1,37 @@
 name: Daily broker discovery
 
-# Finds listings pages for brokers in broker_sources that are still at
-# 1_needs_discovery (IBBA and other seed lists), records every result on
-# broker_sources, then appends the trusted 'ok' ones to data/brokers_clean.csv
-# so the 10am broker scrape picks them up the same day (never-scraped brokers
-# go first under --stale-first).
+# Finds listings pages for brokers in broker_sources still at
+# 1_needs_discovery (v_discovery_queue, IBBA members first) and writes every
+# result back onto broker_sources:
 #
-# The schedule is OFF until a few manual batches have been reviewed. To turn
-# it on, uncomment the two schedule lines below. Until then, run it from the
-# Actions tab ("Run workflow").
+#   ok                -> 3_crawlable   (crawled by broker_scrape.yml the same day)
+#   weak              -> 2_listings_url_known / needs_work
+#   no page, dead ... -> 0_unusable
+#   blocked           -> 0_blocked
+#
+# broker_scrape.yml (14:23 UTC) builds its list from broker_sources stages
+# 3_crawlable + 4_producing at job start, so there is no CSV to export or
+# commit any more (2026-09-24; agents/export_discovered_ok.py removed).
+# promote_producing_brokers() (pg_cron, 21:17 UTC) moves 3 -> 4 once a broker
+# has live listings.
+#
+# Re-enabled 2026-09-24. It had been manual-only since 2026-09-15 and the
+# queue sat at 1,384 unprobed brokers.
 
 on:
-  # schedule:
-  #   - cron: "0 11 * * *"   # 11:00 UTC = 7am ET, three hours before broker_scrape
+  schedule:
+    - cron: "23 11 * * *"   # 11:23 UTC, three hours before broker_scrape. Off :00 - GitHub queues top-of-hour crons.
   workflow_dispatch:
     inputs:
       limit:
         description: "Domains to probe"
-        default: "50"
+        default: "75"
       seed:
         description: "Only broker_sources rows whose seed_source contains this (blank = all)"
-        default: "ibba"
-      export:
-        description: "Append new 'ok' results to data/brokers_clean.csv and push"
-        type: boolean
-        default: true
+        default: ""
 
 permissions:
-  contents: write
-
-# Same group as broker_scrape.yml: both push to this repo, and discovery must
-# finish (and push the CSV) before a scrape starts reading it.
-concurrency:
-  group: broker-scrape
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   discover:
@@ -60,66 +58,26 @@ jobs:
           echo "::error::playwright install-deps failed three times"
           exit 1
 
-      # Each domain has a 90s watchdog, so 50 domains is ~75 min worst case.
-      # timeout sends SIGINT well inside the job limit so the export and push
-      # below still run on whatever was resolved.
+      # Each domain has a 90s watchdog, so 75 domains is ~110 min worst case;
+      # most resolve in seconds. timeout sends SIGINT inside the job limit.
+      # Every result is written to broker_sources as it is found, so a
+      # timed-out run keeps what it resolved.
       - name: Discover listings pages
-        id: discover
         env:
           PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SOURCE: broker_sources
-          SEED: ${{ github.event_name == 'schedule' && 'ibba' || inputs.seed }}
-          LIMIT: ${{ inputs.limit || '50' }}
+          SEED: ${{ inputs.seed || '' }}
+          LIMIT: ${{ inputs.limit || '75' }}
         run: |
           set +e
-          timeout --signal=INT 120m python3 -u agents/discover_backlog.py
+          timeout --signal=INT 130m python3 -u agents/discover_backlog.py
           CODE=$?
           set -e
-          if [ $CODE -ne 0 ]; then
-            echo "::warning::discover_backlog.py exited with code $CODE; exporting whatever was resolved."
+          if [ $CODE -eq 124 ]; then
+            echo "::warning::discovery hit the 130-minute guard; results so far are saved."
+          elif [ $CODE -ne 0 ]; then
+            echo "::error::discover_backlog.py exited with code $CODE"
+            exit $CODE
           fi
-
-      - name: Export crawl-ready brokers to CSV
-        if: always() && (github.event_name == 'schedule' || inputs.export)
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python3 agents/export_discovered_ok.py
-
-      - name: Commit broker list
-        if: always() && (github.event_name == 'schedule' || inputs.export)
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: |
-          git config user.name "dealledger-bot"
-          git config user.email "bot@dealledger.org"
-          git add data/brokers_clean.csv
-          if git diff --staged --quiet; then
-            echo "No new brokers to add."
-            exit 0
-          fi
-          ADDED=$(git diff --staged --numstat data/brokers_clean.csv | cut -f1)
-          git diff --staged data/brokers_clean.csv | grep '^+[^+]' >> "$GITHUB_STEP_SUMMARY" || true
-          git commit -m "discovery: +${ADDED} brokers $(date -u +%Y-%m-%d)"
-          # If the CSV changed on origin meanwhile, don't hand-merge it:
-          # rebuild the append on top of origin (the export is idempotent).
-          for attempt in 1 2 3; do
-            if git pull --rebase --autostash origin ${{ github.ref_name }} && git push; then
-              exit 0
-            fi
-            git rebase --abort 2>/dev/null || true
-            echo "::warning::push attempt $attempt failed; re-exporting on top of origin"
-            git fetch origin ${{ github.ref_name }}
-            git reset --hard origin/${{ github.ref_name }}
-            python3 agents/export_discovered_ok.py
-            git add data/brokers_clean.csv
-            if git diff --staged --quiet; then
-              echo "Nothing left to add after rebasing."
-              exit 0
-            fi
-            git commit -m "discovery: brokers $(date -u +%Y-%m-%d)"
-          done
-          echo "::warning::Push failed three times; broker list is committed locally only."

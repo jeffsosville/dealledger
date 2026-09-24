@@ -241,8 +241,15 @@ def save(domain, base_url, listings_url, status, method=None,
 
 
 # broker_discovery status -> (discovery_stage, strategy_status) on broker_sources
+#
+# 'ok' lands at 3_crawlable (2026-09-24). The nightly scrape builds its list
+# from broker_sources stages 3_crawlable + 4_producing, so a verified result
+# has to land there directly. It used to stop at 2_listings_url_known and rely
+# on export_discovered_ok.py appending to data/brokers_clean.csv, a file the
+# scrape no longer reads. 'weak' stays at 2: the page is real but needs work.
+# promote_producing_brokers() (pg_cron, daily) moves 3 -> 4 once it produces.
 STAGE_FOR = {
-    "ok":               ("2_listings_url_known", "ready"),
+    "ok":               ("3_crawlable", "ready"),
     "weak":             ("2_listings_url_known", "needs_work"),
     "no_listings_page": ("0_unusable", "unusable"),
     "dead":             ("0_unusable", "unusable"),
@@ -554,7 +561,7 @@ def main():
         print(f"  {k:20} {v}")
 
     if crawlable:
-        print(f"\n--- {len(crawlable)} ready for data/brokers_clean.csv ---")
+        print(f"\n--- {len(crawlable)} promoted to 3_crawlable (crawled from tonight) ---")
         for domain, url, listed in sorted(crawlable, key=lambda x: -x[2])[:40]:
             print(f"  {listed:5}  {url}")
 
@@ -564,8 +571,6 @@ def main():
         for domain, url, listed in sorted(weak, key=lambda x: -x[2])[:20]:
             print(f"  {listed:5}  {url}")
 
-    print("\nExport the full crawl-ready set with:")
-    print("  select domain, listings_url from broker_discovery where status='ok';")
 
 
 if __name__ == "__main__":
