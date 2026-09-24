@@ -1,5 +1,28 @@
 # Adding a Broker to DealLedger
 
+## Start here: most brokers need no code (updated 24 Sep 2026)
+
+DealLedger's generic crawler reads most broker sites without a custom
+scraper. To add one:
+
+1. Add the broker's website as a row in `broker_sources` with
+   `discovery_stage = '1_needs_discovery'` (or send us the URL).
+2. Broker discovery (`broker_discovery.yml`, daily) finds its listings page.
+   If the page checks out it moves to `3_crawlable`.
+3. The nightly scrape crawls it, stalest brokers first. Once it produces
+   listings it moves to `4_producing`.
+
+Junk or out-of-scope sites go in `broker_block` rather than being deleted.
+
+Write a specialized scraper (the rest of this guide) only when the generic
+crawler can't read the site: JavaScript-only listings, an API, or a franchise
+network with hundreds of pages. Specialized scrapers are registered in the
+`BROKERS` dict in `scrapers/run_specialized.py` (WordPress-REST sites are rows in
+`data/wp_rest_brokers.csv`), and each entry needs a `domain` so its
+`crawl_run` rows can be attributed.
+
+---
+
 This guide walks you through adding a new broker scraper.
 
 **Time required:** 30 minutes to 2 hours (depending on site complexity)

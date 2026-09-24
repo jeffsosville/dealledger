@@ -23,7 +23,7 @@ how they are built and how well they perform is.
 ## Data Sources
 
 DealLedger reads business-for-sale listings directly from brokers' own
-websites — 485 of them as of September 2026, and rising as discovery adds
+websites — about 770 of them as of 24 September 2026, and rising as discovery adds
 more. Every listing is traceable to the broker page it came from.
 
 **What we capture:** title, URL, asking price, cash flow, revenue where

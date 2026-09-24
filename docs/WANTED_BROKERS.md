@@ -2,6 +2,8 @@
 
 Brokers we want to add to DealLedger, prioritized by coverage and data quality.
 
+Statuses checked against `listings_direct` / `broker_sources` on 24 Sep 2026.
+
 **Want to contribute?** Pick one from this list and follow the [adding a broker guide](adding-a-broker.md).
 
 ---
@@ -12,14 +14,14 @@ These are large franchise networks with the most listings.
 
 | Broker | Website | Est. Listings | Status |
 |--------|---------|---------------|--------|
-| Transworld Business Advisors | tworld.com | 2,000+ | ✅ In progress |
-| Sunbelt Business Brokers | sunbeltnetwork.com | 1,500+ | ⬜ Needed |
-| Murphy Business | murphybusiness.com | 1,000+ | ⬜ Needed |
-| VR Business Brokers | vrbusinessbrokers.com | 800+ | ⬜ Needed |
-| First Choice Business Brokers | fcbb.com | 600+ | ⬜ Needed |
+| Transworld Business Advisors | tworld.com | 2,000+ | ✅ Covered (specialized) |
+| Sunbelt Business Brokers | sunbeltnetwork.com | 1,500+ | ✅ Covered (specialized) |
+| Murphy Business | murphybusiness.com | 1,000+ | ✅ Covered (specialized) |
+| VR Business Brokers | vrbusinessbrokers.com | 800+ | ⚠️ Scraper exists, returning 0 listings |
+| First Choice Business Brokers | fcbb.com | 600+ | ✅ Covered (specialized) |
 | The Business Exchange | businessexchange.com | 500+ | ⬜ Needed |
-| Synergy Business Brokers | synergybusinessbrokers.com | 400+ | ⬜ Needed |
-| Viking Mergers | vikingmergers.com | 300+ | ⬜ Needed |
+| Synergy Business Brokers | synergybb.com | 400+ | ✅ Covered |
+| Viking Mergers | vikingmergers.com | 300+ | ✅ Covered |
 
 ---
 
@@ -29,7 +31,7 @@ Strong coverage in specific states/regions.
 
 | Broker | Website | Region | Status |
 |--------|---------|--------|--------|
-| Calder Associates | calderassociates.com | NJ/NY | ⬜ Needed |
+| Calder Associates | calderassociates.com | NJ/NY | 🟡 Listings page found, not yet crawlable |
 | Soldsmart Business Brokers | soldsmart.com | TX | ⬜ Needed |
 | Business Team | businessteam.com | CA | ⬜ Needed |
 | Hartland Business Brokers | hartlandbusinessbrokers.com | Midwest | ⬜ Needed |
@@ -46,8 +48,8 @@ Brokers focused on specific industries (cleaning, laundromats, etc.)
 | Laundry Owners Warehouse | lowbrokers.com | Laundromat | ⬜ Needed |
 | Coin Laundry Association | coinlaundry.org/listings | Laundromat | ⬜ Needed |
 | PWS Laundry | pwslaundry.com | Laundromat | ⬜ Needed |
-| Route Consultant | routeconsultant.com | Vending | ⬜ Needed |
-| Restaurant Realty | restaurantrealty.com | Restaurant | ⬜ Needed |
+| Route Consultant | listings.routeconsultant.com | Vending | ✅ Covered |
+| Restaurant Realty | restaurantrealty.com | Restaurant | ✅ Covered |
 
 ---
 
