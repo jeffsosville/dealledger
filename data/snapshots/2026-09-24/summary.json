@@ -1,0 +1,123 @@
+{
+  "started": "2026-09-24T18:29:42.439532+00:00",
+  "brokers_attempted": 296,
+  "brokers_success": 166,
+  "brokers_failed": 124,
+  "total_listings": 2971,
+  "listings_with_price": 2089,
+  "listings_with_cashflow": 899,
+  "listings_with_state": 2324,
+  "detail_pages_fetched": 1585,
+  "patterns_cached": 488,
+  "patterns_learned": 161,
+  "verticals": {
+    "other": 991,
+    "restaurant": 391,
+    "technology": 539,
+    "automotive": 168,
+    "retail": 325,
+    "healthcare": 207,
+    "landscaping": 27,
+    "manufacturing": 64,
+    "cleaning": 30,
+    "hvac": 61,
+    "plumbing": 39,
+    "construction": 67,
+    "pest_control": 6,
+    "electrical": 16,
+    "vending": 24,
+    "roofing": 16
+  },
+  "failure_types": {
+    "FETCH_ERROR": 43,
+    "NO_PATTERN": 69,
+    "TITLE_REPETITION_REJECT": 2,
+    "EMBED_BBS": 5,
+    "VALIDATION_REJECT": 1
+  },
+  "slowest_brokers": [
+    [
+      1781,
+      "xlbusinessbrokers.com",
+      88
+    ],
+    [
+      1690,
+      "bhhsnv.com",
+      9
+    ],
+    [
+      1381,
+      "abalventures.com",
+      3
+    ],
+    [
+      847,
+      "pdf-usa.com",
+      0
+    ],
+    [
+      837,
+      "bxbbrokers.com",
+      0
+    ],
+    [
+      670,
+      "riccardiagency.com",
+      5
+    ],
+    [
+      648,
+      "brookspointe.com",
+      8
+    ],
+    [
+      622,
+      "mycoloradobusinessbrokers.com",
+      21
+    ],
+    [
+      609,
+      "mdrma.com",
+      10
+    ],
+    [
+      605,
+      "pinnaclepartnerservice.com",
+      26
+    ],
+    [
+      605,
+      "papadop.com",
+      24
+    ],
+    [
+      597,
+      "southeastbusinessadvisors.com",
+      32
+    ],
+    [
+      580,
+      "foresightbusinessbrokers.com",
+      26
+    ],
+    [
+      548,
+      "josephjamesba.com",
+      3
+    ],
+    [
+      546,
+      "tsifranchisegroup.org",
+      12
+    ]
+  ],
+  "seconds_total": 43379,
+  "completed": "2026-09-24T23:14:57.297003+00:00",
+  "interrupted": true,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2"
+  ]
+}

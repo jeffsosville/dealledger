@@ -1,0 +1,50 @@
+[
+  {
+    "broker": "Saunders Real Estate",
+    "url": "https://saundersrealestate.com/properties",
+    "iframe": "https://buildout.com/plugins/1f351d1d91050f486869996ea3c42d4e7f54e881/land.saundersrealestate.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "levi saxen",
+    "url": "https://pinnaclerea.com/properties",
+    "iframe": "https://buildout.com/plugins/53aeead9dc03d2337633a409497ff7976f68d56c/pinnaclerea.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "darlene ragone",
+    "url": "https://moxiebrokeragegroup.com/listings",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=14525&m_dmr=1",
+    "provider": "bizbuysell"
+  },
+  {
+    "broker": "steve sink lifetime cbi&m&ami",
+    "url": "https://phxaffiliates.com/our-listings",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=1418&m_dmr=1",
+    "provider": "bizbuysell"
+  },
+  {
+    "broker": "helena loelius",
+    "url": "https://sitarcompany.com/listings",
+    "iframe": "https://buildout.com/plugins/fd50b107c718fbef9e0075860e05d2d50c0243e0/sitarcompany.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "scott balfour",
+    "url": "https://balfourcommercial.com/businesses/businesses-for-sale",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=51592&m_dmr=1",
+    "provider": "bizbuysell"
+  },
+  {
+    "broker": "lou sabbagh, cbi, cm&ap",
+    "url": "https://budgetbusinessbrokers.com/Listings-For-Sale",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=40427&m_dmr=1",
+    "provider": "bizbuysell"
+  },
+  {
+    "broker": "rebecca walker-jones",
+    "url": "https://oldincsellsbusinesses.com/current-business-for-sale",
+    "iframe": "https://www.bizbuysell.com/brokerdirectory/Profile/ViewAllListings.aspx?J=b&I=14923&m_dmr=1",
+    "provider": "bizbuysell"
+  }
+]
