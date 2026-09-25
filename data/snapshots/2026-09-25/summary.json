@@ -1,0 +1,125 @@
+{
+  "started": "2026-09-25T18:45:57.575596+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 199,
+  "brokers_failed": 182,
+  "total_listings": 5847,
+  "listings_with_price": 4483,
+  "listings_with_cashflow": 1256,
+  "listings_with_state": 4072,
+  "detail_pages_fetched": 2386,
+  "patterns_cached": 476,
+  "patterns_learned": 185,
+  "verticals": {
+    "restaurant": 723,
+    "automotive": 363,
+    "technology": 672,
+    "other": 2643,
+    "manufacturing": 167,
+    "landscaping": 75,
+    "construction": 141,
+    "cleaning": 107,
+    "roofing": 45,
+    "plumbing": 95,
+    "hvac": 81,
+    "healthcare": 341,
+    "retail": 357,
+    "vending": 14,
+    "electrical": 21,
+    "pest_control": 2
+  },
+  "failure_types": {
+    "NO_PATTERN": 112,
+    "HTTP_403": 28,
+    "EMBED_BBS": 19,
+    "TITLE_REPETITION_REJECT": 2,
+    "FETCH_ERROR": 10,
+    "VALIDATION_REJECT": 2
+  },
+  "slowest_brokers": [
+    [
+      511,
+      "accountingbizbrokers.com",
+      50
+    ],
+    [
+      493,
+      "teamspiritrealty.com",
+      580
+    ],
+    [
+      491,
+      "springfieldstrategies.com",
+      31
+    ],
+    [
+      485,
+      "beehivebusinessbrokers.com",
+      13
+    ],
+    [
+      479,
+      "svbusinessbroker.com",
+      6
+    ],
+    [
+      402,
+      "lvcbs.com",
+      0
+    ],
+    [
+      340,
+      "progressivepracticesales.com",
+      231
+    ],
+    [
+      292,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      277,
+      "empiregbb.com",
+      3
+    ],
+    [
+      272,
+      "bcbusinessbroker.ca",
+      22
+    ],
+    [
+      256,
+      "clandrealty.com",
+      28
+    ],
+    [
+      254,
+      "advantagebusinessbrokers.com",
+      24
+    ],
+    [
+      248,
+      "promed-financial.com",
+      29
+    ],
+    [
+      245,
+      "districtbusinessbrokers.com",
+      18
+    ],
+    [
+      238,
+      "mavenoadvisors.com",
+      23
+    ]
+  ],
+  "seconds_total": 21841,
+  "completed": "2026-09-25T20:34:37.823543+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
