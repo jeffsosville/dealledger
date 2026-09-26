@@ -1,0 +1,125 @@
+{
+  "started": "2026-09-26T17:50:17.220172+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 184,
+  "brokers_failed": 197,
+  "total_listings": 5126,
+  "listings_with_price": 4311,
+  "listings_with_cashflow": 2454,
+  "listings_with_state": 3792,
+  "detail_pages_fetched": 860,
+  "patterns_cached": 479,
+  "patterns_learned": 179,
+  "verticals": {
+    "cleaning": 85,
+    "other": 1216,
+    "landscaping": 39,
+    "automotive": 284,
+    "retail": 520,
+    "technology": 994,
+    "healthcare": 325,
+    "electrical": 44,
+    "roofing": 75,
+    "manufacturing": 121,
+    "plumbing": 43,
+    "hvac": 105,
+    "restaurant": 1000,
+    "construction": 265,
+    "pest_control": 9,
+    "vending": 1
+  },
+  "failure_types": {
+    "NO_PATTERN": 120,
+    "TITLE_REPETITION_REJECT": 2,
+    "HTTP_403": 24,
+    "FETCH_ERROR": 12,
+    "EMBED_BBS": 19,
+    "VALIDATION_REJECT": 3
+  },
+  "slowest_brokers": [
+    [
+      487,
+      "californiabusinessbrokers.com",
+      116
+    ],
+    [
+      394,
+      "simmonsinc.com",
+      0
+    ],
+    [
+      387,
+      "lvcbs.com",
+      0
+    ],
+    [
+      331,
+      "greenlifebusiness.com",
+      24
+    ],
+    [
+      291,
+      "theimateam.com",
+      0
+    ],
+    [
+      232,
+      "resf.com",
+      0
+    ],
+    [
+      225,
+      "pkrealtors.com",
+      1
+    ],
+    [
+      221,
+      "missionpeakbrokers.com",
+      14
+    ],
+    [
+      210,
+      "ibbfl.com",
+      3
+    ],
+    [
+      208,
+      "bhayanirealestate.com",
+      13
+    ],
+    [
+      206,
+      "riccardiagency.com",
+      5
+    ],
+    [
+      201,
+      "azbusinessbrokers.com",
+      55
+    ],
+    [
+      200,
+      "mycoloradobusinessbrokers.com",
+      21
+    ],
+    [
+      198,
+      "americanbusinessbrokers.com",
+      0
+    ],
+    [
+      193,
+      "bridgebusinessbrokers.ca",
+      19
+    ]
+  ],
+  "seconds_total": 16118,
+  "completed": "2026-09-26T19:07:35.145954+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
