@@ -1,0 +1,1022 @@
+[
+  {
+    "broker": "brian do",
+    "url": "https://realtyall.com/business-for-sale-%ec%82%ac%ec%97%85%ec%b2%b4-%eb%a7%a4%eb%a7%a4",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 119328
+  },
+  {
+    "broker": "jay armour",
+    "url": "https://therouteexchange.com/new-route-mailing-list/ - Needs to fill out a form",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.pdb-field.pdb-field-full_listing"
+  },
+  {
+    "broker": "john sandone",
+    "url": "https://businessbroker.net/listings/bfs_result.aspx",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9485
+  },
+  {
+    "broker": "jason hubler",
+    "url": "https://ess-business.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 39
+  },
+  {
+    "broker": "allen faradineh",
+    "url": "https://pacificmergergroup.com/business-for-sale-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 767479
+  },
+  {
+    "broker": "aaron kricher",
+    "url": "https://mibusinessadvisors.com/current-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "bill blau",
+    "url": "https://billblau.com/listings",
+    "error": "yield gate: 32 rows / 1 titles = 32.0 rows/title (> 15)",
+    "type": "TITLE_REPETITION_REJECT"
+  },
+  {
+    "broker": "david a. richman",
+    "url": "https://richmanbusiness.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 105180
+  },
+  {
+    "broker": "thomas mcgovern, mba, cva",
+    "url": "https://advantagebrokerage.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 63485
+  },
+  {
+    "broker": "satwant singh",
+    "url": "https://doababrokers.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-card"
+  },
+  {
+    "broker": "richard schammel, cbb",
+    "url": "https://ventureadvisors.net/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 90814
+  },
+  {
+    "broker": "lauren zenk",
+    "url": "https://cornerstonebusinesspartners.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 112265
+  },
+  {
+    "broker": "karl grasemann",
+    "url": "https://grasemanngroup.com/listings-businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 26714
+  },
+  {
+    "broker": "medi hashemi",
+    "url": "https://evergreenbroker.com/cannabis-business-for-sale-listings-map",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 46861
+  },
+  {
+    "broker": "liquor license sales pa-nj, llc",
+    "url": "https://liquorlicensepanj.com/featured-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 72280
+  },
+  {
+    "broker": "john gleason",
+    "url": "https://genuinebusinessadvisors.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1108682
+  },
+  {
+    "broker": "robert hughes",
+    "url": "https://hughesproperties.com",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "gavin raphael",
+    "url": "https://lightandraphael.com/current-offerings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 18225
+  },
+  {
+    "broker": "joe liang",
+    "url": "https://gabusinessbrokers.com/businesses-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "brett post",
+    "url": "https://3cre.com/property-listings/https://3cre.com/business-listings-columbus",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 86966
+  },
+  {
+    "broker": "billy winkie",
+    "url": "https://southeasternbb.com/search",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 117892
+  },
+  {
+    "broker": "fred canada",
+    "url": "https://thequincygroup.net/businesses_for_sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "david enos",
+    "url": "https://amdbizbrokers.com/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 191603
+  },
+  {
+    "broker": "troy realty ltd.",
+    "url": "https://buildout.com/plugins/dd8b627183524ab8fcfb0909734f04356b0aef24/troyrealtyltd.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "alessandro antezza",
+    "url": "https://sunshineagle.com/premium-listings",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "john moudakis",
+    "url": "https://parcommercial.com/for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "jenny nguyen",
+    "url": "https://dnvrrealty.com/our-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 563636
+  },
+  {
+    "broker": "jim young",
+    "url": "https://firstsourcebb.com",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "gordie gerbrandt",
+    "url": "https://timlambgroup.com/dealerships-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1081717
+  },
+  {
+    "broker": "carl schweiger",
+    "url": "https://trilogyrs.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ession.py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ProxyError: Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "steve cbi cfc",
+    "url": "https://radcommercial.com/services/businesses-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "bill bromley",
+    "url": "https://ibbdallas.com/businesses-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "beat stauble",
+    "url": "https://venturaflorida.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 79747
+  },
+  {
+    "broker": "sandi wolf",
+    "url": "https://osbornehomecare.com/opportunities",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 57614
+  },
+  {
+    "broker": "tommy tran",
+    "url": "https://restaurantforsales.com/buy-a-restaurant.html",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-col2"
+  },
+  {
+    "broker": "jeffrey d. jones",
+    "url": "https://advancedbb.com/pages/business-for-salehttps://www.advancedbb.com/pages/hotels-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 44712
+  },
+  {
+    "broker": "eric feldman",
+    "url": "https://feldmanbrokerage.com/buy-a-laundromat.html",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "richard green",
+    "url": "https://greenandco.biz/featured-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "scott sogard",
+    "url": "https://sogardproperties.com/restaurants.html",
+    "error": "Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'sogardproperties.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "rl=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.CertificateVerifyError: Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'sogardproperties.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "bill grunau",
+    "url": "https://pbsbrokers.com/businesses",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "jim aiello",
+    "url": "https://aiellobrokers.com/pcategory/businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "brian stephens",
+    "url": "https://buybizusa.com/all-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 264203
+  },
+  {
+    "broker": "michael nuanes",
+    "url": "https://denverbbs.com/buy-a-business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 445434
+  },
+  {
+    "broker": "nicholas maclure",
+    "url": "https://farmandforest.com/featured-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing__details"
+  },
+  {
+    "broker": "linda lugo",
+    "url": "https://realtymastersnorthshore.com/browse-our-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5713
+  },
+  {
+    "broker": "Business Research Group",
+    "url": "https://brgbrokers.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 10252
+  },
+  {
+    "broker": "The Valley Business Broker",
+    "url": "https://thevalleybusinessbroker.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7328
+  },
+  {
+    "broker": "ps broker",
+    "url": "https://psbroker.com/property-category/all-veterinary-practices-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "miriam liang, cbi",
+    "url": "https://routeadvisors.com/available-routes",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11864
+  },
+  {
+    "broker": "mac thelen",
+    "url": "https://oibmn.com/listing_status/current",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.blog-card-content"
+  },
+  {
+    "broker": "tim bullard",
+    "url": "https://lakecountryadvisors.com/businesses-for-sale/main-street/https://lakecountryadvisors.com/businesses-for-sale/ma",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.col-sm-12"
+  },
+  {
+    "broker": "raj sathyaseelan",
+    "url": "https://link-siliconvalley.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 52
+  },
+  {
+    "broker": "maninder singh sethi, mba",
+    "url": "https://businessusa.biz/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 58249
+  },
+  {
+    "broker": "wilson archer",
+    "url": "https://businessresource.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 79348
+  },
+  {
+    "broker": "rod johnston",
+    "url": "https://omni-pg.com/practices-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 143103
+  },
+  {
+    "broker": "seth r. blackburn",
+    "url": "https://bridgeworthandassociates.com/buy-business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1576
+  },
+  {
+    "broker": "rhett kniep, m&ami, cm&ap, cbi, cepa",
+    "url": "https://centurion7.com/business-opportunities",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 20205
+  },
+  {
+    "broker": "mark gore",
+    "url": "https://abi-broker.com/indianapolis-businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 545815
+  },
+  {
+    "broker": "ricardo quintero",
+    "url": "https://brokerbusiness.biz",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 30392
+  },
+  {
+    "broker": "eric suh",
+    "url": "https://youngstarrealty.com/idx/listings/businesses",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "leonard seiple",
+    "url": "https://dallasbusinessrealty.com/wp/current-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 52308
+  },
+  {
+    "broker": "matthew cohen",
+    "url": "https://westcoastbusinessbrokers.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1672
+  },
+  {
+    "broker": "rolf danryd",
+    "url": "https://griffinbusinessbrokers.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 246099
+  },
+  {
+    "broker": "linda campbell",
+    "url": "https://barnettcapitalgroup.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 59493
+  },
+  {
+    "broker": "george st pierre",
+    "url": "https://contangoinvestments.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 167601
+  },
+  {
+    "broker": "roger pinnix",
+    "url": "https://childcaredirect.com/current-offerings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 98518
+  },
+  {
+    "broker": "coastal business brokers",
+    "url": "https://coastalbizbrokers.com/all-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 155643
+  },
+  {
+    "broker": "won ra",
+    "url": "https://search.premier-realty-group.net/idx/featured",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "ken manabe",
+    "url": "https://skycre.com/sky003/listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 99686
+  },
+  {
+    "broker": "susan m barnes",
+    "url": "https://flbusinesses.com/all-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 397334
+  },
+  {
+    "broker": "penny papaioannou",
+    "url": "https://atlanticbusinessbroker.com/our-business-for-sale-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1088014
+  },
+  {
+    "broker": "matt uhler",
+    "url": "https://wcibusinessbrokers.com/business-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": ".fusion-text p"
+  },
+  {
+    "broker": "lamar rutherford",
+    "url": "https://excellenssolutions.com/business-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 794055
+  },
+  {
+    "broker": "levi saxen",
+    "url": "https://buildout.com/plugins/53aeead9dc03d2337633a409497ff7976f68d56c/pinnaclerea.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "louie contreras",
+    "url": "https://legacypro.com/properties",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 26966
+  },
+  {
+    "broker": "travis webb",
+    "url": "https://panhandlebrokers.com",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "michael mcgrath",
+    "url": "https://homecarebuysell.com/opportunities",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "the miller group of saginaw",
+    "url": "https://themillergrp.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 82327
+  },
+  {
+    "broker": "joshua lindsey",
+    "url": "https://americanbizbrokers.com/business-listings",
+    "error": "validation: 77% duplicate titles, no data",
+    "type": "VALIDATION_REJECT"
+  },
+  {
+    "broker": "mia caetano johnson",
+    "url": "https://necampgroundbrokers.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 29109
+  },
+  {
+    "broker": "julie williams",
+    "url": "https://dawsoncommercialbrokers.com/property/for-sale/business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 51364
+  },
+  {
+    "broker": "brent bressler",
+    "url": "https://bizacqplus.com/our-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8457
+  },
+  {
+    "broker": "cam iwasa",
+    "url": "https://pdf-usa.com/for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 137084
+  },
+  {
+    "broker": "bill vanden eynden",
+    "url": "https://bcvcommercialrealty.com/businesses-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "mordecai evans",
+    "url": "https://baallc.biz/business-listings",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "bill oates",
+    "url": "https://alliantbrokers.com/businesses-for-sale-4",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "larry blevins",
+    "url": "https://americanbusinessbrokers.com/display-national.asp",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "dana p. cole, cbi, cbb",
+    "url": "https://tucsonbusinessbroker.com/businesses-for-sale",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "central coast business brokers",
+    "url": "https://ccbusinessbrokers.com",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g"
+  },
+  {
+    "broker": "alpine business brokers",
+    "url": "https://alpinebusinessbrokers.com/utah-businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 222264
+  },
+  {
+    "broker": "jim mayfield, mba",
+    "url": "https://islandbusinessbrokers.com/all-listings",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "lisa ludwig",
+    "url": "https://usapoolroutesales.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 87937
+  },
+  {
+    "broker": "CBI Team",
+    "url": "https://cbiteam.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8352
+  },
+  {
+    "broker": "cheryl maloney",
+    "url": "https://maloneybusinessbrokers.com/propertieshttps://www.maloneybusinessbrokers.com/copy-of-commercial-listings-1",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div._FiCX"
+  },
+  {
+    "broker": "dean kantis",
+    "url": "https://thejetnetwork.com/aircraft-listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7161
+  },
+  {
+    "broker": "Dream Business Brokers",
+    "url": "https://vinilramchandran.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9693
+  },
+  {
+    "broker": "nrp charlotte",
+    "url": "https://nationalrestaurantproperties.com/listings",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "steven d zimmerman, cbb,\u00a0m&ami, cbi, fibba",
+    "url": "https://restaurantrealty.com?ct_ct_status=active&search-listings=true",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.mob"
+  },
+  {
+    "broker": "Coastal Business Brokers",
+    "url": "https://plus.nebba.org",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "shane torres",
+    "url": "https://krbb.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2667
+  },
+  {
+    "broker": "tom brubaker",
+    "url": "https://tambaymergers.com/ - under buying a business tab",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 2676
+  },
+  {
+    "broker": "tina zeng, mba, chinese speaking",
+    "url": "https://zealbusinessbrokers.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8434
+  },
+  {
+    "broker": "paul skiadas",
+    "url": "https://realestateps.com/commercial-listingshttps://realestateps.com/business-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 189879
+  },
+  {
+    "broker": "sam tanner",
+    "url": "https://theentrustedgroup.com/businesses-for-sale.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 28100
+  },
+  {
+    "broker": "jeff cbi, cm&ap",
+    "url": "https://ecbrokers.com/listings-for-sale",
+    "error": "Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ession.py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ProxyError: Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "elias e. ladon",
+    "url": "https://enterprisedr.com/for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9930
+  },
+  {
+    "broker": "brad ruth",
+    "url": "https://glbainc.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80671
+  },
+  {
+    "broker": "tony torella",
+    "url": "https://excelsiorbusinessgroup.com/business-for-sale.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9568
+  },
+  {
+    "broker": "nicholas orlov",
+    "url": "https://orlovcompany.com/Business-Listings.aspx",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 68714
+  },
+  {
+    "broker": "jeffrey weiner",
+    "url": "https://048a144.netsolhost.com/business-listings",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "gil sanchez",
+    "url": "https://tempusbusiness.com/search-businesses-for-sale/search-florida-business-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div[class*=\"elementor\"]"
+  },
+  {
+    "broker": "jim beggs",
+    "url": "https://beckerbeggs.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:10000438:SSL routines:OPENSSL_internal:TLSV1_ALERT_INTERNAL_ERROR. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:10000438:SSL routines:OPENSSL_internal:TLSV1_ALERT_INTERNAL_ERROR. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "david greene",
+    "url": "https://practicebrokers.com/practices-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11875
+  },
+  {
+    "broker": "todd jackson, jd/mba, cbi, cepa",
+    "url": "https://beaconexit.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "hod=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "glen toadvine",
+    "url": "https://mwbusinessadvisors.com/businesses-for-sale-1",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 692612
+  },
+  {
+    "broker": "shari mcguire",
+    "url": "https://bizbrokerplus.com/businessforsale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 24588
+  },
+  {
+    "broker": "robyn knox",
+    "url": "https://robynknox.co/businesses",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 139
+  },
+  {
+    "broker": "peter (kun) han",
+    "url": "https://pk-property.com/business-listing",
+    "error": "Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ession.py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ProxyError: Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "dan mcguire",
+    "url": "https://hscbrokers.com/property-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": ".fusion-text p"
+  },
+  {
+    "broker": "echo venn",
+    "url": "https://davesmithrealty.com/featured.htm",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.searchResultsGallery.galleryListingItem"
+  },
+  {
+    "broker": "national pool route sales lic re broker ca#01899885 fl#bk33740409",
+    "url": "https://poolroutesales.com/pool-routes-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 89412
+  },
+  {
+    "broker": "brian zoberg",
+    "url": "https://suncoastbiz.net/search-businesses",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 61177
+  },
+  {
+    "broker": "shaun rudgear, mcbi, m&ami, cbi, cbb",
+    "url": "https://strategicmedicalbrokers.com/listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11850
+  },
+  {
+    "broker": "brian godin",
+    "url": "https://godinpropertybrokers.com/ - List is per category",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 88882
+  },
+  {
+    "broker": "international business & franchise advisors",
+    "url": "https://ibfadvisors.com/category/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8434
+  },
+  {
+    "broker": "andrew carney",
+    "url": "https://endeavorbusinessbrokers.com/buyers/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 101666
+  },
+  {
+    "broker": "Saunders Real Estate",
+    "url": "https://buildout.com/plugins/1f351d1d91050f486869996ea3c42d4e7f54e881/land.saundersrealestate.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "ilona antonova",
+    "url": "https://royalempirealty.com/profile",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 99079
+  },
+  {
+    "broker": "tiffany cheng",
+    "url": "https://homesnap.com/kenneth-narksompop/gmb2",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.col-sm-4"
+  },
+  {
+    "broker": "darren nguyen",
+    "url": "https://bisbroker.com/bbs-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 573
+  },
+  {
+    "broker": "robin l. brower",
+    "url": "https://cbccle.com/our-ohio-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 525095
+  },
+  {
+    "broker": "dick obendorf ma, ojt",
+    "url": "https://bxbbrokers.com/home/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 342501
+  },
+  {
+    "broker": "kyle robeson",
+    "url": "https://accelexit.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11839
+  },
+  {
+    "broker": "william a. doyle, esq.",
+    "url": "https://bridlebrookgroup.com/buy-a-business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 130505
+  },
+  {
+    "broker": "jim handler",
+    "url": "https://lvcbs.com/os/search-our-listings",
+    "error": "Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ession.py\", line 661, in get\n    return self.request(method=\"GET\", url=url, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 647, in request\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ProxyError: Failed to perform, curl: (56) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "chris holzgraf",
+    "url": "https://sellmyroutes.com/interested-in-buying-fedex-routes/ - Needs a form filled out",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 12040
+  },
+  {
+    "broker": "david cutler",
+    "url": "https://woodbridgeinvestmentsinc.net/active-listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7625
+  },
+  {
+    "broker": "curtis cochran ph.d., d.m., m.sc., mba, pbc",
+    "url": "https://ccochranconsulting.com/business-listings-1.html",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "will ferguson",
+    "url": "https://bwbrokerage.com/businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.x-el.x-el-div.c1-1.c1-2.c1-a1.c1-a2.c1-a3.c1-4.c1-1r.c1-1s.c1-b.c1-c.c1-d.c1-e.c1-f.c1-g"
+  },
+  {
+    "broker": "david amarando",
+    "url": "https://advancedlaundrysystems.com/laundromat-brokerage",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 86368
+  },
+  {
+    "broker": "armen nazarian",
+    "url": "https://armennazarian.com/buy",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 72806
+  },
+  {
+    "broker": "monika page",
+    "url": "https://biz-match.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1640
+  },
+  {
+    "broker": "tony alqam",
+    "url": "https://stlbroker.net/index.php/listing/for-sale-properties",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 103602
+  },
+  {
+    "broker": "Diversified Business Advisors",
+    "url": "https://businessadvisors.us/buy",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "article.bde-loop-item.ee-post"
+  },
+  {
+    "broker": "stacy dragos",
+    "url": "https://stacydragos.com/listings/my-active-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "robert rauchhaus",
+    "url": "https://radiusgroup.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.item-content"
+  },
+  {
+    "broker": "rich deluca",
+    "url": "https://prime100businessbrokers.com/search",
+    "error": "validation: 82% duplicate titles, no data",
+    "type": "VALIDATION_REJECT"
+  },
+  {
+    "broker": "ian maclachlan",
+    "url": "https://business-team.com/buy-a-business/search-Results.aspx",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 6068
+  },
+  {
+    "broker": "ralph santos",
+    "url": "https://healthcarebizbrokers.com/businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.shadcn-card.rounded-xl.border.text-card-foreground.shadow-sm.h-full.flex.flex-col.overflow-hidden.hover\\:shadow-xl.transition-all.duration-300.border-border\\/50.bg-white.group"
+  }
+]

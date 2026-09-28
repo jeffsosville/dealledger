@@ -1,0 +1,124 @@
+{
+  "started": "2026-09-27T18:32:27.817124+00:00",
+  "brokers_attempted": 300,
+  "brokers_success": 140,
+  "brokers_failed": 146,
+  "total_listings": 3076,
+  "listings_with_price": 2129,
+  "listings_with_cashflow": 781,
+  "listings_with_state": 2480,
+  "detail_pages_fetched": 454,
+  "patterns_cached": 477,
+  "patterns_learned": 147,
+  "verticals": {
+    "restaurant": 439,
+    "automotive": 197,
+    "technology": 479,
+    "other": 1150,
+    "manufacturing": 55,
+    "landscaping": 26,
+    "healthcare": 115,
+    "electrical": 25,
+    "plumbing": 76,
+    "construction": 78,
+    "hvac": 42,
+    "retail": 330,
+    "cleaning": 19,
+    "roofing": 37,
+    "vending": 7,
+    "pest_control": 1
+  },
+  "failure_types": {
+    "NO_PATTERN": 89,
+    "TITLE_REPETITION_REJECT": 1,
+    "HTTP_403": 20,
+    "EMBED_BBS": 14,
+    "FETCH_ERROR": 8,
+    "VALIDATION_REJECT": 2
+  },
+  "slowest_brokers": [
+    [
+      562,
+      "xlbusinessbrokers.com",
+      88
+    ],
+    [
+      558,
+      "abalventures.com",
+      3
+    ],
+    [
+      421,
+      "blbrokers.com",
+      24
+    ],
+    [
+      380,
+      "lvcbs.com",
+      0
+    ],
+    [
+      363,
+      "sunacquisitions.com",
+      25
+    ],
+    [
+      260,
+      "signaturecommercialrealestate.com",
+      40
+    ],
+    [
+      234,
+      "desertbusinessbrokers.com",
+      17
+    ],
+    [
+      223,
+      "tsifranchisegroup.org",
+      12
+    ],
+    [
+      215,
+      "simmonsinc.com",
+      30
+    ],
+    [
+      203,
+      "scbizadvisors.com",
+      10
+    ],
+    [
+      200,
+      "bizben.com",
+      2
+    ],
+    [
+      197,
+      "globalbizbkrs.com",
+      18
+    ],
+    [
+      195,
+      "americanbusinessbrokers.com",
+      0
+    ],
+    [
+      161,
+      "ecbrokers.com",
+      0
+    ],
+    [
+      156,
+      "wabusinessbrokers.com",
+      162
+    ]
+  ],
+  "seconds_total": 15338,
+  "completed": "2026-09-27T20:18:16.522910+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-3"
+  ]
+}
