@@ -1,0 +1,124 @@
+{
+  "started": "2026-09-28T20:38:16.220397+00:00",
+  "brokers_attempted": 300,
+  "brokers_success": 146,
+  "brokers_failed": 136,
+  "total_listings": 4665,
+  "listings_with_price": 3747,
+  "listings_with_cashflow": 912,
+  "listings_with_state": 3889,
+  "detail_pages_fetched": 547,
+  "patterns_cached": 481,
+  "patterns_learned": 140,
+  "verticals": {
+    "automotive": 270,
+    "healthcare": 270,
+    "restaurant": 526,
+    "technology": 596,
+    "electrical": 34,
+    "manufacturing": 154,
+    "plumbing": 74,
+    "construction": 130,
+    "hvac": 99,
+    "retail": 226,
+    "other": 2166,
+    "landscaping": 59,
+    "roofing": 7,
+    "cleaning": 43,
+    "vending": 8,
+    "pest_control": 3
+  },
+  "failure_types": {
+    "NO_PATTERN": 78,
+    "EMBED_BBS": 18,
+    "HTTP_403": 16,
+    "FETCH_ERROR": 10,
+    "VALIDATION_REJECT": 2,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "slowest_brokers": [
+    [
+      493,
+      "accountingbizbrokers.com",
+      50
+    ],
+    [
+      487,
+      "denverbbs.com",
+      67
+    ],
+    [
+      482,
+      "teamspiritrealty.com",
+      500
+    ],
+    [
+      467,
+      "springfieldstrategies.com",
+      31
+    ],
+    [
+      394,
+      "lvcbs.com",
+      0
+    ],
+    [
+      342,
+      "svbusinessbroker.com",
+      1
+    ],
+    [
+      281,
+      "rpg-realty.com",
+      809
+    ],
+    [
+      266,
+      "empiregbb.com",
+      3
+    ],
+    [
+      264,
+      "progressivepracticesales.com",
+      231
+    ],
+    [
+      262,
+      "gerspachergroup.com",
+      59
+    ],
+    [
+      252,
+      "keyvestre.com",
+      20
+    ],
+    [
+      233,
+      "routeadvisors.com",
+      40
+    ],
+    [
+      220,
+      "bhhsneproperties.com",
+      6
+    ],
+    [
+      219,
+      "thebusinessbrokersllc.com",
+      10
+    ],
+    [
+      210,
+      "businesslynx.com",
+      6
+    ]
+  ],
+  "seconds_total": 14983,
+  "completed": "2026-09-28T22:05:03.834992+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
