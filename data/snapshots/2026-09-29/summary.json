@@ -1,0 +1,125 @@
+{
+  "started": "2026-09-29T19:30:58.559017+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 192,
+  "brokers_failed": 183,
+  "total_listings": 7228,
+  "listings_with_price": 6277,
+  "listings_with_cashflow": 2457,
+  "listings_with_state": 4778,
+  "detail_pages_fetched": 531,
+  "patterns_cached": 475,
+  "patterns_learned": 179,
+  "verticals": {
+    "restaurant": 1430,
+    "technology": 1281,
+    "other": 1887,
+    "manufacturing": 209,
+    "healthcare": 359,
+    "electrical": 58,
+    "plumbing": 144,
+    "construction": 349,
+    "hvac": 131,
+    "retail": 673,
+    "landscaping": 91,
+    "automotive": 417,
+    "vending": 28,
+    "cleaning": 134,
+    "roofing": 34,
+    "pest_control": 3
+  },
+  "failure_types": {
+    "NO_PATTERN": 104,
+    "EMBED_BBS": 25,
+    "TITLE_REPETITION_REJECT": 3,
+    "HTTP_403": 26,
+    "FETCH_ERROR": 11,
+    "VALIDATION_REJECT": 3
+  },
+  "slowest_brokers": [
+    [
+      2099,
+      "realestatefactorysfl.com",
+      4
+    ],
+    [
+      395,
+      "lvcbs.com",
+      0
+    ],
+    [
+      223,
+      "greenlifebusiness.com",
+      24
+    ],
+    [
+      215,
+      "birminghambusinessbroker.com",
+      12
+    ],
+    [
+      212,
+      "mavenoadvisors.com",
+      23
+    ],
+    [
+      201,
+      "pkrealtors.com",
+      1
+    ],
+    [
+      193,
+      "americanbusinessbrokers.com",
+      0
+    ],
+    [
+      190,
+      "youngrealestate.com",
+      988
+    ],
+    [
+      189,
+      "rt-cre.com",
+      17
+    ],
+    [
+      184,
+      "bhayanirealestate.com",
+      13
+    ],
+    [
+      182,
+      "affordablebusinessconcepts.com",
+      1
+    ],
+    [
+      180,
+      "hawaiibusinesssales.com",
+      6
+    ],
+    [
+      178,
+      "hpbb.ca",
+      24
+    ],
+    [
+      173,
+      "cscpok.com",
+      14
+    ],
+    [
+      160,
+      "abi-broker.com",
+      54
+    ]
+  ],
+  "seconds_total": 17256,
+  "completed": "2026-09-29T21:07:09.492818+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
