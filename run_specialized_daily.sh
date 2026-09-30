@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /Users/jeffsosville/dealledger-repo || exit 1
+cd "$(dirname "$0")" || exit 1
 set -a
 source .env
 set +a

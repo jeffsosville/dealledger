@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use DealLedger data or code in research, please cite it as below."
+title: "DealLedger: an open record of US businesses listed for sale"
+type: dataset
+authors:
+  - family-names: Sosville
+    given-names: Jeff
+  - name: "DealLedger contributors"
+repository-code: "https://github.com/jeffsosville/dealledger"
+url: "https://dealledger.org"
+license: CC0-1.0
+keywords:
+  - small business
+  - business brokerage
+  - days on market
+  - open data

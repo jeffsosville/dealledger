@@ -6,4 +6,4 @@ Everyone who has helped build the ledger. Thank you.
 |---|---|
 | [@jeffsosville](https://github.com/jeffsosville) | Started DealLedger |
 
-Want to be on this list? See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+Want to be on this list? See [CONTRIBUTING.md](CONTRIBUTING.md).
