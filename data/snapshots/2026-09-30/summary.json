@@ -1,0 +1,125 @@
+{
+  "started": "2026-09-30T19:31:16.367275+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 194,
+  "brokers_failed": 178,
+  "total_listings": 4559,
+  "listings_with_price": 2544,
+  "listings_with_cashflow": 982,
+  "listings_with_state": 2979,
+  "detail_pages_fetched": 395,
+  "patterns_cached": 482,
+  "patterns_learned": 205,
+  "verticals": {
+    "automotive": 175,
+    "technology": 508,
+    "healthcare": 242,
+    "other": 2323,
+    "restaurant": 507,
+    "cleaning": 39,
+    "retail": 423,
+    "manufacturing": 88,
+    "electrical": 15,
+    "plumbing": 40,
+    "construction": 90,
+    "hvac": 73,
+    "landscaping": 21,
+    "roofing": 5,
+    "pest_control": 6,
+    "vending": 4
+  },
+  "failure_types": {
+    "NO_PATTERN": 98,
+    "EMBED_BBS": 28,
+    "FETCH_ERROR": 14,
+    "VALIDATION_REJECT": 3,
+    "HTTP_403": 27,
+    "TITLE_REPETITION_REJECT": 3
+  },
+  "slowest_brokers": [
+    [
+      1477,
+      "metrocbb.com",
+      7
+    ],
+    [
+      664,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      490,
+      "brokers.interexo.com",
+      1043
+    ],
+    [
+      464,
+      "craftbusinesssales.com",
+      12
+    ],
+    [
+      440,
+      "sbpoolroutes.com",
+      25
+    ],
+    [
+      369,
+      "lvcbs.com",
+      0
+    ],
+    [
+      312,
+      "stumpfandcompany.com",
+      7
+    ],
+    [
+      301,
+      "listyourhomesocal.com",
+      17
+    ],
+    [
+      290,
+      "burkemanna.com",
+      0
+    ],
+    [
+      281,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      235,
+      "tsifranchisegroup.org",
+      12
+    ],
+    [
+      229,
+      "globalbizbkrs.com",
+      0
+    ],
+    [
+      229,
+      "bwbrokerage.com",
+      0
+    ],
+    [
+      203,
+      "lacountyrealestate.us",
+      5
+    ],
+    [
+      202,
+      "bizben.com",
+      2
+    ]
+  ],
+  "seconds_total": 20211,
+  "completed": "2026-09-30T21:13:17.593546+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
