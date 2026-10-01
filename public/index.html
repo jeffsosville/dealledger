@@ -206,7 +206,7 @@ const PER_PAGE = 50;
 
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
-let page = 1, total = 0, sortField = 'days', sortDir = -1, domFilter = 'all', q = '';
+let page = 1, total = 0, sortField = 'days', sortDir = 1, domFilter = 'all', q = '';
 let token = 0, timer = null;
 const cache = new Map();
 
@@ -333,7 +333,7 @@ $('reset').addEventListener('click', () => {
   q = ''; $('q').value = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
   domFilter = 'all';
   document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dom === 'all')));
-  sortField = 'days'; sortDir = -1;
+  sortField = 'days'; sortDir = 1;
   refresh();
 });
 $('prev').addEventListener('click', () => { if (page > 1) { page--; load(); window.scrollTo({top:0}); } });
