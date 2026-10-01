@@ -27,7 +27,7 @@
 echo "run_v6_daily.sh is retired — see the comment at the top of this file. Not running." >&2
 exit 1
 
-cd /Users/jeffsosville/dealledger-repo || exit 1
+cd "$(dirname "$0")" || exit 1
 set -a
 source .env
 set +a

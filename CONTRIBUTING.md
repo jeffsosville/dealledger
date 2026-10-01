@@ -22,8 +22,8 @@ capture it on 0 of 4,960 listings. Each issue says which field, how many
 listings, and gives a sample URL.
 
 **2. Add a broker.** The broker isn't covered yet, or its scraper returns
-nothing. See [adding-a-broker.md](adding-a-broker.md) and
-[WANTED_BROKERS.md](WANTED_BROKERS.md).
+nothing. See [adding-a-broker.md](docs/adding-a-broker.md) and
+[WANTED_BROKERS.md](docs/WANTED_BROKERS.md).
 
 Comment on the issue to claim it, so two people don't do the same work. If
 you go quiet for a week we'll free it up for someone else.
@@ -100,14 +100,14 @@ We aim to review every PR within a few days.
   code at all; our discovery job finds their listings page.
 - **Challenge the methodology.** If you think how we date, dedupe or classify
   listings is wrong, open an issue with your reasoning.
-  See [METHODOLOGY.md](METHODOLOGY.md).
+  See [METHODOLOGY.md](docs/METHODOLOGY.md).
 - **Build on the data.** Daily snapshots are CC0. Tell us what you make.
 
 ---
 
 ## Credit
 
-Every merged contribution is credited in [CONTRIBUTORS.md](../CONTRIBUTORS.md)
+Every merged contribution is credited in [CONTRIBUTORS.md](CONTRIBUTORS.md)
 and in the weekly DealLedger pulse. Fix a broker and your name goes on that
 broker's record.
 

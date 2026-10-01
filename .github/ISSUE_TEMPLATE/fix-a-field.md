@@ -12,7 +12,7 @@ labels: ["good first issue", "broker-fix"]
 **Scraper path:** <!-- generic crawler / specialized (key) / WordPress REST (key) -->
 
 **How to test**
-<!-- the exact command from docs/CONTRIBUTING.md -->
+<!-- the exact command from CONTRIBUTING.md -->
 
 **Done when**
 The field is captured on the listings where the broker's site shows it, and

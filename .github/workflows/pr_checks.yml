@@ -1,0 +1,23 @@
+name: PR checks
+
+# Runs on every pull request. No secrets, no database, no network scraping:
+# anyone's fork can pass this.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: pip install curl_cffi==0.13.0 beautifulsoup4 pandas requests supabase python-dotenv playwright colorama
+      - name: Every Python file compiles
+        run: python -m compileall -q scrapers agents scripts ingestion ledger lib
+      - name: Yield-gate test
+        run: python scrapers/test_yield_gate.py

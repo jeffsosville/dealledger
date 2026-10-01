@@ -30,9 +30,8 @@ If a listing can't be traced to a verifiable source, it doesn't exist in the led
 
 ## How the data is collected
 
-Broker-direct only. DealLedger does not ingest marketplace aggregators; the
-BizBuySell feed was retired in September 2026 and its rows are kept as
-inactive history.
+Broker-direct only. DealLedger reads brokers' own websites and does not
+ingest marketplace aggregators.
 
 1. **Registry.** Every known broker website is a row in `broker_sources`
    (Supabase), moving through `1_needs_discovery → 3_crawlable → 4_producing`.
@@ -46,7 +45,7 @@ inactive history.
    filtered for junk, and are bridged to the public site. A daily snapshot is
    committed to `data/snapshots/<date>/`.
 
-Operational detail — schedules, stages, monitors — is in [CLAUDE.md](CLAUDE.md).
+Schedules live in [`.github/workflows/`](.github/workflows/). How we crawl, and how a broker can opt out, is in [SCRAPING_POLICY.md](SCRAPING_POLICY.md).
 
 ---
 
@@ -107,7 +106,7 @@ We need help adding brokers. There are hundreds of business brokers with website
 3. For a site the generic crawler can't read, write a specialized scraper
    from `scrapers/brokers/_template.py` and submit a PR
 
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for full details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
 
 ---
 
@@ -115,22 +114,20 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for full details.
 
 - [METHODOLOGY.md](docs/METHODOLOGY.md) — How we classify and verify listings
 - [SCHEMA.md](docs/SCHEMA.md) — Data schema specification
-- [CONTRIBUTING.md](docs/CONTRIBUTING.md) — How to contribute
+- [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
+- [SCRAPING_POLICY.md](SCRAPING_POLICY.md) — How we crawl, and how to opt out
+- [GOVERNANCE.md](GOVERNANCE.md) — Who runs this, and conflicts of interest
 - [Adding a Broker](docs/adding-a-broker.md) — Step-by-step scraper guide
 
 ---
 
 ## Data Access
 
-**Snapshots (CSV)**
-```bash
-curl -O https://data.dealledger.org/snapshots/latest.csv
-```
+**Daily snapshots (CSV + JSON, CC0)** are committed to
+[`data/snapshots/<date>/`](data/snapshots/) — one folder per day, each with
+`listings.csv` and `listings.json`. Pick the newest date.
 
-**API** (coming soon)
-```bash
-curl https://api.dealledger.org/listings?vertical=cleaning&state=TX
-```
+**REST (read-only)** — see [METHODOLOGY.md](docs/METHODOLOGY.md#data-access).
 
 ---
 
@@ -146,8 +143,8 @@ You may use, fork, and build upon this work. No attribution required for data.
 ## Links
 
 - Website: [dealledger.org](https://dealledger.org)
-- Data: [data.dealledger.org](https://data.dealledger.org)
-- Docs: [docs.dealledger.org](https://docs.dealledger.org)
+- Methodology: [docs/METHODOLOGY.md](docs/METHODOLOGY.md)
+- Governance and conflicts of interest: [GOVERNANCE.md](GOVERNANCE.md)
 
 ---
 
