@@ -80,10 +80,9 @@
                 <span class="tagline">— An open ledger of every business for sale in America</span>
             </div>
             <nav>
+                <a href="/why.html">Why</a>
                 <a href="/methodology.html" class="active">Methodology</a>
                 <a href="/#about">About</a>
-                <a href="/pulse.html">Market Pulse</a>
-                <a href="/brokers">Brokers</a>
             </nav>
         </div>
     </div>
@@ -95,12 +94,8 @@
         <p class="lead">How DealLedger collects, normalizes, and publishes listings of businesses for sale in the United States.</p>
 
         <h2>What we observe</h2>
-        <p>DealLedger maintains a continuously updated record of business-for-sale listings drawn from two source layers:</p>
-        <ul>
-            <li><strong>Marketplace listings.</strong> Listings indexed by major business-for-sale marketplaces. These are the listings most buyers see.</li>
-            <li><strong>Broker-direct listings.</strong> Listings published directly on individual business-broker websites. We track over 1,700 broker sites, the majority of which are not comprehensively indexed by any single marketplace.</li>
-        </ul>
-        <p>Both sources are collected from publicly accessible web pages. We do not access private or login-gated systems, and we do not pay for marketplace data feeds.</p>
+        <p>DealLedger maintains a continuously updated record of business-for-sale listings published directly on business brokers' own websites. We track over 1,700 broker sites, the majority of which are not comprehensively indexed by any single marketplace. Every listing is traceable to the broker page it came from.</p>
+        <p>All listings are collected from publicly accessible web pages. We do not access private or login-gated systems, and we do not ingest marketplace aggregators. How we crawl, and how a broker can opt out, is described in our <a href="https://github.com/JeffSosville/dealledger/blob/main/SCRAPING_POLICY.md" class="inline">scraping policy</a>.</p>
 
         <h2>What we publish</h2>
         <p>For each listing in the ledger, we publish a normalized record containing:</p>
@@ -110,63 +105,63 @@
             </thead>
             <tbody>
                 <tr><td class="f">listing_number</td><td>Stable identifier used to track the listing over time.</td></tr>
-                <tr><td class="f">title / header</td><td>Listing headline as published by the source.</td></tr>
+                <tr><td class="f">title / header</td><td>Listing headline as published by the broker.</td></tr>
                 <tr><td class="f">state</td><td>U.S. state where the business is located, normalized to two-letter codes.</td></tr>
                 <tr><td class="f">price</td><td>Asking price in USD where disclosed.</td></tr>
-                <tr><td class="f">source_url</td><td>Direct link back to the original listing page.</td></tr>
+                <tr><td class="f">source_url</td><td>Direct link back to the original listing page on the broker's site.</td></tr>
                 <tr><td class="f">first_seen</td><td>Date DealLedger first observed the listing.</td></tr>
-                <tr><td class="f">estimated_listed_date</td><td>Estimated date the listing went live (see "Date recovery" below).</td></tr>
+                <tr><td class="f">last_seen</td><td>Most recent date DealLedger observed the listing.</td></tr>
+                <tr><td class="f">estimated_listed_date</td><td>Date the listing went live, as observed — or a floor if it was already up when we first crawled the broker (see "Date recovery" below).</td></tr>
                 <tr><td class="f">days_on_market</td><td>Days elapsed since estimated_listed_date.</td></tr>
-                <tr><td class="f">listing_views</td><td>View count where the source publishes one.</td></tr>
-                <tr><td class="f">relisted</td><td>True if the listing matches a prior listing that was removed.</td></tr>
-                <tr><td class="f">is_active</td><td>True if the listing was observed in the most recent collection cycle.</td></tr>
+                <tr><td class="f">is_active</td><td>True if the listing was observed in the most recent crawl of its broker.</td></tr>
             </tbody>
         </table>
 
         <h2>Collection cadence</h2>
-        <p>Marketplace data is refreshed daily. Broker-direct data is refreshed on a rolling schedule, with high-volume brokers checked daily and lower-volume brokers checked weekly. Every collection cycle is recorded — we never overwrite history. When a listing disappears from its source, we record the disappearance rather than deleting the row.</p>
+        <p>Broker sites are crawled on a rolling rotation, stalest first. Each site is crawled at most once a day, and each broker that is producing listings at least once a week. The large franchise networks are read daily. Every crawl is recorded — we never overwrite history. When a listing disappears from its broker's site, we record the disappearance rather than deleting the row.</p>
 
         <h2>Normalization</h2>
-        <p>Raw listings vary widely in format. We apply a normalization pass to make records comparable across sources:</p>
+        <p>Raw listings vary widely in format. We apply a normalization pass to make records comparable across brokers:</p>
         <ul>
             <li>State names mapped to standard two-letter codes.</li>
             <li>Prices parsed from strings ("$1.2M", "1,200,000", etc.) into integers.</li>
             <li>Categories mapped to a controlled vocabulary where possible.</li>
-            <li>Duplicate listings — the same business appearing on multiple sources — are detected and linked, not collapsed. Each source record is preserved.</li>
         </ul>
 
         <h2>Date recovery</h2>
-        <p>Most marketplaces and brokers do not publish the original date a listing was created. To approximate it, DealLedger uses a proprietary methodology that combines listing identifiers, observed appearance dates across collection cycles, and source-specific patterns to estimate when each listing first went live.</p>
-        <p>Estimated listing dates carry a mean error of approximately ±12 days against ground-truth listings where the original date is known. They are intended for relative comparisons (which listing is older, how stale is this inventory) rather than legal or regulatory use.</p>
+        <p>Almost nobody publishes the date a listing went up. We record it ourselves.</p>
+
+        <p><strong>Observed dates.</strong> For a listing on a broker's own site, the date is simply the first day we saw it. That is an observation, not an estimate. Where a listing was already up the first time we crawled that broker, we can only say the listing is <em>at least</em> that old, and we show it as a floor — <span class="mono">176+ days</span> rather than a bare number.</p>
+
+        <p>Broker-direct crawling began in March 2026, so observed history starts there. The longer a broker has been in the index, the more of its listings carry a true observed date rather than a floor.</p>
+
         <div class="callout">
-            <strong>Note</strong>
-            We do not publish the full date-recovery algorithm. The methodology is proprietary, but the resulting estimates are visible in every record as the <span class="mono">estimated_listed_date</span> field.
+            <strong>The lookup tool</strong>
+            The lookup on the home page can also give a rough, clearly labelled estimate for some marketplace listing URLs. Those estimates come from a separate calibration, are not part of the CC0 dataset, and are never mixed into it. Every answer is labelled as observed, estimated, or a floor.
         </div>
 
-        <h2>Relist detection</h2>
-        <p>When a listing disappears and a new listing for what appears to be the same business appears later, DealLedger flags the new listing as relisted. Detection is based on a combination of broker identity, geography, price band, category, and content fingerprinting. Relisting is meaningful — it indicates that a business returned to market, often at a different price, after failing to sell the first time.</p>
+        <h2>Relisting</h2>
+        <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A business that comes back to market later — often at a different price, after failing to sell the first time — is one of the most useful signals in the record. Automated relist matching across broker-direct listings is in development; until it ships, disappearances and reappearances are visible in the raw history but are not flagged.</p>
 
-        <h2>Quality signals</h2>
-        <p>DealLedger assigns each active listing one of four quality signals based on the relationship between days on market and view count:</p>
+        <h2>Data quality</h2>
+        <p>Rows are gated before they enter the index:</p>
         <ul>
-            <li><strong>Hidden Gem</strong> — low days on market, low views. Recently listed and not yet getting attention.</li>
-            <li><strong>Hot</strong> — low days on market, high views. Recently listed and moving fast.</li>
-            <li><strong>Overpriced</strong> — high days on market, high views. Sitting despite buyer interest, suggesting price resistance.</li>
-            <li><strong>Dead</strong> — high days on market, low views. Ignored.</li>
+            <li><strong>Junk filter</strong> — navigation fragments, status badges, price fragments, error pages and other page furniture are rejected, never published as listings.</li>
+            <li><strong>Residential filter</strong> — MLS numbers, bed and bath counts and street-address titles indicate residential property, not businesses, and are excluded.</li>
+            <li><strong>Financial sanity</strong> — a value repeated across asking price, cash flow and revenue survives only as the asking price; cash flow at or above revenue is dropped. A missing number is honest; a wrong one is not.</li>
         </ul>
-        <p>Thresholds: low DOM = ≤90 days, high DOM = &gt;180 days, high views = &gt;200, low views = &lt;50. These thresholds are calibrated against the full active inventory and are revised periodically as the ledger grows.</p>
 
         <h2>What we do not do</h2>
         <ul>
             <li>We do not rank brokers or listings.</li>
             <li>We do not recommend businesses to buyers.</li>
-            <li>We do not capture leads on behalf of brokers or marketplaces.</li>
+            <li>We do not capture leads on behalf of brokers.</li>
             <li>We do not broker transactions ourselves.</li>
             <li>We do not edit history. Errors are corrected by appending a new record, not by overwriting.</li>
         </ul>
 
         <h2>Data access</h2>
-        <p>Active listings are queryable in real time through the ledger interface on the <a href="/" class="inline">home page</a>. Aggregate market statistics are published weekly in <a href="/pulse.html" class="inline">Market Pulse</a>. The full broker source list is available at <a href="/brokers" class="inline">/brokers</a>.</p>
+        <p>Active listings are queryable in real time through the ledger interface on the <a href="/" class="inline">home page</a>.</p>
         <p>All published data is released under a CC0 (public domain) dedication. You may use, redistribute, or build on it without attribution, though attribution is appreciated.</p>
 
         <h2>Corrections</h2>
@@ -176,13 +171,14 @@
         <p>DealLedger is a best-effort observational record, not an authoritative registry. Specifically:</p>
         <ul>
             <li>Coverage is incomplete. Brokers not yet in our source list, off-market deals, and listings on social media or in private networks are not captured.</li>
-            <li>Estimated listing dates carry meaningful error and should not be relied on for legal, regulatory, or transactional purposes.</li>
-            <li>Marketplace listings can be reposted, refreshed, or boosted in ways that affect apparent listing age. We attempt to detect these but do not catch all of them.</li>
+            <li>Observed history starts in March 2026. A listing shown as a floor ("176+ days") may well be older; it cannot be newer.</li>
+            <li>A listing is only as fresh as the last crawl of its broker. Each producing broker is crawled at least weekly.</li>
+            <li>Brokers can repost or refresh listings in ways that affect apparent listing age. We detect some of these, not all.</li>
             <li>Listing content (price, headline, category) reflects what the source publishes. If a broker publishes inflated or stale information, we record what we observe.</li>
         </ul>
 
         <p style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted);">
-            Last updated: <span class="mono">May 2026</span>.
+            Last updated: <span class="mono">September 2026</span>.
             Questions: <a href="mailto:info@dealledger.org" class="inline">info@dealledger.org</a>.
         </p>
     </div>
@@ -193,6 +189,7 @@
         <div class="footer-content">
             <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
             <div class="footer-links">
+                <a href="/why.html">Why</a>
                 <a href="/methodology.html">Methodology</a>
                 <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
             </div>
