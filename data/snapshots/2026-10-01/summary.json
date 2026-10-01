@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-01T19:39:25.717149+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 184,
+  "brokers_failed": 188,
+  "total_listings": 6222,
+  "listings_with_price": 4690,
+  "listings_with_cashflow": 1122,
+  "listings_with_state": 4467,
+  "detail_pages_fetched": 512,
+  "patterns_cached": 476,
+  "patterns_learned": 186,
+  "verticals": {
+    "retail": 266,
+    "other": 3008,
+    "restaurant": 615,
+    "manufacturing": 177,
+    "automotive": 335,
+    "technology": 873,
+    "pest_control": 2,
+    "vending": 14,
+    "plumbing": 140,
+    "hvac": 127,
+    "healthcare": 313,
+    "roofing": 43,
+    "electrical": 46,
+    "construction": 142,
+    "landscaping": 74,
+    "cleaning": 47
+  },
+  "failure_types": {
+    "NO_PATTERN": 108,
+    "EMBED_BBS": 28,
+    "HTTP_403": 27,
+    "FETCH_ERROR": 15,
+    "VALIDATION_REJECT": 3,
+    "TITLE_REPETITION_REJECT": 3
+  },
+  "slowest_brokers": [
+    [
+      1251,
+      "xlbusinessbrokers.com",
+      88
+    ],
+    [
+      858,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      843,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      833,
+      "buybizusa.com",
+      0
+    ],
+    [
+      820,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      810,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      802,
+      "venturaflorida.com",
+      0
+    ],
+    [
+      491,
+      "accountingbizbrokers.com",
+      50
+    ],
+    [
+      488,
+      "californiabusinessbrokers.com",
+      116
+    ],
+    [
+      423,
+      "bizbrokerguru.com",
+      0
+    ],
+    [
+      411,
+      "flbusinesses.com",
+      0
+    ],
+    [
+      397,
+      "thetorchteam.com",
+      17
+    ],
+    [
+      378,
+      "lvcbs.com",
+      0
+    ],
+    [
+      375,
+      "denverbbs.com",
+      67
+    ],
+    [
+      308,
+      "svbusinessbroker.com",
+      6
+    ]
+  ],
+  "seconds_total": 26379,
+  "completed": "2026-10-01T22:07:19.426334+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
