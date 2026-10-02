@@ -1,0 +1,122 @@
+{
+  "started": "2026-10-02T13:49:31.321693+00:00",
+  "brokers_attempted": 323,
+  "brokers_success": 87,
+  "brokers_failed": 206,
+  "total_listings": 1948,
+  "listings_with_price": 1067,
+  "listings_with_cashflow": 209,
+  "listings_with_state": 1298,
+  "detail_pages_fetched": 962,
+  "patterns_cached": 467,
+  "patterns_learned": 134,
+  "verticals": {
+    "plumbing": 33,
+    "construction": 67,
+    "technology": 221,
+    "manufacturing": 101,
+    "other": 952,
+    "automotive": 103,
+    "healthcare": 80,
+    "restaurant": 120,
+    "retail": 148,
+    "landscaping": 14,
+    "cleaning": 30,
+    "hvac": 63,
+    "electrical": 11,
+    "vending": 5
+  },
+  "failure_types": {
+    "NO_PATTERN": 126,
+    "EMBED_BBS": 30,
+    "FETCH_ERROR": 5,
+    "TITLE_REPETITION_REJECT": 1,
+    "HTTP_403": 20
+  },
+  "slowest_brokers": [
+    [
+      950,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      854,
+      "harborbiz.com",
+      0
+    ],
+    [
+      842,
+      "gutierbrokers.com",
+      0
+    ],
+    [
+      822,
+      "bestchoiceinvestments.com",
+      0
+    ],
+    [
+      769,
+      "wellstonegroup.net",
+      0
+    ],
+    [
+      740,
+      "amberwoodre.com",
+      3
+    ],
+    [
+      518,
+      "trendatlanta.com",
+      0
+    ],
+    [
+      489,
+      "investmentslimited.com",
+      193
+    ],
+    [
+      482,
+      "onekeymls.com",
+      90
+    ],
+    [
+      418,
+      "divinefogrealtycompany.com",
+      27
+    ],
+    [
+      364,
+      "bbms.biz",
+      0
+    ],
+    [
+      322,
+      "garybayus.com",
+      0
+    ],
+    [
+      293,
+      "theimateam.com",
+      0
+    ],
+    [
+      293,
+      "bestcorporaterealestate.com",
+      50
+    ],
+    [
+      292,
+      "desertmountainrealty.com",
+      0
+    ]
+  ],
+  "seconds_total": 21914,
+  "completed": "2026-10-02T15:35:13.203921+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
