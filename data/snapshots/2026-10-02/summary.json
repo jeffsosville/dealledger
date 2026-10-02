@@ -1,117 +1,120 @@
 {
-  "started": "2026-10-02T13:49:31.321693+00:00",
-  "brokers_attempted": 323,
-  "brokers_success": 87,
-  "brokers_failed": 206,
-  "total_listings": 1948,
-  "listings_with_price": 1067,
-  "listings_with_cashflow": 209,
-  "listings_with_state": 1298,
-  "detail_pages_fetched": 962,
-  "patterns_cached": 467,
-  "patterns_learned": 134,
+  "started": "2026-10-02T19:26:05.730104+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 187,
+  "brokers_failed": 170,
+  "total_listings": 6170,
+  "listings_with_price": 5303,
+  "listings_with_cashflow": 1894,
+  "listings_with_state": 3982,
+  "detail_pages_fetched": 388,
+  "patterns_cached": 473,
+  "patterns_learned": 170,
   "verticals": {
-    "plumbing": 33,
-    "construction": 67,
-    "technology": 221,
-    "manufacturing": 101,
-    "other": 952,
-    "automotive": 103,
-    "healthcare": 80,
-    "restaurant": 120,
-    "retail": 148,
-    "landscaping": 14,
-    "cleaning": 30,
-    "hvac": 63,
-    "electrical": 11,
-    "vending": 5
+    "restaurant": 1091,
+    "automotive": 383,
+    "technology": 1076,
+    "other": 1659,
+    "manufacturing": 250,
+    "landscaping": 98,
+    "healthcare": 342,
+    "construction": 285,
+    "retail": 468,
+    "hvac": 112,
+    "roofing": 30,
+    "vending": 46,
+    "electrical": 39,
+    "cleaning": 137,
+    "plumbing": 149,
+    "pest_control": 5
   },
   "failure_types": {
-    "NO_PATTERN": 126,
-    "EMBED_BBS": 30,
-    "FETCH_ERROR": 5,
-    "TITLE_REPETITION_REJECT": 1,
-    "HTTP_403": 20
+    "NO_PATTERN": 105,
+    "EMBED_BBS": 43,
+    "TITLE_REPETITION_REJECT": 3,
+    "FETCH_ERROR": 15,
+    "HTTP_403": 16,
+    "VALIDATION_REJECT": 3
   },
   "slowest_brokers": [
     [
-      950,
-      "profilesrealty.com",
+      849,
+      "contangoinvestments.com",
       0
     ],
     [
-      854,
-      "harborbiz.com",
+      826,
+      "suncoastbiz.net",
       0
     ],
     [
-      842,
-      "gutierbrokers.com",
+      812,
+      "businessteamusa.com",
       0
     ],
     [
-      822,
-      "bestchoiceinvestments.com",
+      801,
+      "buybizusa.com",
       0
     ],
     [
-      769,
-      "wellstonegroup.net",
+      798,
+      "venturaflorida.com",
       0
     ],
     [
-      740,
-      "amberwoodre.com",
-      3
+      731,
+      "rt-cre.com",
+      17
     ],
     [
-      518,
-      "trendatlanta.com",
+      502,
+      "buyabusinessnow.com",
+      56
+    ],
+    [
+      483,
+      "baallc.biz",
+      59
+    ],
+    [
+      454,
+      "springfieldstrategies.com",
+      31
+    ],
+    [
+      429,
+      "bizbrokerguru.com",
       0
     ],
     [
-      489,
-      "investmentslimited.com",
-      193
-    ],
-    [
-      482,
-      "onekeymls.com",
-      90
-    ],
-    [
-      418,
-      "divinefogrealtycompany.com",
-      27
-    ],
-    [
-      364,
-      "bbms.biz",
+      409,
+      "flbusinesses.com",
       0
     ],
     [
-      322,
-      "garybayus.com",
+      406,
+      "lvcbs.com",
       0
     ],
     [
-      293,
-      "theimateam.com",
+      404,
+      "lobobusinesssales.com",
+      22
+    ],
+    [
+      394,
+      "batesonbrokerage.com",
       0
     ],
     [
-      293,
-      "bestcorporaterealestate.com",
-      50
-    ],
-    [
-      292,
-      "desertmountainrealty.com",
-      0
+      367,
+      "alliantbrokers.com",
+      17
     ]
   ],
-  "seconds_total": 21914,
-  "completed": "2026-10-02T15:35:13.203921+00:00",
+  "seconds_total": 23785,
+  "completed": "2026-10-02T21:37:07.454373+00:00",
   "interrupted": false,
   "shards": [
     "snapshot-shard-0",
