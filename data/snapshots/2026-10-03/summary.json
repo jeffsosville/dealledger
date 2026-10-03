@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-03T18:02:56.453200+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 184,
+  "brokers_failed": 172,
+  "total_listings": 5956,
+  "listings_with_price": 3940,
+  "listings_with_cashflow": 1645,
+  "listings_with_state": 4052,
+  "detail_pages_fetched": 454,
+  "patterns_cached": 480,
+  "patterns_learned": 183,
+  "verticals": {
+    "restaurant": 856,
+    "automotive": 192,
+    "technology": 783,
+    "other": 2619,
+    "manufacturing": 122,
+    "landscaping": 28,
+    "healthcare": 283,
+    "cleaning": 60,
+    "retail": 639,
+    "electrical": 40,
+    "plumbing": 47,
+    "construction": 167,
+    "hvac": 98,
+    "vending": 4,
+    "roofing": 12,
+    "pest_control": 6
+  },
+  "failure_types": {
+    "NO_PATTERN": 101,
+    "EMBED_BBS": 44,
+    "TITLE_REPETITION_REJECT": 4,
+    "VALIDATION_REJECT": 4,
+    "FETCH_ERROR": 15,
+    "HTTP_403": 20
+  },
+  "slowest_brokers": [
+    [
+      1635,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      987,
+      "metrocbb.com",
+      7
+    ],
+    [
+      835,
+      "bizbrokerguru.com",
+      0
+    ],
+    [
+      833,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      812,
+      "buybizusa.com",
+      0
+    ],
+    [
+      801,
+      "venturaflorida.com",
+      0
+    ],
+    [
+      801,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      794,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      491,
+      "brokers.interexo.com",
+      1005
+    ],
+    [
+      461,
+      "craftbusinesssales.com",
+      12
+    ],
+    [
+      458,
+      "legacyadvisors.info",
+      12
+    ],
+    [
+      435,
+      "flbusinesses.com",
+      0
+    ],
+    [
+      395,
+      "lvcbs.com",
+      0
+    ],
+    [
+      394,
+      "batesonbrokerage.com",
+      0
+    ],
+    [
+      336,
+      "nationalrestaurantproperties.com",
+      7
+    ]
+  ],
+  "seconds_total": 24229,
+  "completed": "2026-10-03T20:27:48.103571+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
