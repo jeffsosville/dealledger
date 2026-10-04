@@ -170,6 +170,11 @@ def main():
             if got["revenue"]:
                 patch["revenue"] = int(got["revenue"])
                 stats["revenue"] += 1
+            # The cash-flow label can sit next to the asking price ("SDE 149K
+            # | $199,000"): a value equal to the price is the price, not cash flow.
+            price = row.get("asking_price")
+            if got["cash_flow"] and price and abs(got["cash_flow"] - float(price)) < 1:
+                got["cash_flow"] = None
             if got["cash_flow"] and row.get("cash_flow") is None:
                 patch["cash_flow"] = int(got["cash_flow"])
                 stats["cash_flow"] += 1
