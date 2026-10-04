@@ -359,6 +359,10 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "cash_flow":     int(l["cash_flow"]) if l.get("cash_flow") else None,
             "revenue":       int(l["revenue"]) if l.get("revenue") else None,
             "description":   (l.get("description") or "")[:2000] or None,
+            # The scraper's industry/business type. format_listing() has always
+            # carried it as business_type, but it was never written, so every
+            # specialized feed landed with no category (tworld 1%, execbb 0%).
+            "category":      (l.get("business_type") or "").strip()[:200] or None,
             "contact_name":  l.get("contact_name"),
             "contact_phone": l.get("contact_phone"),
             "location_raw":  l.get("location"),

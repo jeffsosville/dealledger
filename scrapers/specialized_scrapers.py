@@ -607,10 +607,21 @@ class TransworldScraper:
             else:
                 url = self.BASE
 
+            # categories arrives as a JSON-encoded list, e.g. '["Medical Related Biz"]'
+            cats = item.get("categories")
+            if isinstance(cats, str):
+                try:
+                    cats = json.loads(cats)
+                except ValueError:
+                    cats = [cats]
+            business_type = (cats[0] if isinstance(cats, list) and cats else None) \
+                or item.get("industry")
+
             listings.append(format_listing(
                 url=url,
                 broker_account=broker_account,
                 title=item.get("heading"),
+                business_type=business_type,
                 price=float(price) if price else None,
                 price_text=f"${price:,.0f}" if price else None,
                 location=location,
