@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-04T18:14:25.510019+00:00",
+  "brokers_attempted": 400,
+  "brokers_success": 191,
+  "brokers_failed": 165,
+  "total_listings": 4532,
+  "listings_with_price": 3110,
+  "listings_with_cashflow": 1404,
+  "listings_with_state": 3466,
+  "detail_pages_fetched": 274,
+  "patterns_cached": 472,
+  "patterns_learned": 185,
+  "verticals": {
+    "automotive": 365,
+    "technology": 787,
+    "healthcare": 320,
+    "other": 1565,
+    "restaurant": 673,
+    "cleaning": 54,
+    "retail": 271,
+    "manufacturing": 137,
+    "electrical": 26,
+    "plumbing": 61,
+    "construction": 102,
+    "hvac": 76,
+    "landscaping": 52,
+    "vending": 13,
+    "roofing": 29,
+    "pest_control": 1
+  },
+  "failure_types": {
+    "NO_PATTERN": 93,
+    "EMBED_BBS": 44,
+    "TITLE_REPETITION_REJECT": 3,
+    "VALIDATION_REJECT": 2,
+    "HTTP_403": 25,
+    "FETCH_ERROR": 16
+  },
+  "slowest_brokers": [
+    [
+      1295,
+      "abalventures.com",
+      3
+    ],
+    [
+      1255,
+      "xlbusinessbrokers.com",
+      88
+    ],
+    [
+      988,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      699,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      677,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      631,
+      "venturaflorida.com",
+      0
+    ],
+    [
+      596,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      565,
+      "buybizusa.com",
+      0
+    ],
+    [
+      493,
+      "accountingbizbrokers.com",
+      50
+    ],
+    [
+      482,
+      "tucsonbusinessbroker.com",
+      182
+    ],
+    [
+      463,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      395,
+      "lvcbs.com",
+      0
+    ],
+    [
+      385,
+      "flbusinesses.com",
+      0
+    ],
+    [
+      335,
+      "greenandco.biz",
+      21
+    ],
+    [
+      331,
+      "bizbrokerguru.com",
+      0
+    ]
+  ],
+  "seconds_total": 25041,
+  "completed": "2026-10-04T20:22:18.052982+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
