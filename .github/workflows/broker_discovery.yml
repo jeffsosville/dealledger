@@ -5,6 +5,11 @@ name: Daily broker discovery
 # result back onto broker_sources:
 #
 #   ok                -> 3_crawlable   (crawled by broker_scrape.yml the same day)
+#                        ONLY when every GATE rule in discover_backlog.py
+#                        passes; decided_by='auto' (Task 3, 2026-10-04)
+#   proposed          -> 2_listings_url_known / proposed: failed a gate rule
+#                        (few prices, off-domain, parked, real estate ...).
+#                        Waits for --review / --decide. NOT crawled.
 #   weak              -> 2_listings_url_known / needs_work
 #   no page, dead ... -> 0_unusable
 #   blocked           -> 0_blocked
@@ -29,6 +34,9 @@ on:
       seed:
         description: "Only broker_sources rows whose seed_source contains this (blank = all)"
         default: ""
+      dry_run:
+        description: "1 = probe and report the gate split, write nothing"
+        default: "0"
 
 permissions:
   contents: read
@@ -70,6 +78,7 @@ jobs:
           SOURCE: broker_sources
           SEED: ${{ inputs.seed || '' }}
           LIMIT: ${{ inputs.limit || '75' }}
+          DRY_RUN: ${{ inputs.dry_run || '0' }}
         run: |
           set +e
           timeout --signal=INT 130m python3 -u agents/discover_backlog.py
