@@ -10,8 +10,8 @@ on:
         type: boolean
         default: true
       top_n:
-        description: "Brokers per shard (4 shards)"
-        default: "100"
+        description: "Brokers per shard (4 shards). 200 x 4 = 800/night; on 2026-10-03 100/shard took ~100 of the 285 guard minutes"
+        default: "200"
       order:
         description: "weekly (default) | yield | stale | never"
         default: "weekly"
@@ -73,7 +73,7 @@ jobs:
           NEW_BROKER_QUOTA: ${{ inputs.new_broker_quota || '40' }}
           REFRESH_CYCLE_DAYS: "7"
           STALE_FIRST: ${{ inputs.stale_first }}   # '' on schedule
-          TOP_N: ${{ inputs.top_n || '100' }}
+          TOP_N: ${{ inputs.top_n || '200' }}
         run: |
           FLAG="--stale-first"
           if [ "$STALE_FIRST" = "false" ]; then
@@ -149,7 +149,7 @@ jobs:
           python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers plan/ordered_brokers.csv \
             --shard ${{ matrix.shard }}/4 \
-            --top-n ${{ inputs.top_n || '100' }} \
+            --top-n ${{ inputs.top_n || '200' }} \
             --output out/snapshots
           CODE=$?
           set -e
