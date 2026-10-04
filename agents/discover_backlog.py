@@ -41,6 +41,20 @@ Env:
 Usage:
   SEED=ibba LIMIT=50 DRY_RUN=1 python agents/discover_backlog.py
   SEED=ibba LIMIT=50 python agents/discover_backlog.py
+
+DISCOVERY GATE (Task 3, 2026-10-04)
+  A candidate is promoted to 3_crawlable automatically only when it passes
+  every rule in GATE below (prices visible, enough listings, listings page on
+  the broker's own domain, no archive/parked signals, not a real-estate site).
+  Anything else becomes status 'proposed' with an evidence record and waits
+  for a human:
+
+  python agents/discover_backlog.py --review [--offset 20]
+  python agents/discover_backlog.py --decide <domain> crawlable --reason "..."
+  python agents/discover_backlog.py --decide <domain> reject --reason "..." [--block]
+
+  --block also adds the domain to broker_block (permanent: junk, realtor, CRE).
+  Every promotion records decided_at / decided_by ('auto' | 'human').
 """
 
 import os
@@ -91,8 +105,23 @@ SEED = os.environ.get("SEED", "").strip()
 if SOURCE not in ("broker_sources", "broker_master"):
     sys.exit(f"SOURCE must be broker_sources or broker_master, got {SOURCE!r}")
 
-# Statuses that mean "don't bother again unless explicitly asked"
-TERMINAL = {"ok", "dead", "auth_required", "no_listings_page"}
+# --- discovery gate: every auto-promotion threshold lives here --------------
+# Tighten these if the scoreboard's auto_survival_7d drops.
+GATE = {
+    "min_prices": int(os.environ.get("MIN_PRICES", "3")),   # distinct asking prices on the page
+    "min_items": int(os.environ.get("MIN_ITEMS", "3")),     # listings parsed (fingerprint or prices)
+    "same_domain": True,                                    # listings page must stay on the broker's domain
+    # Real estate: realtor / CRE pages show prices and "for sale" just like
+    # broker pages, which is how 7,000 home and land listings got in (Oct 2026).
+    # A page is real estate when residential/CRE vocabulary is common AND
+    # clearly outweighs business-sale vocabulary.
+    "re_min_hits": int(os.environ.get("RE_MIN_HITS", "6")),
+    "re_ratio": float(os.environ.get("RE_RATIO", "2.0")),
+}
+
+# Statuses that mean "don't bother again unless explicitly asked".
+# 'proposed' waits for a human; 'rejected' was decided by one.
+TERMINAL = {"ok", "dead", "auth_required", "no_listings_page", "proposed", "rejected"}
 
 
 def sb_headers():
@@ -214,7 +243,8 @@ def already_done():
 
 
 def save(domain, base_url, listings_url, status, method=None,
-         platform=None, selector=None, listings_found=None, notes=None):
+         platform=None, selector=None, listings_found=None, notes=None,
+         evidence=None):
     if DRY_RUN:
         return
     payload = {
@@ -229,6 +259,8 @@ def save(domain, base_url, listings_url, status, method=None,
         "notes": notes,
         "last_attempt_at": "now()",
     }
+    if evidence is not None:
+        payload["raw"] = {"gate": evidence}
     r = requests.post(
         f"{SUPABASE_URL}/rest/v1/broker_discovery",
         headers={**sb_headers(),
@@ -255,6 +287,8 @@ STAGE_FOR = {
     "dead":             ("0_unusable", "unusable"),
     "auth_required":    ("0_unusable", "unusable"),
     "blocked":          ("0_blocked", "failed"),
+    "proposed":         ("2_listings_url_known", "proposed"),
+    "rejected":         ("0_unusable", "unusable"),
 }
 
 
@@ -271,30 +305,97 @@ _LISTING_WORDS = ("asking", "cash flow", "revenue", "sde", "ebitda",
                   "gross sales", "listing", "for sale")
 
 
-def page_evidence(dv, url):
-    """Distinct price strings on the listings page, or 0 if it can't be read.
+_RE_TERMS = re.compile(
+    r"\b\d+\s?(?:bd|br|beds?|bedrooms?)\b|\bbaths?\b|\bbathrooms?\b|\bsq\.?\s?ft\b|"
+    r"square feet|\bacres?\b|\bmls\b|\bidx\b|\bhoa\b|single[- ]family|\bcondos?\b|"
+    r"condominium|townho(?:me|use)s?|multi[- ]family|mobile home|manufactured home|"
+    r"vacant land|lot size|year built|for lease|lease rate|per sf\b|/\s?sf\b|\bnnn\b|"
+    r"cap rate|office space|retail space|industrial space|flex space|realtors?\b|"
+    r"homes for sale|real estate agent|listing courtesy|listing provided by|"
+    r"open house|garage\b|\bzoning\b|zoned\b", re.I)
+_BIZ_TERMS = re.compile(
+    r"cash flow|\bsde\b|ebitda|discretionary|owner benefit|gross revenue|"
+    r"annual revenue|gross sales|net profit|businesses? for sale|business opportunit|"
+    r"\bfranchise|ff&e|inventory included|turn-?key business|absentee|"
+    r"established in|years in business|seller financ|sba\b", re.I)
+_PARKED = re.compile(
+    r"coming soon|under construction|domain (?:is )?for sale|buy this domain|"
+    r"this domain|parked (?:free|domain)|website expired|account suspended|"
+    r"site (?:is )?(?:currently )?unavailable", re.I)
 
-    The daily scraper only takes the listings URL from brokers_clean.csv and
-    works out extraction itself, so what has to be right is the URL, not
-    discovery's fingerprint. A page showing several asking prices next to
-    listing vocabulary is a live inventory page whatever discovery matched on.
-    (2026-09-15 dry run: myexitplan, salonspaconnection and atlantic were all
-    real listing pages that discovery fingerprinted wrongly.)
+
+def _host(url):
+    h = urlparse(url or "").netloc.lower().split(":")[0]
+    return h[4:] if h.startswith("www.") else h
+
+
+def page_evidence(dv, url, domain=None):
+    """Evidence about the listings page, for the gate and the review queue.
+
+    The daily scraper takes the listings URL and works out extraction itself,
+    so what has to be right is the URL, not discovery's fingerprint. A page
+    showing several asking prices next to listing vocabulary is a live
+    inventory page whatever discovery matched on. (2026-09-15 dry run:
+    myexitplan, salonspaconnection and atlantic were real listing pages that
+    discovery fingerprinted wrongly.)
+
+    Returns a dict; prices is 0 when the page can't be read.
     """
+    ev = {"listings_url": url, "final_url": None, "http": None, "prices": 0,
+          "listing_words": 0, "re_hits": 0, "biz_hits": 0, "parked": None,
+          "off_domain": False}
     try:
         r = dv.get_page(url, timeout=15)
-    except Exception:
-        return 0
+    except Exception as exc:
+        ev["error"] = str(exc)[:200]
+        return ev
+    ev["http"] = r.status_code
+    ev["final_url"] = getattr(r, "url", None) or url
+    if domain:
+        fh, bh = _host(ev["final_url"]), _host(f"https://{domain}")
+        ev["off_domain"] = bool(fh) and fh != bh and not fh.endswith("." + bh)
     if r.status_code != 200:
-        return 0
+        return ev
     text = re.sub(r"<[^>]+>", " ", (r.text or "")[:800_000])
     low = text.lower()
-    if sum(1 for w in _LISTING_WORDS if w in low) < 2:
-        return 0
-    return len(set(m.group(0).replace(" ", "").lower() for m in _PRICE.finditer(text)))
+    ev["listing_words"] = sum(1 for w in _LISTING_WORDS if w in low)
+    ev["re_hits"] = len(_RE_TERMS.findall(text))
+    ev["biz_hits"] = len(_BIZ_TERMS.findall(text))
+    m = _PARKED.search(text[:20_000])
+    ev["parked"] = m.group(0) if m else None
+    if ev["listing_words"] >= 2:
+        ev["prices"] = len(set(m.group(0).replace(" ", "").lower()
+                               for m in _PRICE.finditer(text)))
+    return ev
 
 
-MIN_PRICES = int(os.environ.get("MIN_PRICES", "3"))
+def looks_real_estate(ev):
+    re_hits, biz = ev.get("re_hits", 0), ev.get("biz_hits", 0)
+    return re_hits >= GATE["re_min_hits"] and re_hits >= GATE["re_ratio"] * max(biz, 1)
+
+
+def gate_failures(ev, items, archive, why):
+    """Every reason this candidate can't be auto-promoted. Empty = promote."""
+    fails = []
+    if archive:
+        fails.append(f"archive path ({archive})")
+    if ev.get("parked"):
+        fails.append(f"parked/placeholder ('{ev['parked']}')")
+    if GATE["same_domain"] and ev.get("off_domain"):
+        fails.append(f"listings page leaves the domain ({_host(ev.get('final_url'))})")
+    if ev.get("prices", 0) < GATE["min_prices"]:
+        fails.append(f"only {ev.get('prices', 0)} prices visible")
+    if max(items, ev.get("prices", 0)) < GATE["min_items"]:
+        fails.append(f"only {items} listings parsed")
+    if looks_real_estate(ev):
+        fails.append(f"real estate ({ev['re_hits']} residential/CRE terms vs "
+                     f"{ev['biz_hits']} business terms)")
+    if why and ev.get("prices", 0) < GATE["min_prices"]:
+        fails.append(why)
+    return fails
+
+
+MIN_PRICES = GATE["min_prices"]
 
 
 def suspicious(listings_url, method, platform, result):
@@ -318,7 +419,26 @@ def suspicious(listings_url, method, platform, result):
     return None
 
 
-def update_source(row, status, listings_url=None, error=None):
+_DECISION_COLS = ("decided_at", "decided_by", "decision_reason")
+
+
+def _patch_source(domain, body):
+    """PATCH broker_sources; if the decision columns don't exist yet
+    (sql/2026-10-04_discovery_gate.sql not applied), retry without them."""
+    url = f"{SUPABASE_URL}/rest/v1/broker_sources"
+    hdrs = {**sb_headers(), "Prefer": "return=minimal"}
+    r = requests.patch(url, headers=hdrs, params={"domain": f"eq.{domain}"},
+                       json=body, timeout=60)
+    if r.status_code == 400 and any(c in r.text for c in _DECISION_COLS):
+        print("    note: decision columns missing - apply sql/2026-10-04_discovery_gate.sql")
+        body = {k: v for k, v in body.items() if k not in _DECISION_COLS}
+        r = requests.patch(url, headers=hdrs, params={"domain": f"eq.{domain}"},
+                           json=body, timeout=60)
+    return r, body
+
+
+def update_source(row, status, listings_url=None, error=None, decided_by=None,
+                  reason=None):
     """Mirror a discovery result onto broker_sources (SOURCE=broker_sources only)."""
     if DRY_RUN or SOURCE != "broker_sources":
         return
@@ -341,9 +461,13 @@ def update_source(row, status, listings_url=None, error=None):
             body["last_error_message"] = error[:300]
     if listings_url:
         body["listing_url"] = listings_url
+    if decided_by:
+        body["decided_at"] = now
+        body["decided_by"] = decided_by
+        if reason:
+            body["decision_reason"] = reason[:500]
 
-    r = requests.patch(url, headers=hdrs, params={"domain": f"eq.{domain}"},
-                       json=body, timeout=60)
+    r, body = _patch_source(domain, body)
     if r.status_code == 409 and "listing_url" in body:
         # listing_url is UNIQUE: another broker row already owns this page
         # (typically a vanity domain redirecting to a franchise site).
@@ -393,6 +517,7 @@ def main():
 
     tally = {}
     crawlable = []
+    proposed = []
     weak = []
 
     for i, row in enumerate(queue, 1):
@@ -515,26 +640,27 @@ def main():
                 status = "weak"
                 print(f"    weak: only {got} items found")
 
+        evidence = None
+        gate_why = None
         if SOURCE == "broker_sources" and status in ("ok", "weak"):
             path = urlparse(listings_url).path.lower()
             archive = next((b for b in _ARCHIVE_PATH_BITS if b in path), None)
-            prices = 0 if archive else page_evidence(dv, listings_url)
+            ev = page_evidence(dv, listings_url, domain)
             why = suspicious(listings_url, method, platform,
                              result if isinstance(result, dict) else {})
-            if archive:
-                status = "weak"
-                print(f"    weak: {path} looks like an archive of past deals")
-            elif prices >= MIN_PRICES:
-                if status != "ok" or why:
-                    print(f"    ok: page shows {prices} asking prices "
-                          f"(discovery fingerprint: {why or 'thin'})")
-                else:
-                    print(f"    ok: page shows {prices} asking prices")
-                status = "ok"
+            fails = gate_failures(ev, int(found or 0), archive, why)
+            evidence = {**ev, "items_parsed": int(found or 0), "method": method,
+                        "platform": platform, "fingerprint_note": why,
+                        "fails": fails, "checked_at": time.strftime(
+                            "%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+            if fails:
+                status = "proposed"
+                gate_why = "; ".join(fails)
+                print(f"    proposed: {gate_why}")
             else:
-                status = "weak"
-                print(f"    weak: only {prices} prices on the page"
-                      + (f"; {why}" if why else ""))
+                status = "ok"
+                print(f"    ok (auto): {ev['prices']} prices, "
+                      f"{ev['re_hits']} RE / {ev['biz_hits']} business terms")
         elif status == "ok":
             why = suspicious(listings_url, method, platform,
                              result if isinstance(result, dict) else {})
@@ -543,11 +669,15 @@ def main():
                 print(f"    weak: {why}")
 
         save(domain, base, listings_url, status, method, platform,
-             selector, found, notes=row.get("company"))
-        update_source(row, status, listings_url)
+             selector, found, notes=row.get("company"), evidence=evidence)
+        update_source(row, status, listings_url,
+                      decided_by="auto" if status == "ok" and SOURCE == "broker_sources" else None,
+                      reason=gate_why)
         tally[status] = tally.get(status, 0) + 1
         if status == "ok":
             crawlable.append((domain, listings_url, listed))
+        elif status == "proposed":
+            proposed.append((domain, listings_url, gate_why))
         elif status == "weak":
             # The listings page is real even if extraction was poor. Worth
             # crawling with the generic scraper, which may do better than
@@ -565,6 +695,16 @@ def main():
         for domain, url, listed in sorted(crawlable, key=lambda x: -x[2])[:40]:
             print(f"  {listed:5}  {url}")
 
+    if proposed:
+        print(f"\n--- {len(proposed)} proposed for human review (--review) ---")
+        for domain, url, why in proposed[:40]:
+            print(f"  {domain:40} {why}")
+
+    total = len(crawlable) + len(proposed)
+    if total:
+        print(f"\nGATE: {len(crawlable)} auto-promoted, {len(proposed)} proposed "
+              f"({100 * len(crawlable) // total}% auto)")
+
     if weak:
         print(f"\n--- {len(weak)} found a listings page but extracted poorly ---")
         print("    (worth crawling anyway - the generic scraper may beat discovery)")
@@ -573,5 +713,103 @@ def main():
 
 
 
+# --- human decisions ----------------------------------------------------------
+
+def _get(table, params):
+    r = requests.get(f"{SUPABASE_URL}/rest/v1/{table}", headers=sb_headers(),
+                     params=params, timeout=60)
+    r.raise_for_status()
+    return r.json()
+
+
+def review(offset=0, n=20):
+    rows = _get("broker_discovery", {
+        "select": "domain,listings_url,listings_found,raw,last_attempt_at",
+        "status": "eq.proposed", "order": "last_attempt_at.asc",
+        "limit": str(n), "offset": str(offset)})
+    if not rows:
+        print("No proposed candidates.")
+        return
+    print(f"{'domain':34} {'prices':>6} {'items':>5} {'RE/biz':>7}  why")
+    for row in rows:
+        g = (row.get("raw") or {}).get("gate") or {}
+        print(f"{row['domain'][:34]:34} {g.get('prices', '?'):>6} "
+              f"{g.get('items_parsed', row.get('listings_found') or 0):>5} "
+              f"{str(g.get('re_hits', '?')) + '/' + str(g.get('biz_hits', '?')):>7}  "
+              f"{'; '.join(g.get('fails') or [])[:90]}")
+        print(f"{'':34} {row.get('listings_url') or ''}")
+        if g.get("final_url") and g["final_url"] != row.get("listings_url"):
+            print(f"{'':34} -> {g['final_url']}")
+    print(f"\nNext page: --review --offset {offset + n}")
+    print('Decide: --decide <domain> crawlable|reject --reason "..." [--block]')
+
+
+def decide(domain, verdict, reason, block=False):
+    if not reason:
+        sys.exit("--reason is required")
+    rows = _get("broker_discovery", {"select": "domain,listings_url,status",
+                                     "domain": f"eq.{domain}"})
+    listings_url = rows[0].get("listings_url") if rows else None
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    if verdict == "crawlable":
+        if not listings_url:
+            sys.exit(f"{domain}: no listings_url on record - can't promote")
+        body = {"discovery_stage": "3_crawlable", "strategy_status": "ready",
+                "listing_url": listings_url, "last_fingerprinted_at": now,
+                "decided_at": now, "decided_by": "human",
+                "decision_reason": reason[:500]}
+        disc_status = "ok"
+    else:
+        body = {"discovery_stage": "0_unusable", "strategy_status": "blocked" if block else "unusable",
+                "last_error_type": "REJECTED", "last_error_message": reason[:300],
+                "decided_at": now, "decided_by": "human",
+                "decision_reason": reason[:500]}
+        disc_status = "rejected"
+    r, _ = _patch_source(domain, body)
+    if not r.ok:
+        sys.exit(f"broker_sources update failed: {r.status_code} {r.text[:200]}")
+    r = requests.patch(f"{SUPABASE_URL}/rest/v1/broker_discovery",
+                       headers={**sb_headers(), "Prefer": "return=minimal"},
+                       params={"domain": f"eq.{domain}"},
+                       json={"status": disc_status}, timeout=60)
+    if not r.ok:
+        print(f"broker_discovery update failed: {r.status_code} {r.text[:200]}")
+    if verdict == "reject" and block:
+        r = requests.post(f"{SUPABASE_URL}/rest/v1/broker_block",
+                          headers={**sb_headers(),
+                                   "Prefer": "resolution=merge-duplicates,return=minimal"},
+                          json={"broker_domain": domain, "reason": reason[:300],
+                                "updated_at": now}, timeout=60)
+        if not r.ok:
+            print(f"broker_block insert failed: {r.status_code} {r.text[:200]}")
+    print(f"{domain}: {verdict}{' + blocked' if block else ''} ({reason})")
+
+
+def cli():
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--review", action="store_true")
+    ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--decide", nargs=2, metavar=("DOMAIN", "crawlable|reject"))
+    ap.add_argument("--reason", default="")
+    ap.add_argument("--block", action="store_true",
+                    help="with reject: add to broker_block permanently")
+    a = ap.parse_args()
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        sys.exit("Missing SUPABASE_URL / SUPABASE_SERVICE_KEY")
+    if a.review:
+        review(a.offset)
+    elif a.decide:
+        domain, verdict = a.decide
+        if verdict not in ("crawlable", "reject"):
+            sys.exit("verdict must be crawlable or reject")
+        if a.block and verdict != "reject":
+            sys.exit("--block only applies to reject")
+        decide(domain.lower(), verdict, a.reason, a.block)
+    else:
+        main()
+
+
 if __name__ == "__main__":
-    main()
+    cli()

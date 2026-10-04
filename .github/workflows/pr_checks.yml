@@ -21,3 +21,5 @@ jobs:
         run: python -m compileall -q scrapers agents scripts ingestion ledger lib
       - name: Yield-gate test
         run: python scrapers/test_yield_gate.py
+      - name: Discovery-gate test
+        run: python tests/test_discovery_gate.py
