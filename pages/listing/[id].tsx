@@ -32,6 +32,7 @@ type Listing = {
   quality_score: number | null;
   relisted: boolean | null;
   firm_key: string | null;
+  dom_basis?: string | null;
 };
 
 type HistoryRow = {
@@ -88,6 +89,21 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   if (listingErr || !listingRow) return { notFound: true };
   const listing = listingRow as Listing;
 
+  // Dates and DOM come from the public record (mv_listings_page), the same source as the homepage.
+  // Raw listings.estimated_listed_date / days_on_market are stale for broker-direct listings.
+  const { data: rec } = await sb
+    .from('mv_listings_page')
+    .select('estimated_listed_date, dom_days_eff, dom_basis')
+    .eq('listing_number', listingNumber)
+    .maybeSingle();
+  if (rec) {
+    listing.estimated_listed_date = rec.estimated_listed_date ?? listing.estimated_listed_date;
+    listing.days_on_market = rec.dom_days_eff ?? listing.days_on_market;
+    listing.dom_basis = rec.dom_basis ?? null;
+  } else {
+    listing.dom_basis = null;
+  }
+
   const { data: histRows, error: histErr } = await sb
     .from('listing_history')
     .select('price, source_file')
@@ -123,15 +139,13 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   let domPercentile: number | null = null;
   if (typeof listing.days_on_market === 'number') {
     const { count: shorter } = await sb
-      .from('listings')
+      .from('mv_listings_page')
       .select('listing_number', { count: 'exact', head: true })
-      .eq('is_active', true)
-      .lt('days_on_market', listing.days_on_market);
+      .lt('dom_days_eff', listing.days_on_market);
     const { count: total } = await sb
-      .from('listings')
+      .from('mv_listings_page')
       .select('listing_number', { count: 'exact', head: true })
-      .eq('is_active', true)
-      .not('days_on_market', 'is', null);
+      .not('dom_days_eff', 'is', null);
 
     console.log('[listing] Query 5: shorter=', shorter, 'total=', total);
 
@@ -280,10 +294,15 @@ export default function ListingPage({
       });
     });
 
+  const isFloor = listing.dom_basis === 'floor';
   if (listing.estimated_listed_date) {
     changeLog.push({
       date: listing.estimated_listed_date.slice(0, 10),
-      description: 'Estimated original listing date',
+      description: isFloor
+        ? 'Already listed when we started tracking this broker — listed on or before this date'
+        : listing.dom_basis === 'observed'
+        ? 'First seen on the broker’s site'
+        : 'Estimated original listing date',
     });
   }
 
@@ -375,7 +394,7 @@ export default function ListingPage({
             />
             <Stat
               label="Days on Market"
-              value={listing.days_on_market != null ? `${listing.days_on_market}` : '—'}
+              value={listing.days_on_market != null ? `${listing.days_on_market}${isFloor ? '+' : ''}` : '—'}
               sub={domContext}
               accent={domFlag}
             />
@@ -401,6 +420,7 @@ export default function ListingPage({
             <Section title="TIMELINE" subtitle="Observed events">
               <Timeline
                 listedDate={listing.estimated_listed_date}
+                floor={isFloor}
                 observations={observations}
               />
             </Section>
@@ -803,15 +823,17 @@ function Section({
 
 function Timeline({
   listedDate,
+  floor = false,
   observations,
 }: {
   listedDate: string | null;
+  floor?: boolean;
   observations: { label: string; date: string; price: number | null }[];
 }) {
   const events: { label: string; date: string }[] = [];
 
   if (listedDate) {
-    events.push({ label: 'First seen', date: fmtMonthYear(listedDate) });
+    events.push({ label: floor ? 'Listed by' : 'First seen', date: fmtMonthYear(listedDate) });
   }
 
   observations.forEach((o, i) => {
