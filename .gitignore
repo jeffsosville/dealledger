@@ -50,3 +50,4 @@ scrapers/*cookies*
 CLAUDE.md
 nohup.out
 private/
+data/detail_maps/samples/
