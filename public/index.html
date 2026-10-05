@@ -92,6 +92,8 @@ input.ctl{width:104px}
 .ledger th.sortable:hover{color:var(--text)}
 .sort-arrow{color:var(--accent);margin-left:3px}
 .ledger .num{text-align:right;font-family:var(--mono);white-space:nowrap}
+.ledger th abbr{text-decoration:none;cursor:help}
+.ledger th .th-sub{display:block;font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:.75;margin-top:2px}
 .ledger td.seen{white-space:nowrap;color:var(--text-muted)}
 .ledger td.state{font-family:var(--mono);color:var(--text-muted)}
 .ledger td.title{overflow-wrap:anywhere}
@@ -146,7 +148,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   .ledger td.state{display:none}
   .ledger td.seen::after{content:attr(data-state)}
   .ledger td.daysc{grid-column:2;grid-row:2;font-size:12px}
-  .ledger td.daysc .days::after{content:" days";font-weight:400;color:var(--text-muted)}
+  .ledger td.daysc .days::after{content:" days on market";font-weight:400;color:var(--text-muted)}
   .ledger td.empty{grid-column:1/-1;padding:32px 0}
 
   .pager{gap:8px}
@@ -221,12 +223,12 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
         <th>Business</th>
         <th>State</th>
         <th class="num sortable" data-sort="price">Price<span class="sort-arrow" data-for="price"></span></th>
-        <th class="num sortable" data-sort="days">Days<span class="sort-arrow" data-for="days"></span></th>
+        <th class="num sortable" data-sort="days"><abbr title="Days on market">DOM</abbr><span class="sort-arrow" data-for="days"></span><span class="th-sub">days on market</span></th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
   </table>
-  <p class="foot-note">“Days” counts from the first time we saw the listing. A <strong>+</strong> means it was already up when we started tracking that broker, so it is at least that old.</p>
+  <p class="foot-note"><strong>DOM</strong> (days on market) counts from the first time we saw the listing. A <strong>+</strong> means it was already up when we started tracking that broker, so it is at least that old.</p>
 
   <div class="pager">
     <button id="prev">← Prev</button>
