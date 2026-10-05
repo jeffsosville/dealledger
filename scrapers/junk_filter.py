@@ -215,6 +215,141 @@ def is_listing_junk(title, url=""):
     return False
 
 
+# ── Site-page gate (2026-10-05) ───────────────────────────────────────────────
+# The generic crawler was saving a broker's OWN site pages as listings: the
+# services page, "schedule a call", valuation landing pages, LinkedIn links,
+# Cloudflare email-protection links, blog posts syndicated across broker
+# franchises ("Recognizing the Warning Signs in Your Business"), and filter-
+# widget fragments ("$80,000,000 $1,030,000 $1,520,000"). ~900 rows across 323
+# domains were quarantined on 2026-10-05 (quarantine_log). These are the
+# signatures, checked on the destination URL and the title.
+_SOCIAL_HOST_RE = re.compile(
+    r'(^|\.)(linkedin|facebook|twitter|x|instagram|youtube|tiktok|pinterest)\.com$')
+# Last path segment that is a site page, never a listing.
+_SITE_PAGE_SLUG_RE = re.compile(
+    r'^(services?|business-services|about(-us)?|about-\d+|contact(-us|-form)?|team|our-team|'
+    r'faqs?|testimonials|schedule-a-call|book-a-call|buyer-registration|'
+    r'seller-registration|sell-your-business|sell-a-business|sell-my-business|'
+    r'business-valuations?|valuations?|'
+    r'business-valuation-service|mergers-acquisitions|business-brokerage|'
+    r'franchise-sales|franchise-resales|franchise-consulting|commercial-real-estate|'
+    r'business-broker-[a-z-]+|business-brokers-in-[a-z-]+|privacy-policy|careers|'
+    r'resources|blog|news|press|insights|accessibility-statement|sitemap|nda|'
+    r'how-we-sell|how-it-works|new-listing|buyside-broker-services)$')
+# Path sections that hold articles / taxonomy pages, not listings. Deliberately
+# NOT here: /blog/ (resolutionep.com publishes listings as Squarespace blog
+# posts) and plain /category/ (azbusinessbrokers.com cards resolve to
+# /search-listings/category/<X> while carrying real listing titles).
+# Likewise "buy-a-business" is not a site-page slug: capitalbusinessadvisor.com
+# renders its listings inline on /buy-a-business/, so the cards carry that URL.
+_CONTENT_SECTION_RE = re.compile(
+    r'/(insights|news|articles|industries-served|business-category)/')
+# Boilerplate article / marketing titles.
+_SITE_PAGE_TITLE_RE = re.compile(
+    r'(©|\bcopyright\b|all rights reserved|^businesses for sale with|'
+    r'^search (businesses|listings)|^business financing|^lender pre-qualified businesses|'
+    r'^contact\b|^sell my business|what buyers really want|'
+    r'does your asking price|what makes a business attractive|'
+    r'^recognizing the warning signs|^the differences between|'
+    r'free 15-minute call|^looking for a\s?\w|^do you want to sell|'
+    r'^book a confidential|^useful links$|^quick links$|transaction terms$|'
+    r'^why use (a|our)\b|^i want to (buy|sell)\b|^how it works$|'
+    r'back to listings|^greater than or equal$|^lower than or equal$|'
+    r'^\$[\d,]+ \$[\d,]+)', re.IGNORECASE)
+
+
+def is_site_page(title, url=""):
+    """True if (title, url) is one of the broker's own site pages (services,
+    contact, valuation, blog article, social profile, homepage) rather than a
+    business-for-sale listing."""
+    t = (title or "").strip()
+    if t and _SITE_PAGE_TITLE_RE.search(t):
+        return True
+    if not url:
+        return False
+    try:
+        pu = urlparse(url.strip())
+    except Exception:
+        return False
+    host = (pu.netloc or "").lower().split(":")[0]
+    if host.startswith("www."):
+        host = host[4:]
+    if _SOCIAL_HOST_RE.search(host):
+        return True
+    path = pu.path or ""
+    if "/cdn-cgi/" in path:
+        return True
+    segs = [s for s in path.split("/") if s]
+    if not segs and not pu.query:                    # the bare homepage
+        return True
+    if segs and _SITE_PAGE_SLUG_RE.match(segs[-1].lower()):
+        return True
+    if _CONTENT_SECTION_RE.search(path.lower() + "/"):
+        return True
+    return False
+
+
+# A detail URL that LOOKS like a listing: the section names brokers use for
+# per-listing pages, followed by a slug or id.
+_LISTING_URL_RE = re.compile(
+    r'/(listings?|business-listings?|businesses?-for-sale|business-for-sale|'
+    r'for-sale|property|properties|detail|details|business|businesses|biz|'
+    r'opportunit(y|ies)|offerings?|active_sellers|current-listings|'
+    r'available-businesses|portfolio-items|deals?|engagements?|'
+    r'current-engagements|restaurant-for-sale|atm-route-for-sale|'
+    r'business-opportunity|business_listing|directory)/[^/?#]+', re.IGNORECASE)
+
+
+# A single path segment that is itself a listings index page — inline cards
+# legitimately carry it as their URL.
+_INDEX_SEGMENT_RE = re.compile(
+    r'(listing|for-sale|businesses|find-a-business|buy-a-business|'
+    r'index\.(php|html?|aspx?)|search|opportunit|offering|inventory|portfolio)',
+    re.IGNORECASE)
+
+
+def listing_url_pattern_filter(cards, listings_url=""):
+    """Set-level gate for one broker. If at least two cards carry a
+    listing-shaped detail URL (/listing/<slug>, /business-for-sale/<id>, ...),
+    the broker HAS a listing URL pattern — so any other card that points to a
+    single-segment page on the same site (/what-buyers-really-want/,
+    /our-team/) is a site page that leaked in, and is dropped.
+
+    Cards with no per-listing URL (url == the listings page, or
+    url_is_listing_specific False) are kept: some brokers render every
+    listing inline on one page. Returns (kept, dropped)."""
+    def _url(c):
+        return (c.get("url") or c.get("_detail_url") or "").strip()
+    lp = sum(1 for c in cards if _LISTING_URL_RE.search(_url(c)))
+    if lp < 2:
+        return list(cards), []
+    base = (listings_url or "").rstrip("/").lower()
+    # A URL carried by 2+ cards is the page the listings render inline on
+    # (quietlight.com/listings, companysellers.com/businesses-for-sale) — keep.
+    seen = {}
+    for c in cards:
+        k = _url(c).rstrip("/").lower()
+        seen[k] = seen.get(k, 0) + 1
+    kept, dropped = [], []
+    for c in cards:
+        u = _url(c)
+        if (not u or u.rstrip("/").lower() == base or _LISTING_URL_RE.search(u)
+                or seen.get(u.rstrip("/").lower(), 0) > 1):
+            kept.append(c)
+            continue
+        try:
+            pu = urlparse(u)
+            segs = [s for s in (pu.path or "").split("/") if s]
+        except Exception:
+            kept.append(c)
+            continue
+        if len(segs) == 1 and not pu.query and not _INDEX_SEGMENT_RE.search(segs[0]):
+            dropped.append(c)
+        else:
+            kept.append(c)
+    return kept, dropped
+
+
 # Back-compat alias — dealledger_scraper_v6 historically called this is_junk_listing.
 is_junk_listing = is_listing_junk
 

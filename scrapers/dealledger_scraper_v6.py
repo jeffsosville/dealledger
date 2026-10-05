@@ -446,10 +446,12 @@ def has_detail_link(element, base_url=""):
 # CRE/land never become "listings" in the first place.
 try:
     from junk_filter import (is_listing_junk as is_junk_listing, is_sold_or_pending,
-                             is_junk_title, title_from_slug)
+                             is_junk_title, title_from_slug, is_site_page,
+                             listing_url_pattern_filter)
 except ImportError:  # allow import as a package (scrapers.dealledger_scraper_v6)
     from scrapers.junk_filter import (is_listing_junk as is_junk_listing,
-                                      is_sold_or_pending, is_junk_title, title_from_slug)
+                                      is_sold_or_pending, is_junk_title, title_from_slug,
+                                      is_site_page, listing_url_pattern_filter)
 
 
 def css_selector(tag, classes):
@@ -1541,6 +1543,12 @@ class ListingExtractor:
         # Junk gate — nav fragment, price fragment, status badge, CTA, legal
         # page, CRE/land: never emit these as a listing.
         if is_junk_listing(title, detail_url or base_url):
+            return None
+
+        # Site-page gate (2026-10-05): the broker's own services/contact/
+        # valuation/blog/social pages are not listings. Checked against the
+        # card's own detail URL only — the list-page URL says nothing.
+        if is_site_page(title, detail_url or ""):
             return None
 
         # Residential/IDX row gate — see looks_residential() above.
@@ -3130,6 +3138,46 @@ class DealLedgerScraper:
             print(f"   💰 price={p}  cf={cf}  state={st}/{len(unique_cards)}")
 
             self.stats["brokers_success"] += 1
+
+            # SITE-PAGE GATE (2026-10-05): drop cards that are the broker's own
+            # site pages (services, valuation, contact, blog articles, social
+            # links), re-checked here on the FINAL url/title after detail
+            # enrichment; then, if this broker has a listing URL pattern
+            # (/listing/<slug> ...), drop single-segment pages that don't fit it.
+            # ~900 such rows across 323 domains were quarantined by hand on
+            # 2026-10-05 (quarantine_log) — this keeps them from coming back.
+            before = len(unique_cards)
+            unique_cards = [l for l in unique_cards
+                            if not is_site_page(l.get("title"), l.get("url") or "")]
+            unique_cards, off_pattern = listing_url_pattern_filter(unique_cards, url)
+            site_dropped = before - len(unique_cards)
+            if site_dropped:
+                print(f"   🧹 site-page gate: dropped {site_dropped} non-listing page(s)"
+                      + (f" ({len(off_pattern)} off the listing URL pattern)" if off_pattern else ""))
+                self.stats["site_pages_dropped"] = self.stats.get("site_pages_dropped", 0) + site_dropped
+            if not unique_cards:
+                print("   🚫 nothing left after site-page gate — not writing")
+                return []
+
+            # SAME-LISTING DEDUPE (2026-10-05): a nested container match
+            # (div.row inside div.row) yields the same listing 2-3 times under
+            # one id; the outer copy can pick up the page's price-filter values
+            # (intemedior: $20M "Price Unlimited" slider) as its price. Keep one
+            # card per id, preferring the price most copies agree on.
+            by_id: dict[str, list[dict]] = {}
+            for l in unique_cards:
+                by_id.setdefault(l["id"], []).append(l)
+            if len(by_id) < len(unique_cards):
+                deduped = []
+                for group in by_id.values():
+                    prices = [g.get("asking_price") for g in group if g.get("asking_price")]
+                    best = group[0]
+                    if prices:
+                        mode = max(set(prices), key=prices.count)
+                        best = next(g for g in group if g.get("asking_price") == mode)
+                    deduped.append(best)
+                print(f"   🧹 dedupe: {len(unique_cards)} cards -> {len(deduped)} listings")
+                unique_cards = deduped
 
             # VALIDATION GATE (2026-08): the loosened detector accepts price-less
             # grids, which can occasionally match a category/browse grid instead
