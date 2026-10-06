@@ -91,6 +91,31 @@ def parse_money(text: str) -> Optional[float]:
         return None
 
 
+def _proxy_creds():
+    """(user, password, host) for DataImpulse. Reads PROXY_USER/PROXY_PASS/
+    PROXY_HOST, falling back to PROXY_URL (http://user:pass@host:port).
+    GitHub Actions only sets the PROXY_URL secret, so without the fallback the
+    Vested, FacetWP and WP-REST scrapers ran with NO proxy in CI (vestedbb then
+    rate-limited the single runner IP and roughly half its pages failed).
+    Mirrors dealledger_scraper_v6._load_proxy_creds()."""
+    from urllib.parse import urlparse, unquote
+    user = os.environ.get("PROXY_USER", "").strip()
+    pw = os.environ.get("PROXY_PASS", "").strip()
+    host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+    if not (user and pw):
+        raw = os.environ.get("PROXY_URL", "").strip()
+        if raw:
+            u = urlparse(raw)
+            user = unquote(u.username or "")
+            pw = unquote(u.password or "")
+            if u.hostname:
+                host = f"{u.hostname}:{u.port}" if u.port else u.hostname
+    # callers append "__cr.us;sessid..." themselves; drop any suffix already on
+    # the login (old PROXY_URL values carried "__cr.us")
+    user = user.split("__")[0]
+    return user, pw, host
+
+
 def extract_city_state(location: str) -> tuple:
     """
     Extract city and state from location string.
@@ -1624,9 +1649,7 @@ class VestedScraper:
         """DataImpulse US sticky-session proxy from env, or None. vestedbb
         rate-limits a single IP across a full 121-page crawl, so route through
         a residential proxy when creds are available."""
-        user = os.environ.get("PROXY_USER", "").strip()
-        pw = os.environ.get("PROXY_PASS", "").strip()
-        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        user, pw, host = _proxy_creds()
         if not (user and pw):
             return None
         sid = f"vt{random.randint(100000, 999999)}"
@@ -2009,9 +2032,7 @@ class FacetWPScraper:
 
     @staticmethod
     def _build_proxies():
-        user = os.environ.get("PROXY_USER", "").strip()
-        pw = os.environ.get("PROXY_PASS", "").strip()
-        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        user, pw, host = _proxy_creds()
         if not (user and pw):
             return None
         sid = f"fw{random.randint(100000, 999999)}"
@@ -2215,9 +2236,7 @@ class WPRestScraper:
 
     @staticmethod
     def _build_proxies():
-        user = os.environ.get("PROXY_USER", "").strip()
-        pw = os.environ.get("PROXY_PASS", "").strip()
-        host = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823").strip()
+        user, pw, host = _proxy_creds()
         if not (user and pw):
             return None
         sid = f"wp{random.randint(100000, 999999)}"
