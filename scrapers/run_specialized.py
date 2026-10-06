@@ -112,7 +112,7 @@ BROKERS = {
         "domain": "vestedbb.com",
         "account": "1593",
         "display_name": "Vested Business Brokers",
-        "fn": lambda: VestedScraper().scrape("1593", max_pages=130),
+        "fn": lambda: VestedScraper().scrape("1593", max_pages=250),
     },
     "routesforsale": {
         "domain": "routesforsale.net",
