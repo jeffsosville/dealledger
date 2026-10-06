@@ -2012,6 +2012,8 @@ class FacetWPScraper:
         self.link_match = link_match
         self.cookies = cookies or dict(self.DEFAULT_COOKIES)
         self.use_proxy_fallback = use_proxy_fallback
+        # seconds between page POSTs; eatz 429s back-to-back requests
+        self.page_delay = 20
         self.base = f"https://{self.domain}"
         self.endpoint = f"{self.base}/{self.uri}/"
         self.session = self._make_session()
@@ -2114,12 +2116,26 @@ class FacetWPScraper:
             if not href or href in seen:
                 continue
             seen.add(href)
-            # Walk up to the card so we can read price/cash-flow text.
+            # Nav/archive links ("Listings", "Current Listings", "Recently Sold
+            # Listings", ?fwp_ filters) aren't listings: require a slug segment
+            # after the match path and no query string.
+            _path = href.split("#")[0]
+            if "?" in _path or not re.search(re.escape(self.link_match.rstrip("/")) + r"/[^/?#]+/?$", _path):
+                continue
+            # Climb to the listing card: stop once the card carries price-like
+            # text, or before the parent would swallow a second listing.
             card = a
-            for _ in range(4):
-                if card.parent is None or len(card.get_text(" ", strip=True)) > 40:
+            for _ in range(6):
+                if card.parent is None:
                     break
-                card = card.parent
+                t = card.get_text(" ", strip=True)
+                if re.search(r'asking\s*price', t, re.I):
+                    break
+                par = card.parent
+                links = {x.get("href") for x in par.select(f'a[href*="{self.link_match}"]')}
+                if len(links) > 1:
+                    break
+                card = par
             text = card.get_text(" ", strip=True)
 
             title = a.get_text(" ", strip=True)
@@ -2130,14 +2146,32 @@ class FacetWPScraper:
             if not title:
                 continue
 
-            pm = re.search(r'\$\s?[\d,]{4,}', text)
-            cf = re.search(r'(?:cash\s*flow|sde)[^$]{0,20}(\$\s?[\d,]{4,})', text, re.I)
+            # Labelled fields first (eatz/synergy cards: "Asking Price: $250,000",
+            # "Gross Sales: $1,084,587", "Net Op Income: $57,014"). A blank or
+            # non-numeric value ("$(Asset Sale)") stays None. Fall back to the
+            # first $ on the card only when there is no Asking Price label.
+            def _lab(rx):
+                m = re.search(rx + r'\s*:?\s*\$\s?([\d,]{3,}(?:\.\d+)?)', text, re.I)
+                return parse_money("$" + m.group(1)) if m else None
+            price = _lab(r'asking\s*price')
+            if price is None and not re.search(r'asking\s*price', text, re.I):
+                pm = re.search(r'\$\s?[\d,]{4,}', text)
+                price = parse_money(pm.group(0)) if pm else None
+            revenue = _lab(r'(?:gross\s*(?:sales|revenue)|revenue)')
+            cash_flow = _lab(r'(?:net\s*op(?:erating)?\.?\s*income|cash\s*flow|sde|seller.s\s*discretionary\s*earnings)')
+            # State only: the card's location line ("Far Northwest Suburb of
+            # Chicago, IL") runs into the title text, so the city isn't reliable.
+            city, state = (None, None)
+            for lm in re.finditer(r',\s*([A-Z]{2})\b', text):
+                if lm.group(1) in US_STATE_CODES:
+                    state = lm.group(1)
+                    break
             out.append(format_listing(
                 url=href, broker_account=broker_account, title=title,
-                price=parse_money(pm.group(0)) if pm else None,
-                price_text=pm.group(0) if pm else None,
-                cash_flow=parse_money(cf.group(1)) if cf else None,
-                status="sold" if is_sold_or_pending(title) else "active"))
+                price=price, price_text=f"${price:,.0f}" if price else None,
+                revenue=revenue, cash_flow=cash_flow, city=city, state=state,
+                status="sold" if is_sold_or_pending(title) or
+                       re.search(r'\bSOLD\b', text) else "active"))
         return out
 
     def scrape(self, broker_account: str, max_pages: int = 40, verbose: bool = True) -> List[Dict]:
@@ -2200,7 +2234,7 @@ class FacetWPScraper:
                 empty_streak = 0
             if total_pages and paged >= int(total_pages):
                 break
-            time.sleep(random.uniform(0.6, 1.2))
+            time.sleep(random.uniform(self.page_delay, self.page_delay + 5))
 
         if verbose:
             wp = sum(1 for l in listings if l.get("price"))
