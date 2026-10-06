@@ -1,119 +1,119 @@
 {
-  "started": "2026-10-05T21:33:08.259854+00:00",
-  "brokers_attempted": 800,
-  "brokers_success": 466,
-  "brokers_failed": 287,
-  "total_listings": 8819,
-  "listings_with_price": 7638,
-  "listings_with_cashflow": 3868,
-  "listings_with_state": 7109,
-  "detail_pages_fetched": 777,
-  "patterns_cached": 533,
+  "started": "2026-10-06T19:38:14.786897+00:00",
+  "brokers_attempted": 799,
+  "brokers_success": 473,
+  "brokers_failed": 280,
+  "total_listings": 8609,
+  "listings_with_price": 7476,
+  "listings_with_cashflow": 3782,
+  "listings_with_state": 6930,
+  "detail_pages_fetched": 390,
+  "patterns_cached": 526,
   "patterns_learned": 448,
   "verticals": {
-    "manufacturing": 228,
-    "other": 2268,
-    "retail": 1007,
-    "automotive": 531,
-    "technology": 1490,
-    "healthcare": 486,
-    "restaurant": 1821,
-    "cleaning": 128,
-    "construction": 389,
-    "landscaping": 77,
-    "plumbing": 94,
-    "hvac": 164,
-    "electrical": 59,
-    "roofing": 31,
-    "pest_control": 6,
-    "vending": 40
+    "automotive": 539,
+    "other": 2003,
+    "manufacturing": 235,
+    "retail": 984,
+    "construction": 400,
+    "restaurant": 1864,
+    "hvac": 167,
+    "healthcare": 487,
+    "cleaning": 130,
+    "technology": 1482,
+    "plumbing": 91,
+    "landscaping": 85,
+    "electrical": 63,
+    "vending": 42,
+    "roofing": 30,
+    "pest_control": 7
   },
   "failure_types": {
-    "NO_PATTERN": 154,
-    "EMBED_BBS": 47,
-    "FETCH_ERROR": 22,
-    "HTTP_403": 33
+    "HTTP_403": 31,
+    "EMBED_BBS": 46,
+    "NO_PATTERN": 157,
+    "FETCH_ERROR": 22
   },
-  "site_pages_dropped": 95,
+  "site_pages_dropped": 33,
   "slowest_brokers": [
     [
-      2068,
-      "lacountyrealestate.us",
-      2
-    ],
-    [
       2064,
-      "bbcpnw.com",
-      1
-    ],
-    [
-      2037,
-      "commercialindustrialconsultants.com",
-      4
-    ],
-    [
-      1966,
-      "elitesalonsales.com",
-      13
-    ],
-    [
-      1636,
       "birminghambusinessbroker.com",
       6
     ],
     [
-      811,
-      "profilesrealty.com",
-      0
+      1942,
+      "mainstreetmain.com",
+      5
     ],
     [
-      799,
-      "suncoastbiz.net",
-      0
+      1316,
+      "abalventures.com",
+      1
     ],
     [
-      763,
-      "buybizusa.com",
-      0
+      1156,
+      "wncbusinessbrokerage.com",
+      1
     ],
     [
-      724,
-      "contangoinvestments.com",
-      0
+      1051,
+      "xlbusinessbrokers.com",
+      15
     ],
     [
-      723,
-      "businessteamusa.com",
-      0
-    ],
-    [
-      671,
-      "gutierbrokers.com",
-      0
-    ],
-    [
-      614,
-      "harborbiz.com",
-      0
-    ],
-    [
-      603,
-      "wellstonegroup.net",
-      0
-    ],
-    [
-      601,
+      703,
       "venturaflorida.com",
       0
     ],
     [
-      584,
+      680,
+      "wellstonegroup.net",
+      0
+    ],
+    [
+      680,
+      "harborbiz.com",
+      0
+    ],
+    [
+      676,
+      "gutierbrokers.com",
+      0
+    ],
+    [
+      661,
+      "buybizusa.com",
+      0
+    ],
+    [
+      637,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      624,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      620,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      591,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      537,
       "bestchoiceinvestments.com",
       0
     ]
   ],
-  "seconds_total": 50216,
-  "completed": "2026-10-06T01:54:58.291185+00:00",
+  "seconds_total": 45862,
+  "completed": "2026-10-06T23:22:46.410378+00:00",
   "interrupted": false,
   "shards": [
     "snapshot-shard-0",
