@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Asking Price",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Gross Income",
+      "not_disclosed": false
+    }
+  },
+  "notes": "All three pages use a consistent .sb-table div containing .line rows, each with a left column label and a right column value. Asking Price, Cash Flow, and Gross Income (revenue) are reliably found by matching the text in the .col-6.left div within .sb-table .line. City and state are not published on any of the three pages; these are online/remote businesses and no physical location is listed anywhere on the detail pages.",
+  "domain": "www.websiteclosers.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "cash_flow"
+  ],
+  "review_note": "2026-10-06: weak/not-disclosed fields dropped (cash_flow, city, state); kept fields hit 3/3 (or 2/3) on samples"
+}

@@ -1,0 +1,44 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Asking Price",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Total Sales",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Cash Flow",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "css",
+      "css": "a.bfs-row span:not(.bfs-badge):not(.bfs-row-cta)",
+      "label": null,
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "css",
+      "css": "a.bfs-row span:not(.bfs-badge):not(.bfs-row-cta)",
+      "label": null,
+      "not_disclosed": false
+    }
+  },
+  "notes": "All three pages are actually the same listings index page (the detail page HTML was not included \u2014 each URL loaded the browse/index page instead). All fields appear inside .bfs-specs divs within each .bfs-row card. Asking Price, Cash Flow, and Total Sales (gross revenue) each use a consistent label pattern: a <span> with the label text followed by a sibling <span> with the value, inside .bfs-specs. Use label method: find the <span> whose text equals the label, then take the immediately following sibling <span> for the value. City and state are combined in a single <span> (e.g. 'Lawrence, Kansas' or just 'Kansas') that is the third <span> child inside the row content div, after the badge and before .bfs-specs \u2014 there is no separate city/state split in the HTML. The CSS selector above targets that location span; callers must parse city and state from its text content. Some listings show only a state with no city. Cash flow is sometimes 'Not disclosed' or 'N/A', which are displayed values, not true non-disclosure at the broker level \u2014 the broker does publish the field when available, so not_disclosed is false.",
+  "domain": "www.companysellers.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "revenue",
+    "cash_flow",
+    "state"
+  ]
+}

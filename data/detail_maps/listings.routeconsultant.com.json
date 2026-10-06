@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Listing Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Total Revenue:",
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking price appears in the h2 element as 'Listing Price:' followed by a strong tag with the value, consistent across all pages. Revenue is labeled 'Total Revenue:' in the financial details section on FedEx pages, and as 'Total Annual Sales' in the bread-fin-table on bread route pages \u2014 however 'Total Revenue:' is used in the similar routes cards for bread routes too; on the bread detail pages the primary label is 'Total Annual Sales' inside .bread-fin-table. Cash flow / SDE is not published on any page; the 'Net Operating Income' shown on bread pages is always a dash (\u2014), and while page 1 shows 'Net Operating Income: $463,052' this is NOI not SDE/cash flow per standard brokerage convention, so cash_flow is marked not_disclosed. City is never shown separately \u2014 only a regional name like 'Northern Georgia' or 'Western Illinois' is given in the h1.listing__title, which represents a region not a specific city. State can be inferred from the listing title but is combined with a directional descriptor, not shown alone.",
+  "domain": "listings.routeconsultant.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "state"
+  ],
+  "review_note": "2026-10-06: weak/not-disclosed fields dropped (cash_flow, city, state); kept fields hit 3/3 (or 2/3) on samples"
+}

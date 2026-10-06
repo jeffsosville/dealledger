@@ -1,0 +1,44 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Target Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Gross Revenue:",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "EBITDA:",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "The site lists businesses internationally by country, not by city/state. The 'Country' field is shown in the details table but no city or state/province is ever disclosed. Asking price is labeled 'Target Price:' consistently in the details table (table.details_table td.tablelabel). Revenue is labeled 'Gross Revenue:' and cash flow proxy is labeled 'EBITDA:' \u2014 the site does not publish SDE/owner benefit/discretionary earnings; EBITDA is the only profitability metric shown. The third page (organic-food-producer-and-exporter) returned a 404 error, so only two live listing pages were available for analysis, but the pattern is consistent between them.",
+  "domain": "mergerscorp.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "asking_price",
+    "revenue",
+    "cash_flow"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": "span.ere__single-property-price",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "City/Town",
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "label",
+      "css": null,
+      "label": "Province/State",
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking price is consistently shown in the span.ere__single-property-price element in the page header. Revenue and cash flow are not published as structured fields on any of the three pages; financial figures (inside sales, fuel volume, etc.) appear only as unstructured free text in the description body with no consistent label or CSS hook, and cash flow/SDE is never mentioned at all. City and state are reliably labeled 'City/Town' and 'Province/State' respectively in the Address section list items.",
+  "domain": "www.reputedbrokerage.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "state"
+  ]
+}

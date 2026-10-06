@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Asking:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Owner Benefit:",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Asking price and Owner Benefit (cash flow/SDE) appear consistently in .single-listing-item spans preceded by their respective icon and label text. Revenue/gross sales is never shown on any of the three pages. City and state are not shown as discrete fields; only a county (e.g. 'Lee County') is shown via a link inside .single-listing-item, and no separate city or state field exists on any page.",
+  "domain": "trufortebusinessgroup.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:58Z"
+}

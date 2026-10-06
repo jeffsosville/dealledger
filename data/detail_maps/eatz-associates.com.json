@@ -1,0 +1,44 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Asking Price: $",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Gross Sales: $",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Net Operating Income: $",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "css",
+      "css": "div.city-state",
+      "label": null,
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "css",
+      "css": "div.city-state",
+      "label": null,
+      "not_disclosed": false
+    }
+  },
+  "notes": "All three pages use the same label patterns for asking_price, revenue, and cash_flow inside paragraph elements. The values appear to be blank/not disclosed on these sold listings but the labels are consistent. City and state are combined in a single 'div.city-state' element (e.g. 'Burr Ridge , IL') and must be parsed/split from that single element; there is no separate element for each. The cash_flow field uses 'Net Operating Income' as the label, which may not be true SDE/cash flow but is the only income metric shown on the page.",
+  "domain": "eatz-associates.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "asking_price",
+    "revenue",
+    "cash_flow"
+  ]
+}

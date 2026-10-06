@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Revenue:",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "Area:",
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Asking price is shown with the label 'Price:' on detail pages (inside the status-list ul) and also displayed on search result listing cards. Revenue appears in the Financial Information section on detail pages under the label 'Revenue:' but is often blank/not disclosed per listing. Cash flow (SDE/owner benefit/discretionary earnings) is not present on any page; the Financial Information section shows 'Annual Net Income:' but this is net income, not SDE/cash flow, and it is also typically blank. City is shown under the label 'Area:' on the detail page status-list, and as a county/area name in the search results location span; there is no separate state field anywhere on the site \u2014 all listings appear to be in California but the state is never explicitly labeled or displayed.",
+  "domain": "www.lbaweb.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "revenue"
+  ]
+}

@@ -58,6 +58,13 @@ jobs:
       - name: Install dependencies
         run: pip install curl_cffi==0.13.0 pandas beautifulsoup4 playwright requests supabase colorama
 
+      - name: Check credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python3 scripts/check_credentials.py --need supabase,proxy
+
       - name: Build broker list from broker_sources
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

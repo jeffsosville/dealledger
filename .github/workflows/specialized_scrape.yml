@@ -23,6 +23,12 @@ jobs:
           # Chrome for Selenium
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
+      - name: Check credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python3 scripts/check_credentials.py --need supabase,proxy
       - name: Run specialized scrapers
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

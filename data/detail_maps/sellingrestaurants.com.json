@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "All three pages are login/account-access walls (addtofavorites.php redirects unauthenticated users to a sign-in form). No business listing data \u2014 asking price, revenue, cash flow, city, or state \u2014 is present in any of the three pages. These URLs are not actual detail pages; they require authentication before revealing any listing content. All fields are marked not_disclosed=true because no data is visible on these pages.",
+  "domain": "sellingrestaurants.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:57Z"
+}

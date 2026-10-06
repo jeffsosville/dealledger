@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Asking price appears in two places: in the hero section as a text block (e.g. 'Price: $90,000!' or 'Price: {Confidential - Request Info}') and in the Additional Information status-box with the label 'Price:' next to a value div. The structured label 'Price:' inside the status-box (div.status-box div.details div.head with text 'Price:') is the most reliable location. However, the status-box value consistently shows 'Confidential [Request Info]' even when a real price is shown in the hero, so the hero text_block with id text_block-7-247 or text_block-8-247 may carry the actual figure. Revenue and cash flow are never shown as labeled structured fields; they only appear embedded in free-text prose descriptions. City and state are not shown as structured fields either \u2014 the location is only referenced in the page title and prose body text, with no consistent labeled or CSS-selectable element containing just the city or state value.",
+  "domain": "strategicdc.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "asking_price"
+  ]
+}

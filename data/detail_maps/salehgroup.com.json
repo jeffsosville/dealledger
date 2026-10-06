@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": "div.price",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "css",
+      "css": "div.loc",
+      "label": null,
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "css",
+      "css": "div.loc",
+      "label": null,
+      "not_disclosed": false
+    }
+  },
+  "notes": "All three pages provided are identical directory/listing pages (not individual detail pages). The asking price is found in div.price inside each dir-card. Revenue and cash flow are not shown on these directory cards at all and appear to not be published publicly by this broker. City and state are combined in div.loc (e.g. 'Dayton, OH') and must be parsed by splitting on the comma.",
+  "domain": "salehgroup.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:58Z"
+}

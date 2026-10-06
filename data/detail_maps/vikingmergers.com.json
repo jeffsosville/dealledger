@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "revenue": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "label",
+      "css": null,
+      "label": "Location:",
+      "not_disclosed": false
+    }
+  },
+  "notes": "None of the three pages display asking price, revenue, or cash flow as labeled fields or in structured markup. These financial figures are not published on listing detail pages by this broker. The 'Region:' field and 'Location:' field both appear next to their labels inside jet-listing-dynamic-field elements, but they contain state/region-level data only (e.g. 'North Carolina', 'Florida', 'East Coast Florida'), never a city. The Location: label is the closest match for state-level data. City is never shown on any page, so not_disclosed is true for city. State is found via the label 'Location:' which consistently appears next to the state or region value rendered by the JetEngine dynamic field.",
+  "domain": "vikingmergers.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "state"
+  ]
+}

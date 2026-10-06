@@ -1,0 +1,43 @@
+name: Daily report (Today issue)
+
+# Posts "Today — YYYY-MM-DD": the three-goal scoreboard plus health flags
+# (truncated crawls, frozen brokers, domains with no financials, pg_cron
+# failures), from the Supabase function daily_health(). Report only — it
+# changes no data. Closes yesterday's issue. Added 2026-10-06.
+#
+# 16:07 UTC: after the bridge (15:00) and homepage refresh (15:25).
+
+on:
+  schedule:
+    - cron: "7 16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+      - name: Check credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        # report every credential here so a dead key shows up in the daily issue run
+        run: python3 scripts/check_credentials.py --need supabase,proxy,anthropic
+      - name: Post Today issue
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/daily_report.py --post

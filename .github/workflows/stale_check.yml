@@ -1,0 +1,64 @@
+name: Nightly stale check
+
+# Visits every listing in v_stale_check_queue (active rows unseen on an ok
+# crawl, or on a failing domain) and records what the URL says now:
+#   gone_404 / gone_redirect -> inactive,  sold_text (incl. status-sold
+#   badges) -> sold,  live -> stays active,  error -> retried next night.
+# Safe to run unattended: nothing is retired on "not seen" alone — every row is
+# verified against the broker's own page first. (Automated 2026-10-06; was a
+# manual run from Jeff's Mac.)
+#
+# 12:13 UTC: after the specialized run (07:41), before broker_scrape (14:23)
+# and the bridge (15:00), so retirements reach the site the same day.
+
+on:
+  schedule:
+    - cron: "13 12 * * *"
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: "Only this broker_domain (blank = whole queue)"
+        default: ""
+      all_active:
+        description: "1 = check every active row on that domain, not just the queue"
+        default: "0"
+
+permissions:
+  contents: read
+
+jobs:
+  stale-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install pandas requests beautifulsoup4 "curl_cffi==0.7.4" supabase python-dotenv
+      - name: Check credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python3 scripts/check_credentials.py --need supabase,proxy
+      - name: Run stale check
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: |
+          ARGS="--write --workers 8"
+          if [ -n "${{ inputs.domain }}" ]; then ARGS="$ARGS --domain ${{ inputs.domain }}"; fi
+          if [ "${{ inputs.all_active }}" = "1" ]; then ARGS="$ARGS --all-active"; fi
+          python3 agents/stale_check.py $ARGS 2>&1 | tee stale_check.log
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -40 stale_check.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stale-check-log
+          path: stale_check.log
+          retention-days: 14

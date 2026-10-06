@@ -1,0 +1,27 @@
+{
+  "fields": {
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Cash Flow",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "Location",
+      "not_disclosed": false
+    }
+  },
+  "notes": "All fields are displayed as dt/dd pairs inside a dl element on each listing card. The label (dt) text is used to find the value (dd). 'Price' is the asking price. 'Sales' is gross revenue. 'Cash Flow' is SDE/owner benefit. Both city and state are embedded in the 'Location' field as a single string (e.g. 'Boston, Massachusetts' or 'South Florida'). Note that some listings (e.g. spaces for lease) omit Price, Sales, and Cash Flow entirely, so those fields may be absent on individual cards but the broker does publish them when available. The Location field sometimes uses regional descriptors rather than a specific city (e.g. 'North of Boston', 'South Shore', 'Norfolk County'), so city extraction may require parsing. State is the last comma-separated token in the Location value.",
+  "domain": "corbettrestaurantgroup.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-10-06T17:36:58Z",
+  "weak_fields": [
+    "asking_price",
+    "revenue",
+    "state"
+  ],
+  "review_note": "2026-10-06: weak/not-disclosed fields dropped (asking_price, revenue, state); kept fields hit 3/3 (or 2/3) on samples"
+}
