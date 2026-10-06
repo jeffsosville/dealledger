@@ -34,8 +34,11 @@ log = logging.getLogger(__name__)
 # ── Config ────────────────────────────────────────────────────────────────────
 SUPABASE_URL  = os.environ.get("SUPABASE_URL",  "https://kqckuedsyyosmccushyd.supabase.co")
 SUPABASE_SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
-PROXY         = "2e675ba5977dd3336e3d__cr.us:39cd7cb8adc0d68f@gw.dataimpulse.com:823"
-PROXY_URL     = f"http://{PROXY}"
+# Proxy creds come from the environment only (never hardcode — this repo is public).
+_PU, _PP = os.environ.get("PROXY_USER", ""), os.environ.get("PROXY_PASS", "")
+_PH = os.environ.get("PROXY_HOST", "gw.dataimpulse.com:823")
+PROXY_URL     = (f"http://{_PU}__cr.us:{_PP}@{_PH}" if (_PU and _PP)
+                 else os.environ.get("PROXY_URL", ""))
 
 # ── RE broker exclusion patterns ──────────────────────────────────────────────
 RE_PATTERNS = [
