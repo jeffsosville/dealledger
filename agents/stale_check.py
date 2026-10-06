@@ -42,11 +42,17 @@ def db():
     return create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
 
-def load_queue(client, domain, limit):
+def load_queue(client, domain, limit, all_active=False):
     rows, start = [], 0
     while True:
-        q = client.table("v_stale_check_queue").select("id,url,broker_domain,reason")
-        if domain:
+        if all_active:
+            # one-off sweep of a whole domain (e.g. eatz: its WP-REST feed held
+            # every sold listing as active)
+            q = (client.table("listings_direct").select("id,url,broker_domain")
+                 .eq("status", "active").eq("broker_domain", domain))
+        else:
+            q = client.table("v_stale_check_queue").select("id,url,broker_domain,reason")
+        if domain and not all_active:
             q = q.eq("broker_domain", domain)
         page = q.range(start, start + 999).execute().data
         rows += page
@@ -90,6 +96,9 @@ def check(row):
         (soup.find("meta", property="og:title") or {}).get("content", ""),
     ]))
     body = soup.get_text(" ", strip=True)[:4000]
+    badge = soup.find(class_=re.compile(r"^(listing-)?status-(sold|under-contract|pending)$", re.I))
+    if badge is not None:
+        return row, "sold_text", f"badge:{badge.get('class')} {head[:60]}"
     if SOLD_HEAD.search(head) or SOLD_BODY.search(body):
         return row, "sold_text", head[:80]
     return row, "live", ""
@@ -110,16 +119,19 @@ def main():
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--domain")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--all-active", action="store_true", help="check every active row on --domain, not just the unseen queue")
     ap.add_argument("--workers", type=int, default=12)
     a = ap.parse_args()
 
     client = db()
-    queue = load_queue(client, a.domain, a.limit)
+    if a.all_active and not a.domain:
+        sys.exit("--all-active needs --domain")
+    queue = load_queue(client, a.domain, a.limit, a.all_active)
     print(f"{len(queue)} URLs across {len({r['broker_domain'] for r in queue})} domains"
           + ("" if a.write else "  (dry run — add --write)"), flush=True)
 
     totals, by_domain = Counter(), defaultdict(Counter)
-    reason = {r["broker_domain"]: r["reason"] for r in queue}
+    reason = {r["broker_domain"]: r.get("reason", "all_active") for r in queue}
     with ThreadPoolExecutor(a.workers) as pool:
         for i, (row, verdict, detail) in enumerate(pool.map(check, queue), 1):
             totals[verdict] += 1
