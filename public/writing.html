@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing | DealLedger</title>
+    <meta name="description" content="Investigations and essays on how small businesses actually get bought and sold, from DealLedger.">
+    <meta property="og:title" content="Writing">
+    <meta property="og:description" content="Investigations and essays on how small businesses actually get bought and sold, from DealLedger.">
+    <meta property="og:url" content="https://dealledger.org/writing">
+    <link rel="canonical" href="https://dealledger.org/writing">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #d4d4d4;
+            --accent: #c2410c;
+            --link: #0c4a6e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Georgia, serif; background: var(--bg); color: var(--text); font-size: 19px; line-height: 1.8; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; }
+        .header-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--text); }
+        .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; }
+        .back-link:hover { color: var(--text); }
+        article { max-width: 680px; margin: 0 auto; padding: 80px 24px 120px; }
+        .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        h1 { font-size: 42px; font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 20px; }
+        .subtitle { font-size: 20px; color: var(--muted); font-style: italic; line-height: 1.5; margin-bottom: 32px; }
+        .byline { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); padding-bottom: 40px; border-bottom: 1px solid var(--border); margin-bottom: 56px; }
+        h2 { font-size: 24px; font-weight: 700; color: var(--text); margin-top: 64px; margin-bottom: 24px; line-height: 1.3; }
+        p { margin-bottom: 28px; color: var(--text); }
+        p strong { font-weight: 700; }
+        p em { font-style: italic; }
+        .lede { font-size: 22px; font-weight: 700; margin-bottom: 28px; }
+        .callout { border-left: 3px solid var(--accent); padding: 20px 24px; margin: 40px 0; background: #f5f5f4; }
+        .callout p { margin: 0; font-size: 17px; color: var(--muted); }
+        .data-block { border: 1px solid var(--border); padding: 24px 28px; margin: 40px 0; background: #fff; }
+        .data-block .data-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        .data-block p { margin-bottom: 8px; font-size: 16px; }
+        .data-block p:last-child { margin-bottom: 0; }
+        footer-note { display: block; border-top: 1px solid var(--border); padding-top: 40px; margin-top: 80px; font-size: 15px; color: var(--muted); font-style: italic; }
+        a { color: var(--link); }
+        a:hover { text-decoration: underline; }
+        @media (max-width: 600px) { h1 { font-size: 30px; } body { font-size: 17px; } article { padding: 48px 20px 80px; } }
+
+        .header-links { display: flex; gap: 20px; }
+        .series { border-top: 1px solid var(--border); margin-top: 64px; padding-top: 32px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); }
+        .series a { color: var(--link); }
+        table { border-collapse: collapse; margin: 0 0 28px; font-size: 17px; width: 100%; }
+        th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        th { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+        article ul { margin: 0 0 28px 24px; }
+        article li { margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">DealLedger</a>
+            <div class="header-links"><a href="/writing" class="back-link">Writing</a><a href="/" class="back-link">← Back to ledger</a></div>
+        </div>
+    </header>
+    <article>
+        <div class="label">Writing</div>
+        <h1>Notes from the ledger</h1>
+        <p class="subtitle">Investigations and essays on how small businesses actually get bought and sold</p>
+        <div class="byline">Jeff Sosville &nbsp;·&nbsp; dealledger.org</div>
+
+        <div class="data-block">
+            <div class="data-label">Start here</div>
+            <h2 style="margin-top:0;margin-bottom:12px;"><a href="/why">The Market Has No Memory</a></h2>
+            <p>Information asymmetry, the lemons problem, and why the small business transaction market needs a public ledger. March 2026.</p>
+        </div>
+
+        <h2>All writing</h2>
+        <ul>
+            <!-- Newest first. To add an article: copy writing/no-reason-to-fix.html, then add one line here and one to sitemap-static.xml. -->
+            <li><a href="/writing/no-reason-to-fix">Why BizBuySell Has No Reason to Fix Itself</a> · October 2026</li>
+            <li><a href="/why">The Market Has No Memory</a> · March 2026</li>
+        </ul>
+    </article>
+</body>
+</html>

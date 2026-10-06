@@ -1,5 +1,16 @@
 {
   "rewrites": [
-    { "source": "/why", "destination": "/why.html" }
+    {
+      "source": "/why",
+      "destination": "/why.html"
+    },
+    {
+      "source": "/writing",
+      "destination": "/writing.html"
+    },
+    {
+      "source": "/writing/:slug",
+      "destination": "/writing/:slug.html"
+    }
   ]
 }
