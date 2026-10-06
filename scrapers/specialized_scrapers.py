@@ -102,23 +102,52 @@ def extract_city_state(location: str) -> tuple:
     """
     if not location:
         return None, None
-    
+
+    # City words may carry hyphens/apostrophes/periods ("Miami-Dade County",
+    # "St. Louis", "Coeur d'Alene") — the old [A-Z][a-z]+ split "Miami-Dade"
+    # down to "Dade County".
+    _w = r"[A-Z][A-Za-z.'\-]*"
+    _city = _w + r"(?:\s+(?:" + _w + r"|d'|de|del|la|of))*"
+
     # Try "City, ST" format (2-letter state code)
-    m = re.search(r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),\s*([A-Z]{2})\b', location)
+    m = re.search(r'\b(' + _city + r'),\s*([A-Z]{2})\b', location)
     if m:
         return m.group(1).strip(), m.group(2).strip()
-    
+
     # Try "City, State Name" format
-    m2 = re.search(r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)', location)
+    m2 = re.search(r'(' + _city + r'),\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)', location)
     if m2:
         return m2.group(1).strip(), m2.group(2).strip()
-    
+
     # Just 2-letter state code
     state_match = re.search(r'\b([A-Z]{2})\b', location)
-    if state_match:
+    if state_match and state_match.group(1) in US_STATE_CODES:
         return None, state_match.group(1)
-    
+
+    # Bare full state name ("Virginia", "New Jersey") — Murphy cards carry only this.
+    for line in location.splitlines():
+        name = line.strip().rstrip(',').strip()
+        if name.lower() in US_STATE_NAMES:
+            return None, US_STATE_NAMES[name.lower()]
+
     return None, None
+
+
+US_STATE_NAMES = {n.lower(): n for n in (
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+    "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois",
+    "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
+    "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York",
+    "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+    "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
+    "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming",
+    "Puerto Rico")}
+US_STATE_CODES = {
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL",
+    "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE",
+    "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD",
+    "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "PR"}
 
 
 def create_chrome_driver(headless: bool = True) -> webdriver.Chrome:
@@ -233,7 +262,13 @@ class MurphyScraper:
                     txt = card.text
                     m = MurphyScraper.SDE_RE.search(txt)
                     sde_txt = m.group(1) if m else None
-                    location = txt.split("|")[-1].strip() if "|" in txt else None
+                    # Card text ends "...|\nVirginia\nLEARN MORE" — keep only the
+                    # location line, not the button label.
+                    location = None
+                    if "|" in txt:
+                        tail = [ln.strip() for ln in txt.split("|")[-1].splitlines()]
+                        tail = [ln for ln in tail if ln and ln.upper() != "LEARN MORE"]
+                        location = tail[0] if tail else None
                     
                     try:
                         detail_url = card.find_element(By.CSS_SELECTOR, "a.btn.btn-primary").get_attribute("href")
