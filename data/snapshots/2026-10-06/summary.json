@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-05T21:33:08.259854+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 466,
+  "brokers_failed": 287,
+  "total_listings": 8819,
+  "listings_with_price": 7638,
+  "listings_with_cashflow": 3868,
+  "listings_with_state": 7109,
+  "detail_pages_fetched": 777,
+  "patterns_cached": 533,
+  "patterns_learned": 448,
+  "verticals": {
+    "manufacturing": 228,
+    "other": 2268,
+    "retail": 1007,
+    "automotive": 531,
+    "technology": 1490,
+    "healthcare": 486,
+    "restaurant": 1821,
+    "cleaning": 128,
+    "construction": 389,
+    "landscaping": 77,
+    "plumbing": 94,
+    "hvac": 164,
+    "electrical": 59,
+    "roofing": 31,
+    "pest_control": 6,
+    "vending": 40
+  },
+  "failure_types": {
+    "NO_PATTERN": 154,
+    "EMBED_BBS": 47,
+    "FETCH_ERROR": 22,
+    "HTTP_403": 33
+  },
+  "site_pages_dropped": 95,
+  "slowest_brokers": [
+    [
+      2068,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      2064,
+      "bbcpnw.com",
+      1
+    ],
+    [
+      2037,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1966,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      1636,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      811,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      799,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      763,
+      "buybizusa.com",
+      0
+    ],
+    [
+      724,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      723,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      671,
+      "gutierbrokers.com",
+      0
+    ],
+    [
+      614,
+      "harborbiz.com",
+      0
+    ],
+    [
+      603,
+      "wellstonegroup.net",
+      0
+    ],
+    [
+      601,
+      "venturaflorida.com",
+      0
+    ],
+    [
+      584,
+      "bestchoiceinvestments.com",
+      0
+    ]
+  ],
+  "seconds_total": 50216,
+  "completed": "2026-10-06T01:54:58.291185+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
