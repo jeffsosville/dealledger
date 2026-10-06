@@ -2387,7 +2387,7 @@ class DealLedgerScraper:
         "tworld.com", "sunbeltnetwork.com", "fcbb.com", "murphybusiness.com",
         "vrbusinessbrokers.com", "hedgestone.com", "linkbusiness.com",
         "bodnergroup.com", "wesellrestaurants.com", "vestedbb.com",
-        "routesforsale.net",
+        "routesforsale.net", "eatz-associates.com",
     )
 
     def _specialized_domains(self) -> set:

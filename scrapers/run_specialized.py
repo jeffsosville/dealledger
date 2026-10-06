@@ -35,7 +35,7 @@ from specialized_scrapers import (
     SunbeltScraper, VRScraper, FCBBScraper,
     LinkBusinessScraper, LarryBodnerScraper,
     WeSellRestaurantsScraper, VestedScraper, RoutesForSaleScraper,
-    WPRestScraper
+    WPRestScraper, FacetWPScraper
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -119,6 +119,16 @@ BROKERS = {
         "account": "13461",
         "display_name": "Routes For Sale",
         "fn": lambda: RoutesForSaleScraper().scrape("13461"),
+    },
+    # Eatz moved off WP-REST (Oct 6): its REST feed is the whole archive, ~93%
+    # sold, with no status field. The FacetWP for-sale view is the real inventory.
+    "eatz": {
+        "domain": "eatz-associates.com",
+        "account": "3477",
+        "display_name": "Eatz & Associates",
+        "fn": lambda: FacetWPScraper("eatz-associates.com", "listings",
+                                     {"status": ["for-sale", "new-listing"]},
+                                     link_match="/listings/").scrape("3477"),
     },
 }
 
