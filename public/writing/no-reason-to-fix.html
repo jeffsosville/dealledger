@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why BizBuySell Has No Reason to Fix Itself | DealLedger</title>
+    <meta name="description" content="BizBuySell is paid by the people listing, not the people buying. That's why duplicates, stale listings and hidden listing dates never get cleaned up.">
+    <meta property="og:title" content="Why BizBuySell Has No Reason to Fix Itself">
+    <meta property="og:description" content="BizBuySell is paid by the people listing, not the people buying. That's why duplicates, stale listings and hidden listing dates never get cleaned up.">
+    <meta property="og:url" content="https://dealledger.org/writing/no-reason-to-fix">
+    <link rel="canonical" href="https://dealledger.org/writing/no-reason-to-fix">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #d4d4d4;
+            --accent: #c2410c;
+            --link: #0c4a6e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Georgia, serif; background: var(--bg); color: var(--text); font-size: 19px; line-height: 1.8; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; }
+        .header-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--text); }
+        .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); text-decoration: none; }
+        .back-link:hover { color: var(--text); }
+        article { max-width: 680px; margin: 0 auto; padding: 80px 24px 120px; }
+        .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        h1 { font-size: 42px; font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 20px; }
+        .subtitle { font-size: 20px; color: var(--muted); font-style: italic; line-height: 1.5; margin-bottom: 32px; }
+        .byline { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); padding-bottom: 40px; border-bottom: 1px solid var(--border); margin-bottom: 56px; }
+        h2 { font-size: 24px; font-weight: 700; color: var(--text); margin-top: 64px; margin-bottom: 24px; line-height: 1.3; }
+        p { margin-bottom: 28px; color: var(--text); }
+        p strong { font-weight: 700; }
+        p em { font-style: italic; }
+        .lede { font-size: 22px; font-weight: 700; margin-bottom: 28px; }
+        .callout { border-left: 3px solid var(--accent); padding: 20px 24px; margin: 40px 0; background: #f5f5f4; }
+        .callout p { margin: 0; font-size: 17px; color: var(--muted); }
+        .data-block { border: 1px solid var(--border); padding: 24px 28px; margin: 40px 0; background: #fff; }
+        .data-block .data-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+        .data-block p { margin-bottom: 8px; font-size: 16px; }
+        .data-block p:last-child { margin-bottom: 0; }
+        footer-note { display: block; border-top: 1px solid var(--border); padding-top: 40px; margin-top: 80px; font-size: 15px; color: var(--muted); font-style: italic; }
+        a { color: var(--link); }
+        a:hover { text-decoration: underline; }
+        @media (max-width: 600px) { h1 { font-size: 30px; } body { font-size: 17px; } article { padding: 48px 20px 80px; } }
+
+        .header-links { display: flex; gap: 20px; }
+        .series { border-top: 1px solid var(--border); margin-top: 64px; padding-top: 32px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); }
+        .series a { color: var(--link); }
+        table { border-collapse: collapse; margin: 0 0 28px; font-size: 17px; width: 100%; }
+        th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        th { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+        article ul { margin: 0 0 28px 24px; }
+        article li { margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="logo">DealLedger</a>
+            <div class="header-links"><a href="/writing" class="back-link">Writing</a><a href="/" class="back-link">← Back to ledger</a></div>
+        </div>
+    </header>
+    <article>
+        <div class="label">Essay, October 2026</div>
+        <h1>Why BizBuySell Has No Reason to Fix Itself</h1>
+        <p class="subtitle">Who pays, what they're buying, and why the biggest business-for-sale marketplace profits from the mess</p>
+        <div class="byline">Jeff Sosville &nbsp;·&nbsp; October 2026 &nbsp;·&nbsp; dealledger.org</div>
+
+        <p class="lede">BizBuySell isn't broken. It's working exactly as designed, and the design pays it to leave the mess alone.</p>
+
+        <p>I've been on the listing side of this market for twenty years. I started a business brokerage with my brother Greg in 2007, got into ATMs in 2008, and started ATM Brokerage with my brother John in 2012. I've paid for listings. I've watched the same business show up under a new title with a fresh date. I've fielded buyer calls about businesses that sold months earlier.</p>
+
+        <p>For a long time I blamed sellers and sloppy brokers. They're part of it. But the bigger question is why the biggest marketplace in the industry never cleans any of it up. The answer is in who pays the bill. In March I wrote that this market has no memory (<a href="/why">The Market Has No Memory</a>). This is the follow-up: why the biggest marketplace has no reason to give it one.</p>
+
+        <h2>Who pays</h2>
+
+        <p>Sellers and brokers pay BizBuySell. Buyers search for free. We know how pay-nothing, check-nothing marketplaces end up. Ask anyone who bought a used car on Craigslist.</p>
+
+        <p>That one fact explains most of what follows. The buyer is the audience, the product being sold to the people who pay. A marketplace serves whoever writes the check, and on BizBuySell that's whoever is listing, not the person trying to buy one: brokers, sellers, or anyone with a credit card.</p>
+
+        <p>None of this is hidden or illegal. It's simply the model. But it means every decision about what to show, what to flag and what to clean up gets made with the paying side in mind.</p>
+
+        <h2>What's being sold</h2>
+
+        <p>BizBuySell sells two things: listings, priced per month, and position on the page. More listings and more upgrades mean more revenue.</p>
+
+        <p>A seller listing directly picks one of three tiers (<a href="https://www.bizbuysell.com/create-a-listing-FAQ/">BizBuySell listing FAQ</a>):</p>
+
+        <table>
+            <tr><th>Tier</th><th>Price on a 6-month term</th></tr>
+            <tr><td>Basic</td><td>$74.95/month</td></tr>
+            <tr><td>Showcase</td><td>$99.95/month</td></tr>
+            <tr><td>Diamond</td><td>$199.95/month</td></tr>
+        </table>
+
+        <p>In BizBuySell's own words, "the higher the listing level, the more exposure and features, which drives more buyer interest." Brokers buy the same thing in bulk. The broker guide says Diamond ads appear "at the top of Search Results," and that Showcase listings move "above basic ads" and draw an "average of 5x more leads (vs. Basic)" (<a href="https://www.bizbuysell.com/htmlmail/brokerworks/BBS_Guide-to-BrokerWorks.pdf">Guide to BrokerWorks</a>).</p>
+
+        <p>So search results are ranked first by who paid more, not by what's newest, most accurate or most likely to still be for sale. And because every listing is a monthly fee, a seller who posts the same route in 47 cities isn't a problem for the platform. That's 47 subscriptions. It's paid search, without the label.</p>
+
+        <p>I looked for a stated rule against duplicate listings, a requirement to mark a business sold, or any check that a listing is real. I didn't find one in either the seller FAQ or the broker guide.</p>
+
+        <h2>What the platform doesn't do</h2>
+
+        <p>Other marketplaces police duplicates because it costs them buyer trust. eBay doesn't allow "more than one fixed price listing of an identical item at the same time from the same seller," so that "no one seller can dominate search results" (<a href="https://ebay.com.au/help/policies/listing-policies/duplicate-listings-policy?id=4255">eBay policy</a>). DealStream, a much smaller business-for-sale site, permanently bans anyone who advertises the same business from multiple accounts, even when the descriptions and locations differ (<a href="https://dealstream.helpjuice.com/228792-adding-listings/1140375-what-is-a-duplicate-listing">DealStream policy</a>).</p>
+
+        <p>BizBuySell has the data to do the same and more. It knows when every listing was created, which ones share text and phone numbers, and which ones haven't changed in a year. What a buyer sees depends on what the platform chooses to show.</p>
+
+        <p>The gap shows up clearest in time on market. BizBuySell's own year-end numbers say the median business that sold in 2025 took 170 days to close (<a href="https://bizbuysell.com/blog/2025-year-in-review/">BizBuySell 2025 Year in Review</a>). Unsold listings sit far longer. When we measured 40,552 active listings for <a href="/why">that first piece</a>, the median had been on the market 256 days, and 28% had been listed for over a year. Brokers refresh listings to hide that age, and I found nothing in the platform's rules that stops them.</p>
+
+        <p>A fresh-looking listing gets more clicks, and clicks are what paid tiers are sold on. A true listing age would make inventory look stale, and stale inventory is harder to charge a premium for.</p>
+
+        <h2>Who owns it</h2>
+
+        <p>The two biggest business-for-sale sites belong to the same company, so competition won't fix this.</p>
+
+        <ul>
+            <li><strong>2004:</strong> LoopNet buys BizBuySell (<a href="https://www.inman.com/2004/10/14/loopnet-buys-bizbuysell/">Inman</a>).</li>
+            <li><strong>2010:</strong> LoopNet buys BizQuest, then listing more than 35,000 businesses (<a href="https://www.bizbuysell.com/news/article066.html">BizBuySell press release</a>; <a href="https://www.sec.gov/Archives/edgar/data/0001057352/000105735212000127/csgp-exx991.htm">LoopNet filing</a>).</li>
+            <li><strong>2012:</strong> CoStar Group completes its acquisition of LoopNet, and both sites come with it (<a href="https://www.sec.gov/Archives/edgar/data/1057352/000105735212000067/exhibit_99-1.htm">CoStar press release</a>).</li>
+        </ul>
+
+        <p>CoStar is a public company with a market cap of about $11 billion, best known for commercial real estate data. Small-business listings are a sideline for it. A seller who leaves BizBuySell for BizQuest is still paying the same parent company.</p>
+
+        <h2>What it costs buyers</h2>
+
+        <p>Buyers pay for this in time, money and bad expectations.</p>
+
+        <ul>
+            <li><strong>Dead inquiries.</strong> NDAs signed and calls made on businesses that sold months ago, were never really for sale, or are lead-gen traps.</li>
+            <li><strong>False comparisons.</strong> One business posted in dozens of cities crowds out real options and makes a niche look more active than it is.</li>
+            <li><strong>Wrong price anchors.</strong> Asking prices are visible. Sale prices mostly aren't, and BizBuySell's closed-deal data comes from brokers who choose to report it (<a href="https://www.bizbuysell.com/news/First-Half-2016-Small-Business-Transactions-Up-Slightly-Over-2015">BizBuySell methodology</a>).</li>
+            <li><strong>Wrong sense of urgency.</strong> If listings look fresh, a buyer thinks good businesses go fast and rushes. If they knew the typical seller had been waiting four or five months, they'd negotiate differently.</li>
+        </ul>
+
+        <p>Sellers pay too. A real listing is buried under paid placements and duplicates, so the honest seller has to upgrade just to be seen.</p>
+
+        <h2>What a fix looks like</h2>
+
+        <p>The fix isn't a better marketplace. It's a public record that no one gets paid to distort. A marketplace paid by the listing can't be that record, because its revenue depends on the mess.</p>
+
+        <ul>
+            <li><strong>A true listing history.</strong> When a business was first listed, every price change, every relist, and when it disappeared.</li>
+            <li><strong>Listings from the source.</strong> Pulled from brokers' own websites, where there's no reason to post one business 47 times.</li>
+            <li><strong>Open data.</strong> Free for anyone to check, copy and build on, so errors get caught by the people who'd be hurt by them.</li>
+        </ul>
+
+        <p>That's what I'm building at <a href="https://dealledger.org">DealLedger</a>. It's open data (CC0), it comes directly from broker sites, and I don't sell placement. I own businesses that sell through brokers, and I've disclosed that. The point isn't to replace BizBuySell. It's to make the market honest enough that the incentives stop mattering.</p>
+
+        <div class="series">Part of a series. Start with <a href="/why">The Market Has No Memory</a>, or see <a href="/writing">all writing</a>.</div>
+
+        <footer-note>
+            Jeff Sosville is the co-founder of ATM Brokerage and Sosville Group. DealLedger is at dealledger.org.
+        </footer-note>
+    </article>
+</body>
+</html>
