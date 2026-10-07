@@ -8,12 +8,14 @@ name: Nightly stale check
 # verified against the broker's own page first. (Automated 2026-10-06; was a
 # manual run from Jeff's Mac.)
 #
-# 12:13 UTC: after the specialized run (07:41), before broker_scrape (14:23)
-# and the bridge (15:00), so retirements reach the site the same day.
+# Runs when the specialized scrape finishes (workflow_run), not on a clock:
+# GitHub's own cron started this repo's jobs 4-7h late all week, so a fixed
+# time could land before the scrape it depends on. (Changed 2026-10-07.)
 
 on:
-  schedule:
-    - cron: "13 12 * * *"
+  workflow_run:
+    workflows: ["Specialized franchise scrapers"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       domain:

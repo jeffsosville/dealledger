@@ -239,20 +239,10 @@ jobs:
           fi
           git push || echo "Push failed — snapshot is committed locally only."
 
-      # Rebuild the homepage's materialized view so new listings actually
-      # appear on the site. CONCURRENTLY keeps the page serving during it.
-      - name: Refresh homepage view
-        if: always()
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: |
-          curl -sS --fail-with-body -X POST \
-            "$SUPABASE_URL/rest/v1/rpc/refresh_listings_page" \
-            -H "apikey: $SUPABASE_SERVICE_KEY" \
-            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{}'
+      # (Removed 2026-10-07) "Refresh homepage view" called refresh_listings_page()
+      # over PostgREST, which has an 8s statement timeout; the refresh takes
+      # ~150s, so the step always failed and marked the whole run red (Oct 5, 6).
+      # pg_cron refresh-homepage-after-bridge (15:25 UTC) already does it.
 
       # Sweep crawl_run rows left 'running' > 6h (pg_cron also does this
       # hourly; running it here keeps the scorecard honest right after a run).
