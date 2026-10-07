@@ -8,8 +8,8 @@ name: Daily report (Today issue)
 # 16:07 UTC: after the bridge (15:00) and homepage refresh (15:25).
 
 on:
-  schedule:
-    - cron: "7 16 * * *"
+  # Scheduled by Supabase pg_cron job 'gh-daily-report' (16:07 UTC) via dispatch_workflow():
+  # GitHub's own cron started this repo's jobs 4-7h late (Oct 2026). Manual runs still work.
   workflow_dispatch:
 
 permissions:

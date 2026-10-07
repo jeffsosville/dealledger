@@ -1,8 +1,8 @@
 name: Daily broker scrape
 
 on:
-  schedule:
-    - cron: "23 14 * * *"   # 14:23 UTC. Deliberately off :00 - GitHub queues top-of-hour crons and can drop them; 2026-09-21 was skipped entirely.
+  # Scheduled by Supabase pg_cron job 'gh-broker-scrape' (10:23 UTC) via dispatch_workflow():
+  # GitHub's own cron started this repo's jobs 4-7h late (Oct 2026). Manual runs still work.
   workflow_dispatch:
     inputs:
       stale_first:

@@ -1,8 +1,8 @@
 name: Specialized franchise scrapers
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '41 7 * * *'    # 07:41 UTC. Was 08:00; minute-0 crons sit in GitHub's queue (2026-09-21 this ran 6h46m late).
+  # Scheduled by Supabase pg_cron job 'gh-specialized-scrape' (07:41 UTC) via dispatch_workflow():
+  # GitHub's own cron started this repo's jobs 4-7h late (Oct 2026). Manual runs still work.
 
 # The baseline-commit step pushes back to the repo, so the token needs write.
 permissions:
