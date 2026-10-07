@@ -389,8 +389,19 @@ def _title_from_slug(element, base_url=""):
 # <a> unconditionally grabbed /author/brian/, which is_junk_listing correctly
 # flags as junk, silently dropping all 296 real listings on the page instead
 # of just fixing the URL.
-_NON_DETAIL_HREF_TOKENS = ("/author/", "/category/", "/tag/", "portfolio_category",
+_NON_DETAIL_HREF_TOKENS = (
+    "addtofavorites", "favorites","/author/", "/category/", "/tag/", "portfolio_category",
                            "/wp-content/", "javascript:", "mailto:", "tel:")
+
+
+_ONCLICK_HREF_RE = re.compile(r"""(?:location\.href|window\.location(?:\.href)?)\s*=\s*["']([^"']+)["']""", re.I)
+
+def _onclick_detail_link(element):
+    for el in [element] + element.find_all(attrs={"onclick": True}):
+        m = _ONCLICK_HREF_RE.search(el.get("onclick") or "")
+        if m and not m.group(1).lower().startswith(("javascript:", "mailto:", "tel:", "#")):
+            return m.group(1)
+    return None
 
 
 def _best_detail_link(element, base_url=""):
@@ -1524,7 +1535,7 @@ class ListingExtractor:
         if not is_listing_element(element, base_url):
             return None
 
-        best_href = _best_detail_link(element, base_url)
+        best_href = _onclick_detail_link(element) or _best_detail_link(element, base_url)
         detail_url = urljoin(base_url, best_href) if best_href else None
 
         # Don't treat pagination/anchor links as detail URLs
