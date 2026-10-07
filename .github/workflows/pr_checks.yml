@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install
-        run: pip install curl_cffi==0.13.0 beautifulsoup4 pandas requests supabase python-dotenv playwright colorama
+        run: pip install curl_cffi==0.16.3 beautifulsoup4 pandas requests supabase python-dotenv playwright colorama
       - name: Every Python file compiles
         run: python -m compileall -q scrapers agents scripts ingestion ledger lib
       - name: Yield-gate test

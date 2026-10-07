@@ -53,7 +53,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install curl_cffi==0.13.0 beautifulsoup4 playwright requests supabase
+          pip install curl_cffi==0.16.3 beautifulsoup4 playwright requests supabase
           playwright install chromium
           for attempt in 1 2 3; do
             sudo apt-get update -qq || true
