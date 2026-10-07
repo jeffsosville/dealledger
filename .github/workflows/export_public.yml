@@ -1,0 +1,47 @@
+name: Public data export
+
+# Writes data/public/listings.csv, listings.json and meta.json: every published,
+# active, broker-direct listing. Stable download URLs; overwritten daily.
+on:
+  schedule:
+    - cron: "20 16 * * *"   # after the scrapes (08:00, 14:00) and the bridge (15:00 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install requests
+
+      - name: Export
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python scripts/export_public_listings.py
+
+      - name: Commit
+        run: |
+          git config user.name "dealledger-bot"
+          git config user.email "bot@dealledger.org"
+          git add data/public/listings.csv data/public/listings.json data/public/meta.json
+          if git diff --staged --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "public export: $(date -u +%Y-%m-%d)"
+          if ! git pull --rebase -X theirs --autostash origin ${{ github.ref_name }}; then
+            git rebase --abort || true
+            echo "::warning::Could not rebase onto origin."
+          fi
+          git push || echo "Push failed."

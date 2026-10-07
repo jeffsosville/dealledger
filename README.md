@@ -123,9 +123,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
 
 ## Data Access
 
-**Daily snapshots (CSV + JSON, CC0)** are committed to
-[`data/snapshots/<date>/`](data/snapshots/) — one folder per day, each with
-`listings.csv` and `listings.json`. Pick the newest date.
+**Full dataset (CSV + JSON, CC0), rebuilt daily:** every active, published
+broker-direct listing.
+
+- CSV: https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings.csv
+- JSON: https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings.json
+- Fields: [`data/public/DATA_DICTIONARY.md`](data/public/DATA_DICTIONARY.md)
+
+Raw per-crawl snapshots are in [`data/snapshots/<date>/`](data/snapshots/); they
+cover only the generic crawler and include rows that never get published.
 
 **REST (read-only)** — see [METHODOLOGY.md](docs/METHODOLOGY.md#data-access).
 
