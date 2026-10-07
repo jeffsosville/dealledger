@@ -192,6 +192,15 @@ class MurphyScraper:
     """
 
     @staticmethod
+    def clean_location(txt: str):
+        """Card text ends '| <State>\\nLEARN MORE'. Drop the button text and
+        treat 'Confidential' as unknown."""
+        if "|" not in txt:
+            return None
+        loc = re.sub(r"\s*LEARN MORE\s*$", "", txt.split("|")[-1].strip(), flags=re.I).strip()
+        return None if not loc or loc.lower() == "confidential" else loc
+
+    @staticmethod
     def scrape(broker_account: str, max_pages: int = 50, headless: bool = True, verbose: bool = True) -> List[Dict]:
         if verbose:
             print(f"\n{'='*60}")
@@ -238,7 +247,7 @@ class MurphyScraper:
                             'title': c.get('title') or None,
                             'price_text': c.get('price') or None,
                             'sde_text': m.group(1) if m else None,
-                            'location': txt.split("|")[-1].strip() if "|" in txt else None,
+                            'location': MurphyScraper.clean_location(txt),
                             'text': txt
                         })
                 
