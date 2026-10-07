@@ -43,6 +43,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import (
+    StaleElementReferenceException, NoSuchElementException, TimeoutException
+)
 from webdriver_manager.chrome import ChromeDriverManager
 
 # curl_cffi for anti-bot bypass
@@ -175,6 +178,18 @@ class MurphyScraper:
     BASE = "https://murphybusiness.com"
     LIST_URL = f"{BASE}/business-brokerage/view-our-listings/"
     SDE_RE = re.compile(r"SDE:\s*\$([\d,]+)", re.I)
+    SNAPSHOT_JS = """
+        return Array.from(document.querySelectorAll('div.card-body')).map(c => {
+            const q = s => c.querySelector(s);
+            const a = q('a.btn.btn-primary');
+            return {
+                title: q('h5.card-title') ? q('h5.card-title').innerText.trim() : null,
+                price: q('p.price') ? q('p.price').innerText.trim() : null,
+                url:   a ? a.href : null,
+                text:  c.innerText
+            };
+        });
+    """
 
     @staticmethod
     def scrape(broker_account: str, max_pages: int = 50, headless: bool = True, verbose: bool = True) -> List[Dict]:
@@ -198,38 +213,32 @@ class MurphyScraper:
             consecutive_dupes = 0
             
             while page_num <= max_pages:
-                # Parse current page
-                cards = driver.find_elements(By.CSS_SELECTOR, "div.card-body")
+                # Parse current page in one atomic JS snapshot. Per-element
+                # WebDriver reads race the AJAX re-render and raised
+                # StaleElementReferenceException (4 failed runs, Oct 6–7).
+                raw = None
+                for attempt in range(3):
+                    try:
+                        raw = driver.execute_script(MurphyScraper.SNAPSHOT_JS)
+                        break
+                    except StaleElementReferenceException:
+                        time.sleep(2)
+                if raw is None:
+                    if verbose:
+                        print(f"[Murphy] Page {page_num}: snapshot failed 3x, stopping")
+                    break
+
                 page_listings = []
-                
-                for card in cards:
-                    try:
-                        title = card.find_element(By.CSS_SELECTOR, "h5.card-title").text.strip()
-                    except:
-                        title = None
-                    
-                    try:
-                        price_txt = card.find_element(By.CSS_SELECTOR, "p.price").text.strip()
-                    except:
-                        price_txt = None
-                    
-                    txt = card.text
+                for c in raw:
+                    txt = c.get('text') or ''
                     m = MurphyScraper.SDE_RE.search(txt)
-                    sde_txt = m.group(1) if m else None
-                    location = txt.split("|")[-1].strip() if "|" in txt else None
-                    
-                    try:
-                        detail_url = card.find_element(By.CSS_SELECTOR, "a.btn.btn-primary").get_attribute("href")
-                    except:
-                        detail_url = None
-                    
-                    if detail_url:
+                    if c.get('url'):
                         page_listings.append({
-                            'url': detail_url,
-                            'title': title,
-                            'price_text': price_txt,
-                            'sde_text': sde_txt,
-                            'location': location,
+                            'url': c['url'],
+                            'title': c.get('title') or None,
+                            'price_text': c.get('price') or None,
+                            'sde_text': m.group(1) if m else None,
+                            'location': txt.split("|")[-1].strip() if "|" in txt else None,
                             'text': txt
                         })
                 
@@ -265,13 +274,26 @@ class MurphyScraper:
                 # Navigate to next page
                 try:
                     next_btn = driver.find_element(By.CSS_SELECTOR, f"a.page_number[data-page='{page_num + 1}']")
-                    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_btn)
-                    time.sleep(0.5)
-                    driver.execute_script("arguments[0].click();", next_btn)
-                    time.sleep(4)
-                    page_num += 1
-                except:
+                except NoSuchElementException:
                     break
+                first_card = driver.find_elements(By.CSS_SELECTOR, "div.card-body")[:1]
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_btn)
+                time.sleep(0.5)
+                driver.execute_script("arguments[0].click();", next_btn)
+                # Wait for the old page to be replaced, then for new cards
+                if first_card:
+                    try:
+                        WebDriverWait(driver, 15).until(EC.staleness_of(first_card[0]))
+                    except TimeoutException:
+                        pass  # same-DOM update; dedupe guard handles it
+                try:
+                    WebDriverWait(driver, 15).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.card-body"))
+                    )
+                except TimeoutException:
+                    break
+                time.sleep(1.5)
+                page_num += 1
         
         finally:
             driver.quit()
