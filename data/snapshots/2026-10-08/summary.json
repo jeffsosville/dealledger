@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-08T10:24:42.830353+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 464,
+  "brokers_failed": 291,
+  "total_listings": 8761,
+  "listings_with_price": 7708,
+  "listings_with_cashflow": 3760,
+  "listings_with_state": 6835,
+  "detail_pages_fetched": 290,
+  "patterns_cached": 527,
+  "patterns_learned": 437,
+  "verticals": {
+    "other": 2030,
+    "technology": 1473,
+    "manufacturing": 205,
+    "healthcare": 454,
+    "electrical": 60,
+    "plumbing": 87,
+    "construction": 394,
+    "hvac": 157,
+    "retail": 964,
+    "landscaping": 78,
+    "automotive": 534,
+    "restaurant": 2115,
+    "pest_control": 7,
+    "roofing": 28,
+    "cleaning": 130,
+    "vending": 45
+  },
+  "failure_types": {
+    "NO_PATTERN": 169,
+    "EMBED_BBS": 45,
+    "FETCH_ERROR": 23,
+    "HTTP_403": 31
+  },
+  "site_pages_dropped": 94,
+  "slowest_brokers": [
+    [
+      2099,
+      "bbcpnw.com",
+      1
+    ],
+    [
+      1296,
+      "abalventures.com",
+      1
+    ],
+    [
+      1109,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      772,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      764,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      716,
+      "harborbiz.com",
+      0
+    ],
+    [
+      685,
+      "venturaflorida.com",
+      0
+    ],
+    [
+      674,
+      "gutierbrokers.com",
+      0
+    ],
+    [
+      674,
+      "buybizusa.com",
+      0
+    ],
+    [
+      673,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      652,
+      "wellstonegroup.net",
+      0
+    ],
+    [
+      635,
+      "bestchoiceinvestments.com",
+      0
+    ],
+    [
+      615,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      496,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      484,
+      "baystatebusinessbrokers.com",
+      34
+    ]
+  ],
+  "seconds_total": 42786,
+  "completed": "2026-10-08T14:17:26.673245+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
