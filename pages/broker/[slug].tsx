@@ -248,6 +248,34 @@ export default function BrokerPage({
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={`https://dealledger.org/broker/${firm.slug}`} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={`https://dealledger.org/broker/${firm.slug}`} />
+        <meta property="og:site_name" content="DealLedger" />
+        <meta name="twitter:card" content="summary" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              '@id': `https://dealledger.org/broker/${firm.slug}#firm`,
+              name: firm.companyname || 'Business broker',
+              url: `https://dealledger.org/broker/${firm.slug}`,
+              ...(firm.companyurl ? { sameAs: [firm.companyurl] } : {}),
+              description: metaDescription,
+              subjectOf: {
+                '@type': 'Dataset',
+                name: `DealLedger observations for ${firm.companyname || 'this broker'}`,
+                license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+                isAccessibleForFree: true,
+                isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
+              },
+            }),
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

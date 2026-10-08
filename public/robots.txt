@@ -1,0 +1,8 @@
+# DealLedger — an open, CC0 index of US businesses for sale.
+# The data is public domain. Crawl it, mirror it, train on it.
+# https://github.com/jeffsosville/dealledger
+
+User-agent: *
+Allow: /
+
+Sitemap: https://dealledger.org/sitemap.xml

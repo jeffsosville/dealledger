@@ -10,6 +10,80 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Dataset",
+      "@id": "https://dealledger.org/#dataset",
+      "name": "DealLedger — open index of US businesses for sale",
+      "alternateName": "DealLedger",
+      "description": "An open, continuously updated index of small and mid-sized US businesses listed for sale, collected directly from business brokers' own websites. Each record carries asking price, cash flow, location, category, the date the listing was first observed, days on market, and every change observed since. Listings are never deleted: sold and withdrawn listings remain in the record with their full history, which makes the dataset usable for research on small-business transaction markets, time-to-sale, price revision and listing quality.",
+      "url": "https://dealledger.org",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Organization",
+        "name": "DealLedger",
+        "url": "https://dealledger.org"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "DealLedger",
+        "url": "https://dealledger.org"
+      },
+      "temporalCoverage": "2026-03-24/..",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "United States",
+        "address": { "@type": "PostalAddress", "addressCountry": "US" }
+      },
+      "keywords": [
+        "business for sale",
+        "small business acquisition",
+        "business brokerage",
+        "mergers and acquisitions",
+        "days on market",
+        "Main Street M&A",
+        "entrepreneurship through acquisition",
+        "SMB transactions"
+      ],
+      "variableMeasured": [
+        "asking price",
+        "cash flow",
+        "revenue",
+        "business category",
+        "city",
+        "state",
+        "first observed date",
+        "days on market",
+        "price changes",
+        "relist count",
+        "broker of record"
+      ],
+      "measurementTechnique": "Direct observation of business brokers' public listing pages, recorded daily.",
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "name": "Daily snapshots and source code",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://github.com/jeffsosville/dealledger"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://dealledger.org/#website",
+      "name": "DealLedger",
+      "url": "https://dealledger.org",
+      "description": "Every small business for sale in America, in one open list. Straight from the brokers. Free for everyone.",
+      "publisher": { "@type": "Organization", "name": "DealLedger", "url": "https://dealledger.org" },
+      "about": { "@id": "https://dealledger.org/#dataset" }
+    }
+  ]
+}
+</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
 <script>
 window.dataLayer = window.dataLayer || [];

@@ -260,6 +260,12 @@ export default function BrokersIndex({
           name="description"
           content={`Public registry of ${fmtNum(totalFirms)} U.S. business brokerage firms. Sortable by active listings, recent activity, and lifetime observations.`}
         />
+        <link rel="canonical" href="https://dealledger.org/brokers" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="U.S. Business Broker Registry — DealLedger" />
+        <meta property="og:url" content="https://dealledger.org/brokers" />
+        <meta property="og:site_name" content="DealLedger" />
+        <meta name="twitter:card" content="summary" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

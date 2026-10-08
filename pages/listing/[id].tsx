@@ -318,12 +318,120 @@ export default function ListingPage({
   if (broker?.companyname) subtitleParts.push(`Listed by ${broker.companyname}`);
 
   const pageTitle = `${listing.header || 'Listing'} — ${padDLId(listing.id)} · DealLedger`;
+  const canonical = `https://dealledger.org/listing/${listing.listing_number}`;
+
+  // Every listing page carried the same sentence with one number changed:
+  // "Public record of listing 1168432925". Across ~32,000 URLs that reads as a
+  // templated corpus, which is what Google's "Discovered - currently not
+  // indexed" means (34,589 pages as of 2026-10-08). Build it from the fields
+  // that actually differ between listings.
+  const metaDescription = (() => {
+    const where = [listing.city, listing.state].filter(Boolean).join(', ');
+    const bits: string[] = [];
+    bits.push(listing.header || 'Business for sale');
+    if (where) bits.push(`in ${where}`);
+    const facts: string[] = [];
+    if (listing.price != null) facts.push(`asking ${fmtPriceFull(listing.price)}`);
+    if (listing.cash_flow != null) facts.push(`cash flow ${fmtPriceFull(listing.cash_flow)}`);
+    if (listing.days_on_market != null) {
+      facts.push(listing.dom_basis === 'floor'
+        ? `listed at least ${listing.days_on_market} days`
+        : `${listing.days_on_market} days on market`);
+    }
+    const head = bits.join(' ');
+    return facts.length
+      ? `${head} — ${facts.join(', ')}. Observed from the broker's own site. ${padDLId(listing.id)}.`
+      : `${head}. Public record observed from the broker's own site. ${padDLId(listing.id)}.`;
+  })();
+
+  // schema.org. Two graphs on purpose:
+  //   Product/Offer   — the listing as a thing for sale
+  //   Dataset         — the observation record behind it. This is the half
+  //                     competitors cannot publish, because their data is not
+  //                     open, and it is what Google Dataset Search indexes.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Product',
+        '@id': `${canonical}#listing`,
+        name: listing.header || `Listing ${padDLId(listing.id)}`,
+        description: metaDescription,
+        sku: padDLId(listing.id),
+        category: listing.category || 'Business for sale',
+        url: canonical,
+        ...(listing.price != null
+          ? {
+              offers: {
+                '@type': 'Offer',
+                price: listing.price,
+                priceCurrency: 'USD',
+                availability: listing.is_active
+                  ? 'https://schema.org/InStock'
+                  : 'https://schema.org/SoldOut',
+                ...(listing.estimated_listed_date
+                  ? { availabilityStarts: listing.estimated_listed_date }
+                  : {}),
+                ...(listing.city || listing.state
+                  ? {
+                      areaServed: {
+                        '@type': 'Place',
+                        address: {
+                          '@type': 'PostalAddress',
+                          ...(listing.city ? { addressLocality: listing.city } : {}),
+                          ...(listing.state ? { addressRegion: listing.state } : {}),
+                          addressCountry: 'US',
+                        },
+                      },
+                    }
+                  : {}),
+                ...(broker?.companyname
+                  ? { seller: { '@type': 'Organization', name: broker.companyname,
+                                ...(broker.companyurl ? { url: broker.companyurl } : {}) } }
+                  : {}),
+              },
+            }
+          : {}),
+      },
+      {
+        '@type': 'Dataset',
+        '@id': `${canonical}#record`,
+        name: `DealLedger observation record ${padDLId(listing.id)}`,
+        description:
+          'Dated observation record for a single US business-for-sale listing: ' +
+          'asking price, cash flow, location, first-seen date, days on market, ' +
+          'and every change observed since. Part of the DealLedger open index.',
+        url: canonical,
+        license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+        isAccessibleForFree: true,
+        creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
+        isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
+        ...(listing.first_seen ? { temporalCoverage: `${listing.first_seen.slice(0, 10)}/..` } : {}),
+        ...(listing.last_seen ? { dateModified: listing.last_seen.slice(0, 10) } : {}),
+        ...(listing.state ? { spatialCoverage: { '@type': 'Place', name: listing.state } } : {}),
+        variableMeasured: [
+          'asking price', 'cash flow', 'days on market', 'first seen date', 'price changes',
+        ],
+      },
+    ],
+  };
 
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
-        <meta name="description" content={`Public record of listing ${listing.listing_number}`} />
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:site_name" content="DealLedger" />
+        <meta name="twitter:card" content="summary" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
