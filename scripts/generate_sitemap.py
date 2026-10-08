@@ -116,6 +116,9 @@ def main():
                     help="count URLs without writing any files")
     ap.add_argument("--no-brokers", action="store_true",
                     help="skip broker pages entirely")
+    ap.add_argument("--min-listings", type=int,
+                    default=int(os.environ.get("MIN_LISTINGS", "15000")),
+                    help="fail rather than write a sitemap smaller than this")
     args = ap.parse_args()
 
     today = date.today().isoformat()
@@ -159,6 +162,14 @@ def main():
     total = len(STATIC_PAGES) + len(brokers) + len(listings)
     files_needed = 1 + (1 if brokers else 0) + max(1, math.ceil(len(listings) / PER_FILE))
 
+    # CLAUDE.md #1 — assert something, every run. A sitemap is write-once and
+    # overwrites the live one; a half-empty one caused by a truncated crawl or
+    # a bad query would quietly tell Google most of the site is gone.
+    if len(listings) < args.min_listings:
+        sys.exit(f"[-] ABORT: only {len(listings):,} listings, floor is "
+                 f"{args.min_listings:,}. Refusing to overwrite the live "
+                 f"sitemap. Pass --min-listings to override deliberately.")
+
     if args.dry_run:
         print(f"\n[dry run] {total:,} URLs across {files_needed} files")
         print(f"[dry run] canonical host: {BASE}")
@@ -186,15 +197,33 @@ def main():
     chunks = max(1, math.ceil(len(listings) / PER_FILE))
     for i in range(chunks):
         part = listings[i * PER_FILE:(i + 1) * PER_FILE]
+        # lastmod is when the LISTING changed, not when we crawled it.
+        #
+        # This used to be last_seen, which the scraper bumps every time it
+        # sees a row. That made all ~32,000 URLs claim to have changed today
+        # after every nightly run, which is false, and Google responds by
+        # discounting the signal entirely. estimated_listed_date is the date
+        # the listing actually dates from: it is stable between runs, it
+        # genuinely differs per listing, and it never claims a change that
+        # did not happen.
         entries = [
             url_entry(f"{BASE}/listing/{l['listing_number']}",
-                      l.get("last_seen") or l.get("estimated_listed_date") or today,
+                      l.get("estimated_listed_date") or l.get("first_seen") or today,
                       "weekly", "0.6")
             for l in part
         ]
         name = f"sitemap-listings-{i + 1}.xml"
         write_urlset(os.path.join(OUT_DIR, name), entries)
         written.append(name)
+
+    # If the index shrinks (25,000-per-file, so a drop below a multiple leaves
+    # an orphan), the old part file stays on disk and keeps being served with
+    # URLs nothing points at any more. Remove parts the index no longer lists.
+    import glob as _glob
+    for stale in _glob.glob(os.path.join(OUT_DIR, "sitemap-listings-*.xml")):
+        if os.path.basename(stale) not in written:
+            os.remove(stale)
+            print(f"[-] removed orphaned {os.path.basename(stale)}")
 
     write_index(os.path.join(OUT_DIR, "sitemap.xml"), written, today)
 

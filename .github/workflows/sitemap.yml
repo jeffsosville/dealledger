@@ -1,0 +1,86 @@
+name: Nightly sitemap
+
+# The sitemap was last rebuilt by hand on 2026-09-07. By 2026-10-08 it was
+# advertising 31,902 URLs that had not changed in a month, which is the
+# clearest possible "nothing here is worth recrawling" signal — and Google
+# agreed: 34,589 pages sat at "Discovered - currently not indexed".
+#
+# Runs after the data it describes is actually in place:
+#   15:00 UTC  bridge-direct-daily      (pg_cron)
+#   15:25 UTC  refresh-homepage-after-bridge (pg_cron, ~100s)
+#   16:00 UTC  this
+on:
+  schedule:
+    - cron: "0 16 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Count URLs without writing or committing"
+        type: boolean
+        default: false
+      min_listings:
+        description: "Refuse to write a sitemap smaller than this"
+        default: "15000"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sitemap
+  cancel-in-progress: false
+
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install supabase
+
+      - name: Generate
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          python3 scripts/generate_sitemap.py \
+            ${{ inputs.dry_run && '--dry-run' || '' }} \
+            --min-listings ${{ inputs.min_listings || '15000' }}
+
+      # Vercel auto-deploys on push to main, so the commit IS the publish.
+      - name: Commit
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name "dealledger-bot"
+          git config user.email "bot@dealledger.org"
+          git add -A public/sitemap*.xml
+          if git diff --staged --quiet; then
+            echo "Sitemap unchanged."
+            exit 0
+          fi
+          git commit -m "sitemap: $(date -u +%Y-%m-%d)"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push || echo "Push failed — sitemap is committed locally only."
+
+      # Confirm the live site is serving what we just pushed, rather than
+      # assuming the deploy worked.
+      - name: Verify live
+        if: ${{ !inputs.dry_run }}
+        run: |
+          sleep 90
+          for i in 1 2 3 4 5; do
+            CODE=$(curl -s -o /tmp/sm.xml -w '%{http_code}' https://dealledger.org/sitemap.xml || true)
+            if [ "$CODE" = "200" ]; then
+              echo "sitemap.xml live:"; grep -c '<loc>' /tmp/sm.xml
+              curl -s -o /dev/null -w 'robots.txt %{http_code}\n' https://dealledger.org/robots.txt
+              exit 0
+            fi
+            echo "attempt $i: HTTP $CODE, waiting"
+            sleep 60
+          done
+          echo "::warning::sitemap.xml did not return 200 after the deploy window"
