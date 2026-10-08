@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-10-08T21:23:26+00:00",
+  "rows": 24820,
+  "broker_domains": 535,
+  "coverage_pct": {
+    "asking_price": 100,
+    "cash_flow": 63,
+    "revenue": 37,
+    "city": 59,
+    "state": 82,
+    "vertical": 100
+  },
+  "license": "CC0-1.0",
+  "dictionary": "DATA_DICTIONARY.md"
+}
