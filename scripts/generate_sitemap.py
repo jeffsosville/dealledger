@@ -142,22 +142,29 @@ def main():
         listings.append(r)
     print(f"[+] {len(listings):,} active listings with titles")
 
-    # ---- broker firms ----------------------------------------------------
-    # Slugs live in broker_firms, not listings. sum_active_per_agent > 0
-    # is the "this firm currently has inventory" test.
+    # Marketplaces are not brokers; keep in sync with lib/brokerRegistry.ts.
+    MARKETPLACE_DOMAINS = ("bizbuysell.com", "bizquest.com", "businessesforsale.com",
+                           "businessbroker.net", "bizben.com", "loopnet.com",
+                           "dealstream.com", "flippa.com")
+
+    # ---- broker pages ----------------------------------------------------
+    # One page per broker website in the broker_directory view (built from
+    # broker-direct observations). Only brokers with listings on their site
+    # today are listed; lastmod is the last time we saw one of them.
     brokers = {}
     if not args.no_brokers:
-        print("[*] Fetching broker firms...")
-        firm_rows = fetch_all(sb, "broker_firms", "slug,sum_active_per_agent",
-                              key_col="slug", label="firms")
+        print("[*] Fetching broker registry...")
+        firm_rows = fetch_all(sb, "broker_directory", "slug,domain,active_count,last_observed",
+                              key_col="slug", label="brokers")
         for r in firm_rows:
             slug = (r.get("slug") or "").strip()
-            if not slug:
+            if not slug or (r.get("active_count") or 0) <= 0:
                 continue
-            if (r.get("sum_active_per_agent") or 0) <= 0:
+            dom = (r.get("domain") or "").lower()
+            if any(dom == m or dom.endswith("." + m) for m in MARKETPLACE_DOMAINS):
                 continue
-            brokers[slug] = today
-        print(f"[+] {len(brokers):,} broker firms with active listings")
+            brokers[slug] = (r.get("last_observed") or today)[:10]
+        print(f"[+] {len(brokers):,} brokers with active listings")
 
     total = len(STATIC_PAGES) + len(brokers) + len(listings)
     files_needed = 1 + (1 if brokers else 0) + max(1, math.ceil(len(listings) / PER_FILE))

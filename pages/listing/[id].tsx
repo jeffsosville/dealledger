@@ -5,6 +5,7 @@
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
+import { displayName, isMarketplaceDomain } from '../../lib/brokerRegistry';
 
 const INDUSTRY_MEDIAN_DOM = 180;
 
@@ -55,6 +56,7 @@ type PageProps = {
   listing: Listing | null;
   history: HistoryRow[];
   broker: Broker | null;
+  registryBroker: { slug: string; name: string } | null;
   domPercentile: number | null;
 };
 
@@ -136,6 +138,20 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     if (brokerRow) broker = brokerRow as Broker;
   }
 
+  // Broker-direct listings: link to the broker's page in the registry, matched by website.
+  let registryBroker: { slug: string; name: string } | null = null;
+  if (!broker && listing.url) {
+    const host = listing.url.replace(/^https?:\/\/(www\.)?/i, '').split(/[/?#:]/)[0].toLowerCase();
+    if (host) {
+      const { data: rb } = await sb
+        .from('broker_directory')
+        .select('slug, firm_name, domain')
+        .eq('slug', host.replace(/[^a-z0-9]+/g, '-'))
+        .maybeSingle();
+      if (rb && !isMarketplaceDomain(rb.domain)) registryBroker = { slug: rb.slug, name: displayName(rb.firm_name, rb.domain) };
+    }
+  }
+
   let domPercentile: number | null = null;
   if (typeof listing.days_on_market === 'number') {
     const { count: shorter } = await sb
@@ -158,7 +174,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   console.log('[listing] === SUCCESS ===');
 
   return {
-    props: { listing, history, broker, domPercentile },
+    props: { listing, history, broker, registryBroker, domPercentile },
     revalidate: 60 * 60 * 6,
   };
 };
@@ -228,6 +244,7 @@ export default function ListingPage({
   listing,
   history,
   broker,
+  registryBroker,
   domPercentile,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!listing) return null;
@@ -316,6 +333,7 @@ export default function ListingPage({
   const subtitleParts: string[] = [];
   if (locationLine) subtitleParts.push(locationLine);
   if (broker?.companyname) subtitleParts.push(`Listed by ${broker.companyname}`);
+  else if (registryBroker) subtitleParts.push(`Listed by ${registryBroker.name}`);
 
   const pageTitle = `${listing.header || 'Listing'} — ${padDLId(listing.id)} · DealLedger`;
   const canonical = `https://dealledger.org/listing/${listing.listing_number}`;
@@ -591,6 +609,19 @@ export default function ListingPage({
                     </a>
                   </div>
                 )}
+              </div>
+            </Section>
+          )}
+
+          {!broker && registryBroker && (
+            <Section title="LISTED BY" subtitle={registryBroker.name}>
+              <div className="broker-card">
+                <div className="broker-name">{registryBroker.name}</div>
+                <div className="broker-link">
+                  <a href={`/broker/${registryBroker.slug}`}>
+                    All listings we observe from this broker →
+                  </a>
+                </div>
               </div>
             </Section>
           )}

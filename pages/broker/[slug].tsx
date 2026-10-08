@@ -1,258 +1,167 @@
 // pages/broker/[slug].tsx
 //
-// DealLedger broker firm page — /broker/{slug}
+// DealLedger broker page — /broker/{slug}
+//
+// One page per broker website, built only from listings DealLedger has
+// observed on that broker's own site. Data: `broker_directory` (one row per
+// site) plus the matching rows in `listings`. Slugs are the site's domain
+// with punctuation turned into hyphens (vestedbb.com → vestedbb-com).
+//
+// Older firm slugs from the retired registry are redirected here when the
+// firm's website matches a broker we observe; otherwise they return 404.
 
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
+import {
+  REGISTRY_COLUMNS,
+  REGISTRY_VIEW,
+  OBSERVATION_START_LABEL,
+  RegistryRow,
+  bareHost,
+  cleanStates,
+  displayLocation,
+  displayName,
+  fmtDate,
+  fmtNum,
+  fmtPrice,
+  isFloored,
+  isMarketplaceDomain,
+} from '../../lib/brokerRegistry';
 
-// ─── TYPES ─────────────────────────────────────────────────────────────────
-type Firm = {
-  firm_key: string;
-  slug: string;
-  companyname: string | null;
-  companyurl: string | null;
-  regions: string | null;
-  state_count: number | null;
-  total_people: number | null;
-  principal_count: number | null;
-  agent_count: number | null;
-  sum_active_per_agent: number | null;
-  sum_sold_per_agent: number | null;
-  sum_sold_6mo_per_agent: number | null;
-  company_overview: string | null;
-  introduction: string | null;
-  affiliations: string | null;
-  services: string | null;
-  telephone: string | null;
-  email: string | null;
-};
+const ACTIVE_LIMIT = 300;
+const REMOVED_LIMIT = 50;
 
 type ListingRow = {
-  id: number;
   listing_number: number;
   header: string | null;
   price: number | null;
-  state: string | null;
+  cash_flow: number | null;
   city: string | null;
-  category: string | null;
-  days_on_market: number | null;
-  quality_tier: string | null;
-};
-
-type SoldRow = {
-  id: number;
-  listing_number: number;
-  header: string | null;
-  price: number | null;
   state: string | null;
-  city: string | null;
-  category: string | null;
+  url: string | null;
+  first_seen: string | null;
   last_seen: string | null;
 };
 
-type Person = {
-  account: number;
-  parentaccount: number | null;
-  firstname: string | null;
-  lastname: string | null;
-  regionccode: string | null;
-  city: string | null;
-  activeListingsCount: number | null;
-  soldListingsCount: number | null;
-  soldlistingslastsixmonths: number | null;
-};
-
 type PageProps = {
-  firm: Firm | null;
-  activeListings: ListingRow[];
-  soldListings: SoldRow[];
-  roster: Person[];
-  realActiveCount: number;
-  realSoldCount: number;
-  recentSoldCount: number;
+  firm: RegistryRow;
+  active: ListingRow[];
+  removed: ListingRow[];
+  removedShown: number;
 };
 
-// ─── DATA FETCHING ─────────────────────────────────────────────────────────
-export const getStaticPaths: GetStaticPaths = async () => {
-  // Pre-build nothing. fallback: 'blocking' resolves every URL on demand.
-  // Faster deploys, no thin-page worry — every firm gets a real page.
-  return { paths: [], fallback: 'blocking' };
+const LISTING_COLUMNS = 'listing_number, header, price, cash_flow, city, state, url, first_seen, last_seen';
+
+// Listing URLs on this exact host, with or without www.
+const hostFilter = (domain: string) =>
+  [`url.ilike.*://${domain}/*`, `url.ilike.*://www.${domain}/*`, `url.eq.https://${domain}`, `url.eq.https://www.${domain}`].join(',');
+
+const slugFromHost = (url: string | null) => {
+  const h = bareHost(url)?.split('/')[0]?.toLowerCase();
+  return h ? h.replace(/[^a-z0-9]+/g, '-') : null;
 };
+
+export const getStaticPaths: GetStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
 
 export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
-  const slug = params?.slug;
-  if (typeof slug !== 'string') return { notFound: true };
-
-  console.log('[broker] === REQUEST ===');
-  console.log('[broker] slug:', slug);
+  const slug = typeof params?.slug === 'string' ? params.slug.toLowerCase() : null;
+  if (!slug) return { notFound: true };
 
   const sb = getSupabase();
 
-  // Resolve slug → firm
-  const { data: firmRow, error: firmErr } = await sb
-    .from('broker_firms')
-    .select('*')
+  const { data: firmRow } = await sb
+    .from(REGISTRY_VIEW)
+    .select(REGISTRY_COLUMNS)
     .eq('slug', slug)
     .maybeSingle();
 
-  console.log('[broker] firm query:', firmErr ? 'ERR' : 'OK', firmRow ? firmRow.companyname : 'null');
+  if (!firmRow) {
+    // Retired registry slug? Send it to the broker's current page if we can match its website.
+    const { data: legacy } = await sb
+      .from('broker_firms')
+      .select('companyurl')
+      .eq('slug', slug)
+      .maybeSingle();
+    const target = slugFromHost(legacy?.companyurl ?? null);
+    if (target && target !== slug) {
+      const { data: hit } = await sb.from(REGISTRY_VIEW).select('slug').eq('slug', target).maybeSingle();
+      if (hit) return { redirect: { destination: `/broker/${hit.slug}`, permanent: true } };
+    }
+    return { notFound: true, revalidate: 60 * 60 * 24 };
+  }
 
-  if (firmErr || !firmRow) return { notFound: true };
-  const firm = firmRow as Firm;
+  const firm = firmRow as unknown as RegistryRow;
+  if (isMarketplaceDomain(firm.domain)) return { notFound: true, revalidate: 60 * 60 * 24 };
 
-  // Pull ALL active listings linked to this firm (no truncation)
-  // .range(0, 9999) overrides Supabase's default 1000-row cap
   const { data: activeRows } = await sb
     .from('listings')
-    .select(
-      'id, listing_number, header, price, state, city, category, days_on_market, quality_tier'
-    )
-    .eq('firm_key', firm.firm_key)
+    .select(LISTING_COLUMNS)
+    .eq('source', 'broker_direct')
     .eq('is_active', true)
-    .order('days_on_market', { ascending: false, nullsFirst: false })
-    .range(0, 9999);
+    .or(hostFilter(firm.domain))
+    .order('first_seen', { ascending: false, nullsFirst: false })
+    .range(0, ACTIVE_LIMIT - 1);
 
-  // Pull ALL inactive/no-longer-observed listings (no truncation)
-  const { data: soldRows } = await sb
+  const since = new Date(Date.now() - 180 * 86400 * 1000).toISOString();
+  const { data: removedRows } = await sb
     .from('listings')
-    .select('id, listing_number, header, price, state, city, category, last_seen')
-    .eq('firm_key', firm.firm_key)
+    .select(LISTING_COLUMNS)
+    .eq('source', 'broker_direct')
     .eq('is_active', false)
+    .gte('last_seen', since)
+    .or(hostFilter(firm.domain))
     .order('last_seen', { ascending: false, nullsFirst: false })
-    .range(0, 9999);
-
-  // ALL roster — principals first, then by sold count
-  const { data: rosterRows } = await sb
-    .from('broker_master')
-    .select(
-      'account, parentaccount, firstname, lastname, regionccode, city, "activeListingsCount", "soldListingsCount", soldlistingslastsixmonths'
-    )
-    .eq('firm_key', firm.firm_key)
-    .order('soldListingsCount', { ascending: false, nullsFirst: false })
-    .range(0, 9999);
-
-  // Real counts (ground truth from listings table, not broker_master sums)
-  const { count: realActive } = await sb
-    .from('listings')
-    .select('listing_number', { count: 'exact', head: true })
-    .eq('firm_key', firm.firm_key)
-    .eq('is_active', true);
-
-  const { count: realSold } = await sb
-    .from('listings')
-    .select('listing_number', { count: 'exact', head: true })
-    .eq('firm_key', firm.firm_key)
-    .eq('is_active', false);
-
-  // "Recent sold" — listings that went inactive in the last 180 days
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
-  const { count: recentSold } = await sb
-    .from('listings')
-    .select('listing_number', { count: 'exact', head: true })
-    .eq('firm_key', firm.firm_key)
-    .eq('is_active', false)
-    .gte('last_seen', sixMonthsAgo.toISOString());
-
-  console.log('[broker] counts:', { realActive, realSold, recentSold });
-  console.log('[broker] === SUCCESS ===');
+    .range(0, REMOVED_LIMIT - 1);
 
   return {
     props: {
       firm,
-      activeListings: (activeRows || []) as ListingRow[],
-      soldListings: (soldRows || []) as SoldRow[],
-      roster: (rosterRows || []) as Person[],
-      realActiveCount: realActive ?? 0,
-      realSoldCount: realSold ?? 0,
-      recentSoldCount: recentSold ?? 0,
+      active: (activeRows || []) as ListingRow[],
+      removed: (removedRows || []) as ListingRow[],
+      removedShown: (removedRows || []).length,
     },
     revalidate: 60 * 60 * 6,
   };
 };
 
-// ─── FORMATTERS ────────────────────────────────────────────────────────────
-const fmtPrice = (n: number | null | undefined) => {
-  if (n == null) return '—';
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
-  if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
-  return `$${n}`;
+const place = (r: { city: string | null; state: string | null }) => {
+  // Broker sites often put labels into the city field ("Location Brooklyn", "of Boston").
+  const raw = (r.city || '').replace(/^\s*(location|city|of)[:\s]+/i, '').trim() || null;
+  const c = raw && raw === raw.toLowerCase() ? raw.replace(/\b([a-z])/g, (m) => m.toUpperCase()) : raw;
+  return [c, r.state?.toUpperCase()].filter(Boolean).join(', ') || '—';
 };
 
-const fmtNum = (n: number | null | undefined) =>
-  n == null ? '—' : new Intl.NumberFormat('en-US').format(n);
+export default function BrokerPage({ firm, active, removed, removedShown }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const name = displayName(firm.firm_name, firm.domain);
+  const pageUrl = `https://dealledger.org/broker/${firm.slug}`;
+  const site = firm.homepage_url || `https://${firm.domain}`;
+  const states = cleanStates(firm.states_listed);
+  const location = displayLocation(firm);
 
-const fmtDateShort = (s: string | null | undefined) => {
-  if (!s) return '—';
-  const d = new Date(s);
-  if (isNaN(d.getTime())) return s;
-  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-};
+  const descBits = [
+    `${fmtNum(firm.active_count)} business${firm.active_count === 1 ? '' : 'es'} for sale currently listed on ${firm.domain}`,
+    firm.median_asking ? `median asking price ${fmtPrice(firm.median_asking)}` : null,
+    `${fmtNum(firm.lifetime_count)} listings observed since ${fmtDate(firm.first_observed)}`,
+  ].filter(Boolean);
+  const metaDescription = `${name}${firm.is_network ? '' : location !== '—' ? ` (${location})` : ''}: ${descBits.join('; ')}. Public record from DealLedger.`;
+  const pageTitle = `${name} — businesses for sale & listing history | DealLedger`;
+  const thin = firm.active_count === 0 && firm.lifetime_count < 3;
 
-const padDLId = (id: number) => `DL-${String(id).padStart(8, '0')}`;
-
-const stripUrlPrefix = (url: string | null) => {
-  if (!url) return null;
-  return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
-};
-
-const personName = (p: Person) => {
-  const f = (p.firstname || '').trim();
-  const l = (p.lastname || '').trim();
-  // Filter out junk patterns we saw in the data
-  if (l === '#NAME?' || l.match(/^Lic\s/i) || l.match(/^[A-Z]{2}#/)) return f;
-  return [f, l].filter(Boolean).join(' ') || '—';
-};
-
-// ─── PAGE ──────────────────────────────────────────────────────────────────
-export default function BrokerPage({
-  firm,
-  activeListings,
-  soldListings,
-  roster,
-  realActiveCount,
-  realSoldCount,
-  recentSoldCount,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  if (!firm) return null;
-
-  const isSolo = (firm.total_people ?? 0) === 1;
-  const isMultiState = (firm.state_count ?? 0) >= 2;
-
-  const today = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
-  const cleanUrl = stripUrlPrefix(firm.companyurl);
-  const subtitleParts: string[] = [];
-  if (firm.regions) subtitleParts.push(firm.regions);
-  if (isSolo && roster[0]) {
-    const nm = personName(roster[0]);
-    if (nm !== '—' && nm !== firm.companyname) subtitleParts.push(nm);
-  } else if (firm.total_people && firm.total_people > 1) {
-    subtitleParts.push(
-      `${firm.total_people} brokers${isMultiState ? `, ${firm.state_count} states` : ''}`
-    );
-  }
-
-  const eyebrow = isSolo ? 'BROKER' : isMultiState ? 'BROKERAGE FIRM' : 'BROKERAGE';
-
-  const pageTitle = `${firm.companyname || 'Broker'} — DealLedger`;
-  const metaDescription = `Public record of ${firm.companyname || 'broker'}: ${realActiveCount} active listings, ${realSoldCount} previously observed listings.`;
+  const activeHidden = Math.max(0, firm.active_count - active.length);
+  const removedHidden = Math.max(0, firm.removed_180d - removedShown);
 
   return (
     <>
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={`https://dealledger.org/broker/${firm.slug}`} />
+        <link rel="canonical" href={pageUrl} />
+        {thin && <meta name="robots" content="noindex, follow" />}
         <meta property="og:type" content="profile" />
-        <meta property="og:title" content={pageTitle} />
+        <meta property="og:title" content={`${name} — DealLedger`} />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={`https://dealledger.org/broker/${firm.slug}`} />
+        <meta property="og:url" content={pageUrl} />
         <meta property="og:site_name" content="DealLedger" />
         <meta name="twitter:card" content="summary" />
         <script
@@ -261,14 +170,18 @@ export default function BrokerPage({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              '@id': `https://dealledger.org/broker/${firm.slug}#firm`,
-              name: firm.companyname || 'Business broker',
-              url: `https://dealledger.org/broker/${firm.slug}`,
-              ...(firm.companyurl ? { sameAs: [firm.companyurl] } : {}),
-              description: metaDescription,
+              '@id': `${pageUrl}#firm`,
+              name,
+              url: site,
+              sameAs: [site],
+              ...(firm.hq_city && firm.hq_state && !firm.is_network
+                ? { address: { '@type': 'PostalAddress', addressLocality: displayLocation(firm).split(',')[0], addressRegion: firm.hq_state, addressCountry: 'US' } }
+                : {}),
               subjectOf: {
                 '@type': 'Dataset',
-                name: `DealLedger observations for ${firm.companyname || 'this broker'}`,
+                name: `DealLedger observations: ${name}`,
+                url: pageUrl,
+                description: metaDescription,
                 license: 'https://creativecommons.org/publicdomain/zero/1.0/',
                 isAccessibleForFree: true,
                 isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
@@ -294,7 +207,6 @@ export default function BrokerPage({
           --rule: #d4d4d4;
           --accent: #c2410c;
           --link: #0c4a6e;
-          /* Named --serif for historical reasons; the site is IBM Plex Sans. */
           --serif: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
           --mono: 'IBM Plex Mono', ui-monospace, monospace;
         }
@@ -308,11 +220,7 @@ export default function BrokerPage({
           line-height: 1.55;
           -webkit-font-smoothing: antialiased;
         }
-        a {
-          color: var(--link);
-          text-decoration: underline;
-          text-underline-offset: 2px;
-        }
+        a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
         a:hover { color: var(--accent); }
       `}</style>
 
@@ -320,170 +228,189 @@ export default function BrokerPage({
         <header className="masthead">
           <div className="masthead-inner">
             <a href="/" className="brand">DealLedger</a>
-            <div className="masthead-meta">PUBLIC RECORD · {today.toUpperCase()}</div>
+            <a href="/brokers" className="masthead-meta">← BROKER REGISTRY</a>
           </div>
           <div className="masthead-rule" />
         </header>
 
         <main className="content">
-          <div className="eyebrow">— {eyebrow}</div>
-          <h1 className="headline">{firm.companyname || firm.firm_key}</h1>
-          {subtitleParts.length > 0 && (
-            <p className="subtitle">{subtitleParts.join(' · ')}</p>
+          <div className="eyebrow">— {firm.is_network ? 'BROKERAGE NETWORK' : 'BUSINESS BROKER'}</div>
+          <h1 className="headline">{name}</h1>
+          <p className="subtitle">
+            {[
+              firm.is_network ? 'National network, shown under its main website' : location !== '—' ? location : null,
+              firm.ibba_member ? 'IBBA member' : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
+          <p className="firm-url">
+            <a href={site} target="_blank" rel="noopener">{firm.domain} →</a>
+            {firm.listings_page_url && firm.listings_page_url !== site && (
+              <>
+                {' '}·{' '}
+                <a href={firm.listings_page_url} target="_blank" rel="noopener">their listings page →</a>
+              </>
+            )}
+          </p>
+
+          {firm.about && (
+            <div className="about">
+              <p>{firm.about}</p>
+              {firm.about_source && (
+                <p className="about-source">
+                  From <a href={firm.about_source} target="_blank" rel="noopener">{bareHost(firm.about_source)}</a>
+                </p>
+              )}
+            </div>
           )}
 
-          {cleanUrl && (
-            <p className="firm-url">
-              <a href={firm.companyurl || '#'} target="_blank" rel="noopener noreferrer nofollow">
-                {cleanUrl} →
-              </a>
-            </p>
-          )}
-
-          {/* ─── STATS ROW ─────────────────────────────────────────── */}
           <div className="stats">
-            <Stat
-              label="Active Listings"
-              value={fmtNum(realActiveCount)}
-              sub={
-                realActiveCount > 0
-                  ? `Currently observed`
-                  : 'No active listings'
-              }
-            />
-            <Stat
-              label="Last 6mo Activity"
-              value={fmtNum(recentSoldCount)}
-              sub={
-                recentSoldCount > 0
-                  ? 'No longer observed'
-                  : 'No recent change'
-              }
-            />
-            <Stat
-              label="Lifetime Observed"
-              value={fmtNum(realSoldCount)}
-              sub="Inactive listings tracked"
-            />
-            <Stat
-              label={isSolo ? 'Type' : 'Brokers'}
-              value={isSolo ? 'Solo' : fmtNum(firm.total_people)}
-              sub={
-                isSolo
-                  ? 'Single broker'
-                  : isMultiState
-                  ? `${firm.state_count} states`
-                  : firm.regions || ''
-              }
-            />
+            <div className="stat">
+              <div className="stat-label">Active listings</div>
+              <div className="stat-value">{fmtNum(firm.active_count)}</div>
+              <div className="stat-sub">On their site in our latest collection</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">Median asking</div>
+              <div className="stat-value">{fmtPrice(firm.median_asking)}</div>
+              <div className="stat-sub">Active listings with a stated price</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">Removed, 180 days</div>
+              <div className="stat-value">{fmtNum(firm.removed_180d)}</div>
+              <div className="stat-sub">Sold, under contract or withdrawn</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">Lifetime observed</div>
+              <div className="stat-value">{fmtNum(firm.lifetime_count)}</div>
+              <div className="stat-sub">Reading their site since {fmtDate(firm.tracking_since || firm.first_observed)}</div>
+            </div>
           </div>
 
-          {/* ─── ABOUT ─────────────────────────────────────────────── */}
-          {(firm.company_overview || firm.introduction) && (
-            <Section title="ABOUT" subtitle={`About ${firm.companyname || 'this firm'}`}>
-              <div className="prose">
-                {firm.company_overview && (
-                  <div className="bio">
-                    {firm.company_overview.split(/\n\n+/).map((p, i) => (
-                      <p key={i}>{p}</p>
-                    ))}
+          {states.length > 1 && (
+            <p className="note">Active listings in {states.length} states: {states.join(', ')}.</p>
+          )}
+
+          <section className="section">
+            <div className="section-eyebrow">— FOR SALE NOW</div>
+            <h2 className="section-title">
+              Businesses currently listed by {name}
+            </h2>
+            <p className="note">
+              “First seen” is the first day the listing appeared on {firm.domain} in our collection.
+              Dates marked “by” are for listings that were already up when we started reading
+              the site, so they were listed on or before that date.
+            </p>
+            {active.length === 0 ? (
+              <p className="empty">No listings visible on their site in our latest collection.</p>
+            ) : (
+              <div className="table">
+                <div className="t-head">
+                  <div>Business</div>
+                  <div>Location</div>
+                  <div className="num">Asking</div>
+                  <div className="num">Cash flow</div>
+                  <div className="num">First seen</div>
+                </div>
+                {active.map((l) => (
+                  <div className="t-row" key={l.listing_number}>
+                    <div className="t-title">
+                      <a href={`/listing/${l.listing_number}`}>{l.header || 'Untitled listing'}</a>
+                      {l.url && (
+                        <a className="src" href={l.url} target="_blank" rel="noopener">source ↗</a>
+                      )}
+                    </div>
+                    <div className="t-loc">{place(l)}</div>
+                    <div className="num">{fmtPrice(l.price)}</div>
+                    <div className="num">{fmtPrice(l.cash_flow)}</div>
+                    <div className="num t-date">
+                      {isFloored(l.first_seen, firm.tracking_since) ? `by ${fmtDate(l.first_seen)}` : fmtDate(l.first_seen)}
+                    </div>
                   </div>
-                )}
-                {firm.introduction && firm.introduction !== firm.company_overview && (
-                  <div className="bio">
-                    {firm.introduction.split(/\n\n+/).map((p, i) => (
-                      <p key={i}>{p}</p>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
-            </Section>
-          )}
+            )}
+            {activeHidden > 0 && (
+              <p className="more">
+                Showing the {fmtNum(active.length)} most recently listed. See all {fmtNum(firm.active_count)} on{' '}
+                <a href={firm.listings_page_url || site} target="_blank" rel="noopener">{firm.domain}</a>.
+              </p>
+            )}
+          </section>
 
-          {/* ─── AFFILIATIONS / SERVICES ───────────────────────────── */}
-          {(firm.affiliations || firm.services) && (
-            <Section title="CREDENTIALS" subtitle="Affiliations & services">
-              <div className="creds">
-                {firm.affiliations && (
-                  <div className="cred-block">
-                    <div className="cred-label">Affiliations</div>
-                    <div className="cred-text">{firm.affiliations}</div>
+          {removed.length > 0 && (
+            <section className="section">
+              <div className="section-eyebrow">— RECENTLY REMOVED</div>
+              <h2 className="section-title">No longer on their site (last 180 days)</h2>
+              <p className="note">
+                Removal is not proof of a sale. A listing can come down because it sold, went under
+                contract, or was withdrawn.
+              </p>
+              <div className="table">
+                <div className="t-head">
+                  <div>Business</div>
+                  <div>Location</div>
+                  <div className="num">Last asking</div>
+                  <div className="num">First seen</div>
+                  <div className="num">Last seen</div>
+                </div>
+                {removed.map((l) => (
+                  <div className="t-row" key={l.listing_number}>
+                    <div className="t-title">
+                      <a href={`/listing/${l.listing_number}`}>{l.header || 'Untitled listing'}</a>
+                    </div>
+                    <div className="t-loc">{place(l)}</div>
+                    <div className="num">{fmtPrice(l.price)}</div>
+                    <div className="num t-date">
+                      {isFloored(l.first_seen, firm.tracking_since) ? `by ${fmtDate(l.first_seen)}` : fmtDate(l.first_seen)}
+                    </div>
+                    <div className="num t-date">{fmtDate(l.last_seen)}</div>
                   </div>
-                )}
-                {firm.services && (
-                  <div className="cred-block">
-                    <div className="cred-label">Services</div>
-                    <div className="cred-text">{firm.services}</div>
-                  </div>
-                )}
+                ))}
               </div>
-            </Section>
+              {removedHidden > 0 && (
+                <p className="more">Plus {fmtNum(removedHidden)} more removed in the same period.</p>
+              )}
+            </section>
           )}
 
-          {/* ─── ACTIVE LISTINGS ───────────────────────────────────── */}
-          {activeListings.length > 0 && (
-            <Section
-              title="ACTIVE LISTINGS"
-              subtitle={`${fmtNum(activeListings.length)} listing${activeListings.length === 1 ? '' : 's'}`}
-            >
-              <ListingTable rows={activeListings} kind="active" />
-            </Section>
-          )}
+          <section className="section claim">
+            <div className="section-eyebrow">— IS THIS YOUR FIRM?</div>
+            <p>
+              This page is built from the listings {name} publishes on its own website. It’s free,
+              there’s nothing to sign up for, and buyers who find a listing here go straight to your
+              site. If something is wrong, a listings page is missing, or you’d like a short
+              description of your firm shown here, email{' '}
+              <a href={`mailto:info@dealledger.org?subject=${encodeURIComponent(`Broker page: ${firm.domain}`)}`}>
+                info@dealledger.org
+              </a>
+              .
+            </p>
+            <p className="link-hint">
+              Want to point clients to your public record? Link to <code>{pageUrl}</code>
+            </p>
+          </section>
 
-          {/* ─── ROSTER (skip for solos) ───────────────────────────── */}
-          {!isSolo && roster.length > 0 && (
-            <Section
-              title="BROKERS AT THIS FIRM"
-              subtitle={`${roster.length} ${roster.length === 1 ? 'broker' : 'brokers'} on record`}
-            >
-              <RosterTable rows={roster} />
-            </Section>
-          )}
-
-
-          {/* ─── METHODOLOGY ───────────────────────────────────────── */}
-          <Section title="METHODOLOGY" subtitle="What we observe">
+          <section className="section">
+            <div className="section-eyebrow">— METHODOLOGY</div>
             <div className="prose">
               <p>
-                DealLedger publishes what is publicly displayed. Broker records
-                aggregate every observed listing tied to this firm across our
-                sources. Counts above reflect distinct listings observed, not
-                closed transactions confirmed by the broker.
-              </p>
-              <p>
-                We do not have direct visibility into which listings sold. When
-                a listing stops appearing in our scrapes, we mark it as no
-                longer observed — but we do not claim it sold. Some close;
-                some withdraw; some are re-listed under a new ID; some are
-                simply missed by our scraper. We surface the observation; you
-                draw the conclusion.
+                DealLedger reads the public listings pages of business brokers and records when each
+                listing first appears, when its details change, and when it comes down. Nothing here
+                comes from behind a login. Collection from broker websites began on{' '}
+                {OBSERVATION_START_LABEL}; a listing first seen that day may have been listed earlier.
+                Data last updated {fmtDate(firm.refreshed_at)}. All data is public domain (CC0).{' '}
+                <a href="/methodology.html">Full methodology</a>.
               </p>
             </div>
-          </Section>
-
-          {/* ─── RIGHT TO RESPOND ──────────────────────────────────── */}
-          <Section title="RIGHT TO RESPOND" subtitle="">
-            <div className="respond">
-              <p>
-                If you represent {firm.companyname || 'this firm'} and would
-                like to add context to this record — corrections, updated bio,
-                additional credentials — contact{' '}
-                <a href="mailto:corrections@dealledger.org">
-                  corrections@dealledger.org
-                </a>
-                . Corrections are published openly alongside the original
-                observation.
-              </p>
-            </div>
-          </Section>
+          </section>
 
           <footer className="footer">
             <div className="footer-rule" />
             <div className="footer-text">
-              DealLedger · Public record · CC0
-              <br />
-              An open public registry of business brokerage activity in the U.S.
-              lower middle market.
+              DealLedger · Public record · CC0 ·{' '}
+              <a href="/brokers">All brokers</a>
             </div>
           </footer>
         </main>
@@ -491,467 +418,101 @@ export default function BrokerPage({
 
       <style jsx>{`
         .page { min-height: 100vh; }
-
         .masthead { padding: 24px 0 0 0; }
         .masthead-inner {
-          max-width: 880px;
-          margin: 0 auto;
-          padding: 0 32px 18px 32px;
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
+          max-width: 1100px; margin: 0 auto; padding: 0 32px 18px 32px;
+          display: flex; justify-content: space-between; align-items: baseline;
         }
-        .brand {
-          font-family: var(--serif);
-          font-weight: 700;
-          font-size: 22px;
-          text-decoration: none;
-          letter-spacing: -0.01em;
-        }
+        .brand { font-weight: 700; font-size: 22px; text-decoration: none; letter-spacing: -0.01em; }
         .masthead-meta {
-          font-family: var(--mono);
-          font-size: 11px;
-          letter-spacing: 0.08em;
-          color: var(--ink-mute);
+          font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+          color: var(--ink-mute); text-decoration: none;
         }
-        .masthead-rule {
-          max-width: 880px;
-          margin: 0 auto;
-          border-top: 1px solid var(--rule);
-        }
-
-        .content {
-          max-width: 880px;
-          margin: 0 auto;
-          padding: 56px 32px 96px 32px;
-        }
-
+        .masthead-rule { max-width: 1100px; margin: 0 auto; border-top: 1px solid var(--rule); }
+        .content { max-width: 1100px; margin: 0 auto; padding: 56px 32px 96px 32px; }
         .eyebrow {
-          font-family: var(--mono);
-          font-size: 12px;
-          letter-spacing: 0.1em;
-          color: var(--accent);
-          margin-bottom: 14px;
+          font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+          color: var(--accent); margin-bottom: 14px;
         }
         .headline {
-          font-family: var(--serif);
-          font-weight: 500;
-          font-size: 44px;
-          line-height: 1.1;
-          letter-spacing: -0.015em;
-          margin: 0 0 14px 0;
+          font-weight: 500; font-size: 44px; line-height: 1.1;
+          letter-spacing: -0.015em; margin: 0 0 10px 0;
         }
-        .subtitle {
-          font-size: 17px;
-          color: var(--ink-soft);
-          margin: 0 0 8px 0;
+        .subtitle { font-size: 17px; color: var(--ink-soft); margin: 0 0 6px 0; }
+        .firm-url { font-family: var(--mono); font-size: 14px; margin: 0 0 32px 0; overflow-wrap: anywhere; }
+        .about {
+          border-left: 2px solid var(--rule); padding: 2px 0 2px 16px;
+          margin: 0 0 32px 0; max-width: 70ch; color: var(--ink-soft);
         }
-        .firm-url {
-          font-family: var(--mono);
-          font-size: 13px;
-          margin: 0 0 40px 0;
-        }
-        .firm-url a {
-          color: var(--ink-soft);
-          text-decoration: none;
-        }
-        .firm-url a:hover { color: var(--accent); text-decoration: underline; }
-
+        .about p { margin: 0 0 6px 0; }
+        .about-source { font-size: 13px; color: var(--ink-mute); }
         .stats {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 0;
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          margin-bottom: 56px;
+          display: grid; grid-template-columns: repeat(4, 1fr);
+          border: 1px solid var(--rule); background: var(--bg-card); margin-bottom: 20px;
         }
-
-        .prose p {
-          margin: 0 0 14px 0;
-          color: var(--ink-soft);
-          max-width: 64ch;
+        .stat { padding: 18px 20px; border-right: 1px solid var(--rule); }
+        .stat:last-child { border-right: none; }
+        .stat-label {
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+          text-transform: uppercase; color: var(--ink-mute);
         }
-        .prose p:last-child { margin-bottom: 0; }
-        .bio { margin-bottom: 16px; }
-        .bio:last-child { margin-bottom: 0; }
-
-        .creds {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          padding: 22px 24px;
+        .stat-value { font-family: var(--mono); font-size: 28px; margin: 6px 0 2px 0; }
+        .stat-sub { font-size: 12px; color: var(--ink-mute); }
+        .note { font-size: 14px; color: var(--ink-soft); max-width: 75ch; margin: 0 0 12px 0; }
+        .note strong { color: var(--ink); }
+        .section { margin-top: 56px; }
+        .section-eyebrow {
+          font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+          color: var(--accent); margin-bottom: 8px;
         }
-        .cred-block { margin-bottom: 16px; }
-        .cred-block:last-child { margin-bottom: 0; }
-        .cred-label {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--ink-mute);
-          margin-bottom: 6px;
+        .section-title {
+          font-weight: 500; font-size: 24px; line-height: 1.2;
+          letter-spacing: -0.01em; margin: 0 0 16px 0;
         }
-        .cred-text {
-          color: var(--ink-soft);
-          white-space: pre-wrap;
+        .table { border: 1px solid var(--rule); background: var(--bg-card); font-size: 14px; }
+        .t-head, .t-row {
+          display: grid; grid-template-columns: 1fr 160px 90px 90px 110px;
+          gap: 14px; padding: 10px 18px; border-bottom: 1px solid var(--rule); align-items: baseline;
         }
-
-        .caveat {
-          font-size: 13px;
-          color: var(--ink-mute);
-          margin-top: 16px;
-          margin-bottom: 0;
-          max-width: 64ch;
-          line-height: 1.6;
+        .t-row:last-child { border-bottom: none; }
+        .t-head {
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+          text-transform: uppercase; color: var(--ink-mute);
         }
-
-        .respond {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          padding: 22px 24px;
+        .t-title a { color: var(--ink); text-decoration: none; }
+        .t-title a:hover { color: var(--accent); text-decoration: underline; }
+        .t-title .src {
+          font-family: var(--mono); font-size: 11px; color: var(--link);
+          margin-left: 8px; white-space: nowrap;
         }
-        .respond p {
-          margin: 0;
-          color: var(--ink-soft);
-          max-width: 64ch;
+        .t-loc { font-size: 13px; color: var(--ink-soft); }
+        .num { font-family: var(--mono); text-align: right; }
+        .t-date { font-size: 12px; color: var(--ink-soft); }
+        .empty, .more { font-size: 14px; color: var(--ink-mute); margin: 12px 0 0 0; }
+        .claim {
+          border: 1px solid var(--rule); padding: 20px 24px; background: var(--bg-card); max-width: 80ch;
         }
-
+        .claim p { margin: 0 0 10px 0; color: var(--ink-soft); }
+        .link-hint { font-size: 13px; }
+        .link-hint code { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+        .prose p { margin: 0; color: var(--ink-soft); max-width: 75ch; font-size: 14px; }
         .footer { margin-top: 80px; }
         .footer-rule { border-top: 1px solid var(--rule); margin-bottom: 20px; }
-        .footer-text {
-          font-family: var(--mono);
-          font-size: 11px;
-          letter-spacing: 0.04em;
-          color: var(--ink-mute);
-          line-height: 1.7;
+        .footer-text { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+        @media (max-width: 900px) {
+          .stats { grid-template-columns: repeat(2, 1fr); }
+          .stat:nth-child(2) { border-right: none; }
+          .stat:nth-child(-n + 2) { border-bottom: 1px solid var(--rule); }
+          .t-head, .t-row { grid-template-columns: 1fr 80px 96px; padding: 10px 14px; }
+          .t-head > :nth-child(2), .t-row > :nth-child(2),
+          .t-head > :nth-child(4), .t-row > :nth-child(4) { display: none; }
         }
-
         @media (max-width: 720px) {
           .headline { font-size: 32px; }
-          .stats { grid-template-columns: 1fr 1fr; }
-          .content { padding: 40px 22px 64px 22px; }
+          .content { padding: 40px 16px 64px 16px; }
+          .masthead-inner { padding: 0 16px 18px 16px; }
         }
       `}</style>
     </>
-  );
-}
-
-// ─── SUB-COMPONENTS ────────────────────────────────────────────────────────
-
-function Stat({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string;
-  sub: string;
-}) {
-  return (
-    <div className="stat">
-      <div className="stat-label">{label}</div>
-      <div className="stat-value">{value}</div>
-      <div className="stat-sub">{sub}</div>
-      <style jsx>{`
-        .stat {
-          padding: 22px 24px 20px 24px;
-          border-right: 1px solid var(--rule);
-        }
-        .stat:last-child { border-right: none; }
-        .stat-label {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--ink-mute);
-          margin-bottom: 8px;
-        }
-        .stat-value {
-          font-family: var(--serif);
-          font-size: 36px;
-          font-weight: 500;
-          line-height: 1;
-          letter-spacing: -0.02em;
-          margin-bottom: 6px;
-        }
-        .stat-sub {
-          font-size: 13px;
-          color: var(--ink-soft);
-        }
-        @media (max-width: 720px) {
-          .stat:nth-child(2) { border-right: none; }
-          .stat:nth-child(1), .stat:nth-child(2) {
-            border-bottom: 1px solid var(--rule);
-          }
-          .stat-value { font-size: 28px; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="section">
-      <div className="section-eyebrow">— {title}</div>
-      {subtitle ? <h2 className="section-title">{subtitle}</h2> : null}
-      <div className="section-body">{children}</div>
-      <style jsx>{`
-        .section { margin-bottom: 56px; }
-        .section-eyebrow {
-          font-family: var(--mono);
-          font-size: 11px;
-          letter-spacing: 0.14em;
-          color: var(--accent);
-          margin-bottom: 8px;
-        }
-        .section-title {
-          font-family: var(--serif);
-          font-weight: 500;
-          font-size: 26px;
-          line-height: 1.2;
-          letter-spacing: -0.01em;
-          margin: 0 0 20px 0;
-        }
-      `}</style>
-    </section>
-  );
-}
-
-function ListingTable({
-  rows,
-  kind,
-}: {
-  rows: ListingRow[];
-  kind: 'active';
-}) {
-  return (
-    <div className="lt-wrap">
-      <div className="lt-head">
-        <div className="lt-cell lt-cell-title">Listing</div>
-        <div className="lt-cell lt-cell-loc">Location</div>
-        <div className="lt-cell lt-cell-price">Price</div>
-        <div className="lt-cell lt-cell-dom">DOM</div>
-      </div>
-      {rows.map((r) => (
-        <a key={r.listing_number} className="lt-row" href={`/listing/${r.listing_number}`}>
-          <div className="lt-cell lt-cell-title">
-            <div className="lt-title">{r.header || padDLId(r.id)}</div>
-            {r.category && <div className="lt-cat">{r.category}</div>}
-          </div>
-          <div className="lt-cell lt-cell-loc">
-            {[r.city, r.state].filter(Boolean).join(', ') || '—'}
-          </div>
-          <div className="lt-cell lt-cell-price">{fmtPrice(r.price)}</div>
-          <div className="lt-cell lt-cell-dom">
-            {r.days_on_market != null ? r.days_on_market : '—'}
-          </div>
-        </a>
-      ))}
-      <style jsx>{`
-        .lt-wrap {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          font-size: 14px;
-        }
-        .lt-head, .lt-row {
-          display: grid;
-          grid-template-columns: 1fr 160px 100px 60px;
-          gap: 16px;
-          padding: 12px 20px;
-          border-bottom: 1px solid var(--rule);
-          align-items: center;
-        }
-        .lt-row:last-child { border-bottom: none; }
-        .lt-row {
-          text-decoration: none;
-          color: var(--ink);
-          transition: background 0.1s;
-        }
-        .lt-row:hover { background: rgba(183, 54, 26, 0.04); }
-        .lt-head {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: var(--ink-mute);
-        }
-        .lt-cell-price, .lt-cell-dom {
-          font-family: var(--mono);
-          text-align: right;
-        }
-        .lt-title { line-height: 1.3; }
-        .lt-cat {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.06em;
-          color: var(--ink-mute);
-          text-transform: uppercase;
-          margin-top: 3px;
-        }
-        @media (max-width: 720px) {
-          .lt-head, .lt-row {
-            grid-template-columns: 1fr 80px;
-            gap: 8px;
-            padding: 10px 14px;
-          }
-          .lt-cell-loc, .lt-cell-dom { display: none; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function SoldTable({ rows }: { rows: SoldRow[] }) {
-  return (
-    <div className="st-wrap">
-      <div className="st-head">
-        <div className="st-cell st-cell-title">Listing</div>
-        <div className="st-cell st-cell-loc">Location</div>
-        <div className="st-cell st-cell-price">Last Asking</div>
-        <div className="st-cell st-cell-date">Last Seen</div>
-      </div>
-      {rows.map((r) => (
-        <a key={r.listing_number} className="st-row" href={`/listing/${r.listing_number}`}>
-          <div className="st-cell st-cell-title">
-            <div className="st-title">{r.header || padDLId(r.id)}</div>
-            {r.category && <div className="st-cat">{r.category}</div>}
-          </div>
-          <div className="st-cell st-cell-loc">
-            {[r.city, r.state].filter(Boolean).join(', ') || '—'}
-          </div>
-          <div className="st-cell st-cell-price">{fmtPrice(r.price)}</div>
-          <div className="st-cell st-cell-date">{fmtDateShort(r.last_seen)}</div>
-        </a>
-      ))}
-      <style jsx>{`
-        .st-wrap {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          font-size: 14px;
-        }
-        .st-head, .st-row {
-          display: grid;
-          grid-template-columns: 1fr 160px 110px 90px;
-          gap: 16px;
-          padding: 12px 20px;
-          border-bottom: 1px solid var(--rule);
-          align-items: center;
-        }
-        .st-row:last-child { border-bottom: none; }
-        .st-row {
-          text-decoration: none;
-          color: var(--ink);
-          transition: background 0.1s;
-        }
-        .st-row:hover { background: rgba(183, 54, 26, 0.04); }
-        .st-head {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: var(--ink-mute);
-        }
-        .st-cell-price, .st-cell-date {
-          font-family: var(--mono);
-          text-align: right;
-        }
-        .st-title { line-height: 1.3; }
-        .st-cat {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.06em;
-          color: var(--ink-mute);
-          text-transform: uppercase;
-          margin-top: 3px;
-        }
-        @media (max-width: 720px) {
-          .st-head, .st-row {
-            grid-template-columns: 1fr 90px;
-            gap: 8px;
-            padding: 10px 14px;
-          }
-          .st-cell-loc, .st-cell-date { display: none; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function RosterTable({ rows }: { rows: Person[] }) {
-  return (
-    <div className="rt-wrap">
-      <div className="rt-head">
-        <div className="rt-cell rt-cell-name">Broker</div>
-        <div className="rt-cell rt-cell-loc">Location</div>
-        <div className="rt-cell rt-cell-active">Active</div>
-        <div className="rt-cell rt-cell-sold">Sold (Lifetime)</div>
-      </div>
-      {rows.map((p) => (
-        <div key={p.account} className="rt-row">
-          <div className="rt-cell rt-cell-name">
-            <div className="rt-name">{personName(p)}</div>
-            {p.parentaccount === 0 && <div className="rt-tag">Principal</div>}
-          </div>
-          <div className="rt-cell rt-cell-loc">
-            {[p.city, p.regionccode].filter(Boolean).join(', ') || '—'}
-          </div>
-          <div className="rt-cell rt-cell-active">{fmtNum(p.activeListingsCount)}</div>
-          <div className="rt-cell rt-cell-sold">{fmtNum(p.soldListingsCount)}</div>
-        </div>
-      ))}
-      <style jsx>{`
-        .rt-wrap {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          font-size: 14px;
-        }
-        .rt-head, .rt-row {
-          display: grid;
-          grid-template-columns: 1fr 180px 80px 110px;
-          gap: 16px;
-          padding: 12px 20px;
-          border-bottom: 1px solid var(--rule);
-          align-items: center;
-        }
-        .rt-row:last-child { border-bottom: none; }
-        .rt-head {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: var(--ink-mute);
-        }
-        .rt-cell-active, .rt-cell-sold {
-          font-family: var(--mono);
-          text-align: right;
-        }
-        .rt-name { line-height: 1.3; }
-        .rt-tag {
-          display: inline-block;
-          font-family: var(--mono);
-          font-size: 9px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: var(--accent);
-          margin-top: 3px;
-        }
-        @media (max-width: 720px) {
-          .rt-head, .rt-row {
-            grid-template-columns: 1fr 70px 90px;
-            gap: 8px;
-            padding: 10px 14px;
-          }
-          .rt-cell-loc { display: none; }
-        }
-      `}</style>
-    </div>
   );
 }
