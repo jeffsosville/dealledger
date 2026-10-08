@@ -174,6 +174,8 @@ input.ctl{width:104px}
 .title a{color:var(--text);text-decoration:none;font-weight:500}
 .title a:hover{text-decoration:underline}
 .src{margin-left:6px;font-size:12px;text-decoration:none;color:var(--link)}
+.title a.brk{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--muted, #6b6b6b);text-decoration:none}
+.title a.brk:hover{text-decoration:underline}
 .days{font-family:var(--mono);font-weight:600}
 .d0{color:#15803d}.d1{color:var(--text)}.d2{color:#b45309}.d3{color:#b91c1c}
 .empty{padding:40px;text-align:center;color:var(--text-muted)}
@@ -241,6 +243,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
       <span class="tagline">Straight from the brokers. Free for everyone.</span>
     </div>
     <nav>
+      <a href="/brokers">Brokers</a>
       <a href="/why">Why</a>
       <a href="/writing">Writing</a>
       <a href="/methodology.html">Methodology</a>
@@ -262,7 +265,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <div class="lk-msg" id="lkMsg"></div>
     <div id="lkOut"></div>
 
-    <p class="proof"><strong id="nHero">—</strong> listings on the record since March 2026. Data is CC0, the code is public.</p>
+    <p class="proof"><strong id="nHero">—</strong> listings on the record since March 2026, from <a href="/brokers">brokers' own websites</a>. Data is CC0, the code is public.</p>
 
     <div class="rule">or browse the ledger</div>
 
@@ -314,15 +317,16 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   <section id="about" class="about">
     <h2>About DealLedger</h2>
     <p><strong>The problem.</strong> There is no public registry of small businesses for sale. Listing dates are hidden, the same business turns up on several sites under different numbers, and stale listings inflate every count.</p>
-    <p><strong>What this is.</strong> An open record of businesses listed for sale by brokers. We read every broker site we can find — 485 and increasing daily — write down what we see, and keep the history: when a listing appeared, what changed, when it came down. The data is CC0 and the code is public.</p>
+    <p><strong>What this is.</strong> An open record of businesses listed for sale by brokers. We read every broker site we can find — <a href="/brokers">see every broker we track</a> — write down what we see, and keep the history: when a listing appeared, what changed, when it came down. The data is CC0 and the code is public.</p>
     <p><strong>What this isn’t.</strong> We don’t rank listings, recommend brokers, capture leads or broker deals. A record, not a marketplace.</p>
-    <p><strong>How the dates work.</strong> Days listed counts from the first time we saw a listing ourselves, starting March 2026. A <strong>+</strong> means it was already up when we first crawled that broker, so it is at least that old. Some marketplace URLs get a rough estimate instead, labelled as an estimate and kept out of the open dataset.</p>
+    <p><strong>How the dates work.</strong> Days listed counts from the first time we saw a listing ourselves, starting March 2026. A <strong>+</strong> means it was already up when we first crawled that broker, so it is at least that old.</p>
   </section>
 </div>
 
 <footer>
   <div class="container foot">
     <div class="foot-links">
+      <a href="/brokers">Brokers</a>
       <a href="/why">Why</a>
       <a href="/writing">Writing</a>
       <a href="/methodology.html">Methodology</a>
@@ -415,6 +419,14 @@ async function load(){
   }
 }
 
+// Each broker website has a page at /broker/<domain-with-hyphens>.
+function brokerLink(url){
+  const m = /^https?:\/\/(?:www\.)?([^\/:?#]+)/i.exec(url || '');
+  if (!m) return '';
+  const host = m[1].toLowerCase();
+  return '<a class="brk" href="/broker/' + host.replace(/[^a-z0-9]+/g, '-') + '">' + esc(host) + '</a>';
+}
+
 function paint(rows){
   const body = $('rows');
   body.classList.remove('is-busy');
@@ -431,6 +443,7 @@ function paint(rows){
         '<td class="seen" data-state="' + (r.state ? ' · ' + esc(r.state) : '') + '">' + seenCell(r) + '</td>' +
         '<td class="title"><a href="/listing/' + encodeURIComponent(r.listing_number) + '">' + esc(cut(r.title, 70)) + '</a>' +
           (r.source_url ? '<a class="src" href="' + esc(r.source_url) + '" target="_blank" rel="noopener" title="Open the broker’s listing" aria-label="Open the broker’s listing">↗&#xFE0E;</a>' : '') +
+          brokerLink(r.source_url) +
         '</td>' +
         '<td class="state">' + esc(r.state || '—') + '</td>' +
         '<td class="num price">' + price(r.price) + '</td>' +

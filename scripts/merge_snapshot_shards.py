@@ -12,6 +12,7 @@ A shard that died before _save_results() simply contributes nothing; the
 merged summary records how many shards were present.
 """
 import json
+import re
 import os
 import sys
 from collections import Counter, defaultdict
@@ -31,6 +32,18 @@ def _load(path, default):
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return default
+
+
+# Snapshots are committed to the public repo, so nothing that points at a
+# listing marketplace may reach them (2026-10-08: daily snapshots were found
+# carrying bizbuysell.com links that brokers use on their own listing cards).
+MARKETPLACE_RE = re.compile(
+    r"https?://([a-z0-9-]+\.)*(bizbuysell|bizquest|loopnet|businessesforsale|"
+    r"businessbroker|bizben|dealstream|flippa)\.(com|net)", re.I)
+
+
+def _mentions_marketplace(record) -> bool:
+    return bool(MARKETPLACE_RE.search(json.dumps(record, default=str)))
 
 
 def main(shards_root: str, out_root: str) -> int:
@@ -57,6 +70,13 @@ def main(shards_root: str, out_root: str) -> int:
             if s:
                 s["_shard"] = shard
                 summaries.append(s)
+
+        before = len(listings)
+        listings = [r for r in listings if not _mentions_marketplace(r)]
+        failures = [r for r in failures if not _mentions_marketplace(r)]
+        embeds = [r for r in embeds if not _mentions_marketplace(r)]
+        if before != len(listings):
+            print(f"🚫 {date}: dropped {before - len(listings)} listings that point at a marketplace")
 
         merged = {}
         for s in summaries:
