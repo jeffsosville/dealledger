@@ -934,7 +934,18 @@ MARKETPLACE_DOMAINS = {
     "bizquest.com",
     "loopnet.com",
     "businessesforsale.com",
+    "businessbroker.net",
+    "bizben.com",
+    "dealstream.com",
+    "flippa.com",
 }
+
+
+def is_marketplace_url(url: str) -> bool:
+    """True if url is on a marketplace domain or any of its subdomains."""
+    host = (urlparse(url or "").netloc or "").lower().split(":")[0]
+    host = host[4:] if host.startswith("www.") else host
+    return any(host == d or host.endswith("." + d) for d in MARKETPLACE_DOMAINS)
 
 
 # Owned by the specialized pipeline (scrapers/specialized_scrapers.py).
@@ -1544,6 +1555,15 @@ class ListingExtractor:
             b = base_url.rstrip("/")
             if d == b or "#" in d.split("?")[0][-5:]:
                 detail_url = None
+
+        # Marketplace gate (2026-10-08): some brokers list a deal on their own
+        # page but link the card out to its marketplace copy (bizbuysell.com,
+        # loopnet.com, ...). That card is the marketplace's page, not the
+        # broker's: never record it, and never fetch it as a detail page.
+        # Found as 76 active public rows with bizbuysell.com URLs from
+        # springfieldstrategies.com, papadop.com, lonestarba.com and others.
+        if detail_url and is_marketplace_url(detail_url):
+            return None
 
         title = best_card_title(element, base_url, firm_name=broker_name) or text[:100]
         # ONE RULE: a junk/blank title falls back to the listing URL slug, which

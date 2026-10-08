@@ -23,3 +23,5 @@ jobs:
         run: python scrapers/test_yield_gate.py
       - name: Discovery-gate test
         run: python tests/test_discovery_gate.py
+      - name: Marketplace-gate test
+        run: python tests/test_marketplace_gate.py
