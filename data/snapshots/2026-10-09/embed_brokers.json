@@ -1,0 +1,86 @@
+[
+  {
+    "broker": "joshua powers",
+    "url": "https://loyaltybusinessbrokers.com/all-listings",
+    "iframe": "https://theloyaltybusinessbrokers.dealrelations.com/listing_feeds/3039",
+    "provider": "feed"
+  },
+  {
+    "broker": "jr kern",
+    "url": "https://capitolequities.com/properties-2/property-search",
+    "iframe": "https://buildout.com/plugins/348fbe4502b58cd8cbff933cdee863c6e5e3364d/capitolequities.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "shaawn cannon",
+    "url": "https://dicksoncg.com/property-search",
+    "iframe": "https://looplink.dicksoncg.com/SearchResults",
+    "provider": "feed"
+  },
+  {
+    "broker": "steven rafailovitc",
+    "url": "https://currentcapitalgroup.com/commercial-space-lease",
+    "iframe": "https://buildout.com/plugins/618bae04b711e505b911f1b76b90aa5ced80a87d/currentcapitalgroup.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "sam griffin, cbi",
+    "url": "https://gilezanglobal.com/listings",
+    "iframe": "https://stephaniegilezan.exprealty.com/wide.php",
+    "provider": "feed"
+  },
+  {
+    "broker": "margot murphy",
+    "url": "https://sageadvisors.biz/businesses-for-sale",
+    "iframe": "https://businessowneradvisory.dealrelations.com/listing_feeds/251",
+    "provider": "feed"
+  },
+  {
+    "broker": "bob winegar",
+    "url": "https://coberealestate.com/property-search",
+    "iframe": "https://buildout.com/plugins/edd9c526681e505a8d9d162c32ea0ae474fffe6c/www.coberealestate.com/inventory/?pluginId=0&iframe=true&embedded=true&cacheSearch=true&=undefined",
+    "provider": "feed"
+  },
+  {
+    "broker": "mani jacob",
+    "url": "https://beamrealestate.com/pages/listings",
+    "iframe": "https://matrix.ntreis.net/Matrix/public/IDX.aspx?idx=812f1ff",
+    "provider": "feed"
+  },
+  {
+    "broker": "penny papaioannou",
+    "url": "https://atlanticbusinessbroker.com/our-business-for-sale-listings",
+    "iframe": "https://atlanticbizbrokers.dealrelations.com/listing_feeds/4631",
+    "provider": "feed"
+  },
+  {
+    "broker": "ROI Advisors, Inc.",
+    "url": "https://roibusinessbrokers.com/featured-listings",
+    "iframe": "https://roibusinessbrokers.dealrelations.com/listing_feeds/2479",
+    "provider": "feed"
+  },
+  {
+    "broker": "steve barnett",
+    "url": "https://thevalleybusinessbroker.com/businesses-for-sale",
+    "iframe": "https://thevalleybusinessbroker.dealrelations.com/listing_feeds/2855",
+    "provider": "feed"
+  },
+  {
+    "broker": "jeannie randolph",
+    "url": "https://briobrokers.com/listings",
+    "iframe": "https://briobrokers.dealrelations.com/listing_feeds/5092",
+    "provider": "feed"
+  },
+  {
+    "broker": "sunny gandhi",
+    "url": "https://kwcommercial.com/properties",
+    "iframe": "https://mpdirect.realnex.com/?site=kwcommercial&sp=simple&visibleTabs=listing",
+    "provider": "feed"
+  },
+  {
+    "broker": "denis mezheritskiy",
+    "url": "https://list.roibusinessbrokers.com/featured-listings",
+    "iframe": "https://roibusinessbrokers.dealrelations.com/listing_feeds/2479",
+    "provider": "feed"
+  }
+]

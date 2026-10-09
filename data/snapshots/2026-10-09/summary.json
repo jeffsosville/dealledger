@@ -1,0 +1,123 @@
+{
+  "started": "2026-10-09T10:24:52.762965+00:00",
+  "brokers_attempted": 599,
+  "brokers_success": 352,
+  "brokers_failed": 213,
+  "total_listings": 7208,
+  "listings_with_price": 6323,
+  "listings_with_cashflow": 3167,
+  "listings_with_state": 5616,
+  "detail_pages_fetched": 181,
+  "patterns_cached": 523,
+  "patterns_learned": 334,
+  "verticals": {
+    "automotive": 380,
+    "technology": 1296,
+    "healthcare": 304,
+    "other": 1854,
+    "restaurant": 1677,
+    "cleaning": 104,
+    "retail": 743,
+    "manufacturing": 133,
+    "construction": 329,
+    "hvac": 137,
+    "landscaping": 66,
+    "plumbing": 65,
+    "electrical": 55,
+    "vending": 42,
+    "roofing": 21,
+    "pest_control": 2
+  },
+  "failure_types": {
+    "NO_PATTERN": 113,
+    "EMBED_BBS": 34,
+    "FETCH_ERROR": 11,
+    "HTTP_403": 29
+  },
+  "site_pages_dropped": 75,
+  "slowest_brokers": [
+    [
+      1247,
+      "abalventures.com",
+      1
+    ],
+    [
+      718,
+      "suncoastbiz.net",
+      0
+    ],
+    [
+      577,
+      "contangoinvestments.com",
+      0
+    ],
+    [
+      463,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      412,
+      "buybizusa.com",
+      0
+    ],
+    [
+      406,
+      "businessteamusa.com",
+      0
+    ],
+    [
+      402,
+      "flbusinesses.com",
+      0
+    ],
+    [
+      400,
+      "lvcbs.com",
+      0
+    ],
+    [
+      363,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      362,
+      "bizbrokerguru.com",
+      0
+    ],
+    [
+      335,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      334,
+      "jpar.com",
+      4
+    ],
+    [
+      270,
+      "empiregbb.com",
+      3
+    ],
+    [
+      261,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      256,
+      "vrnutmeg.com",
+      0
+    ]
+  ],
+  "seconds_total": 26803,
+  "completed": "2026-10-09T13:12:48.532505+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2"
+  ]
+}
