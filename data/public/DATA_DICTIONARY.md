@@ -1,6 +1,6 @@
 # DealLedger public listings: data dictionary
 
-**What this is:** every active, published US business-for-sale listing DealLedger has collected from business brokers' own websites. One row per listing. Rebuilt daily.
+**What this is:** every active, published US business-for-sale listing DealLedger has collected from business brokers' own websites. One row per listing (copies of the same listing on a broker's site are merged). Rebuilt daily.
 
 **License:** CC0 1.0. No rights reserved, no attribution required (a citation is appreciated: see `CITATION.cff`).
 
@@ -29,8 +29,10 @@ Earlier days are in this file's git history.
 | `broker_name` | text | Brokerage name |
 | `broker_domain` | text | The brokerage website the listing came from |
 | `url` | text | The listing's page on the broker's site. Always the original source |
-| `first_seen` | timestamp, UTC | When DealLedger first saw the listing. **Not the date it was listed.** Listings already up when we first crawled a broker get that crawl date |
-| `last_seen` | timestamp, UTC | When DealLedger last saw the listing live |
+| `first_seen` | date | First day a DealLedger crawl saw the listing. **Not necessarily the date it was listed:** read it with `listed_on_basis` |
+| `last_seen` | date | Latest day a crawl saw the listing live |
+| `listed_on_basis` | text | `observed`: a complete crawl of the broker shortly before `first_seen` did not see it, so it was listed between `listed_after` and `first_seen`. `floor`: it was listed on or before `first_seen` (for example, it was already up when we first crawled the broker). Counts are in `meta.json` |
+| `listed_after` | date | For `observed` rows, the last complete crawl that did not see the listing. Empty for `floor` rows |
 | `description` | text | Start of the broker's description, whitespace collapsed, up to 1,000 characters |
 
 ## What's included and excluded

@@ -43,10 +43,22 @@ date and label which is which.
 
 ### Observed dates
 
-For a listing on a broker's own site, the date is the first day we saw it.
-That is an observation. Where a listing was already up the first time we
-crawled that broker, we can only say it is **at least** that old, and we show
-it as a floor (`176+ days`) rather than a bare number.
+Every day a crawl sees a listing is recorded as a sighting, and the record is
+never edited. All dates are derived from those sightings:
+
+- **first_seen / last_seen** — the first and latest day a crawl saw the
+  listing. Copies of the same listing (same broker page, or the same title and
+  price on a shared directory page) share one history.
+- **observed** — a complete crawl of the broker in the 14 days before
+  first_seen did not see the listing, and it did not appear in a catch-up
+  crawl. It was listed between that crawl (`listed_after`) and first_seen.
+  A crawl counts as complete when it saw at least 80% of the most the broker
+  has shown within 30 days either side.
+- **floor** — anything else, such as a listing that was already up the first
+  time we crawled its broker. It was listed on or before first_seen, and we
+  show it as **at least** that old (`176+ days`) rather than a bare number.
+- **ended** — only on positive evidence: the page is gone (404), redirects
+  away, or says sold. A listing we stop seeing is not treated as ended.
 
 ### What the dataset does not contain
 

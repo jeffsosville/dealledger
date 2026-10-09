@@ -12,7 +12,17 @@ Rows: listings_direct where status='active', published=true,
 source='broker_direct', and the listing URL is not on a marketplace domain.
 No days-on-market field is exported until the DOM definition is settled.
 
-Env: SUPABASE_URL, and SUPABASE_SERVICE_KEY or SUPABASE_ANON_KEY.
+Dates come from listing_dates (one row per listing, derived from every day a
+crawl saw it; see docs/METHODOLOGY.md). Rows that are the same listing on the
+broker's site are exported once. Each row carries:
+  first_seen / last_seen   first and latest day a crawl saw the listing
+  listed_on_basis          observed: a complete crawl of the broker shortly
+                           before first_seen didn't see it, so it was listed
+                           between listed_after and first_seen
+                           floor: listed on or before first_seen
+  listed_after             the last complete crawl without it (observed only)
+
+Env: SUPABASE_URL, SUPABASE_SERVICE_KEY (listing_dates is not readable with the anon key).
 
 Usage:
     python3 scripts/export_public_listings.py
@@ -33,42 +43,85 @@ import requests
 FIELDS = [
     "id", "title", "asking_price", "cash_flow", "revenue",
     "city", "state", "vertical", "broker_name", "broker_domain",
-    "url", "first_seen", "last_seen", "description",
+    "url", "first_seen", "last_seen", "listed_on_basis", "listed_after", "description",
 ]
+SOURCE_FIELDS = [f for f in FIELDS if f not in ("listed_on_basis", "listed_after")]
 MARKETPLACE_RE = re.compile(r"(bizbuysell|bizquest|businessesforsale|loopnet)\.com", re.I)
 PAGE = 1000
 DESC_MAX = 1000
 
 
-def fetch_all(base, key):
+def _paged(base, key, table, params, order_col):
     headers = {"apikey": key, "Authorization": f"Bearer {key}"}
-    params = {
-        "select": ",".join(FIELDS),
-        "status": "eq.active",
-        "published": "is.true",
-        "source": "eq.broker_direct",
-        "order": "id.asc",
-        "limit": str(PAGE),
-    }
+    params = dict(params, order=f"{order_col}.asc", limit=str(PAGE))
     rows, last_id = [], None
     while True:
         p = dict(params)
         if last_id is not None:
-            p["id"] = f"gt.{last_id}"
-        r = requests.get(f"{base}/rest/v1/listings_direct", headers=headers, params=p, timeout=60)
+            quoted = str(last_id).replace("\\", "\\\\").replace('"', '\\"')
+            p[order_col] = f'gt."{quoted}"'  # keys contain | : / and can't go unquoted
+        r = requests.get(f"{base}/rest/v1/{table}", headers=headers, params=p, timeout=60)
         r.raise_for_status()
         batch = r.json()
         if not batch:
             break
         rows.extend(batch)
-        last_id = batch[-1]["id"]
+        last_id = batch[-1][order_col]
         if len(batch) < PAGE:
             break
     return rows
 
 
+def fetch_all(base, key):
+    return _paged(base, key, "listings_direct", {
+        "select": ",".join(SOURCE_FIELDS),
+        "status": "eq.active",
+        "published": "is.true",
+        "source": "eq.broker_direct",
+    }, "id")
+
+
+def fetch_dates(base, key):
+    """{row_id: dates} from listing_dates. Needs the service key (table is private)."""
+    recs = _paged(base, key, "listing_dates", {
+        "select": "listing_key,row_ids,first_seen,last_seen,listed_on_basis,listed_after",
+        "published": "is.true",
+    }, "listing_key")
+    by_row = {}
+    for rec in recs:
+        for rid in rec.get("row_ids") or []:
+            by_row[rid] = rec
+    return by_row
+
+
+def apply_dates(rows, by_row):
+    """One output row per listing, with dates from listing_dates.
+
+    Rows without a listing_dates record (new since the nightly 14:50 UTC
+    rebuild) keep their own first/last seen and are marked floor.
+    """
+    out, seen_keys = [], set()
+    for r in rows:
+        rec = by_row.get(r["id"])
+        if rec:
+            if rec["listing_key"] in seen_keys:
+                continue
+            seen_keys.add(rec["listing_key"])
+            r["first_seen"] = rec["first_seen"]
+            r["last_seen"] = rec["last_seen"]
+            r["listed_on_basis"] = rec["listed_on_basis"]
+            r["listed_after"] = rec.get("listed_after")
+        else:
+            r["first_seen"] = (r.get("first_seen") or "")[:10] or None
+            r["last_seen"] = (r.get("last_seen") or "")[:10] or None
+            r["listed_on_basis"] = "floor"
+            r["listed_after"] = None
+        out.append(r)
+    return out
+
+
 def clean(row):
-    out = {k: row.get(k) for k in FIELDS}
+    out = {k: row.get(k) for k in SOURCE_FIELDS}
     d = out.get("description")
     if d:
         d = re.sub(r"\s+", " ", d).strip()
@@ -82,12 +135,17 @@ def main():
     args = ap.parse_args()
 
     base = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    key = os.environ.get("SUPABASE_SERVICE_KEY") or os.environ.get("SUPABASE_ANON_KEY")
+    key = os.environ.get("SUPABASE_SERVICE_KEY")
     if not base or not key:
-        sys.exit("Set SUPABASE_URL and SUPABASE_SERVICE_KEY (or SUPABASE_ANON_KEY).")
+        sys.exit("Set SUPABASE_URL and SUPABASE_SERVICE_KEY.")
 
     raw = fetch_all(base, key)
+    by_row = fetch_dates(base, key)
+    if len(by_row) < 5000:
+        sys.exit(f"listing_dates returned {len(by_row)} rows; refusing to export without dates.")
     rows = [clean(r) for r in raw if r.get("url") and not MARKETPLACE_RE.search(r["url"])]
+    rows.sort(key=lambda r: r["id"])
+    rows = apply_dates(rows, by_row)
     rows.sort(key=lambda r: (r.get("state") or "~", r.get("broker_domain") or "", r["id"]))
 
     if len(rows) < 5000:
@@ -113,6 +171,8 @@ def main():
         "broker_domains": len({r.get("broker_domain") for r in rows if r.get("broker_domain")}),
         "coverage_pct": {f: pct(f) for f in
                          ["asking_price", "cash_flow", "revenue", "city", "state", "vertical"]},
+        "listed_on_basis": {b: sum(1 for r in rows if r.get("listed_on_basis") == b)
+                            for b in ("observed", "floor")},
         "license": "CC0-1.0",
         "dictionary": "DATA_DICTIONARY.md",
     }
