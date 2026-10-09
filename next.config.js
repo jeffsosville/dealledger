@@ -10,7 +10,9 @@ const nextConfig = {
       beforeFiles: [
         { source: '/', destination: '/index.html' },
       ],
-      afterFiles: [],
+      afterFiles: [
+        { source: '/sitemap-browse.xml', destination: '/api/sitemap-browse' },
+      ],
       fallback: [],
     };
   },

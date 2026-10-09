@@ -232,7 +232,9 @@ def main():
             os.remove(stale)
             print(f"[-] removed orphaned {os.path.basename(stale)}")
 
-    write_index(os.path.join(OUT_DIR, "sitemap.xml"), written, today)
+    # sitemap-browse.xml is served live by pages/api/sitemap-browse.ts (the
+    # /businesses-for-sale pages); it is not a file here, but the index lists it.
+    write_index(os.path.join(OUT_DIR, "sitemap.xml"), written + ["sitemap-browse.xml"], today)
 
     print(f"\n[+] Done — {total:,} URLs.")
     print(f"[i] Canonical host: {BASE}")
