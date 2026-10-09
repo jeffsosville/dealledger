@@ -442,7 +442,7 @@ function paint(rows){
       '<tr>' +
         '<td class="seen" data-state="' + (r.state ? ' · ' + esc(r.state) : '') + '">' + seenCell(r) + '</td>' +
         '<td class="title"><a href="/listing/' + encodeURIComponent(r.listing_number) + '">' + esc(cut(r.title, 70)) + '</a>' +
-          (r.source_url ? '<a class="src" href="' + esc(r.source_url) + '" target="_blank" rel="noopener" title="Open the broker’s listing" aria-label="Open the broker’s listing">↗&#xFE0E;</a>' : '') +
+          (r.source_url ? '<a class="src" href="/go/' + encodeURIComponent(r.listing_number) + '?s=home" target="_blank" rel="nofollow noopener" title="Open the broker’s listing" aria-label="Open the broker’s listing">↗&#xFE0E;</a>' : '') +
           brokerLink(r.source_url) +
         '</td>' +
         '<td class="state">' + esc(r.state || '—') + '</td>' +

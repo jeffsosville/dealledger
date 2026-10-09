@@ -5,6 +5,7 @@
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
+import { goListing } from '../../lib/clickout';
 import { displayName, isMarketplaceDomain } from '../../lib/brokerRegistry';
 
 const INDUSTRY_MEDIAN_DOM = 180;
@@ -651,7 +652,7 @@ export default function ListingPage({
                 </p>
               )}
               <p>
-                <a href={listing.url || '#'} target="_blank" rel="noopener noreferrer">
+                <a href={listing.url ? goListing(listing.listing_number, 'listing') : '#'} target="_blank" rel="nofollow noopener">
                   See listing →
                 </a>
               </p>

@@ -13,6 +13,7 @@
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
+import { goBroker, goListing } from '../../lib/clickout';
 import {
   REGISTRY_COLUMNS,
   REGISTRY_VIEW,
@@ -245,11 +246,11 @@ export default function BrokerPage({ firm, active, removed, removedShown }: Infe
               .join(' · ')}
           </p>
           <p className="firm-url">
-            <a href={site} target="_blank" rel="noopener">{firm.domain} →</a>
+            <a href={goBroker(firm.slug, 'home', 'broker')} target="_blank" rel="nofollow noopener">{firm.domain} →</a>
             {firm.listings_page_url && firm.listings_page_url !== site && (
               <>
                 {' '}·{' '}
-                <a href={firm.listings_page_url} target="_blank" rel="noopener">their listings page →</a>
+                <a href={goBroker(firm.slug, 'listings', 'broker')} target="_blank" rel="nofollow noopener">their listings page →</a>
               </>
             )}
           </p>
@@ -318,7 +319,7 @@ export default function BrokerPage({ firm, active, removed, removedShown }: Infe
                     <div className="t-title">
                       <a href={`/listing/${l.listing_number}`}>{l.header || 'Untitled listing'}</a>
                       {l.url && (
-                        <a className="src" href={l.url} target="_blank" rel="noopener">source ↗</a>
+                        <a className="src" href={goListing(l.listing_number, 'broker')} target="_blank" rel="nofollow noopener">source ↗</a>
                       )}
                     </div>
                     <div className="t-loc">{place(l)}</div>
@@ -334,7 +335,7 @@ export default function BrokerPage({ firm, active, removed, removedShown }: Infe
             {activeHidden > 0 && (
               <p className="more">
                 Showing the {fmtNum(active.length)} most recently listed. See all {fmtNum(firm.active_count)} on{' '}
-                <a href={firm.listings_page_url || site} target="_blank" rel="noopener">{firm.domain}</a>.
+                <a href={goBroker(firm.slug, firm.listings_page_url ? 'listings' : 'home', 'broker')} target="_blank" rel="nofollow noopener">{firm.domain}</a>.
               </p>
             )}
           </section>

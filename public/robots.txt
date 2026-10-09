@@ -4,5 +4,6 @@
 
 User-agent: *
 Allow: /
+Disallow: /go/
 
 Sitemap: https://dealledger.org/sitemap.xml
