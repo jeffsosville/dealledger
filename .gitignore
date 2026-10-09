@@ -52,3 +52,4 @@ nohup.out
 private/
 data/detail_maps/samples/
 *.tsbuildinfo
+*.log

@@ -426,7 +426,15 @@ export default function ListingPage({
         creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
         isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
         ...(listing.first_seen ? { temporalCoverage: `${listing.first_seen.slice(0, 10)}/..` } : {}),
-        ...(listing.last_seen ? { dateModified: listing.last_seen.slice(0, 10) } : {}),
+        // dateModified is when the LISTING changed, not when we crawled it.
+        // last_seen bumps on every crawl, so using it would make every record
+        // claim a change every night — the same false signal the sitemap's
+        // lastmod was fixed for on 2026-10-08.
+        ...(listing.estimated_listed_date
+          ? { dateModified: listing.estimated_listed_date.slice(0, 10) }
+          : listing.first_seen
+            ? { dateModified: listing.first_seen.slice(0, 10) }
+            : {}),
         ...(listing.state ? { spatialCoverage: { '@type': 'Place', name: listing.state } } : {}),
         variableMeasured: [
           'asking price', 'cash flow', 'days on market', 'first seen date', 'price changes',
