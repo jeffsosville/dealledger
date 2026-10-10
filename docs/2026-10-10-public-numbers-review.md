@@ -1,8 +1,8 @@
 # Public numbers review — 2026-10-10
 
-Session handoff, not a state table. **CLAUDE.md is the source of truth**
-for mission, state and pipeline; read it first. This file records what an
-outside review found, what was changed on 2026-10-10, and what is still open.
+A record of what an outside review found about DealLedger's public coverage
+numbers, what was changed on 2026-10-10, and what is still open. It is not a
+state table: current figures are in the `public_stats` view.
 
 ## The finding
 
@@ -23,8 +23,8 @@ with the same words, and most were typed by hand.
 | /brokers, /broker/[slug] | `broker_directory` (built on `listings`) | 476 sites, 21,318 listings |
 | CSV/JSON download | `scripts/export_public_listings.py` → `listings_direct` active + published | written daily |
 
-`listings` is the serving layer, not legacy: per CLAUDE.md the site shows only
-rows that pass `bridge_direct_to_listings()`.
+`listings` is the serving layer, not legacy: the site shows only rows that
+pass `bridge_direct_to_listings()`.
 
 ## Changed on 2026-10-10
 
@@ -40,7 +40,8 @@ rows that pass `bridge_direct_to_listings()`.
   from 7 `broker_block` domains were still `published`; set
   `status='quarantined_blocked'`. Nothing deleted. `published` is recomputed by
   `trg_listings_direct_set_published`, and V6 skips blocked domains, so they
-  should stay out. **Verify after the 2026-10-11 scrape** (principle 14).
+  should stay out. **Verify after the 2026-10-11 scrape** that no scrape
+flipped them back.
 - **RLS enabled** on `wayback_anchors`, `listings_active_backup_2026_10_03`,
   `_fs_backfill_20261008` (were anon-writable). The two workflows that read
   `wayback_anchors` use the service key; `dl_lookup` is SECURITY DEFINER.
@@ -54,7 +55,7 @@ rows that pass `bridge_direct_to_listings()`.
 2. **Fix the hand-typed numbers.** `public/methodology.html`, `docs/METHODOLOGY.md`,
    `public/why.html`. The 1,700 figure is the broker-coverage *goal*; label it as
    a goal, not coverage. The essay's marketplace-data description is out of date
-   with broker-direct-only (CLAUDE.md, 24 Sep).
+   with broker-direct-only sourcing (marketplace ingestion retired 2026-09-24).
 3. **Record start date.** Site code says March 24, 2026
    (`lib/brokerRegistry.ts` `OBSERVATION_START_LABEL`); `listing_sighting` and
    2,512 published listings start 2026-02-18. Decide which is true and why.
