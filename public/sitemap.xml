@@ -2,18 +2,18 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://dealledger.org/sitemap-static.xml</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-10</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://dealledger.org/sitemap-brokers.xml</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-10</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://dealledger.org/sitemap-listings-1.xml</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-10</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://dealledger.org/sitemap-browse.xml</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-10</lastmod>
   </sitemap>
 </sitemapindex>
