@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-10T10:24:50.348268+00:00",
+  "brokers_attempted": 790,
+  "brokers_success": 464,
+  "brokers_failed": 280,
+  "total_listings": 8884,
+  "listings_with_price": 7900,
+  "listings_with_cashflow": 3932,
+  "listings_with_state": 7021,
+  "detail_pages_fetched": 276,
+  "patterns_cached": 528,
+  "patterns_learned": 438,
+  "verticals": {
+    "restaurant": 2144,
+    "automotive": 519,
+    "technology": 1485,
+    "other": 2116,
+    "manufacturing": 191,
+    "landscaping": 74,
+    "healthcare": 460,
+    "construction": 382,
+    "retail": 995,
+    "vending": 45,
+    "plumbing": 88,
+    "cleaning": 126,
+    "hvac": 165,
+    "electrical": 57,
+    "pest_control": 7,
+    "roofing": 30
+  },
+  "failure_types": {
+    "HTTP_403": 36,
+    "EMBED_BBS": 46,
+    "NO_PATTERN": 157,
+    "FETCH_ERROR": 18
+  },
+  "site_pages_dropped": 48,
+  "slowest_brokers": [
+    [
+      2095,
+      "winbusinessadvisors.com",
+      2
+    ],
+    [
+      2019,
+      "bbcpnw.com",
+      1
+    ],
+    [
+      1040,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      1015,
+      "abalventures.com",
+      1
+    ],
+    [
+      698,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      547,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      459,
+      "listyourhomesocal.com",
+      14
+    ],
+    [
+      435,
+      "americanbizbrokers.com",
+      3
+    ],
+    [
+      392,
+      "lvcbs.com",
+      0
+    ],
+    [
+      353,
+      "jpar.com",
+      1
+    ],
+    [
+      340,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      337,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      292,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      291,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      240,
+      "murraybizbuy.com",
+      43
+    ]
+  ],
+  "seconds_total": 37169,
+  "completed": "2026-10-10T13:22:07.186188+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
