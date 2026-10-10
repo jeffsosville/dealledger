@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DealLedger — Every small business for sale in America, in one open list</title>
-<meta name="description" content="Every small business for sale in America, in one open list. Straight from the brokers. Free for everyone, updated daily.">
+<title>DealLedger — The public record of businesses for sale</title>
+<meta name="description" content="The market has no memory. We give it one. An open, daily record of US businesses listed for sale on brokers' own websites: when each listing appeared, what changed, when it came down. Free, CC0.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dealledger.org/">
+<meta property="og:title" content="DealLedger — The market has no memory. We give it one.">
+<meta property="og:description" content="<!--DL:OGDESC-->">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DealLedger — The market has no memory. We give it one.">
+<meta name="twitter:description" content="<!--DL:OGDESC-->">
 <link rel="canonical" href="https://dealledger.org/">
 <link rel="preconnect" href="https://kqckuedsyyosmccushyd.supabase.co" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -120,10 +127,16 @@ nav a:hover{color:var(--text)}
 /* hero */
 .hero{padding:44px 0 26px}
 .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:14px}
-h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spacing:-.6px;max-width:17ch;text-wrap:balance}
+h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spacing:-.6px;max-width:24ch;text-wrap:balance}
 .lede{font-size:16px;color:var(--text-muted);margin-top:10px;max-width:56ch}
-.proof{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:16px}
-.proof strong{color:var(--text)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:26px}
+.stat{background:#fff;padding:14px 16px}
+.stat-n{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.1;letter-spacing:-.5px}
+.stat-l{font-size:13px;color:var(--text-muted);margin-top:4px}
+.proof{font-size:13px;color:var(--text-muted);margin-top:10px}
+.qnote{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:8px}
+.qnote button{font:inherit;color:var(--link);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0}
+.ctl-check{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap}
 
 /* lookup */
 .lookup{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap}
@@ -204,6 +217,10 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   .tagline{flex-basis:100%}
   .lookup input,.search-bar,.ctl{font-size:16px} /* stops iOS zoom-on-focus */
   .lookup button{flex:1 1 100%}
+  .stats{grid-template-columns:1fr}
+  .stat{display:flex;align-items:baseline;gap:10px}
+  .stat-l{margin-top:0}
+  .ctl-check{grid-column:1/-1}
 
   .controls{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
   .controls .ctl{width:100%;font-size:14px;padding:9px 8px}
@@ -255,23 +272,27 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 
 <div class="container">
   <section class="hero">
-    <div class="eyebrow">Open data · Updated daily · No logins, no lead forms</div>
-    <h1>Every small business for sale in America, in one open list.</h1>
-    <p class="lede">Straight from the brokers. Free for everyone. We read every broker site we can find and write down what we see: when a listing appeared, what changed, when it came down.</p>
-    <form class="lookup" id="lkForm">
-      <input id="lkInput" type="text" inputmode="url" autocomplete="off"
-             placeholder="How long has it been for sale? Paste a listing URL">
-      <button id="lkGo" type="submit">Check</button>
+    <div class="eyebrow">The public record · Open data · Updated daily · No logins, no lead forms</div>
+    <h1>The market has no memory.<br> We give it one.</h1>
+    <p class="lede">Business listings appear, change, disappear and come back, and nobody keeps the record. We read every broker website we can find, every day, and write down what we see: when a listing appeared, what changed, when it came down.</p>
+    <form class="lookup" id="lkForm" role="search">
+      <input id="lkInput" type="search" autocomplete="off" aria-label="Paste a listing link or search listings"
+             placeholder="Paste a listing link or search: HVAC, Texas…">
+      <button id="lkGo" type="submit">Search</button>
     </form>
     <div class="lk-msg" id="lkMsg"></div>
     <div id="lkOut"></div>
 
-    <p class="proof"><strong id="nHero">—</strong> listings on the record since March 2026, from <a href="/brokers">brokers' own websites</a>. Data is CC0, the code is public.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="nHero"><!--DL:TOTAL--></div><div class="stat-l">listings on the record</div></div>
+      <div class="stat"><div class="stat-n"><!--DL:BROKERS--></div><div class="stat-l">broker websites on the record</div></div>
+      <div class="stat"><div class="stat-n"><!--DL:STALEPCT--></div><div class="stat-l">up at least 90 days</div></div>
+    </div>
+    <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/why">Why we keep the record →</a></p>
 
     <div class="rule">or browse the ledger</div>
 
     <div class="search-wrap">
-      <input id="q" class="search-bar" type="search" placeholder="Search listings — laundromat, HVAC, Texas, vending route…" autocomplete="off">
       <div class="controls">
         <select id="fState" class="ctl" aria-label="State"><option value="">All states</option></select>
         <input id="fMin" class="ctl" type="text" aria-label="Minimum price" placeholder="Min $" inputmode="numeric">
@@ -288,12 +309,13 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
           <option value="price:-1">Price, high to low</option>
           <option value="price:1">Price, low to high</option>
         </select>
+        <label class="ctl-check"><input id="fPriced" type="checkbox" checked> Only listings with an asking price</label>
         <button id="reset" class="reset" type="button">Reset</button>
       </div>
     </div>
   </section>
 
-  <div class="count"><strong id="n">—</strong> listings</div>
+  <div class="count" id="ledger"><strong id="n"><!--DL:SHOWN--></strong> listings<span id="qShow"></span></div>
 
   <table class="ledger">
     <thead>
@@ -305,13 +327,13 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
         <th class="num sortable" data-sort="days"><abbr title="Days on market">DOM</abbr><span class="sort-arrow" data-for="days"></span><span class="th-sub">days on market</span></th>
       </tr>
     </thead>
-    <tbody id="rows"></tbody>
+    <tbody id="rows"><!--DL:ROWS--></tbody>
   </table>
   <p class="foot-note"><strong>DOM</strong> (days on market) counts from the first time we saw the listing. A <strong>+</strong> means it was already up when we started tracking that broker, so it is at least that old.</p>
 
   <div class="pager">
     <button id="prev">← Prev</button>
-    <span id="pageInfo"></span>
+    <span id="pageInfo"><!--DL:PAGEINFO--></span>
     <button id="next">Next →</button>
   </div>
 
@@ -339,6 +361,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   </div>
 </footer>
 
+<!--DL:INITIAL-->
 <script>
 const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
@@ -389,6 +412,7 @@ function query(){
   if (st) p.append('state','eq.' + st);
   if (lo) p.append('price','gte.' + lo);
   if (hi) p.append('price','lte.' + hi);
+  if ($('fPriced').checked) p.append('price','not.is.null');
   if (q) p.append('title_lc','like.*' + q.toLowerCase().replace(/[*,()]/g,'') + '*');
   if (domFilter === 'fresh')  p.append('dom_days_eff','lte.30');
   if (domFilter === 'recent') p.append('dom_days_eff','lte.90');
@@ -433,10 +457,19 @@ function paint(rows){
   const body = $('rows');
   body.classList.remove('is-busy');
   $('n').textContent = total.toLocaleString();
-  const heroN = $('nHero');
-  if (heroN && !q && domFilter === 'all' && !$('fState').value && !$('fMin').value && !$('fMax').value) {
-    heroN.textContent = total.toLocaleString();
-  }
+  $('qShow').innerHTML = q
+    ? ' matching “' + esc(q) + '” · <button type="button" id="qClear">clear</button>'
+    : '';
+  if (q) $('qClear').addEventListener('click', () => { q = ''; lkInput.value = ''; refresh(); });
+  // The same business is often posted on two sites of one brokerage;
+  // show it once per page.
+  const seen = new Set();
+  rows = rows.filter(r => {
+    const k = (r.title || '').trim().toLowerCase() + '|' + (r.price || '');
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
   if (!rows.length) {
     body.innerHTML = '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
   } else {
@@ -467,11 +500,7 @@ function refresh(){ page = 1; cache.clear(); load(); }
 
 STATES.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; $('fState').appendChild(o); });
 
-$('q').addEventListener('input', e => {
-  clearTimeout(timer);
-  timer = setTimeout(() => { q = e.target.value.trim(); refresh(); }, 250);
-});
-['fState','fMin','fMax'].forEach(id => $(id).addEventListener('change', refresh));
+['fState','fMin','fMax','fPriced'].forEach(id => $(id).addEventListener('change', refresh));
 document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => {
   domFilter = btn.dataset.dom;
   document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
@@ -488,7 +517,7 @@ $('fSort').addEventListener('change', e => {
   refresh();
 });
 $('reset').addEventListener('click', () => {
-  q = ''; $('q').value = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
+  q = ''; lkInput.value = ''; $('fPriced').checked = true; lkOut.innerHTML = ''; lkMsg.textContent = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
   domFilter = 'all';
   document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dom === 'all')));
   sortField = 'days'; sortDir = 1;
@@ -539,7 +568,15 @@ lkForm.addEventListener('submit', async e => {
   const v = lkInput.value.trim();
   lkOut.innerHTML = '';
   lkMsg.className = 'lk-msg';
-  if (!v) { lkMsg.textContent = 'Paste a listing URL first.'; return; }
+  if (!v) { lkMsg.textContent = 'Paste a listing link or type a search.'; return; }
+  const isUrl = /^(https?:\/\/|www\.)/i.test(v) || /^[a-z0-9-]+(\.[a-z0-9-]+)+\/\S/i.test(v);
+  if (!isUrl) {
+    q = v.replace(/\s+/g, ' ').slice(0, 80);
+    if (window.gtag) gtag('event', 'search', { search_term: q });
+    refresh();
+    $('ledger').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
   lkGo.disabled = true;
   lkMsg.textContent = 'Checking…';
   if (window.gtag) gtag('event', 'listing_lookup');
@@ -561,7 +598,23 @@ lkForm.addEventListener('submit', async e => {
   }
 });
 
-load();
+// The server sends page one already rendered (see pages/index.tsx);
+// reuse it instead of fetching it again.
+const INITIAL = window.__DL_INITIAL__;
+if (INITIAL && Array.isArray(INITIAL.rows)) {
+  total = INITIAL.total;
+  cache.set(query() + '|0', { rows: INITIAL.rows, total });
+  paint(INITIAL.rows);
+} else {
+  load();
+  // No server data: at least fill in the headline count.
+  fetch(API + '/mv_listings_page?select=listing_number&source=eq.broker_direct', {
+    headers: Object.assign({}, HEAD, { Range: '0-0', 'Range-Unit': 'items', Prefer: 'count=exact' })
+  }).then(r => {
+    const t = (r.headers.get('content-range') || '').split('/')[1];
+    if (t && t !== '*') $('nHero').textContent = parseInt(t, 10).toLocaleString();
+  }).catch(() => {});
+}
 </script>
 </body>
 </html>

@@ -3,13 +3,21 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
 
-  // Serve public/index.html at the root URL.
-  // Use beforeFiles so the rewrite matches before static file resolution.
+  // The homepage (pages/index.tsx) reads its markup from lib/home.html at
+  // request time; make sure the file ships with the serverless function.
+  experimental: {
+    outputFileTracingIncludes: {
+      '/': ['./lib/home.html'],
+    },
+  },
+
+  async redirects() {
+    return [{ source: '/index.html', destination: '/', permanent: true }];
+  },
+
   async rewrites() {
     return {
-      beforeFiles: [
-        { source: '/', destination: '/index.html' },
-      ],
+      beforeFiles: [],
       afterFiles: [
         { source: '/sitemap-browse.xml', destination: '/api/sitemap-browse' },
       ],
