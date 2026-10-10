@@ -266,7 +266,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <div class="lk-msg" id="lkMsg"></div>
     <div id="lkOut"></div>
 
-    <p class="proof"><strong id="nHero">—</strong> listings on the record since March 2026, from <a href="/brokers">brokers' own websites</a>. Data is CC0, the code is public.</p>
+    <p class="proof"><strong id="nHero"><!--DL:TOTAL--></strong> listings on the record since March 2026, from <a href="/brokers">brokers' own websites</a>. Data is CC0, the code is public.</p>
 
     <div class="rule">or browse the ledger</div>
 
@@ -293,7 +293,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     </div>
   </section>
 
-  <div class="count"><strong id="n">—</strong> listings</div>
+  <div class="count"><strong id="n"><!--DL:TOTAL--></strong> listings</div>
 
   <table class="ledger">
     <thead>
@@ -305,13 +305,13 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
         <th class="num sortable" data-sort="days"><abbr title="Days on market">DOM</abbr><span class="sort-arrow" data-for="days"></span><span class="th-sub">days on market</span></th>
       </tr>
     </thead>
-    <tbody id="rows"></tbody>
+    <tbody id="rows"><!--DL:ROWS--></tbody>
   </table>
   <p class="foot-note"><strong>DOM</strong> (days on market) counts from the first time we saw the listing. A <strong>+</strong> means it was already up when we started tracking that broker, so it is at least that old.</p>
 
   <div class="pager">
     <button id="prev">← Prev</button>
-    <span id="pageInfo"></span>
+    <span id="pageInfo"><!--DL:PAGEINFO--></span>
     <button id="next">Next →</button>
   </div>
 
@@ -339,6 +339,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   </div>
 </footer>
 
+<!--DL:INITIAL-->
 <script>
 const SUPABASE_URL  = 'https://kqckuedsyyosmccushyd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxY2t1ZWRzeXlvc21jY3VzaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NzYwMjAsImV4cCI6MjA4OTI1MjAyMH0.UJA9n-Rc9dMDq6Rv608sSHDKykrIurSrWGiSxCUxCYg';
@@ -561,7 +562,16 @@ lkForm.addEventListener('submit', async e => {
   }
 });
 
-load();
+// The server sends page one already rendered (see pages/index.tsx);
+// reuse it instead of fetching it again.
+const INITIAL = window.__DL_INITIAL__;
+if (INITIAL && Array.isArray(INITIAL.rows)) {
+  total = INITIAL.total;
+  cache.set(query() + '|0', { rows: INITIAL.rows, total });
+  paint(INITIAL.rows);
+} else {
+  load();
+}
 </script>
 </body>
 </html>
