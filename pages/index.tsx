@@ -10,10 +10,10 @@
 // browser loads the data itself, as before.
 
 import type { GetServerSideProps } from 'next';
-import { loadFirstPage, renderHome } from '../lib/homeRender';
+import { loadHome, renderHome } from '../lib/homeRender';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  const data = await loadFirstPage();
+  const data = await loadHome();
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   // Cached at Vercel's edge; listings change daily.
   res.setHeader(

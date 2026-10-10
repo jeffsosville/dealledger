@@ -78,7 +78,20 @@ function brokerLink(url: string | null): string {
   return `<a class="brk" href="/broker/${host.replace(/[^a-z0-9]+/g, '-')}">${esc(host)}</a>`;
 }
 
-function rowsHtml(rows: Row[]): string {
+// Mirrors the de-duplication in paint(): the same business posted on two
+// sites of one brokerage is shown once per page.
+function dedupe(rows: Row[]): Row[] {
+  const seen = new Set<string>();
+  return rows.filter((r) => {
+    const k = (r.title || '').trim().toLowerCase() + '|' + (r.price || '');
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+function rowsHtml(all: Row[]): string {
+  const rows = dedupe(all);
   if (!rows.length) return '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
   return rows
     .map((r) => {
@@ -104,39 +117,87 @@ function rowsHtml(rows: Row[]): string {
 // JSON inside a <script> tag: escape "<" so no value can close the tag.
 const scriptJson = (v: unknown) => JSON.stringify(v).replace(/</g, '\\u003c');
 
-export function renderHome(data: { total: number; rows: Row[] } | null): string {
+export type HomeData = {
+  // The ledger's default view: listings with an asking price, newest first.
+  shown: number;
+  rows: Row[];
+  // Headline figures, over every listing on the site.
+  total: number;
+  brokers: number | null;
+  over90: number;
+};
+
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+function ogDescription(d: HomeData | null): string {
+  const base = "An open, daily record of US businesses listed for sale on brokers' own websites. Free, CC0.";
+  if (!d) return base;
+  const pct = d.total ? Math.round((100 * d.over90) / d.total) : 0;
+  return `${fmt(d.total)} listings on the record; ${pct}% have been up at least 90 days. ` + base;
+}
+
+export function renderHome(d: HomeData | null): string {
   const html = getTemplate();
-  if (!data) {
+  const og = esc(ogDescription(d));
+  if (!d) {
     return html
-      .split('<!--DL:TOTAL-->').join('—')
+      .split('<!--DL:OGDESC-->').join(og)
+      .replace('<!--DL:TOTAL-->', '—')
+      .replace('<!--DL:BROKERS-->', '—')
+      .replace('<!--DL:STALEPCT-->', '—')
+      .replace('<!--DL:SHOWN-->', '—')
       .replace('<!--DL:ROWS-->', '')
       .replace('<!--DL:PAGEINFO-->', '')
       .replace('<!--DL:INITIAL-->', '');
   }
-  const pages = Math.max(1, Math.ceil(data.total / PER_PAGE));
+  const pages = Math.max(1, Math.ceil(d.shown / PER_PAGE));
+  const pct = d.total ? Math.round((100 * d.over90) / d.total) : 0;
   return html
-    .split('<!--DL:TOTAL-->').join(data.total.toLocaleString('en-US'))
-    .replace('<!--DL:ROWS-->', rowsHtml(data.rows))
-    .replace('<!--DL:PAGEINFO-->', `Page 1 of ${pages.toLocaleString('en-US')}`)
-    .replace('<!--DL:INITIAL-->', `<script>window.__DL_INITIAL__=${scriptJson(data)};</script>`);
+    .split('<!--DL:OGDESC-->').join(og)
+    .replace('<!--DL:TOTAL-->', fmt(d.total))
+    .replace('<!--DL:BROKERS-->', d.brokers === null ? '—' : fmt(d.brokers))
+    .replace('<!--DL:STALEPCT-->', `${pct}%`)
+    .replace('<!--DL:SHOWN-->', fmt(d.shown))
+    .replace('<!--DL:ROWS-->', rowsHtml(d.rows))
+    .replace('<!--DL:PAGEINFO-->', `Page 1 of ${fmt(pages)}`)
+    .replace(
+      '<!--DL:INITIAL-->',
+      `<script>window.__DL_INITIAL__=${scriptJson({ total: d.shown, rows: d.rows })};</script>`,
+    );
 }
 
-// --- data: same query the page script runs on first load -------------------
+// --- data -------------------------------------------------------------------
 
-export async function loadFirstPage(): Promise<{ total: number; rows: Row[] } | null> {
+export async function loadHome(): Promise<HomeData | null> {
   try {
     const sb = getSupabase();
-    const { data, count, error } = await sb
-      .from('mv_listings_page')
-      .select(COLUMNS, { count: 'exact' })
-      .eq('source', 'broker_direct')
-      .order('dom_days_eff', { ascending: true, nullsFirst: false })
-      .range(0, PER_PAGE - 1);
-    if (error || !data) return null;
-    const rows = data as unknown as Row[];
-    return { total: count ?? rows.length, rows };
+    const listings = () => sb.from('mv_listings_page').select('listing_number', { count: 'exact', head: true }).eq('source', 'broker_direct');
+    const [page, all, stale, stats] = await Promise.all([
+      // Same query the page script runs for its default view.
+      sb
+        .from('mv_listings_page')
+        .select(COLUMNS, { count: 'exact' })
+        .eq('source', 'broker_direct')
+        .not('price', 'is', null)
+        .order('dom_days_eff', { ascending: true, nullsFirst: false })
+        .range(0, PER_PAGE - 1),
+      listings(),
+      listings().gt('dom_days_eff', 90),
+      sb.from('public_stats').select('broker_sites_on_site').limit(1).maybeSingle(),
+    ]);
+    if (page.error || !page.data || all.error || all.count === null || stale.error || stale.count === null) {
+      return null;
+    }
+    const rows = page.data as unknown as Row[];
+    const brokers = (stats.data as { broker_sites_on_site?: number } | null)?.broker_sites_on_site;
+    return {
+      shown: page.count ?? rows.length,
+      rows,
+      total: all.count,
+      brokers: typeof brokers === 'number' ? brokers : null,
+      over90: stale.count,
+    };
   } catch {
     return null;
   }
 }
-
