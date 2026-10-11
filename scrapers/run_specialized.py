@@ -44,6 +44,41 @@ log = logging.getLogger(__name__)
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kqckuedsyyosmccushyd.supabase.co")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
+def _domain_urls(domain: str) -> tuple[set, set]:
+    """(all known URLs, URLs that already have revenue) for one domain.
+    Empty sets when there is no service key (dry runs)."""
+    if not SUPABASE_SERVICE_KEY:
+        return set(), set()
+    h = {"apikey": SUPABASE_SERVICE_KEY, "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
+    known, have = set(), set()
+    off = 0
+    while True:
+        r = http_requests.get(f"{SUPABASE_URL}/rest/v1/listings_direct", headers=h, timeout=60,
+                              params={"select": "url,revenue", "broker_domain": f"eq.{domain}",
+                                      "order": "id", "offset": str(off), "limit": "1000"})
+        r.raise_for_status()
+        rows = r.json()
+        for row in rows:
+            known.add(row["url"])
+            if row.get("revenue"):
+                have.add(row["url"])
+        if len(rows) < 1000:
+            return known, have
+        off += 1000
+
+
+def _transworld():
+    s = TransworldScraper()
+    listings = s.scrape("28148", max_pages=450, workers=8)
+    try:
+        known, have = _domain_urls("tworld.com")
+        s.add_revenue(listings, have, known,
+                      max_pages=int(os.environ.get("TWORLD_DETAIL_MAX", "400")))
+    except Exception as e:   # revenue is extra; never fail the crawl over it
+        log.warning(f"[transworld] revenue pass skipped: {e}")
+    return listings
+
+
 # ── Broker registry ───────────────────────────────────────────────────────────
 # Each entry has:
 #   account      → numeric account ID (matches broker_master / past data)
@@ -58,7 +93,7 @@ BROKERS = {
         "domain": "tworld.com",
         "account": "28148",
         "display_name": "Transworld Business Advisors",
-        "fn": lambda: TransworldScraper().scrape("28148", max_pages=450, workers=8),
+        "fn": lambda: _transworld(),
     },
     "sunbelt": {
         "domain": "sunbeltnetwork.com",

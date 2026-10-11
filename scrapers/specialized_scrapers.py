@@ -696,6 +696,56 @@ class TransworldScraper:
 
         return listings
 
+    # ── Revenue from detail pages ────────────────────────────────────────
+    # /api/listings has no revenue field. Each detail page shows it as
+    #   <li>Sales: <span class="font-bold">$942,361</span></li>
+    # so revenue is read from the page, only for listings that don't have it.
+    _SALES_RE = re.compile(r"Sales:\s*<span[^>]*>\s*\$\s*([\d,]+)", re.I)
+
+    def detail_sales(self, url: str) -> Optional[float]:
+        try:
+            r = self.session.get(url, timeout=30)
+        except Exception:
+            return None
+        if r.status_code != 200:
+            return None
+        m = self._SALES_RE.search(r.text)
+        if not m:
+            return None
+        try:
+            return float(m.group(1).replace(",", ""))
+        except ValueError:
+            return None
+
+    def add_revenue(self, listings: List[Dict], have_revenue: set, known: set,
+                    max_pages: int = 400, workers: int = 4, verbose: bool = True) -> int:
+        """Fill l['revenue'] from detail pages for listings without revenue.
+        New listings (not yet in the DB) go first, then existing rows still
+        missing revenue, capped at max_pages fetches per run."""
+        todo = [l for l in listings if l.get("listing_url")
+                and l["listing_url"] not in have_revenue and not l.get("revenue")]
+        todo.sort(key=lambda l: l["listing_url"] in known)   # new first
+        todo = todo[:max_pages]
+        if not todo:
+            return 0
+        filled = 0
+
+        def work(l):
+            return l, self.detail_sales(l["listing_url"])
+
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            for l, sales in ex.map(work, todo):
+                if not sales or sales < 10_000:
+                    continue
+                cf = l.get("cash_flow")
+                if cf and sales < cf:      # broker entry error; don't publish
+                    continue
+                l["revenue"] = sales
+                filled += 1
+        if verbose:
+            print(f"[Transworld] revenue: {len(todo)} detail pages checked, {filled} filled")
+        return filled
+
 
 # ============================================================================
 # SUNBELT BUSINESS BROKERS SCRAPER
