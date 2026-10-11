@@ -1256,9 +1256,14 @@ class LinkBusinessScraper:
 
                 city, state = extract_city_state(location or '')
 
+                # Link keeps sold deals in its index with a stamp over the
+                # photo: /Images/sold-stamp.png (400 of 450 cards on Oct 11).
+                sold = card.find('img', src=re.compile(r'sold-stamp', re.I)) is not None
+
                 listings.append({
                     'url': url,
                     'title': title,
+                    'sold': sold,
                     'price_text': price_text,
                     'cf_text': cf_text,
                     'revenue_text': revenue_text,
@@ -1317,7 +1322,8 @@ class LinkBusinessScraper:
                 city=item['city'],
                 state=item['state'],
                 revenue=parse_money(item['revenue_text']),
-                cash_flow=parse_money(item['cf_text'])
+                cash_flow=parse_money(item['cf_text']),
+                status='sold' if item.get('sold') else 'active'
             ))
 
         if verbose:

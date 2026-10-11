@@ -412,7 +412,11 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "contact_phone": l.get("contact_phone"),
             "location_raw":  l.get("location"),
             "status":        l.get("status") or "active",
-            "_status_explicit": bool(l.get("status")),  # stripped before write; see below
+            # Only a non-'active' status is evidence (a sold/pending badge the
+            # scraper saw). format_listing() defaults status to 'active', so
+            # treating that as evidence flipped every sold/inactive row the
+            # scraper still saw back to active (112 Vested rows by Oct 11).
+            "_status_explicit": (l.get("status") or "active") != "active",  # stripped before write; see below
             "source":        "broker_direct",
             "quality_tier":  "Unverified",
             "url_is_listing_specific": url_is_listing_specific,
