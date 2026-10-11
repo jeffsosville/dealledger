@@ -20,7 +20,8 @@ HOW
 
 Env:
   SUPABASE_URL, SUPABASE_SERVICE_KEY   required
-  DOMAINS     comma list (default: the five feeds)
+  DOMAINS     comma list (default: the feeds below)
+  RECHECK     1 = also revisit rows already marked detail_checked_at (default 0)
   LIMIT       listings per domain this run (default 20)
   DRY_RUN     1 = fetch and report, write nothing (default 1)
   DELAY       seconds between requests (default 1.5)
@@ -44,11 +45,30 @@ except ImportError:
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 DOMAINS = [d.strip() for d in os.environ.get(
-    "DOMAINS", "tworld.com,vestedbb.com,execbb.com,hedgestone.com,murphybusiness.com"
+    "DOMAINS", "tworld.com,vestedbb.com,murphybusiness.com,routesforsale.net,"
+               "wesellrestaurants.com,linkbusiness.com,execbb.com,hedgestone.com"
 ).split(",") if d.strip()]
 LIMIT = int(os.environ.get("LIMIT", "20"))
 DRY_RUN = os.environ.get("DRY_RUN", "1") == "1"
 DELAY = float(os.environ.get("DELAY", "1.5"))
+RECHECK = os.environ.get("RECHECK", "0") == "1"
+
+# Oct 11 2026: the Oct 4 run marked 2,889 tworld rows "checked, no revenue".
+# Cause: it ran before the Transworld URL fix (/agents/<agent>/listings/<slug>,
+# landed 22:56 UTC that day), so it fetched old-format URLs that did not return
+# listing pages, and recorded them as real misses. A page now only counts as
+# checked if it carries the domain's listing marker; anything else is an error
+# and is retried on the next run.
+CHALLENGE = re.compile(r"just a moment|cf-chl|challenge-platform|attention required|"
+                       r"captcha|access denied|verify you are human", re.I)
+LISTING_MARKER = {
+    "tworld.com": re.compile(r"Listing Details", re.I),
+    "vestedbb.com": re.compile(r"Asking Price", re.I),
+    "murphybusiness.com": re.compile(r"Listed Price|Total Sales", re.I),
+    "routesforsale.net": re.compile(r"Price:", re.I),
+    "wesellrestaurants.com": re.compile(r"amount-subtitle|Listing #", re.I),
+    "linkbusiness.com": re.compile(r"Listing:\s*#", re.I),
+}
 
 # Most specific labels first; the bare "revenue"/"sales" fall back last.
 REVENUE_LABELS = [
@@ -109,10 +129,44 @@ def find_amount(text, labels, lo=10_000, hi=5_000_000_000):
     return None
 
 
-def extract(html):
+def _site_specific(domain, html, text):
+    """Layouts the label-then-amount scan can't read. Returns (revenue, cash_flow)."""
+    num = lambda x: _to_number(x, None)
+    if domain == "wesellrestaurants.com":
+        # <p class="amount-title">$<!-- -->1,569,831</p><p class="amount-subtitle">Sales</p>
+        clean = re.sub(r"<!--.*?-->", "", html)
+        def card(label):
+            m = re.search(r'amount-title[^>]*>\s*\$\s*([\d,]+)\s*</p>\s*<p[^>]*amount-subtitle[^>]*>\s*'
+                          + label + r'\s*<', clean, re.I)
+            return num(m.group(1)) if m else None
+        return card("Sales"), card("Owner Benefit")
+    if domain == "routesforsale.net":
+        m = (re.search(r"grossing (?:an estimated |approximately |about )?\$\s*([\d,]+) "
+                       r"(?:per year|annually|a year) in sales", text, re.I)
+             or re.search(r"per week in sales or \$\s*([\d,]+) per year", text, re.I)
+             or re.search(r"\$\s*([\d,]+) per year in (?:gross )?sales", text, re.I))
+        return (num(m.group(1)) if m else None), None
+    return None, None
+
+
+def extract(html, domain=""):
     text = page_text(html)
-    return {"revenue": find_amount(text, REVENUE_LABELS),
-            "cash_flow": find_amount(text, CASH_FLOW_LABELS, lo=1_000)}
+    rev, cf = _site_specific(domain, html, text)
+    if rev is None:
+        rev = find_amount(text, REVENUE_LABELS)
+    if cf is None:
+        cf = find_amount(text, CASH_FLOW_LABELS, lo=1_000)
+    # Revenue below cash flow is a broker data-entry error, not a figure to publish.
+    if rev and cf and rev < cf:
+        rev = None
+    return {"revenue": rev, "cash_flow": cf}
+
+
+def looks_like_listing(domain, html):
+    if CHALLENGE.search(html[:20000]) and not LISTING_MARKER.get(domain, re.compile("$^")).search(html):
+        return False
+    marker = LISTING_MARKER.get(domain)
+    return bool(marker.search(html)) if marker else True
 
 
 def sb(method, path, **kw):
@@ -124,12 +178,15 @@ def sb(method, path, **kw):
 
 
 def candidates(domain):
-    return sb("GET", "listings_direct", params={
+    params = {
         "select": "id,url,cash_flow,asking_price",
         "broker_domain": f"in.({domain},www.{domain})",
-        "status": "eq.active", "public": "is.true",
-        "revenue": "is.null", "detail_checked_at": "is.null",
-        "order": "first_seen.desc", "limit": str(LIMIT)})
+        "status": "eq.active", "published": "is.true",
+        "revenue": "is.null",
+        "order": "first_seen.desc", "limit": str(LIMIT)}
+    if not RECHECK:
+        params["detail_checked_at"] = "is.null"
+    return sb("GET", "listings_direct", params=params)
 
 
 def session():
@@ -164,8 +221,13 @@ def main():
                 print(f"  ! {domain} HTTP {r.status_code}  {row['url'][:80]}")
                 time.sleep(DELAY)
                 continue
+            if not looks_like_listing(domain, r.text):
+                stats["errors"] += 1
+                print(f"  ! {domain} not a listing page (bot check?)  {row['url'][:80]}")
+                time.sleep(DELAY)
+                continue
             stats["fetched"] += 1
-            got = extract(r.text)
+            got = extract(r.text, domain)
             patch = {"detail_checked_at": datetime.now(timezone.utc).isoformat()}
             if got["revenue"]:
                 patch["revenue"] = int(got["revenue"])
