@@ -1,0 +1,123 @@
+{
+  "started": "2026-10-11T10:24:53.012172+00:00",
+  "brokers_attempted": 592,
+  "brokers_success": 348,
+  "brokers_failed": 210,
+  "total_listings": 6458,
+  "listings_with_price": 5844,
+  "listings_with_cashflow": 2823,
+  "listings_with_state": 4898,
+  "detail_pages_fetched": 165,
+  "patterns_cached": 525,
+  "patterns_learned": 321,
+  "verticals": {
+    "technology": 1121,
+    "automotive": 364,
+    "construction": 278,
+    "retail": 772,
+    "plumbing": 58,
+    "restaurant": 1696,
+    "healthcare": 333,
+    "landscaping": 53,
+    "cleaning": 77,
+    "manufacturing": 152,
+    "electrical": 39,
+    "hvac": 123,
+    "other": 1327,
+    "roofing": 23,
+    "vending": 36,
+    "pest_control": 6
+  },
+  "failure_types": {
+    "HTTP_403": 30,
+    "NO_PATTERN": 117,
+    "EMBED_BBS": 34,
+    "FETCH_ERROR": 15
+  },
+  "site_pages_dropped": 30,
+  "slowest_brokers": [
+    [
+      1454,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      1351,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      797,
+      "metrocbb.com",
+      7
+    ],
+    [
+      768,
+      "abalventures.com",
+      1
+    ],
+    [
+      320,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      313,
+      "sunacquisitions.com",
+      27
+    ],
+    [
+      294,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      293,
+      "cscpok.com",
+      4
+    ],
+    [
+      290,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      289,
+      "empiregbb.com",
+      3
+    ],
+    [
+      261,
+      "jpar.com",
+      4
+    ],
+    [
+      217,
+      "expcommercial.com",
+      22
+    ],
+    [
+      210,
+      "mavenoadvisors.com",
+      3
+    ],
+    [
+      206,
+      "simmonsinc.com",
+      5
+    ],
+    [
+      202,
+      "houlihanbusinessbrokers.net",
+      1
+    ]
+  ],
+  "seconds_total": 25077,
+  "completed": "2026-10-11T13:02:51.721011+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
