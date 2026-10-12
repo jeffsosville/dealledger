@@ -74,7 +74,9 @@ import requests
 # asleep on a chromium launch under memory pressure, stalling the entire
 # 200-domain batch with no error, no log line, nothing. A batch job that can
 # be silently parked forever by one bad site isn't a batch job.
-DOMAIN_TIMEOUT_SECS = int(os.environ.get("DOMAIN_TIMEOUT_SECS", "90"))
+# 150s since 2026-10-12: the finder now also reads the sitemap, follows one
+# hop from the nav and tries the other host (www <-> apex).
+DOMAIN_TIMEOUT_SECS = int(os.environ.get("DOMAIN_TIMEOUT_SECS", "150"))
 
 
 class DomainTimeout(Exception):
@@ -102,6 +104,10 @@ RETRY_FAILED = os.environ.get("RETRY_FAILED", "") == "1"
 DRY_RUN = os.environ.get("DRY_RUN", "") == "1"
 SOURCE = os.environ.get("SOURCE", "broker_sources").strip()
 SEED = os.environ.get("SEED", "").strip()
+# Parallel shards (broker_discovery.yml matrix). Shard k of n takes every
+# n-th queue row starting at k, so shards never probe the same domain.
+SHARDS = max(1, int(os.environ.get("SHARDS", "1") or 1))
+SHARD = int(os.environ.get("SHARD", "0") or 0) % SHARDS
 if SOURCE not in ("broker_sources", "broker_master"):
     sys.exit(f"SOURCE must be broker_sources or broker_master, got {SOURCE!r}")
 
@@ -148,8 +154,8 @@ def candidates_from_sources():
     rows, offset, page = [], 0, 1000
     params = {
         "select": "domain,company_name,homepage_url,priority_score,"
-                  "ibba_members,consecutive_failures,seed_source",
-        "order": "priority_score.desc,domain.asc",
+                  "ibba_members,consecutive_failures,seed_source,queue_reason",
+        "order": "queue_rank.asc,priority_score.desc,domain.asc",
         "limit": str(page),
     }
     if SEED:
@@ -167,6 +173,9 @@ def candidates_from_sources():
                 "active_listings": 0,
                 "priority_score": b.get("priority_score"),
                 "consecutive_failures": b.get("consecutive_failures") or 0,
+                # 'recheck' = an earlier failure due for another look
+                # (v_discovery_queue, 2026-10-12). Always probed.
+                "recheck": b.get("queue_reason") == "recheck",
             })
         if len(batch) < page:
             break
@@ -289,6 +298,9 @@ STAGE_FOR = {
     "blocked":          ("0_blocked", "failed"),
     "proposed":         ("2_listings_url_known", "proposed"),
     "rejected":         ("0_unusable", "unusable"),
+    # Couldn't complete a probe (timeout, fetch error): not evidence of
+    # anything. Parked at 0_unusable and re-checked by v_discovery_queue.
+    "discovery_failed": ("0_unusable", "unusable"),
 }
 
 
@@ -419,7 +431,8 @@ def suspicious(listings_url, method, platform, result):
     return None
 
 
-_DECISION_COLS = ("decided_at", "decided_by", "decision_reason")
+_DECISION_COLS = ("decided_at", "decided_by", "decision_reason",
+                  "last_discovery_probe_at")
 
 
 def _patch_source(domain, body):
@@ -451,7 +464,10 @@ def update_source(row, status, listings_url=None, error=None, decided_by=None,
         status, ("2_listings_url_known", "needs_work") if listings_url
         else ("0_unusable", "unusable"))
     body = {"discovery_stage": stage, "strategy_status": strat,
-            "last_fingerprinted_at": now}
+            "last_fingerprinted_at": now,
+            # Written only by a real probe; v_discovery_queue's recheck
+            # cooldown runs off it.
+            "last_discovery_probe_at": now}
     if stage == "0_blocked":
         body["proxy_mode"] = "required"
     if stage in ("0_unusable", "0_blocked"):
@@ -498,10 +514,13 @@ def main():
     print(f"Already in broker_discovery: {len(seen)}")
 
     pool = candidates(LIMIT)
+    if SHARDS > 1:
+        pool = pool[SHARD::SHARDS]
+        print(f"Shard {SHARD + 1}/{SHARDS}: {len(pool)} queue rows")
     queue = []
     for row in pool:
         st = seen.get(row["domain"])
-        if st in TERMINAL and not RETRY_FAILED:
+        if st in TERMINAL and not RETRY_FAILED and not row.get("recheck"):
             prior_url = DONE_URLS.get(row["domain"])
             if SOURCE == "broker_sources" and (st != "ok" or prior_url):
                 # Resolved in an earlier run but never mirrored onto
@@ -512,7 +531,8 @@ def main():
         if len(queue) >= LIMIT:
             break
 
-    print(f"Probing {len(queue)} domains"
+    n_re = sum(1 for q in queue if q.get("recheck"))
+    print(f"Probing {len(queue)} domains ({len(queue) - n_re} new, {n_re} re-checks)"
           f"{'  (DRY RUN)' if DRY_RUN else ''}\n")
 
     tally = {}
@@ -524,33 +544,23 @@ def main():
         domain = row["domain"]
         base = f"https://{domain}"
         listed = row.get("active_listings") or 0
-        print(f"[{i}/{len(queue)}] {domain}  ({listed} listings claimed)")
+        print(f"[{i}/{len(queue)}] {domain}"
+              f"{'  (re-check)' if row.get('recheck') else ''}")
 
         try:
             with domain_watchdog(DOMAIN_TIMEOUT_SECS):
                 listings_url = dv.find_listings_page(base, verbose=True)
         except Exception as exc:
+            # A timeout or crash mid-probe says nothing about the broker.
             print(f"    probe error: {exc}")
-            tally["error"] = tally.get("error", 0) + 1
-            save(domain, base, None, "dead", notes=str(exc)[:300])
-            update_source(row, "dead", error=str(exc))
+            tally["discovery_failed"] = tally.get("discovery_failed", 0) + 1
+            save(domain, base, None, "discovery_failed", notes=str(exc)[:300])
+            update_source(row, "discovery_failed", error=str(exc))
             continue
 
-        reasons = getattr(dv, "LAST_FIND", {}).get("reasons") or []
-        if (not listings_url and reasons and not domain.startswith("www.")
-                and all(any(e in r for e in ("SSLError", "ConnectionError",
-                                             "ConnectTimeout", "Timeout"))
-                        for r in reasons[:3])):
-            # Certificate only covers www., or the bare host doesn't resolve.
-            alt = f"https://www.{domain}"
-            print(f"    connection failed on bare domain - retrying {alt}")
-            try:
-                with domain_watchdog(DOMAIN_TIMEOUT_SECS):
-                    listings_url = dv.find_listings_page(alt, verbose=True)
-                if listings_url:
-                    base = alt
-            except Exception as exc:
-                print(f"    probe error: {exc}")
+        # find_listings_page tries the other host (www <-> apex) itself now.
+        if listings_url:
+            base = getattr(dv, "LAST_FIND", {}).get("base_used") or base
 
         landed = getattr(dv, "LAST_FIND", {}).get("landed") or ""
         landed_host = urlparse(landed).netloc.lower()
@@ -606,7 +616,9 @@ def main():
         status = "ok"
         try:
             with domain_watchdog(DOMAIN_TIMEOUT_SECS):
-                result = dv.discover(listings_url) if hasattr(dv, "discover") else None
+                # The page is already found; fingerprint it fresh (no cache).
+                result = dv.discover(listings_url, use_cache=False,
+                                     find_page=False) if hasattr(dv, "discover") else None
             if isinstance(result, dict):
                 method = result.get("method")
                 platform = result.get("platform")
@@ -642,6 +654,13 @@ def main():
 
         evidence = None
         gate_why = None
+        if status != "ok" and status not in ("weak", "auth_required"):
+            # Extraction failed (failed / js_only / fetch_failed) but
+            # find_listings_page already validated the page. The nightly
+            # scraper does its own extraction, so judge the URL on the page's
+            # evidence through the same gate (2026-10-12).
+            print(f"    fingerprint said {status}; judging the page on evidence")
+            status = "weak"
         if SOURCE == "broker_sources" and status in ("ok", "weak"):
             path = urlparse(listings_url).path.lower()
             archive = next((b for b in _ARCHIVE_PATH_BITS if b in path), None)
@@ -651,6 +670,7 @@ def main():
             fails = gate_failures(ev, int(found or 0), archive, why)
             evidence = {**ev, "items_parsed": int(found or 0), "method": method,
                         "platform": platform, "fingerprint_note": why,
+                        "candidates": (getattr(dv, "LAST_FIND", {}).get("candidates") or [])[:4],
                         "fails": fails, "checked_at": time.strftime(
                             "%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
             if fails:

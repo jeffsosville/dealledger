@@ -252,6 +252,138 @@ def get_page(url, timeout=15):
 # handling (proxy retry vs give up), and the return value alone can't say which.
 LAST_FIND = {"blocked": False, "reasons": [], "landed": None}
 
+# head_ok() records what it measured per URL so find_listings_page() can pick
+# the strongest candidate instead of the first one that passes.
+HEAD_METRICS = {}
+
+_DETAIL_PATH = re.compile(
+    r"/(?:listings?|business(?:es)?(?:-for-sale)?|opportunit(?:y|ies)|for-sale|"
+    r"bizdetail|biz|detail|details|property|deal|deals|practice|practices)"
+    r"[^/]*/[\w%.-]{3,}"
+    r"|[?&](?:id|listing|listingid|lid|bid|biz)=\w+"
+    r"|/\d{3,}(?:[/-]|$)", re.I)
+
+
+def count_detail_links(html, page_url):
+    """Distinct same-site links that look like individual listing pages."""
+    try:
+        host = urlparse(page_url).netloc.lower().removeprefix("www.")
+        page_path = urlparse(page_url).path.rstrip("/")
+        seen = set()
+        for href in re.findall(r'href=["\']([^"\'#]+)', html or "", re.I):
+            full = urljoin(page_url, href.strip())
+            p = urlparse(full)
+            if p.netloc.lower().removeprefix("www.") != host:
+                continue
+            path = p.path.rstrip("/")
+            if path == page_path and not p.query:
+                continue
+            key = path + ("?" + p.query if p.query else "")
+            if _DETAIL_PATH.search(key) and not re.search(
+                    r"\.(?:jpe?g|png|gif|webp|pdf|css|js)$|/(?:category|tag|page|wp-|feed)",
+                    key, re.I):
+                seen.add(key)
+        return len(seen)
+    except Exception:
+        return 0
+
+
+# Homepages that are a server's default page or a placeholder, not the site.
+# biz-match.com served a bare page on the apex while www had the real site.
+_DEFAULT_PAGE = re.compile(
+    r"iis windows server|internet information services|welcome to nginx|"
+    r"apache2? (?:ubuntu |debian |centos )?(?:default|test) page|it works!|"
+    r"default web site page|index of /|future home of|parked free|"
+    r"domain (?:is )?for sale|buy this domain|account suspended|website expired", re.I)
+
+
+def _alt_host(base_url):
+    """https://x.com <-> https://www.x.com"""
+    p = urlparse(base_url)
+    h = p.netloc
+    h2 = h[4:] if h.lower().startswith("www.") else "www." + h
+    return f"{p.scheme or 'https'}://{h2}"
+
+
+# Link scoring: label + path keywords. Shared by nav, sitemap and second hop.
+_LINK_KEYWORDS = (
+    ("businesses for sale", 6), ("business for sale", 6),
+    ("businesses-for-sale", 6), ("business-for-sale", 6),
+    ("current listings", 5), ("our listings", 5), ("active listings", 5),
+    ("all listings", 5), ("buy a business", 5), ("buy-a-business", 5),
+    ("available businesses", 5), ("practices for sale", 5),
+    ("practices-for-sale", 5), ("listings", 4), ("listing", 3),
+    ("for sale", 3), ("for-sale", 3), ("opportunities", 3), ("inventory", 3),
+    ("buyers", 2), ("browse", 2), ("search", 2),
+)
+_LINK_NARROWING = (
+    "visa", "e-2", "e2 ", "franchis", "sold", "previous", "past listing",
+    "past-listing", "closed", "recently", "archive", "featured", "spotlight",
+    "testimonial", "how-to", "how to", "guide", "blog", "faq", "financing",
+    "valuation", "lease", "for rent", "rental", "property", "properties",
+    "real estate", "land", "office space", "retail space", "login", "register",
+    "sign-up", "signup", "seller", "sell-", "sell your", "contact",
+)
+# Word-start match: "land" must not hit "maryland", nor "nda" "standard".
+_NARROW_RE = re.compile(r"(?<![a-z])(?:" + "|".join(re.escape(n) for n in _LINK_NARROWING) + ")")
+
+
+def score_link(label, path):
+    blob = f"{(label or '').lower()} {(path or '').lower()}"
+    score = 0
+    for kw, pts in _LINK_KEYWORDS:
+        if kw in blob:
+            score = max(score, pts)
+    if score and _NARROW_RE.search(blob):
+        score -= 4
+    # A detail page is not an index.
+    if re.search(r"/(listing|business)[-/][\w-]{8,}", (path or "").lower()):
+        score -= 3
+    return score
+
+
+def sitemap_candidates(base_url, max_files=4, timeout=10):
+    """Listing-index-looking URLs from robots.txt / sitemap.xml."""
+    host = urlparse(base_url).netloc.lower().removeprefix("www.")
+    queue, seen_files, urls = [], set(), []
+    try:
+        r = get_page(base_url + "/robots.txt", timeout=timeout)
+        if r.status_code == 200:
+            queue += re.findall(r"(?im)^\s*sitemap:\s*(\S+)", r.text or "")
+    except Exception:
+        pass
+    queue += [base_url + p for p in ("/sitemap.xml", "/sitemap_index.xml",
+                                     "/wp-sitemap.xml", "/page-sitemap.xml")]
+    while queue and len(seen_files) < max_files:
+        sm = queue.pop(0)
+        if sm in seen_files:
+            continue
+        seen_files.add(sm)
+        try:
+            r = get_page(sm, timeout=timeout)
+        except Exception:
+            continue
+        if r.status_code != 200 or "<loc" not in (r.text or "")[:50_000].lower():
+            continue
+        locs = re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", r.text, re.I)
+        if "<sitemapindex" in r.text[:2000].lower():
+            # Follow child sitemaps most likely to hold index pages first.
+            kids = sorted(locs, key=lambda u: (
+                0 if re.search(r"page|listing|business|for-sale", u, re.I) else 1))
+            queue = kids[:6] + queue
+            continue
+        for u in locs[:5000]:
+            if urlparse(u).netloc.lower().removeprefix("www.") == host:
+                urls.append(u)
+    scored = []
+    for u in set(urls):
+        s = score_link("", urlparse(u).path)
+        if s >= 3:
+            # Shallow paths are indexes; deep ones are usually listing pages.
+            depth = len([x for x in urlparse(u).path.split("/") if x])
+            scored.append((s - max(0, depth - 2), u))
+    return [u for _, u in sorted(scored, reverse=True)[:6]]
+
 
 def head_ok(url, explain=False):
     """
@@ -305,12 +437,18 @@ def head_ok(url, explain=False):
 
     # A listings index usually shows several prices, or repeats listing
     # language. One price is a homepage teaser, not an index.
-    prices = len(re.findall(r"\$\s?[\d,]{4,}", body))
+    prices = len(set(re.findall(r"\$\s?[\d,]{4,}", body)))
     cues = sum(low.count(c) for c in (
         "listing", "for sale", "asking price", "cash flow", "sde", "ebitda",
     ))
-    if prices >= 3 or cues >= 8:
-        return out(True, "content match")
+    details = count_detail_links(body, getattr(r, "url", None) or url)
+    # strength ranks candidates against each other: distinct prices plus
+    # links that look like individual listing pages (2026-10-12).
+    HEAD_METRICS[url] = {"prices": prices, "cues": cues, "details": details,
+                         "final_url": getattr(r, "url", None) or url,
+                         "strength": min(prices, 60) + 2 * min(details, 60)}
+    if prices >= 3 or cues >= 8 or (details >= 5 and cues >= 3):
+        return out(True, f"content match ({prices} prices, {details} detail links)")
 
     # Client-rendered pages have neither in the raw HTML. Transworld and
     # Sunbelt franchise sites both failed here despite carrying 100+ listings.
@@ -327,6 +465,8 @@ def head_ok(url, explain=False):
         url, re.I,
     )
     if js_shell and strong_path:
+        HEAD_METRICS[url]["js"] = True
+        HEAD_METRICS[url]["strength"] = max(HEAD_METRICS[url]["strength"], 1)
         return out(True, "js shell + listings path")
     return out(False, f"no listing signal ({prices} prices, {cues} cues)")
 
@@ -917,117 +1057,139 @@ def is_js_rendered(html):
     return False
 
 
-def find_listings_page(base_url, verbose=False):
+def find_listings_page(base_url, verbose=False, try_alt_host=True):
     """
     Find a broker's listings index.
 
-    HOMEPAGE FIRST, then guesses. The original order was 21 sequential GETs
-    against a domain before ever loading its homepage, which is both slow and
-    reads as a path scan - Cloudflare and friends start returning 403 partway
-    through, and every subsequent probe fails for a reason that has nothing to
-    do with whether the page exists. 18 of 25 brokers came back
-    "nothing matched" that way, including four Transworld franchises that
-    plainly do have listings pages.
+    HOMEPAGE FIRST, then sitemap, then guesses. One homepage fetch answers it
+    for most sites, because the nav is the site telling you where its
+    listings are. (The original order - 21 sequential GETs before ever loading
+    the homepage - read as a path scan and got 18 of 25 brokers walled.)
 
-    One homepage fetch answers it for most sites, because the nav is the site
-    telling you where its listings are. Guessing is the fallback, not the
-    opening move.
+    2026-10-12:
+      - Tries the other host (www <-> apex) when the first one yields nothing
+        and wasn't already redirected there. biz-match.com's apex served a
+        bare page; www had the site.
+      - Reads robots.txt / sitemap.xml and follows one hop from the best nav
+        pages ("Buy a Business" -> the actual index) before guessing paths.
+      - Validates every candidate and returns the STRONGEST (distinct prices
+        + links to individual listings), not the first that passes.
+        LAST_FIND["candidates"] keeps the runners-up for review.
     """
-    reasons = []
-    LAST_FIND["blocked"] = False
-    LAST_FIND["reasons"] = reasons
-    LAST_FIND["landed"] = None
+    url = _find_listings_page_once(base_url, verbose)
+    if url or not try_alt_host:
+        return url
+    first = dict(LAST_FIND)
+    landed = (first.get("landed") or "").lower()
+    alt = _alt_host(base_url)
+    # Already redirected to the other host: nothing new to learn there.
+    if landed and urlparse(landed).netloc == urlparse(alt).netloc.lower():
+        return None
+    if verbose:
+        print(f"      nothing on {urlparse(base_url).netloc} - trying {urlparse(alt).netloc}")
+    url = _find_listings_page_once(alt, verbose)
+    if url:
+        LAST_FIND["base_used"] = alt
+        return url
+    # Keep whichever attempt actually reached a homepage, so the caller's
+    # dead / blocked / no-page classification reflects a real answer.
+    if first.get("home_status") == 200 or LAST_FIND.get("home_status") is None:
+        LAST_FIND.clear()
+        LAST_FIND.update(first)
+    LAST_FIND["alt_tried"] = alt
+    return None
 
-    def try_url(url):
+
+def _find_listings_page_once(base_url, verbose=False):
+    reasons = []
+    LAST_FIND.clear()
+    LAST_FIND.update({"blocked": False, "reasons": reasons, "landed": None,
+                      "home_status": None, "candidates": [], "js_rendered": False,
+                      "base_used": base_url})
+    tested = {}
+
+    def try_url(url, source):
+        if url in tested:
+            return tested[url]
         ok, why = head_ok(url, explain=True)
-        if not ok:
+        m = HEAD_METRICS.get(url, {})
+        tested[url] = ok
+        if ok:
+            LAST_FIND["candidates"].append({
+                "url": url, "source": source, "strength": m.get("strength", 0),
+                "prices": m.get("prices", 0), "details": m.get("details", 0),
+                "js": bool(m.get("js"))})
+        else:
             reasons.append(f"{urlparse(url).path or '/'}: {why}")
         return ok
 
-    # ── Stage 1: read the homepage nav ──
+    def best():
+        c = sorted(LAST_FIND["candidates"], key=lambda x: -x["strength"])
+        LAST_FIND["candidates"] = c
+        if not c:
+            return None
+        LAST_FIND["js_rendered"] = c[0]["js"]
+        if verbose:
+            print(f"      picked {c[0]['url']} ({c[0]['source']}, "
+                  f"{c[0]['prices']} prices, {c[0]['details']} detail links)"
+                  + (f"; {len(c) - 1} other candidate(s)" if len(c) > 1 else ""))
+        return c[0]["url"]
+
+    def strong_enough():
+        return any(c["prices"] >= 8 and c["details"] >= 5
+                   for c in LAST_FIND["candidates"])
+
+    def bare(h):
+        h = (h or "").lower()
+        return h[4:] if h.startswith("www.") else h
+
+    def scored_links(html, page_url, site_hosts):
+        soup = BeautifulSoup(html, "html.parser")
+        seen, out = set(), []
+        for a in soup.find_all("a", href=True):
+            href = a["href"].strip()
+            if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
+                continue
+            full = urljoin(page_url, href).split("#")[0]
+            if bare(urlparse(full).netloc) not in site_hosts or full in seen:
+                continue
+            seen.add(full)
+            s = score_link(a.get_text(" ", strip=True), urlparse(full).path)
+            if s >= 3:
+                out.append((s, full))
+        return sorted(out, reverse=True)
+
+    # ── Stage 1: homepage links (nav, body, footer) ──
     home_blocked = False
+    site_hosts = {bare(urlparse(base_url).netloc)}
+    nav = []
     try:
         r = get_page(base_url, timeout=15)
-        LAST_FIND["landed"] = getattr(r, "url", None) or base_url
+        landed = getattr(r, "url", None) or base_url
+        LAST_FIND["landed"] = landed
+        LAST_FIND["home_status"] = r.status_code
+        site_hosts.add(bare(urlparse(landed).netloc))
+        body = r.text or ""
         if r.status_code != 200:
             reasons.append(f"homepage: HTTP {r.status_code}")
             home_blocked = r.status_code in (202, 403, 429, 503)
+        elif any(m in body.lower() for m in ("just a moment", "checking your browser",
+                                             "attention required", "access denied")):
+            reasons.append("homepage: blocked")
+            home_blocked = True
+        elif len(body) < 1500 or _DEFAULT_PAGE.search(body[:20_000]):
+            # Server default page / placeholder: no nav to read. Path probes
+            # still run below, and the caller retries the other host.
+            reasons.append("homepage: default/placeholder page")
+            LAST_FIND["home_status"] = "placeholder"
         else:
-            low_home = r.text.lower()
-            if any(m in low_home for m in ("just a moment", "checking your browser",
-                                           "attention required", "access denied")):
-                reasons.append("homepage: blocked")
-                home_blocked = True
-            else:
-                soup = BeautifulSoup(r.text, "html.parser")
-                seen, scored = set(), []
-                # Vanity domains often redirect (tworldhouston.com -> a
-                # franchise site, bare -> www). Judge links against where we
-                # landed, not the URL we asked for, or every nav link is
-                # discarded as "off-site".
-                def _bare(h):
-                    h = (h or "").lower()
-                    return h[4:] if h.startswith("www.") else h
-                site_hosts = {_bare(urlparse(base_url).netloc),
-                              _bare(urlparse(getattr(r, "url", "") or base_url).netloc)}
-                landed = getattr(r, "url", "") or base_url
-                for a in soup.find_all("a", href=True):
-                    href = a["href"].strip()
-                    if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
-                        continue
-                    full = urljoin(landed, href)
-                    if _bare(urlparse(full).netloc) not in site_hosts:
-                        continue
-                    if full in seen:
-                        continue
-                    seen.add(full)
-
-                    label = a.get_text(" ", strip=True).lower()
-                    path = urlparse(full).path.lower()
-                    blob = f"{label} {path}"
-
-                    score = 0
-                    for kw, pts in (
-                        ("businesses for sale", 6), ("business for sale", 6),
-                        ("businesses-for-sale", 6), ("business-for-sale", 6),
-                        ("current listings", 5), ("our listings", 5),
-                        ("all listings", 5), ("buy a business", 5),
-                        ("buy-a-business", 5), ("listings", 4), ("listing", 3),
-                        ("for sale", 3), ("opportunities", 3), ("inventory", 3),
-                        ("browse", 2), ("search", 2),
-                    ):
-                        if kw in blob:
-                            score = max(score, pts)
-
-                    # A narrowed subset is not the index. abbrokers.com sent us
-                    # to /visa-qualified-businesses.asp, which is a filtered
-                    # view of a fraction of their inventory.
-                    for narrowing in ("visa", "e-2", "e2 ", "franchis", "sold",
-                                      "previous", "past listing", "past-listing",
-                                      "closed", "recently", "archive",
-                                      "featured", "spotlight", "testimonial",
-                                      "how-to", "how to", "guide", "blog",
-                                      "faq", "financing", "valuation",
-                                      # commercial real estate, not businesses
-                                      "lease", "for rent", "rental", "property",
-                                      "properties", "real estate", "land",
-                                      "office space", "retail space"):
-                        if narrowing in blob:
-                            score -= 4
-                            break
-
-                    # A detail page is not an index.
-                    if re.search(r"/(listing|business)[-/][\w-]{8,}", path):
-                        score -= 3
-
-                    if score >= 3:
-                        scored.append((score, full))
-
-                for _, cand in sorted(scored, reverse=True)[:6]:
-                    if try_url(cand):
-                        if verbose:
-                            print(f"      found via homepage nav: {cand}")
-                        return cand
+            # Vanity domains often redirect (tworldhouston.com -> a franchise
+            # site, bare -> www). Judge links against where we landed.
+            nav = scored_links(body, landed, site_hosts)
+            for _, cand in nav[:6]:
+                try_url(cand, "homepage link")
+                if strong_enough():
+                    break
     except Exception as exc:
         reasons.append(f"homepage: {type(exc).__name__}")
 
@@ -1039,14 +1201,47 @@ def find_listings_page(base_url, verbose=False):
             print("      homepage blocked - skipping path probes "
                   "(needs a proxy or a browser fetch)")
         return None
+    if strong_enough():
+        return best()
 
-    # ── Stage 2: guess, politely ──
+    root = f"{urlparse(LAST_FIND['landed'] or base_url).scheme}://" \
+           f"{urlparse(LAST_FIND['landed'] or base_url).netloc}"
+
+    # ── Stage 2: one hop from the best nav pages that weren't an index ──
+    # "Buy a Business" is often a landing page whose link is the real index.
+    for _, page in [n for n in nav if not tested.get(n[1])][:2]:
+        try:
+            r = get_page(page, timeout=12)
+            if r.status_code == 200:
+                for _, cand in scored_links(r.text or "", getattr(r, "url", None) or page,
+                                            site_hosts)[:4]:
+                    try_url(cand, f"via {urlparse(page).path}")
+        except Exception:
+            pass
+    if strong_enough() or (LAST_FIND["candidates"] and
+                           max(c["strength"] for c in LAST_FIND["candidates"]) >= 6):
+        return best()
+
+    # ── Stage 3: sitemap ──
+    try:
+        for cand in sitemap_candidates(root):
+            try_url(cand, "sitemap")
+            if strong_enough():
+                break
+    except Exception as exc:
+        reasons.append(f"sitemap: {type(exc).__name__}")
+    if LAST_FIND["candidates"]:
+        return best()
+
+    # ── Stage 4: guess, politely ──
     for path in LISTINGS_PATHS:
-        if try_url(base_url + path):
-            if verbose:
-                print(f"      found by path: {base_url + path}")
-            return base_url + path
+        if try_url(root + path, "path guess"):
+            m = HEAD_METRICS.get(root + path, {})
+            if m.get("prices", 0) >= 3 or m.get("details", 0) >= 3:
+                break
         time.sleep(0.3)
+    if LAST_FIND["candidates"]:
+        return best()
 
     blocked = sum(1 for r in reasons
                   if "403" in r or "blocked" in r or "429" in r or "202" in r)
@@ -1129,8 +1324,20 @@ _haiku_calls = 0
 # batch (LIMIT=200) can't silently run 200 Haiku calls. 0/unset = unlimited.
 MAX_AI = int(os.environ.get("MAX_AI", "0") or 0)
 
-def discover(url, verbose=True):
-    """Run full discovery on a URL. Returns discovery result dict."""
+def discover(url, verbose=True, use_cache=True, find_page=True):
+    """Run full discovery on a URL. Returns discovery result dict.
+
+    2026-10-12 (review of v2):
+      - find_page: when given a homepage, ALWAYS locate the listings index
+        first (find_listings_page) and fingerprint that, not the homepage. It
+        used to look for the index only when the homepage failed to load, so
+        a working homepage with three "featured" listings got fingerprinted
+        as the source.
+      - The cache is trusted only for 'ok' results. Failures are re-checked
+        every time, so a fix to detection reaches every broker it failed on.
+      - A failed fetch is 'fetch_failed', never 'dead': we couldn't read it,
+        which is not evidence the broker has no listings.
+    """
     domain = urlparse(url).netloc.lower().replace("www.", "")
     base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
     result = {"url": url, "domain": domain, "method": None, "status": "unknown"}
@@ -1144,24 +1351,38 @@ def discover(url, verbose=True):
     log(f"{'='*60}")
 
     # ── Step 1: Check cache ───────────────────────────────────────
-    cached = cache_get_discovery(domain)
-    if cached and not cached.get("status") == "pending":
+    cached = cache_get_discovery(domain) if use_cache else None
+    if cached and cached.get("status") == "ok":
         log(f"   💾 Already discovered: {cached.get('method')} [{cached.get('status')}]")
         return cached
 
-    # ── Step 2: Fetch homepage ────────────────────────────────────
+    # ── Step 2: Find the listings index, then fetch it ────────────
+    if find_page and urlparse(url).path.strip("/") == "":
+        page = find_listings_page(base_url, verbose=verbose)
+        if page:
+            log(f"   📄 Listings page: {page}")
+            url = page
+            result["url"] = url
+            base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+        elif LAST_FIND.get("blocked"):
+            log(f"   🚧 Blocked before a listings page could be found")
+            result.update({"method": "blocked", "status": "blocked"})
+            return result
+        else:
+            log(f"   ❓ No listings index found - checking the homepage itself")
     html, err = fetch_text(url)
-    if not html:
-        # Try to find listings page
-        alt = find_listings_page(base_url)
-        if alt:
-            html, err = fetch_text(alt)
+    if not html and find_page and urlparse(url).path.strip("/") != "":
+        # A stale listings URL: look for the current one from the homepage.
+        page = find_listings_page(base_url, verbose=verbose)
+        if page:
+            html, err = fetch_text(page)
             if html:
-                url = alt
+                url = page
+                result["url"] = url
     if not html:
         log(f"   ❌ Fetch failed: {err}")
-        result.update({"method": "dead", "status": "dead"})
-        cache_set_discovery(domain, url, result)
+        result.update({"method": "fetch_failed", "status": "fetch_failed",
+                       "error": str(err)[:300]})
         return result
 
     # ── Step 3: Check for auth wall ───────────────────────────────
@@ -1538,14 +1759,34 @@ def run_batch(csv_path, workers=5, rediscover=False, js_only_mode=False):
     with open(csv_path) as f:
         first = f.read(500)
     if "," in first.split("\n")[0]:
-        with open(csv_path) as f:
+        # Headers are matched case- and punctuation-insensitively, and a
+        # suspected listings URL is preferred over a homepage. A bare domain
+        # ("acme.com") is accepted. (2026-10-12: the old loader took the first
+        # column when headers didn't match exactly.)
+        LISTING_COLS = ("listingsurl", "listingurl", "listingspage", "listingpage",
+                        "suspectedlistingurl", "suspectedlistingsurl")
+        HOME_COLS = ("homepage", "homepageurl", "website", "websiteurl", "url",
+                     "companyurl", "site", "domain")
+        norm = lambda h: re.sub(r"[^a-z]", "", (h or "").lower())
+        with open(csv_path, newline="") as f:
             reader = csv.DictReader(f)
+            cols = {norm(h): h for h in (reader.fieldnames or [])}
+            lcol = next((cols[c] for c in LISTING_COLS if c in cols), None)
+            hcol = next((cols[c] for c in HOME_COLS if c in cols), None)
+            if not lcol and not hcol:
+                sys.exit(f"{csv_path}: no URL column found in {reader.fieldnames}; "
+                         f"expected one of listings_url / homepage / website / url / domain")
+            print(f"   Columns: listings={lcol!r} homepage={hcol!r}")
             for row in reader:
-                url = (row.get("listings_url") or row.get("url") or
-                       row.get("URL") or row.get("website") or
-                       list(row.values())[0])
-                if url and str(url).strip().startswith("http"):
-                    urls.append(url.strip())
+                for col in (lcol, hcol):
+                    v = (row.get(col) or "").strip() if col else ""
+                    if not v:
+                        continue
+                    if not v.startswith("http") and re.match(r"^[\w.-]+\.[a-z]{2,}(/.*)?$", v, re.I):
+                        v = "https://" + v
+                    if v.startswith("http"):
+                        urls.append(v)
+                        break
     else:
         with open(csv_path) as f:
             urls = [l.strip() for l in f if l.strip().startswith("http")]
@@ -1562,7 +1803,8 @@ def run_batch(csv_path, workers=5, rediscover=False, js_only_mode=False):
                 urls = [u for u in urls if urlparse(u).netloc.lower().replace("www.","") in js_domains]
                 print(f"   --js-only mode: targeting {len(urls)} js_only domains (of {before} total)")
             else:
-                done = {r["domain"] for r in cached.data if r.get("status") not in ("pending", None)}
+                # Only verified results are skipped; failures get re-checked.
+                done = {r["domain"] for r in cached.data if r.get("status") == "ok"}
                 before = len(urls)
                 urls = [u for u in urls if urlparse(u).netloc.lower().replace("www.","") not in done]
                 print(f"   Skipping {before - len(urls)} already-discovered, running {len(urls)} new")
