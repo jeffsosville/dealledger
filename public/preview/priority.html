@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Priority Listings Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: their green utility bar → logo + nav → title band → filters → listing cards → detail sheet; matches prioritybusinessbrokers.com */
+:root{
+  --green:#2f6f45; --green-deep:#1f4d30; --ink:#2b2b2b; --muted:#666e69; --line:#dfe5e0;
+  --bg:#ffffff; --tint:#f3f7f4; --surface:#ffffff; --on-green:#ffffff;
+  --f-serif:"Lora", Georgia, "Times New Roman", serif;
+  --f-ui:"Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-ui);margin:0}
+.mock{background:#fff7d6;color:#4a3d00;font:13px var(--f-ui);padding:8px 16px;text-align:center}
+.util{background:var(--green);color:var(--on-green);display:flex;justify-content:space-between;align-items:center;padding:10px clamp(16px,2vw,28px);gap:12px}
+.social{display:flex;gap:16px;font:600 14px var(--f-ui)}
+.social span{opacity:.95}
+.val{background:var(--bg);color:var(--green);font:600 14px var(--f-serif);letter-spacing:.04em;text-transform:uppercase;padding:9px 20px;border-radius:999px;white-space:nowrap}
+.nav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 28px;padding:18px clamp(16px,2vw,28px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+.logo .p{width:58px;height:58px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font:700 34px/1 var(--f-serif);background:radial-gradient(circle at 70% 40%,var(--green) 0 30%,transparent 31%);color:var(--ink)}
+.logo .w{display:grid;line-height:1}
+.logo .w b{font:500 34px/1 var(--f-serif);letter-spacing:.02em}
+.logo .w small{font:500 14px/1.2 var(--f-serif);letter-spacing:.14em;color:var(--green);text-transform:uppercase;margin-top:4px}
+.links{display:flex;flex-wrap:wrap;gap:6px 28px;font:500 18px var(--f-serif)}
+.links span{color:var(--ink)}
+.links .on{color:var(--green)}
+.band{background:var(--tint);padding:36px 16px 28px;text-align:center;border-bottom:1px solid var(--line)}
+.band h1{margin:0;font:700 clamp(28px,4vw,42px)/1.15 var(--f-serif);color:var(--ink);text-wrap:balance}
+.band p{margin:10px auto 0;max-width:62ch;color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:24px 48px}
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:20px}
+.filters label{display:grid;gap:4px;font:600 13px var(--f-ui);color:var(--muted)}
+select,input{font:16px var(--f-ui);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+#q{min-width:min(260px,100%)}
+.count{margin-left:auto;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cat{font:600 12px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.card h2{margin:0;font:600 20px/1.3 var(--f-serif);text-wrap:balance}
+.loc{font-size:15px;color:var(--muted)}
+.desc{margin:0;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid var(--line)}
+.ask{display:grid;line-height:1.2}
+.ask small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ask b{font:700 22px var(--f-serif);font-variant-numeric:tabular-nums}
+.btn{font:600 15px var(--f-serif);letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:transparent;border:2px solid var(--green);border-radius:999px;padding:7px 16px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--green);color:var(--on-green)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:6px}
+footer{background:var(--green);color:var(--on-green);padding:22px 16px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;font-size:14px;text-align:center}
+.sheet{position:fixed;inset:0;background:rgba(10,20,14,.5);display:flex;justify-content:flex-end;z-index:9}
+.sheet[hidden]{display:none}
+.panel{background:var(--surface);width:min(580px,100%);height:100%;overflow-y:auto;padding:26px 24px calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font:700 26px/1.25 var(--f-serif);text-wrap:balance}
+.panel .x{align-self:flex-end}
+.panel p{margin:0;max-width:65ch}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;background:var(--tint);border-radius:6px;padding:16px}
+.facts div{display:grid}
+.facts small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts b{font:600 18px var(--f-serif)}
+.contact{border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:6px}
+.contact h3{margin:0;font:600 18px var(--f-serif)}
+.note{font-size:13px;color:var(--muted)}
+@media (max-width:640px){.links{font-size:16px;gap:4px 16px}.logo .w b{font-size:28px}.val{font-size:12px;padding:7px 12px}}
+</style>
+
+</head><body>
+<div class="mock"><b>Preview made by DealLedger for Priority Business Brokers.</b> Your 22 current listings as a page on your own site. Not public yet.</div>
+<div class="util">
+  <div class="social" aria-label="Social links"><span>f</span><span>ig</span><span>in</span></div>
+  <span class="val">Free business valuation</span>
+</div>
+<div class="nav">
+  <span class="logo" aria-label="Priority Business Brokers"><span class="p">P</span><span class="w"><b>PRIORITY</b><small>Business Brokers</small></span></span>
+  <nav class="links"><span>Home</span><span>Buyers</span><span>Sellers</span><span class="on">Listings</span><span>Testimonials</span><span>Contact</span></nav>
+</div>
+<section class="band">
+  <h1>Businesses for Sale</h1>
+  <p>Every business Priority Business Brokers is currently representing, listed here first. Ask about any listing and our team will walk you through it confidentially.</p>
+</section>
+<main class="wrap">
+  <div class="filters">
+    <label for="q">Search<input id="q" type="search" placeholder="Plumbing, therapy, Tennessee…"></label>
+    <label for="f-cat">Industry<select id="f-cat"><option value="">All industries</option></select></label>
+    <label for="f-st">State<select id="f-st"><option value="">All states</option></select></label>
+    <label for="f-price">Asking price<select id="f-price">
+      <option value="">Any price</option><option value="0-500000">Under $500K</option><option value="500000-1500000">$500K – $1.5M</option>
+      <option value="1500000-5000000">$1.5M – $5M</option><option value="5000000-1e12">$5M and up</option></select></label>
+    <label for="f-sort">Sort<select id="f-sort"><option value="">As listed</option><option value="lo">Price, low to high</option><option value="hi">Price, high to low</option></select></label>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>
+  <span>Listed directly by Priority Business Brokers · prioritybusinessbrokers.com</span>
+  <span>Also included in the DealLedger open index of US businesses for sale</span>
+</footer>
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="d-title"></div></div>
+
+<script>
+const ITEMS = [{"title": "Fiber Installation Company Servicing the East Coast", "loc": "North Carolina", "desc": "Underground and aerial contractor that completes all facades of the fiber world. 3% - MDU Builds 7% - Residential/Commercial Drops 90% - New Long Haul Builds", "price": 24999000, "id": 1, "cat": "Construction & Trades", "franchise": false}, {"title": "Underground Residential Plumbing Company in Northeast TN", "loc": "Tennessee", "desc": "A plumbing company with a heavy focus on outside services such as work for water lines, gutter systems, sewer lines, septic systems etc. As well as additional work installing grease traps at restaurants and oil seperators in autobody and mechanic...", "price": 599000, "id": 2, "cat": "Construction & Trades", "franchise": false}, {"title": "2 Early Learning Centers Located in Southeast Wisconsin", "loc": "Wisconsin", "desc": "Two early learning centers with a focus on combining quality care with the arts by offering children an introduction to music, dance, drama, and studio arts. Which has expanded to include Spanish, American Sign Language, Environmental Science and a...", "price": 1079000, "id": 3, "cat": "Childcare & Education", "franchise": false}, {"title": "Restoration Company Located in Northeast TX", "loc": "Texas", "desc": "A turnkey disaster restoration company with a focus on being the premier disaster restoration experience for all clients. Services have expanded to include mitigation, trauma, pack out, fire restoration, reconstruction, roofing and remodels.", "price": 3525000, "id": 4, "cat": "Construction & Trades", "franchise": false}, {"title": "Construction Company Located in East Tennessee", "loc": "Tennessee", "desc": "A residential and commercial general contractor. Specializing heavily in real estate transactions, by helping homeowners, real estate agents, and home inspectors resolve inspection report issues to make your home market ready. Complete Construction...", "price": 1049000, "id": 5, "cat": "Construction & Trades", "franchise": false}, {"title": "Equipment Rental & Transportation Company in NE Utah w/ Property", "loc": "Utah", "desc": "This company has a main focus in equipment sales and rentals, but also offers other services such as: -Equipment Repairs & Maintenance -With highly skilled technicians -Country Wide Transportation and Trucking Services -Experience drivers...", "price": 6499000, "id": 6, "cat": "Transportation & Equipment", "franchise": false}, {"title": "Non-Emergent Medical Transportation in Middle Tennessee", "loc": "Tennessee", "desc": "Non-Emergent medical transportation provider serving patients and families and making over 2,200 trips each month. Transportation services are provide to and from the following: Doctors' appointments, dialysis appointments, radiation clinics,...", "price": 1499000, "id": 7, "cat": "Healthcare", "franchise": false}, {"title": "Bartending School Located in East TN", "loc": "Tennessee", "desc": "PBSA Accredited Bartending School with hands-on training teaching students how to properly and safely serve alcoholic beverages. Offering day and night classes to fit any schedule and job placement at the end of the course. Secondly, the school...", "price": 159000, "id": 8, "cat": "Childcare & Education", "franchise": false}, {"title": "Security and Protection Services Company Located near Los Angeles, CA", "loc": "California", "desc": "Security services provided include armed and unarmed: Residential Security, Workplace Security, Security Drivers, Executive Personal Protection, Travel/Transportation, Threat/Risk Assessment, and Special Events.", "price": 9899000, "id": 9, "cat": "Services", "franchise": false}, {"title": "Franchised Sandwich Shop Located near Bristol, VA", "loc": "Virginia", "desc": "With a variety of menu options, this sandwhich shop has coined themselves as redefining what makes a sandwhich a sandwhich. Focused on being able to serve all size groups with special catering and large group ordering.", "price": 299000, "id": 10, "cat": "Food & Restaurant", "franchise": true}, {"title": "Electrical Utility Construction Company in the Southeast", "loc": "Alabama", "desc": "Electrical service company specializing in the replacement and construction of overhead transmission and distribution powerlines.", "price": 25999000, "id": 11, "cat": "Construction & Trades", "franchise": false}, {"title": "Franchised Home Healthcare near Milwaukee, WI", "loc": "Wisconsin", "desc": "Franchised Non-Medical, in-home personal care company containing two territories and serving patients with varying levels of assistance. From senior companionship to specialized care, this franchise can develop a plan for you or your loved one.", "price": 1189000, "id": 12, "cat": "Healthcare", "franchise": true}, {"title": "Physical Therapy Practice & Gym Located Near Chattanooga, TN", "loc": "Tennessee", "desc": "A privately owned outpatient physical therapy practice with an emphasis on manual skills and one-on-one care. Includes a fitness center that adds additional income through community memberships. It is a month to month lease on the 4,000 sqft...", "price": 159000, "id": 13, "cat": "Healthcare", "franchise": false}, {"title": "Independent Blinds & Shutters Company Near Knoxville, TN", "loc": "Tennessee", "desc": "Family owned and operated blinds company that focuses on the customer perspective by focusing on the details that will help you love your home for years to come. Services and installations include: blinds, shutters, shades, top treatments and...", "price": 279000, "id": 14, "cat": "Construction & Trades", "franchise": false}, {"title": "Childcare Center w/ Property Located near Hartford, CT", "loc": "East Hartford, CT", "desc": "Focused on providing a clean, safe, and affordable haven for all children. Offering full time programming ages 15 months to 6 years and Summer programs to school aged children. Preschool aged ratio of 10:1 / 20 children per classroom Toddler aged...", "price": 4249000, "id": 15, "cat": "Childcare & Education", "franchise": false}, {"title": "2 Location Physical Therapy Center Located in Northeast PA", "loc": "Pennsylvania", "desc": "Two office private practices providing outpatient physical therapy for all musculoskeletal and nuerological conditions. All locations offer treatment rooms and gym areas. All three locations totaling 5,566 sqft", "price": 619000, "id": 16, "cat": "Healthcare", "franchise": false}, {"title": "Commercial/Industrial Electrical Company Near Spartanburg, SC", "loc": "South Carolina", "desc": "Providing commercial/industrial services with a focus on indistrial electrical work. Services offered include, but are not limited to: general electrical services/troubleshooting, inspection, installations/repairs, thermal imaging, trenching,...", "price": 1299000, "id": 17, "cat": "Construction & Trades", "franchise": false}, {"title": "Physical Therapy Practices in Western Virginia Totaling 3 Locations", "loc": "Virginia", "desc": "All three locaitons provide a mixture of physical therapy, outpatient rehab, and/or fitness center services that combined make a well rounded healthcare experience. Altogether the locations see approximately 35-44 new patients per week. Real estate...", "price": 1599000, "id": 18, "cat": "Healthcare", "franchise": false}, {"title": "Physical Therapy Practice Located in Western Virginia", "loc": "Virginia", "desc": "Hands-on physical therapy services for the treatment of orthopedic issues, sports injuries and nuerological rehabilitaion. This practice is heavily based in functional therapeutic exercise programs as well as the manual hands-on therapy.", "price": 699000, "id": 19, "cat": "Healthcare", "franchise": false}, {"title": "Pump Service Company located in East Tennessee", "loc": "Tennessee", "desc": "Water Pump Service Company located in East Tennessee. Services and sells water pumps, water filters, water fountains, tanks, etc. 60% New Install 35% Service/Repair 5% Maintenance Agreements", "price": 1899000, "id": 20, "cat": "Construction & Trades", "franchise": false}, {"title": "Residential HVAC Company near Sacramento, CA", "loc": "California", "price": 599000, "cat": "Construction & Trades", "franchise": false, "desc": "California heating & air conditioning company that installs heating, air conditioning, and ventilation systems in new construction and existing homes. They provide service for residential and light commercial customers. Also providing sheet metal...", "id": 21}, {"title": "2 Physical Therapy Locations in Western Virginia", "loc": "Virginia", "price": 2099000, "cat": "Healthcare", "franchise": false, "desc": "2 established and well-known therapy centers in Virginia. Semi-absentee owner, locations are 52 miles apart, growth potential at both locations. Real estate for lease or purchase. Location 1: PT, 2-LPTA, PT Tech Location 2: PT, 2-LPTA, PT Tech, OT ...", "id": 22}];
+const ST = {"Tennessee":"TN","Wisconsin":"WI","Texas":"TX","Utah":"UT","California":"CA","Virginia":"VA","Alabama":"AL","Pennsylvania":"PA","South Carolina":"SC","North Carolina":"NC"};
+const stateOf = l => { const m=l.loc.match(/,\s*([A-Z]{2})$/); return m?m[1]:(ST[l.loc]||l.loc); };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = n => "$" + n.toLocaleString("en-US");
+[...new Set(ITEMS.map(x=>x.cat))].sort().forEach(c=>$("f-cat").add(new Option(c,c)));
+[...new Set(ITEMS.map(stateOf))].sort().forEach(s=>$("f-st").add(new Option(s,s)));
+
+function render(){
+  const q=$("q").value.trim().toLowerCase(), c=$("f-cat").value, s=$("f-st").value, p=$("f-price").value, so=$("f-sort").value;
+  const [lo,hi]=p?p.split("-").map(Number):[0,Infinity];
+  let rows=ITEMS.filter(x=>(!c||x.cat===c)&&(!s||stateOf(x)===s)&&x.price>=lo&&x.price<hi&&(!q||(x.title+" "+x.desc+" "+x.loc).toLowerCase().includes(q)));
+  if(so) rows=[...rows].sort((a,b)=>so==="lo"?a.price-b.price:b.price-a.price);
+  $("grid").innerHTML = rows.length ? rows.map(x=>`<article class="card">
+      <span class="cat">${esc(x.cat)}${x.franchise?" · Franchise":""}</span>
+      <h2>${esc(x.title)}</h2>
+      <span class="loc">${esc(x.loc)}</span>
+      <p class="desc">${esc(x.desc)}</p>
+      <div class="bottom"><span class="ask"><small>Asking price</small><b>${money(x.price)}</b></span>
+      <button class="btn" data-id="${x.id}">View listing</button></div></article>`).join("")
+    : `<div class="empty">No listings match. Clear a filter to see more.</div>`;
+  $("count").textContent = rows.length + (rows.length===1?" listing":" listings");
+}
+["q","f-cat","f-st","f-price","f-sort"].forEach(id=>$(id).addEventListener("input",render));
+
+function open(id){
+  const x=ITEMS.find(i=>i.id==id);
+  $("panel").innerHTML=`<button class="btn x" id="x">Close</button>
+    <span class="cat">${esc(x.cat)}${x.franchise?" · Franchise":""} · Listing ${String(x.id).padStart(3,"0")}</span>
+    <h2 id="d-title">${esc(x.title)}</h2>
+    <span class="loc">${esc(x.loc)}</span>
+    <div class="facts">
+      <div><small>Asking price</small><b>${money(x.price)}</b></div>
+      <div><small>Status</small><b>Available</b></div>
+      <div><small>Cash flow</small><b>After NDA</b></div>
+      <div><small>Gross revenue</small><b>After NDA</b></div>
+    </div>
+    <p>${esc(x.desc)}</p>
+    <div class="contact"><h3>Ask about this business</h3>
+      <span>Priority Business Brokers</span>
+      <span style="user-select:all">Phone and email go here</span>
+      <span class="note">Financials and the business name are shared after you sign a confidentiality agreement.</span>
+    </div>
+    <p class="note">This listing is published directly by Priority Business Brokers on their own website.</p>`;
+  $("sheet").hidden=false; $("x").focus();
+}
+$("grid").addEventListener("click",e=>{const b=e.target.closest(".btn"); if(b) open(b.dataset.id);});
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.id==="x") $("sheet").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape") $("sheet").hidden=true;});
+render();
+</script>
+
+</body></html>
