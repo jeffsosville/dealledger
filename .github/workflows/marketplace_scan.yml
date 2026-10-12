@@ -1,0 +1,35 @@
+name: Marketplace link scan
+
+# One-off / occasional: which brokers' own websites send buyers to a
+# marketplace instead of listing on their site. Reads broker pages only.
+# Results: broker_marketplace_links. Manual dispatch only.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install curl_cffi==0.16.3 beautifulsoup4 requests supabase
+      - name: Scan
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SHARD: ${{ matrix.shard }}
+          SHARDS: "4"
+          DRY_RUN: "1"
+        run: timeout --signal=INT 80m python3 -u agents/marketplace_scan.py
