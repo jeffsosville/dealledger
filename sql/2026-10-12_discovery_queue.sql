@@ -94,10 +94,15 @@ as $$
   (select b.domain, b.listing_url, 'producing'
      from broker_sources b
     where b.discovery_stage = '4_producing'
-      and b.last_success_at > now() - interval '14 days'
       and b.listing_url ~* '^https?://'
       and norm_domain(b.listing_url) = b.domain
       and b.listing_url !~* '^https?://[^/]+/?$'
+      -- last_success_at hasn't been maintained since March; use listings.
+      and exists (select 1 from listings_direct l
+                   where l.broker_domain in (b.domain, 'www.' || b.domain)
+                     and l.status = 'active' and l.published
+                     and l.last_seen > now() - interval '7 days'
+                   having count(*) >= 3)
     order by md5(b.domain)
     limit n)
   union

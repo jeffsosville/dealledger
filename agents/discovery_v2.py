@@ -264,6 +264,20 @@ _DETAIL_PATH = re.compile(
     r"|/\d{3,}(?:[/-]|$)", re.I)
 
 
+_BLOG_PATH = re.compile(r"/(?:19|20)\d\d/\d\d/|/(?:blog|news|articles?|insights|resources|podcast)/[^/]+", re.I)
+
+
+def _is_detail_page(pu):
+    """A single listing's page: listing-ish segment followed by a slug/id."""
+    path = pu.path.rstrip("/")
+    segs = [x for x in path.split("/") if x]
+    if len(segs) < 2:
+        return False
+    return bool(_DETAIL_PATH.search(path + ("?" + pu.query if pu.query else ""))) and \
+        not re.search(r"(?:listings?|for-sale|businesses|opportunities|search|results|buy)$",
+                      segs[-1], re.I)
+
+
 def count_detail_links(html, page_url):
     """Distinct same-site links that look like individual listing pages."""
     try:
@@ -329,6 +343,8 @@ _NARROW_RE = re.compile(r"(?<![a-z])(?:" + "|".join(re.escape(n) for n in _LINK_
 
 
 def score_link(label, path):
+    if _BLOG_PATH.search(path or ""):
+        return 0
     blob = f"{(label or '').lower()} {(path or '').lower()}"
     score = 0
     for kw, pts in _LINK_KEYWORDS:
@@ -1115,10 +1131,25 @@ def _find_listings_page_once(base_url, verbose=False):
         m = HEAD_METRICS.get(url, {})
         tested[url] = ok
         if ok:
+            pu = urlparse(m.get("final_url") or url)
+            strength = m.get("strength", 0)
+            # Benchmark 2026-10-12: blog posts and single-listing pages were
+            # outranking the index (samgoldenberg, xiteco, ninbb). An index
+            # links to listings; it isn't one.
+            if _BLOG_PATH.search(pu.path):
+                reasons.append(f"{pu.path}: blog post")
+                tested[url] = False
+                return False
+            if _is_detail_page(pu):
+                strength *= 0.25
+            # Category / filtered views (vestedbb /transportation-..., ?type=)
+            # lose ties to the full index.
+            if pu.query or re.search(r"/\d+/?$", pu.path):
+                strength *= 0.8
             LAST_FIND["candidates"].append({
-                "url": url, "source": source, "strength": m.get("strength", 0),
+                "url": url, "source": source, "strength": round(strength, 1),
                 "prices": m.get("prices", 0), "details": m.get("details", 0),
-                "js": bool(m.get("js"))})
+                "js": bool(m.get("js")), "detail_page": _is_detail_page(pu)})
         else:
             reasons.append(f"{urlparse(url).path or '/'}: {why}")
         return ok
@@ -1234,12 +1265,25 @@ def _find_listings_page_once(base_url, verbose=False):
         return best()
 
     # ── Stage 4: guess, politely ──
+    guessed = []
     for path in LISTINGS_PATHS:
         if try_url(root + path, "path guess"):
+            guessed.append(root + path)
             m = HEAD_METRICS.get(root + path, {})
             if m.get("prices", 0) >= 3 or m.get("details", 0) >= 3:
                 break
         time.sleep(0.3)
+    # A site that answers every guessed path with the same app shell is a
+    # catch-all, not 3+ listings pages (dbi-businessadvisors, franchiseclearly
+    # in the 2026-10-12 benchmark). Guesses with no listing signal are dropped.
+    weak = [u for u in guessed
+            if HEAD_METRICS.get(u, {}).get("prices", 0) < 3
+            and HEAD_METRICS.get(u, {}).get("details", 0) < 3]
+    if len(weak) >= 3:
+        LAST_FIND["candidates"] = [c for c in LAST_FIND["candidates"]
+                                   if c["url"] not in weak]
+        reasons.append(f"path guesses: catch-all ({len(weak)} paths answer alike)")
+        LAST_FIND["js_rendered"] = any(HEAD_METRICS.get(u, {}).get("js") for u in weak)
     if LAST_FIND["candidates"]:
         return best()
 

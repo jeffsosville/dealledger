@@ -125,6 +125,19 @@ GATE = {
     "re_ratio": float(os.environ.get("RE_RATIO", "2.0")),
 }
 
+# Franchise networks scraped at corporate level by specialized_scrape.yml.
+# A local office that redirects or links into one of these is covered there
+# (Jeff, 2026-10-12: capture franchises at corp level, archive local offices).
+FRANCHISE_CORP = {"tworld.com", "sunbeltnetwork.com", "fcbb.com",
+                  "murphybusiness.com", "vrbusinessbrokers.com",
+                  "hedgestone.com", "linkbusiness.com"}
+
+
+def _corp(host):
+    host = (host or "").lower().removeprefix("www.")
+    return next((c for c in FRANCHISE_CORP if host == c or host.endswith("." + c)), None)
+
+
 # Statuses that mean "don't bother again unless explicitly asked".
 # 'proposed' waits for a human; 'rejected' was decided by one.
 TERMINAL = {"ok", "dead", "auth_required", "no_listings_page", "proposed", "rejected"}
@@ -301,6 +314,7 @@ STAGE_FOR = {
     # Couldn't complete a probe (timeout, fetch error): not evidence of
     # anything. Parked at 0_unusable and re-checked by v_discovery_queue.
     "discovery_failed": ("0_unusable", "unusable"),
+    "franchise_covered": ("0_unusable", "unusable"),
 }
 
 
@@ -570,6 +584,15 @@ def main():
             any(e in r for e in ("SSLError", "ConnectionError", "Timeout"))
             for r in reasons[:3])
 
+        corp = _corp(landed_host) or _corp(urlparse(listings_url or "").netloc)
+        if corp:
+            print(f"    franchise office -> {corp} (covered by the corporate feed)")
+            tally["franchise_covered"] = tally.get("franchise_covered", 0) + 1
+            save(domain, base, listings_url, "franchise_covered", notes=f"covered by {corp}")
+            update_source(row, "franchise_covered", error=f"COVERED_BY {corp}")
+            time.sleep(1.0)
+            continue
+
         if not listings_url and landed_host and landed_host != domain.removeprefix("www."):
             # Vanity domain that forwards to another site (tworldhouston.com ->
             # tworld.com/locations/...). That site is crawled under its own
@@ -665,6 +688,14 @@ def main():
             path = urlparse(listings_url).path.lower()
             archive = next((b for b in _ARCHIVE_PATH_BITS if b in path), None)
             ev = page_evidence(dv, listings_url, domain)
+            fh = _host(ev.get("final_url"))
+            if ev.get("off_domain") and fh and landed_host and (
+                    fh == landed_host or fh.endswith("." + landed_host)):
+                # The broker's own homepage redirects to this domain: the
+                # site moved (closeforlife -> close4life, kingsg ->
+                # kingsleybrokers). Not a third-party page.
+                ev["off_domain"] = False
+                ev["moved_to"] = fh
             why = suspicious(listings_url, method, platform,
                              result if isinstance(result, dict) else {})
             fails = gate_failures(ev, int(found or 0), archive, why)
