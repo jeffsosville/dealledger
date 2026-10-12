@@ -162,7 +162,9 @@ BROKERS = {
         "account": "3477",
         "display_name": "Eatz & Associates",
         "fn": lambda: FacetWPScraper("eatz-associates.com", "listings",
-                                     {"status": ["for-sale", "new-listing"]},
+                                     # under-contract is still listed (Oct 12: 11 such listings had
+                                     # been marked sold because this list left them out).
+                                     {"status": ["for-sale", "new-listing", "under-contract"]},
                                      link_match="/listings/").scrape("3477"),
     },
 }
