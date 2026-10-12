@@ -699,6 +699,14 @@ def main():
             why = suspicious(listings_url, method, platform,
                              result if isinstance(result, dict) else {})
             fails = gate_failures(ev, int(found or 0), archive, why)
+            # 2026-10-12 first run: three auto-promotions were a single
+            # listing or a seller guide page (smithallengroup, childcarebrokers).
+            # Only an index page may be auto-promoted.
+            pu = urlparse(ev.get("final_url") or listings_url)
+            if getattr(dv, "_is_detail_page", None) and dv._is_detail_page(pu):
+                fails.append("single listing page, not the listings index")
+            if re.search(r"by-owner|fsbo|selling-a-|sell-your|how-to|guide|blog/", pu.path, re.I):
+                fails.append(f"{pu.path} is a seller or guide page")
             evidence = {**ev, "items_parsed": int(found or 0), "method": method,
                         "platform": platform, "fingerprint_note": why,
                         "candidates": (getattr(dv, "LAST_FIND", {}).get("candidates") or [])[:4],
