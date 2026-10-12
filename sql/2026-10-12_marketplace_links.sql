@@ -16,3 +16,7 @@ create table if not exists broker_marketplace_links (
 alter table broker_marketplace_links enable row level security;
 drop policy if exists bml_read on broker_marketplace_links;
 create policy bml_read on broker_marketplace_links for select to anon using (true);
+
+-- Outdated-site signals (added 2026-10-12)
+alter table broker_marketplace_links add column if not exists site_signals jsonb;
+alter table broker_marketplace_links add column if not exists dated_score int;

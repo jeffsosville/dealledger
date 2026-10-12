@@ -40,6 +40,38 @@ MARKETS = {
 PHONE = re.compile(r"\(?\b\d{3}\)?[ .-]\d{3}[ .-]\d{4}\b")
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[a-z]{2,}", re.I)
 PRICE = re.compile(r"\$\s?\d{1,3}(?:,\d{3})+")
+COPY = re.compile(r"(?:©|&copy;|copyright)\s*(?:\d{4}\s*[-–]\s*)?(\d{4})", re.I)
+BUILDERS = re.compile(r"ionos|1and1|initial-website|godaddy|websitebuilder|homestead|"
+                      r"weebly|yola|webs\.com|jimdo|site123|frontpage|dreamweaver", re.I)
+PLACEHOLDER = re.compile(r"lorem ipsum|123 fifth avenue|sample (?:page|listing)|"
+                         r"your (?:company|business) name|coming soon|under construction", re.I)
+
+
+def site_signals(url, html, final_url):
+    """How dated the broker's site looks, from its homepage. Higher = more dated."""
+    low = (html or "")[:400_000].lower()
+    sig = {}
+    sig["https"] = (final_url or url or "").startswith("https://")
+    sig["mobile"] = 'name="viewport"' in low or "name='viewport'" in low
+    yrs = [int(y) for y in COPY.findall(html or "") if 1995 <= int(y) <= 2030]
+    sig["copyright_year"] = max(yrs) if yrs else None
+    b = BUILDERS.search(low)
+    sig["builder"] = b.group(0) if b else None
+    p = PLACEHOLDER.search(low)
+    sig["placeholder"] = p.group(0) if p else None
+    sig["tables_layout"] = low.count("<table") >= 3 and low.count("<div") < 40
+    sig["flash_or_frames"] = bool(re.search(r"<frameset|\.swf|<marquee|<font\b", low))
+    score = 0
+    score += 0 if sig["https"] else 2
+    score += 0 if sig["mobile"] else 3
+    y = sig["copyright_year"]
+    score += 0 if (y is None or y >= 2024) else (1 if y >= 2021 else 2)
+    score += 1 if sig["builder"] else 0
+    score += 2 if sig["placeholder"] else 0
+    score += 1 if sig["tables_layout"] else 0
+    score += 1 if sig["flash_or_frames"] else 0
+    sig["dated_score"] = score
+    return sig
 
 
 def candidates():
@@ -124,6 +156,8 @@ def scan(row):
         res["listings_page"] = best_page
         res["page_listing_count"] = best_count
         text = re.sub(r"<[^>]+>", " ", home)
+        res["site_signals"] = site_signals(landed, home, res.get("final_url"))
+        res["dated_score"] = res["site_signals"]["dated_score"]
         res["phones"] = list(dict.fromkeys(PHONE.findall(text)))[:3]
         res["emails"] = [e for e in dict.fromkeys(EMAIL.findall(text))
                          if not re.search(r"\.(png|jpg|gif|webp)$|example|sentry|wixpress", e, re.I)][:3]
@@ -134,7 +168,7 @@ def scan(row):
 
 COLS = ("domain", "checked_at", "homepage_status", "final_url", "marketplaces",
         "marketplace_links", "listings_page", "page_listing_count", "company_name",
-        "phones", "emails", "note")
+        "phones", "emails", "note", "site_signals", "dated_score")
 
 
 def save(rows):
