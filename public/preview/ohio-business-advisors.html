@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ohio Business Advisors Listings Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: their green utility bar → logo + nav → title band → filters → listing cards → detail sheet; matches prioritybusinessbrokers.com */
+:root{
+  --green:#2120bb; --green-deep:#0a0118; --ink:#2b2b2b; --muted:#666e69; --line:#dcdce6;
+  --bg:#ffffff; --tint:#f3f3f8; --surface:#ffffff; --on-green:#ffffff;
+  --f-serif:"Outfit", "Helvetica Neue", Arial, sans-serif;
+  --f-ui:"Inter", "Helvetica Neue", Arial, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-ui);margin:0}
+.mock{background:#fff7d6;color:#4a3d00;font:13px var(--f-ui);padding:8px 16px;text-align:center}
+.util{background:var(--green);color:var(--on-green);display:flex;justify-content:space-between;align-items:center;padding:10px clamp(16px,2vw,28px);gap:12px}
+.social{display:flex;gap:16px;font:600 14px var(--f-ui)}
+.social span{opacity:.95}
+.val{background:var(--bg);color:var(--green);font:600 14px var(--f-serif);letter-spacing:.04em;text-transform:uppercase;padding:9px 20px;border-radius:999px;white-space:nowrap}
+.nav{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 28px;padding:18px clamp(16px,2vw,28px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+.logo .p{width:58px;height:58px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font:700 34px/1 var(--f-serif);background:radial-gradient(circle at 70% 40%,var(--green) 0 30%,transparent 31%);color:var(--ink)}
+.logo .w{display:grid;line-height:1}
+.logo .w b{font:700 clamp(22px,3vw,30px)/1.1 var(--f-serif)}
+.logo .w small{font:500 14px/1.2 var(--f-ui);margin-top:4px}
+.links{display:flex;flex-wrap:wrap;gap:6px 28px;font:500 18px var(--f-serif)}
+.links span{color:var(--ink)}
+.links .on{color:var(--green)}
+.band{background:var(--tint);padding:36px 16px 28px;text-align:center;border-bottom:1px solid var(--line)}
+.band h1{margin:0;font:700 clamp(28px,4vw,42px)/1.15 var(--f-serif);color:var(--ink);text-wrap:balance}
+.band p{margin:10px auto 0;max-width:62ch;color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:24px 48px}
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:20px}
+.filters label{display:grid;gap:4px;font:600 13px var(--f-ui);color:var(--muted)}
+select,input{font:16px var(--f-ui);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+#q{min-width:min(260px,100%)}
+.count{margin-left:auto;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.cat{font:600 12px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.card h2{margin:0;font:600 20px/1.3 var(--f-serif);text-wrap:balance}
+.loc{font-size:15px;color:var(--muted)}
+.desc{margin:0;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid var(--line)}
+.ask{display:grid;line-height:1.2}
+.ask small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ask b{font:700 22px var(--f-serif);font-variant-numeric:tabular-nums}
+.btn{font:600 15px var(--f-serif);letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:transparent;border:2px solid var(--green);border-radius:999px;padding:7px 16px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--green);color:var(--on-green)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:6px}
+footer{background:var(--green);color:var(--on-green);padding:22px 16px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;font-size:14px;text-align:center}
+.sheet{position:fixed;inset:0;background:rgba(10,20,14,.5);display:flex;justify-content:flex-end;z-index:9}
+.sheet[hidden]{display:none}
+.panel{background:var(--surface);width:min(580px,100%);height:100%;overflow-y:auto;padding:26px 24px calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font:700 26px/1.25 var(--f-serif);text-wrap:balance}
+.panel .x{align-self:flex-end}
+.panel p{margin:0;max-width:65ch}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;background:var(--tint);border-radius:6px;padding:16px}
+.facts div{display:grid}
+.facts small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts b{font:600 18px var(--f-serif)}
+.contact{border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:6px}
+.contact h3{margin:0;font:600 18px var(--f-serif)}
+.note{font-size:13px;color:var(--muted)}
+@media (max-width:640px){.links{font-size:16px;gap:4px 16px}.logo .w b{font-size:28px}.val{font-size:12px;padding:7px 12px}}
+</style>
+
+</head><body>
+<div class="mock"><b>Preview made by DealLedger for Ohio Business Advisors.</b> Your 15 available listings and 5 recent sales as a page on your own site. Not public yet.</div>
+<div class="util">
+  <div class="social" aria-label="Social links"><span>f</span><span>ig</span><span>in</span></div>
+  <span class="val">Request consultation</span>
+</div>
+<div class="nav">
+  <span class="logo" aria-label="Ohio Business Advisors"><span class="w"><b style="color:var(--green)">Ohio Business Advisors</b><small style="color:var(--muted)">You only sell once. Trust experience. · Since 1997</small></span></span>
+  <nav class="links"><span>Home</span><span>About</span><span>Services We Offer</span><span class="on">Businesses For Sale</span><span>Podcast</span><span>Contact</span></nav>
+</div>
+<section class="band">
+  <h1>Businesses for Sale</h1>
+  <p>Every business Ohio Business Advisors is currently representing, listed here first. Owner-operated businesses across Ohio and the Midwest, sold confidentially.</p>
+</section>
+<main class="wrap">
+  <div class="filters">
+    <label for="q">Search<input id="q" type="search" placeholder="HVAC, machine shop, Columbus…"></label>
+    <label for="f-cat">Industry<select id="f-cat"><option value="">All industries</option></select></label>
+    <label for="f-st">Location<select id="f-st"><option value="">All locations</option></select></label>
+    <label for="f-price">Asking price<select id="f-price">
+      <option value="">Any price</option><option value="0-500000">Under $500K</option><option value="500000-1500000">$500K – $1.5M</option>
+      <option value="1500000-5000000">$1.5M – $5M</option><option value="5000000-1e12">$5M and up</option></select></label>
+    <label for="f-sold">Show<select id="f-sold"><option value="">Available and sold</option><option value="avail">Available only</option></select></label>
+    <label for="f-sort">Sort<select id="f-sort"><option value="">As listed</option><option value="lo">Price, low to high</option><option value="hi">Price, high to low</option></select></label>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>
+  <span>Listed directly by Ohio Business Advisors · confidentialsale.com</span>
+  <span>Also included in the DealLedger open index of US businesses for sale</span>
+</footer>
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="d-title"></div></div>
+
+<script>
+const ITEMS = [{"title": "Residential Cabinetry Company", "loc": "Columbus, OH", "desc": "**Owner-Operated**This means: you own, you run, you work it! You do not invest in most businesses that business brokers sell out there. Majority are E-Myth By Michael Gerber Businesses that's why business brokers are selling them. **This is...", "price": 985000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 1}, {"title": "Established Residential & Commercial HVAC", "loc": "Columbus, OH", "desc": "This Established HVAC company offers 30+ years of reliable service and provides comprehensive HVAC services; including installation, repair, and maintenance of furnaces, heat pumps, air conditioners, mini\u2010splits, zoning systems, and indoor air...", "price": 130000, "sold": false, "cat": "Construction & Trades", "franchise": false, "id": 2}, {"title": "General Contractor", "loc": "Ohio", "desc": "This established Midwest based construction company has built a strong reputation for reliability, adaptability, and high quality project execution across different governmental and state agencies. The company\u2019s team has been intentionally developed...", "price": 5700000, "sold": false, "cat": "Construction & Trades", "franchise": false, "id": 3}, {"title": "Established Machine Shop", "loc": "Columbus, OH", "desc": "***NOTE PLEASE READ THIS BEFORE YOU RESPOND***Please do not make this business more complicated that what you expect this to be. This is a \"JOB SHOP\" and if you don't know what that means, please do not inquire about this business. This is an...", "price": 130000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 4}, {"title": "Established Learning Centers - 2 Locations - Franchised", "loc": "Ohio", "desc": "These two franchised learning centers have been serving Southern Ohio families for decades, offering a full suite of academic services including phonics, reading, writing, mathematics, study skills, and standardized test preparation for ACT, SAT,...", "price": 600000, "sold": false, "cat": "Health & Education", "franchise": true, "id": 5}, {"title": "Established Flooring, Kitchen & Bath Remodeler", "loc": "Ohio", "desc": "This fully established, family-owned flooring and remodeling company has been a trusted, go to vendor in the region for decades. The owners work full time in the business, overseeing finance, operations, sales, and marketing. Their commitment to...", "price": 2400000, "sold": false, "cat": "Construction & Trades", "franchise": false, "id": 6}, {"title": "Limousine & Luxury Transportation Service", "loc": "Ohio", "desc": "This Ohio-based luxury transportation company has been synonymous with celebration, reliability, and style for nearly two decades. Founded in the early 2000s, the business has built a strong reputation for delivering memorable experiences-from...", "price": 1700000, "sold": false, "cat": "Transportation", "franchise": false, "id": 7}, {"title": "Premier Active Stone Quarry - NOT A FIT for ETA/Searcher Buyers", "loc": "Indiana", "desc": "***Please Note This Business Is Not A Fit For ETA and Searcher Buyers - Do Not Inquire Unless You have Industry Experience*** This established, fully permitted limestone quarry presents a rare opportunity to acquire a premier operation with...", "price": 3500000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 8}, {"title": "Specialized Home Decor", "loc": "Columbus, OH", "desc": "This established niche retail shop is located in a culturally rich destination area that attracts visitors from across the region. The store has become a well known stop for customers throughout Northern and Central Ohio, West Virginia, and beyond...", "price": 72000, "sold": false, "cat": "Retail & E-commerce", "franchise": false, "id": 9}, {"title": "SW Ohio Home Health Care **Do Not Respond If You Require a CIM**", "loc": "Cincinnati, OH", "desc": "**First Off Do Not Respond If You Require a CIM, As You Will Never Be The Right Buyer** This rapidly expanding home health care agency has become a trusted provider across Cincinnati, Dayton, and surrounding areas. With a nearly 100% ODM Medicaid...", "price": 4000000, "sold": false, "cat": "Health & Education", "franchise": false, "id": 10}, {"title": "Exceptional Dumpster Business in Tennessee", "loc": "Tennessee", "desc": "***This is a \"cap ex\" intensive operation. The SDE amount you are seeing is comprised mostly by equipment depreciation. Potential buyer will need to have liquidity and understanding for Cap Ex intensive operation*** ***IMPORTANT NOTE****THIS...", "price": 4200000, "sold": false, "cat": "Construction & Trades", "franchise": false, "id": 11}, {"title": "Established Dental Lab", "loc": "Columbus, OH", "desc": "Established and proudly operated by the same family for decades, this boutique dental laboratory has built a reputation for excellence across Ohio and the Midwest. The current owner has successfully led the business for 30+ years, maintaining the...", "price": 1500000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 12}, {"title": "Lumber & Building Supplies", "loc": "Ohio", "desc": "A trusted and enduring retail lumber and building supplies with pole barn design and build business, is being offered confidentially for sale. The business has cultivated strong relationships with local builders throughout the surrounding region...", "price": 1514000, "sold": false, "cat": "Construction & Trades", "franchise": false, "id": 13}, {"title": "Custom Furniture Manufacturer", "loc": "Ohio", "desc": "Nestled in the heart of Northeast Ohio, this esteemed privately-owned furniture manufacturing company has been crafting high-quality, mid-priced upholstered furniture for nearly 30 years. Specializing in customizable orders, this business caters to...", "price": 450000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 14}, {"title": "Metal Manufacturing & Stamping Company*Not For Search Fund Buyers/ETA*", "loc": "Cleveland, OH", "desc": "OWNER OPERATED ***PLEASE NOTE IF YOU ARE A SEARCH FUND OR ETA BUYER DO NOT INQUIRE ABOUT THIS LISTING***Established nearly 25 years ago, this owner-operated metal manufacturing and stamping company has successfully navigated economic challenges,...", "price": 950000, "sold": false, "cat": "Manufacturing", "franchise": false, "id": 15}, {"title": "Established and Scalable Virtual Assistant Business", "loc": "Columbus, OH", "desc": "***This business has been SOLD*** The business is offering a strong brand reputation and diverse clientele across multiple sectors. From administrative support to marketing and bookkeeping, this remote-operated business provides scalable solutions...", "price": 540000, "sold": true, "cat": "Services", "franchise": false, "id": 16}, {"title": "Established Print Production", "loc": "Columbus, OH", "desc": "***We are pleased to announce that this business has been SOLD*** This established print production business has operated for 40 years, serving a stable B2B customer base. It includes significant printing equipment, a delivery vehicle, and five...", "price": 475000, "sold": true, "cat": "Manufacturing", "franchise": false, "id": 17}, {"title": "Niche Online Close-Out Merchandise Business", "loc": "Columbus, OH", "desc": "***We are pleased to announce that this business has been SOLD*** This thriving business presents a remarkable opportunity for a visionary new owner to step into a well-established platform with strong customer engagement and proven revenue...", "price": 4000000, "sold": true, "cat": "Retail & E-commerce", "franchise": false, "id": 18}, {"title": "Junk Removal Business", "loc": "Columbus, OH", "desc": "***We are pleased to announce that this business has been SOLD*** This well-established, owner-operated junk removal and light demolition business is positioned for expansion in a high-demand market. Serving the Central Ohio area, the company...", "price": 450000, "sold": true, "cat": "Construction & Trades", "franchise": false, "id": 19}, {"title": "Progressive Home Health Care Owned By Non-Healthcare Professional", "loc": "Columbus, OH", "desc": "***We are pleased to announce that this business has been SOLD*** A truly well-run and operated home healthcare business, the owner has been running the business as a \"manageable\" business. You will have the elements to capitalize on the on the...", "price": 925000, "sold": true, "cat": "Health & Education", "franchise": false, "id": 20}];
+const ST = {"Tennessee":"TN","Wisconsin":"WI","Texas":"TX","Utah":"UT","California":"CA","Virginia":"VA","Alabama":"AL","Pennsylvania":"PA","South Carolina":"SC","North Carolina":"NC"};
+const stateOf = l => l.loc;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money = n => "$" + n.toLocaleString("en-US");
+[...new Set(ITEMS.map(x=>x.cat))].sort().forEach(c=>$("f-cat").add(new Option(c,c)));
+[...new Set(ITEMS.map(stateOf))].sort().forEach(s=>$("f-st").add(new Option(s,s)));
+
+function render(){
+  const q=$("q").value.trim().toLowerCase(), c=$("f-cat").value, s=$("f-st").value, p=$("f-price").value, so=$("f-sort").value;
+  const [lo,hi]=p?p.split("-").map(Number):[0,Infinity];
+  let rows=ITEMS.filter(x=>($("f-sold").value!=="avail"||!x.sold)&&(!c||x.cat===c)&&(!s||stateOf(x)===s)&&x.price>=lo&&x.price<hi&&(!q||(x.title+" "+x.desc+" "+x.loc).toLowerCase().includes(q)));
+  if(so) rows=[...rows].sort((a,b)=>so==="lo"?a.price-b.price:b.price-a.price);
+  $("grid").innerHTML = rows.length ? rows.map(x=>`<article class="card">
+      <span class="cat">${esc(x.cat)}${x.franchise?" · Franchise":""}${x.sold?' · <b style="color:#a3401c">Sold, per broker</b>':""}</span>
+      <h2>${esc(x.title)}</h2>
+      <span class="loc">${esc(x.loc)}</span>
+      <p class="desc">${esc(x.desc)}</p>
+      <div class="bottom"><span class="ask"><small>Asking price</small><b>${money(x.price)}</b></span>
+      <button class="btn" data-id="${x.id}">View listing</button></div></article>`).join("")
+    : `<div class="empty">No listings match. Clear a filter to see more.</div>`;
+  $("count").textContent = rows.length + (rows.length===1?" listing":" listings");
+}
+["q","f-cat","f-st","f-price","f-sort","f-sold"].forEach(id=>$(id).addEventListener("input",render));
+
+function open(id){
+  const x=ITEMS.find(i=>i.id==id);
+  $("panel").innerHTML=`<button class="btn x" id="x">Close</button>
+    <span class="cat">${esc(x.cat)}${x.franchise?" · Franchise":""} · Listing ${String(x.id).padStart(3,"0")}</span>
+    <h2 id="d-title">${esc(x.title)}</h2>
+    <span class="loc">${esc(x.loc)}</span>
+    <div class="facts">
+      <div><small>Asking price</small><b>${money(x.price)}</b></div>
+      <div><small>Status</small><b>${x.sold?"Sold (broker’s label)":"Available"}</b></div>
+      <div><small>Cash flow</small><b>After NDA</b></div>
+      <div><small>Gross revenue</small><b>After NDA</b></div>
+    </div>
+    <p>${esc(x.desc)}</p>
+    <div class="contact"><h3>Ask about this business</h3>
+      <span>Emmet Apolinario, CEPA, CVB · emmet@confidentialsale.com</span>
+      <span style="user-select:all">614-207-0762</span>
+      <span class="note">Financials and the business name are shared after you sign a confidentiality agreement.</span>
+    </div>
+    <p class="note">This listing is published directly by Ohio Business Advisors on their own website.</p>`;
+  $("sheet").hidden=false; $("x").focus();
+}
+$("grid").addEventListener("click",e=>{const b=e.target.closest(".btn"); if(b) open(b.dataset.id);});
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.id==="x") $("sheet").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape") $("sheet").hidden=true;});
+render();
+</script>
+
+</body></html>
