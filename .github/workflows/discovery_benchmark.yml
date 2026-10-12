@@ -1,0 +1,36 @@
+name: Discovery benchmark
+
+# Runs agents/discovery_benchmark.py: find_listings_page() from the bare
+# homepage against brokers whose listings page is already known (producing
+# brokers + manual review verdicts). Results land in discovery_benchmark.
+# Writes nothing to broker_sources. Manual / pg_cron dispatch only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: "Producing brokers to sample (review verdicts are always added)"
+        default: "100"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install curl_cffi==0.16.3 beautifulsoup4 requests supabase
+      - name: Benchmark
+        env:
+          PYTHONUNBUFFERED: "1"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SAMPLE: ${{ inputs.sample || '100' }}
+          DRY_RUN: "1"
+        run: timeout --signal=INT 110m python3 -u agents/discovery_benchmark.py

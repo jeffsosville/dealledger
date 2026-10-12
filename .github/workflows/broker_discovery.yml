@@ -22,6 +22,12 @@ name: Daily broker discovery
 #
 # Re-enabled 2026-09-24. It had been manual-only since 2026-09-15 and the
 # queue sat at 1,384 unprobed brokers.
+#
+# 2026-10-12: the queue never runs dry. v_discovery_queue serves new brokers
+# first, then earlier failures (no listings page, dead, blocked, failed
+# probes) whose last probe is older than the cooldown. Runs as 6 parallel
+# shards x 120 domains, twice a day (pg_cron 06:23 and 18:23 UTC), so
+# ~1,400 domains a day.
 
 on:
   # Scheduled by Supabase pg_cron job 'gh-broker-discovery' (06:23 UTC) via dispatch_workflow():
@@ -29,8 +35,8 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: "Domains to probe"
-        default: "75"
+        description: "Domains to probe per shard"
+        default: "120"
       seed:
         description: "Only broker_sources rows whose seed_source contains this (blank = all)"
         default: ""
@@ -41,10 +47,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: broker-discovery
+  cancel-in-progress: false
+
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 200
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -66,8 +80,8 @@ jobs:
           echo "::error::playwright install-deps failed three times"
           exit 1
 
-      # Each domain has a 90s watchdog, so 75 domains is ~110 min worst case;
-      # most resolve in seconds. timeout sends SIGINT inside the job limit.
+      # Each domain has a 150s watchdog; most resolve in well under 30s.
+      # timeout sends SIGINT inside the job limit.
       # Every result is written to broker_sources as it is found, so a
       # timed-out run keeps what it resolved.
       - name: Discover listings pages
@@ -77,15 +91,17 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SOURCE: broker_sources
           SEED: ${{ inputs.seed || '' }}
-          LIMIT: ${{ inputs.limit || '75' }}
+          LIMIT: ${{ inputs.limit || '120' }}
           DRY_RUN: ${{ inputs.dry_run || '0' }}
+          SHARD: ${{ matrix.shard }}
+          SHARDS: "6"
         run: |
           set +e
-          timeout --signal=INT 130m python3 -u agents/discover_backlog.py
+          timeout --signal=INT 180m python3 -u agents/discover_backlog.py
           CODE=$?
           set -e
           if [ $CODE -eq 124 ]; then
-            echo "::warning::discovery hit the 130-minute guard; results so far are saved."
+            echo "::warning::discovery hit the 180-minute guard; results so far are saved."
           elif [ $CODE -ne 0 ]; then
             echo "::error::discover_backlog.py exited with code $CODE"
             exit $CODE
