@@ -1,0 +1,108 @@
+tag,url,notes
+tabb,https://www.tabb.org/,Texas Association of Business Brokers (home; script follows find-a-broker link)
+mbbi,https://mbbi.org/,Midwest Business Brokers & Intermediaries (Wild Apricot; directory may need JS)
+gabb,https://gabb.org/,Georgia Association of Business Brokers
+cabb,https://cabb.org/,California Association of Business Brokers
+bbf,https://bbfmls.com/,Business Brokers of Florida - discovery seed only never a listing source
+masource_al,https://masource.org/state/alabama/,M&A Source state page
+masource_ak,https://masource.org/state/alaska/,M&A Source state page
+masource_az,https://masource.org/state/arizona/,M&A Source state page
+masource_ar,https://masource.org/state/arkansas/,M&A Source state page
+masource_ca,https://masource.org/state/california/,M&A Source state page
+masource_co,https://masource.org/state/colorado/,M&A Source state page
+masource_ct,https://masource.org/state/connecticut/,M&A Source state page
+masource_de,https://masource.org/state/delaware/,M&A Source state page
+masource_dc,https://masource.org/state/district-of-columbia/,M&A Source state page
+masource_fl,https://masource.org/state/florida/,M&A Source state page
+masource_ga,https://masource.org/state/georgia/,M&A Source state page
+masource_hi,https://masource.org/state/hawaii/,M&A Source state page
+masource_id,https://masource.org/state/idaho/,M&A Source state page
+masource_il,https://masource.org/state/illinois/,M&A Source state page
+masource_in,https://masource.org/state/indiana/,M&A Source state page
+masource_ia,https://masource.org/state/iowa/,M&A Source state page
+masource_ks,https://masource.org/state/kansas/,M&A Source state page
+masource_ky,https://masource.org/state/kentucky/,M&A Source state page
+masource_la,https://masource.org/state/louisiana/,M&A Source state page
+masource_me,https://masource.org/state/maine/,M&A Source state page
+masource_md,https://masource.org/state/maryland/,M&A Source state page
+masource_ma,https://masource.org/state/massachusetts/,M&A Source state page
+masource_mi,https://masource.org/state/michigan/,M&A Source state page
+masource_mn,https://masource.org/state/minnesota/,M&A Source state page
+masource_ms,https://masource.org/state/mississippi/,M&A Source state page
+masource_mo,https://masource.org/state/missouri/,M&A Source state page
+masource_mt,https://masource.org/state/montana/,M&A Source state page
+masource_ne,https://masource.org/state/nebraska/,M&A Source state page
+masource_nv,https://masource.org/state/nevada/,M&A Source state page
+masource_nh,https://masource.org/state/new-hampshire/,M&A Source state page
+masource_nj,https://masource.org/state/new-jersey/,M&A Source state page
+masource_nm,https://masource.org/state/new-mexico/,M&A Source state page
+masource_ny,https://masource.org/state/new-york/,M&A Source state page
+masource_nc,https://masource.org/state/north-carolina/,M&A Source state page
+masource_nd,https://masource.org/state/north-dakota/,M&A Source state page
+masource_oh,https://masource.org/state/ohio/,M&A Source state page
+masource_ok,https://masource.org/state/oklahoma/,M&A Source state page
+masource_or,https://masource.org/state/oregon/,M&A Source state page
+masource_pa,https://masource.org/state/pennsylvania/,M&A Source state page
+masource_ri,https://masource.org/state/rhode-island/,M&A Source state page
+masource_sc,https://masource.org/state/south-carolina/,M&A Source state page
+masource_sd,https://masource.org/state/south-dakota/,M&A Source state page
+masource_tn,https://masource.org/state/tennessee/,M&A Source state page
+masource_tx,https://masource.org/state/texas/,M&A Source state page
+masource_ut,https://masource.org/state/utah/,M&A Source state page
+masource_vt,https://masource.org/state/vermont/,M&A Source state page
+masource_va,https://masource.org/state/virginia/,M&A Source state page
+masource_wa,https://masource.org/state/washington/,M&A Source state page
+masource_wv,https://masource.org/state/west-virginia/,M&A Source state page
+masource_wi,https://masource.org/state/wisconsin/,M&A Source state page
+masource_wy,https://masource.org/state/wyoming/,M&A Source state page
+ibba_al,https://www.ibba.org/state/alabama/,IBBA re-pull for members added since 2026-09-15
+ibba_ak,https://www.ibba.org/state/alaska/,IBBA re-pull for members added since 2026-09-15
+ibba_az,https://www.ibba.org/state/arizona/,IBBA re-pull for members added since 2026-09-15
+ibba_ar,https://www.ibba.org/state/arkansas/,IBBA re-pull for members added since 2026-09-15
+ibba_ca,https://www.ibba.org/state/california/,IBBA re-pull for members added since 2026-09-15
+ibba_co,https://www.ibba.org/state/colorado/,IBBA re-pull for members added since 2026-09-15
+ibba_ct,https://www.ibba.org/state/connecticut/,IBBA re-pull for members added since 2026-09-15
+ibba_de,https://www.ibba.org/state/delaware/,IBBA re-pull for members added since 2026-09-15
+ibba_dc,https://www.ibba.org/state/district-of-columbia/,IBBA re-pull for members added since 2026-09-15
+ibba_fl,https://www.ibba.org/state/florida/,IBBA re-pull for members added since 2026-09-15
+ibba_ga,https://www.ibba.org/state/georgia/,IBBA re-pull for members added since 2026-09-15
+ibba_hi,https://www.ibba.org/state/hawaii/,IBBA re-pull for members added since 2026-09-15
+ibba_id,https://www.ibba.org/state/idaho/,IBBA re-pull for members added since 2026-09-15
+ibba_il,https://www.ibba.org/state/illinois/,IBBA re-pull for members added since 2026-09-15
+ibba_in,https://www.ibba.org/state/indiana/,IBBA re-pull for members added since 2026-09-15
+ibba_ia,https://www.ibba.org/state/iowa/,IBBA re-pull for members added since 2026-09-15
+ibba_ks,https://www.ibba.org/state/kansas/,IBBA re-pull for members added since 2026-09-15
+ibba_ky,https://www.ibba.org/state/kentucky/,IBBA re-pull for members added since 2026-09-15
+ibba_la,https://www.ibba.org/state/louisiana/,IBBA re-pull for members added since 2026-09-15
+ibba_me,https://www.ibba.org/state/maine/,IBBA re-pull for members added since 2026-09-15
+ibba_md,https://www.ibba.org/state/maryland/,IBBA re-pull for members added since 2026-09-15
+ibba_ma,https://www.ibba.org/state/massachusetts/,IBBA re-pull for members added since 2026-09-15
+ibba_mi,https://www.ibba.org/state/michigan/,IBBA re-pull for members added since 2026-09-15
+ibba_mn,https://www.ibba.org/state/minnesota/,IBBA re-pull for members added since 2026-09-15
+ibba_ms,https://www.ibba.org/state/mississippi/,IBBA re-pull for members added since 2026-09-15
+ibba_mo,https://www.ibba.org/state/missouri/,IBBA re-pull for members added since 2026-09-15
+ibba_mt,https://www.ibba.org/state/montana/,IBBA re-pull for members added since 2026-09-15
+ibba_ne,https://www.ibba.org/state/nebraska/,IBBA re-pull for members added since 2026-09-15
+ibba_nv,https://www.ibba.org/state/nevada/,IBBA re-pull for members added since 2026-09-15
+ibba_nh,https://www.ibba.org/state/new-hampshire/,IBBA re-pull for members added since 2026-09-15
+ibba_nj,https://www.ibba.org/state/new-jersey/,IBBA re-pull for members added since 2026-09-15
+ibba_nm,https://www.ibba.org/state/new-mexico/,IBBA re-pull for members added since 2026-09-15
+ibba_ny,https://www.ibba.org/state/new-york/,IBBA re-pull for members added since 2026-09-15
+ibba_nc,https://www.ibba.org/state/north-carolina/,IBBA re-pull for members added since 2026-09-15
+ibba_nd,https://www.ibba.org/state/north-dakota/,IBBA re-pull for members added since 2026-09-15
+ibba_oh,https://www.ibba.org/state/ohio/,IBBA re-pull for members added since 2026-09-15
+ibba_ok,https://www.ibba.org/state/oklahoma/,IBBA re-pull for members added since 2026-09-15
+ibba_or,https://www.ibba.org/state/oregon/,IBBA re-pull for members added since 2026-09-15
+ibba_pa,https://www.ibba.org/state/pennsylvania/,IBBA re-pull for members added since 2026-09-15
+ibba_ri,https://www.ibba.org/state/rhode-island/,IBBA re-pull for members added since 2026-09-15
+ibba_sc,https://www.ibba.org/state/south-carolina/,IBBA re-pull for members added since 2026-09-15
+ibba_sd,https://www.ibba.org/state/south-dakota/,IBBA re-pull for members added since 2026-09-15
+ibba_tn,https://www.ibba.org/state/tennessee/,IBBA re-pull for members added since 2026-09-15
+ibba_tx,https://www.ibba.org/state/texas/,IBBA re-pull for members added since 2026-09-15
+ibba_ut,https://www.ibba.org/state/utah/,IBBA re-pull for members added since 2026-09-15
+ibba_vt,https://www.ibba.org/state/vermont/,IBBA re-pull for members added since 2026-09-15
+ibba_va,https://www.ibba.org/state/virginia/,IBBA re-pull for members added since 2026-09-15
+ibba_wa,https://www.ibba.org/state/washington/,IBBA re-pull for members added since 2026-09-15
+ibba_wv,https://www.ibba.org/state/west-virginia/,IBBA re-pull for members added since 2026-09-15
+ibba_wi,https://www.ibba.org/state/wisconsin/,IBBA re-pull for members added since 2026-09-15
+ibba_wy,https://www.ibba.org/state/wyoming/,IBBA re-pull for members added since 2026-09-15
