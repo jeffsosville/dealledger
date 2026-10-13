@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-13T10:24:59.171146+00:00",
+  "brokers_attempted": 773,
+  "brokers_success": 460,
+  "brokers_failed": 267,
+  "total_listings": 9205,
+  "listings_with_price": 8116,
+  "listings_with_cashflow": 4103,
+  "listings_with_state": 7123,
+  "detail_pages_fetched": 450,
+  "patterns_cached": 523,
+  "patterns_learned": 430,
+  "verticals": {
+    "restaurant": 2185,
+    "other": 2226,
+    "technology": 1496,
+    "landscaping": 89,
+    "manufacturing": 200,
+    "healthcare": 486,
+    "electrical": 66,
+    "plumbing": 103,
+    "construction": 384,
+    "hvac": 159,
+    "retail": 991,
+    "automotive": 569,
+    "cleaning": 137,
+    "roofing": 30,
+    "vending": 76,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "HTTP_403": 33,
+    "NO_PATTERN": 157,
+    "FETCH_ERROR": 13,
+    "EMBED_BBS": 46
+  },
+  "site_pages_dropped": 42,
+  "slowest_brokers": [
+    [
+      2070,
+      "bbcpnw.com",
+      1
+    ],
+    [
+      1238,
+      "abalventures.com",
+      1
+    ],
+    [
+      993,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      830,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      661,
+      "therouteexchange.com",
+      110
+    ],
+    [
+      616,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      523,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      386,
+      "lvcbs.com",
+      0
+    ],
+    [
+      325,
+      "ibexbeyond.com",
+      37
+    ],
+    [
+      318,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      295,
+      "empiregbb.com",
+      3
+    ],
+    [
+      291,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      268,
+      "progressivepracticesales.com",
+      98
+    ],
+    [
+      256,
+      "sunacquisitions.com",
+      27
+    ],
+    [
+      249,
+      "jpar.com",
+      4
+    ]
+  ],
+  "seconds_total": 36063,
+  "completed": "2026-10-13T13:38:32.542418+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
