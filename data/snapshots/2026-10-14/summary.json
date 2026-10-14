@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-14T10:25:03.602139+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 485,
+  "brokers_failed": 269,
+  "total_listings": 9466,
+  "listings_with_price": 8363,
+  "listings_with_cashflow": 4142,
+  "listings_with_state": 7429,
+  "detail_pages_fetched": 448,
+  "patterns_cached": 531,
+  "patterns_learned": 460,
+  "verticals": {
+    "restaurant": 2259,
+    "automotive": 589,
+    "technology": 1545,
+    "other": 2258,
+    "manufacturing": 212,
+    "landscaping": 98,
+    "retail": 1010,
+    "healthcare": 504,
+    "hvac": 166,
+    "plumbing": 97,
+    "construction": 385,
+    "cleaning": 132,
+    "electrical": 67,
+    "roofing": 27,
+    "vending": 110,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "NO_PATTERN": 154,
+    "EMBED_BBS": 46,
+    "FETCH_ERROR": 14,
+    "HTTP_403": 32
+  },
+  "site_pages_dropped": 29,
+  "slowest_brokers": [
+    [
+      2017,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1864,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      1240,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      1001,
+      "abalventures.com",
+      1
+    ],
+    [
+      545,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      398,
+      "lvcbs.com",
+      0
+    ],
+    [
+      388,
+      "www.theagencyre.com",
+      191
+    ],
+    [
+      361,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      346,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      301,
+      "jpar.com",
+      4
+    ],
+    [
+      250,
+      "resf.com",
+      0
+    ],
+    [
+      247,
+      "empiregbb.com",
+      3
+    ],
+    [
+      241,
+      "progressivepracticesales.com",
+      97
+    ],
+    [
+      237,
+      "routebrokers.com",
+      5
+    ],
+    [
+      231,
+      "sogardproperties.com",
+      0
+    ]
+  ],
+  "seconds_total": 35889,
+  "completed": "2026-10-14T13:06:56.045596+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
