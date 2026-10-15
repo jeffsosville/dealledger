@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-15T10:25:03.997294+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 488,
+  "brokers_failed": 265,
+  "total_listings": 9457,
+  "listings_with_price": 8379,
+  "listings_with_cashflow": 4240,
+  "listings_with_state": 7510,
+  "detail_pages_fetched": 227,
+  "patterns_cached": 535,
+  "patterns_learned": 458,
+  "verticals": {
+    "restaurant": 2293,
+    "automotive": 571,
+    "technology": 1552,
+    "other": 2243,
+    "manufacturing": 207,
+    "landscaping": 87,
+    "construction": 387,
+    "vending": 129,
+    "healthcare": 490,
+    "retail": 1033,
+    "hvac": 153,
+    "plumbing": 88,
+    "cleaning": 131,
+    "electrical": 60,
+    "pest_control": 7,
+    "roofing": 26
+  },
+  "failure_types": {
+    "NO_PATTERN": 150,
+    "EMBED_BBS": 47,
+    "FETCH_ERROR": 15,
+    "HTTP_403": 35
+  },
+  "site_pages_dropped": 85,
+  "slowest_brokers": [
+    [
+      2065,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      2063,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      2062,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      793,
+      "xlbusinessbrokers.com",
+      15
+    ],
+    [
+      550,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      459,
+      "listyourhomesocal.com",
+      14
+    ],
+    [
+      427,
+      "horizonbrokers.com",
+      0
+    ],
+    [
+      391,
+      "lvcbs.com",
+      0
+    ],
+    [
+      326,
+      "powerrealty1.com",
+      3
+    ],
+    [
+      306,
+      "jpar.com",
+      4
+    ],
+    [
+      300,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      296,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      292,
+      "wellstonegroup.net",
+      0
+    ],
+    [
+      290,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      290,
+      "exitmergers.com",
+      5
+    ]
+  ],
+  "seconds_total": 36736,
+  "completed": "2026-10-15T13:49:00.600761+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
