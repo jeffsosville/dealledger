@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>RJC for Business Listings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Public+Sans:wght@400;600&display=swap">
+<style>
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: heavy black wordmark band, area filter chips, two-column grid of listings */
+:root{
+  --bg:#ffffff; --paper:#ffffff; --ink:#111311; --muted:#5d625c; --line:#d9dcd6;
+  --band:#111311; --band-fg:#ffffff; --accent:#2f5b45; --chip:#e8ece6;
+  --display:"Archivo", "Arial Black", Helvetica, sans-serif;
+  --body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.draft{background:var(--accent);color:var(--paper);font-size:13px}
+.draft .wrap{padding-block:8px}
+header{background:var(--band);color:var(--band-fg)}
+header .wrap{padding-block:40px 36px;display:flex;flex-wrap:wrap;gap:28px;align-items:center;justify-content:space-between}
+.mark{display:flex;align-items:center;gap:18px}
+.rjc{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(56px,11vw,96px);line-height:.85;letter-spacing:-.02em}
+.bar{width:2px;align-self:stretch;background:var(--band-fg)}
+.for{font-family:var(--display);font-size:20px;line-height:1}
+.biz{font-family:var(--display);font-weight:800;font-stretch:118%;font-size:clamp(26px,4.5vw,38px);letter-spacing:.08em;line-height:1.05}
+.sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-top:4px}
+.contact{display:grid;gap:4px;font-variant-numeric:tabular-nums;font-size:15px}
+.contact .tag{font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:6px;max-width:22ch}
+.lede .wrap{padding-block:28px 8px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:end}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,4vw,34px);margin:0;text-wrap:balance}
+.count{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .wrap{padding-block:12px 4px}
+.chip{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid .wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px;padding-block:20px 56px}
+.item{background:var(--paper);border:1px solid var(--line);padding:20px 22px;display:grid;gap:10px;align-content:start;min-width:0}
+.loc{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+.item h3{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.25;margin:0;text-wrap:balance}
+.price{font-family:var(--display);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
+.price small{display:block;font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)}
+.item p{margin:0;color:var(--muted);font-size:15px}
+.ask{justify-self:start;font:inherit;font-size:14px;font-weight:600;background:var(--ink);color:var(--paper);border:0;padding:7px 14px;cursor:pointer}
+.ask:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.reveal{border-top:1px solid var(--line);padding-top:10px;font-size:14px}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{padding-block:20px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer a{color:inherit}
+</style>
+
+</head>
+<body>
+<div class="draft"><div class="wrap">Draft for Rob Cohen to review. Listings and wording come from his current listings and can be changed by reply.</div></div>
+
+<header><div class="wrap">
+  <div class="mark">
+    <div class="rjc">RJC</div><div class="bar"></div>
+    <div><div class="for">for</div><div class="biz">BUSINESS</div><div class="sub">Commercial property + business brokerage</div></div>
+  </div>
+  <div class="contact">
+    <div class="tag">Let's take care of your business together.</div>
+    <div>Rob Cohen, Principal Broker</div>
+    <div>(541) 520-8012 · rob@rjcforbusiness.com</div>
+  </div>
+</div></header>
+
+<section class="lede"><div class="wrap">
+  <h1>Businesses for sale in the southern Willamette Valley</h1>
+  <div class="count" id="count"></div>
+</div></section>
+<div class="chips"><div class="wrap chips" id="chips"></div></div>
+<section class="grid"><div class="wrap" id="list"></div></section>
+
+<footer><div class="wrap">
+  <span>RJC Business Brokerage &amp; Consulting · Eugene, Oregon · Licensed through Pacific Real Estate Services, Inc.</span>
+  <span>Listings page by <a href="https://dealledger.org">DealLedger</a>, free</span>
+</div></footer>
+
+<script>
+const L=[
+ ["Established Outdoor Power Equipment Dealership","Roseburg, OR","$385,266","Real estate available separately at $800,000","Asking price includes approximately $285,266 in net inventory. Combined price with the real estate is $1,185,000."],
+ ["Catering Company, Well Established and High Volume","Eugene, OR","$165,000","","A thriving Eugene catering operation with multiple revenue streams and an established position in its market, generating consistent cash flow from day one."],
+ ["Oregon Art Supply: Established Specialty Art Supplies Retailer","Eugene, OR","$99,000","","Founded in 1999. A long-established specialty retailer with a recognizable regional brand, loyal customer base and experienced staff."],
+ ["Profitable Wine Shop","Eugene, OR","$165,000","","A boutique wine retailer founded in 2009, offering a curated selection of small-production artisan wines from Oregon, the U.S., Europe and beyond."],
+ ["Established Bar, Cafe & Entertainment Venue","Eugene, OR","$130,000","","A designed and established hospitality concept in a downtown university market, combining craft beverages, food, entertainment and community events."],
+ ["Downtown Eugene Restaurant & Bar, Over $2M Historical Revenue","Eugene, OR","$50,000","","A fully built-out restaurant and bar in the 5th Street Market area, one of Eugene's most desirable dining and entertainment districts."],
+ ["Owner-Operated, Profitable Catering Business","Lane County, OR","$55,000","","A turnkey catering business serving clients across Lane County for over 15 years, in the heart of the Willamette Valley."],
+ ["Restaurant & Bar Property","Lane County, OR","$565,000","","A completely updated and renovated restaurant with exposed brick, high ceilings with original beams and a well-appointed kitchen."],
+ ["Iconic Mac's Restaurant","Eugene, OR","$50,000","","An established dining and entertainment business inside the historic Veterans Memorial Building, combining a full-service restaurant and bar with live music and private events."],
+ ["Established Hot Tub & Spa Dealer and Service Center","Lane County, OR","$395,000","","For nearly forty years, the place local households choose, install and care for their spas, with a showroom on a high-traffic commercial corridor."],
+ ["Established Brewery, Restaurant & Distribution Business","Lane County, OR","$675,000","","A fully operating craft brewery, restaurant, taproom, catering business and wholesale distribution platform, founded more than a decade ago."],
+ ["Prime South Eugene Turnkey Restaurant","Eugene, OR","$130,000","","Tin House Thai, a fully built-out restaurant in one of South Eugene's best neighborhood retail locations, steps from the new YMCA."],
+ ["Stand-Alone Restaurant with Bar and Lottery","Springfield, OR","$199,000","","A prime Springfield location with high visibility and multiple dining areas that allow room to expand concepts or capacity."],
+ ["Busy Downtown Pastry Shop & Cafe","Eugene, OR","$495,000","","A from-scratch pastry shop and kitchen with a great location and reputation."],
+ ["Turnkey Downtown Eugene Restaurant, Recently Renovated","Eugene, OR","$35,000","Leased space, about 1,870 SF","Base rent about $3,100 a month. Current lease runs through December 2029, with additional terms possibly negotiable."],
+ ["Freestanding Turnkey Restaurant with Great Parking","Springfield, OR","$195,000","About 5,945 SF, seats about 120","A fully equipped freestanding restaurant building on a high-traffic Springfield corridor."],
+ ["Old Mill Farm Store, Established 1870, with 2 Acres","Cottage Grove, OR","$795,000","","In continuous operation since 1870 and featured in the 1929 filming of The General with Buster Keaton. Livestock feed, pet supplies and more."]
+];
+const areas=["All",...new Set(L.map(x=>x[1]))];
+let cur="All";
+const chips=document.getElementById('chips'),list=document.getElementById('list'),count=document.getElementById('count');
+areas.forEach((a,i)=>{const b=document.createElement('button');b.className='chip';b.id='chip-'+i;b.textContent=a;
+  b.onclick=()=>{cur=a;render()};chips.appendChild(b)});
+function render(){
+  chips.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',String(b.textContent===cur)));
+  list.innerHTML='';const rows=L.filter(x=>cur==="All"||x[1]===cur);
+  count.textContent=rows.length+(rows.length===1?' business':' businesses')+(cur==="All"?'':' in '+cur);
+  rows.forEach((x)=>{const i=L.indexOf(x);const a=document.createElement('article');a.className='item';
+    a.innerHTML=`<div class="loc"></div><h3></h3><div class="price"><span class="p"></span><small></small></div><p></p>
+     <button class="ask" id="ask-${i}" aria-expanded="false">Ask about this business</button>
+     <div class="reveal" hidden>Call <strong>(541) 520-8012</strong> or email <strong>rob@rjcforbusiness.com</strong> and mention “<span class="ref"></span>.”</div>`;
+    a.querySelector('.loc').textContent=x[1];a.querySelector('h3').textContent=x[0];a.querySelector('.p').textContent=x[2];
+    const s=a.querySelector('small');if(x[3])s.textContent=x[3];else s.remove();
+    a.querySelector('p').textContent=x[4];a.querySelector('.ref').textContent=x[0];
+    const b=a.querySelector('.ask'),r=a.querySelector('.reveal');
+    b.onclick=()=>{r.hidden=!r.hidden;b.setAttribute('aria-expanded',String(!r.hidden))};
+    list.appendChild(a)});
+}
+render();
+</script>
+
+</body>
+</html>
