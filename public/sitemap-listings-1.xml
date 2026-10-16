@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dealledger.org/listing/1168432925</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/1168426218</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -889,6 +883,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1166672525</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1166668696</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -1171,6 +1171,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1166080864</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1165991661</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -1207,8 +1213,20 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1165885956</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1165878021</loc>
     <lastmod>2026-09-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1165863834</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1495,6 +1513,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1165271409</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1165257011</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -1599,6 +1623,12 @@
   <url>
     <loc>https://dealledger.org/listing/1164943208</loc>
     <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1164935700</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -2667,6 +2697,12 @@
   <url>
     <loc>https://dealledger.org/listing/1162465481</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1162426290</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4351,6 +4387,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1158937477</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1158937157</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -4365,12 +4407,6 @@
   <url>
     <loc>https://dealledger.org/listing/1158893811</loc>
     <lastmod>2026-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1158889870</loc>
-    <lastmod>2026-07-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -4551,6 +4587,12 @@
   <url>
     <loc>https://dealledger.org/listing/1158457782</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1158451791</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -7351,6 +7393,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1152452539</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1152430076</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -7364,12 +7412,6 @@
   </url>
   <url>
     <loc>https://dealledger.org/listing/1152361100</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1152360648</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -8031,6 +8073,12 @@
   <url>
     <loc>https://dealledger.org/listing/1150790812</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1150784729</loc>
+    <lastmod>2026-02-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -9045,12 +9093,6 @@
   <url>
     <loc>https://dealledger.org/listing/1148585047</loc>
     <lastmod>2026-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1148578741</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -10129,6 +10171,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1146265805</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1146253200</loc>
     <lastmod>2026-03-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -10699,6 +10747,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1144807073</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1144804703</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -10873,6 +10927,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1144402479</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1144397488</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -10987,6 +11047,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1144108454</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1144103715</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -11049,12 +11115,6 @@
   <url>
     <loc>https://dealledger.org/listing/1143964279</loc>
     <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1143935413</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -14257,6 +14317,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1136904341</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1136896989</loc>
     <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -14535,12 +14601,6 @@
   <url>
     <loc>https://dealledger.org/listing/1136364193</loc>
     <lastmod>2026-08-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1136350358</loc>
-    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -14845,6 +14905,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1135724554</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1135718819</loc>
     <lastmod>2026-07-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -14901,12 +14967,6 @@
   <url>
     <loc>https://dealledger.org/listing/1135614206</loc>
     <lastmod>2026-09-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1135611973</loc>
-    <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -15487,6 +15547,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1134448541</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1134439110</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -15975,6 +16041,12 @@
   <url>
     <loc>https://dealledger.org/listing/1133377923</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1133373253</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -17473,6 +17545,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1130028437</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1130026767</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -17871,6 +17949,12 @@
   <url>
     <loc>https://dealledger.org/listing/1129149323</loc>
     <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1129141559</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -18759,6 +18843,12 @@
   <url>
     <loc>https://dealledger.org/listing/1127216123</loc>
     <lastmod>2026-07-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1127205501</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -19753,6 +19843,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1124799390</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1124781828</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -19797,12 +19893,6 @@
   <url>
     <loc>https://dealledger.org/listing/1124706821</loc>
     <lastmod>2026-07-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1124696789</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -21193,6 +21283,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1121909253</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1121907914</loc>
     <lastmod>2026-09-13</lastmod>
     <changefreq>weekly</changefreq>
@@ -21447,6 +21543,12 @@
   <url>
     <loc>https://dealledger.org/listing/1121441284</loc>
     <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1121429964</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -23233,6 +23335,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1117260767</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1117239172</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -24709,6 +24817,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1114336134</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1114331784</loc>
     <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -24855,6 +24969,12 @@
   <url>
     <loc>https://dealledger.org/listing/1113903426</loc>
     <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1113895955</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -25779,6 +25899,12 @@
   <url>
     <loc>https://dealledger.org/listing/1111845104</loc>
     <lastmod>2026-09-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1111804929</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -27067,6 +27193,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1109152911</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1109152750</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -27943,6 +28075,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1107321689</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1107312797</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -28557,12 +28695,6 @@
   <url>
     <loc>https://dealledger.org/listing/1106036522</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1106028869</loc>
-    <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -29857,6 +29989,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1103547055</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1103542428</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -30931,6 +31069,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1101425581</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1101424717</loc>
     <lastmod>2026-03-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -31627,12 +31771,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/1099989231</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/1099968851</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -32155,6 +32293,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1098781834</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1098776738</loc>
     <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -32187,6 +32331,12 @@
   <url>
     <loc>https://dealledger.org/listing/1098700013</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1098691422</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -32251,6 +32401,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1098566890</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1098565442</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -32289,12 +32445,6 @@
   <url>
     <loc>https://dealledger.org/listing/1098471817</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1098454081</loc>
-    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -32911,6 +33061,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1096890636</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1096860526</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -33033,6 +33189,12 @@
   <url>
     <loc>https://dealledger.org/listing/1096581069</loc>
     <lastmod>2026-04-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1096558218</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -35839,6 +36001,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1090852031</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1090838172</loc>
     <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -36141,12 +36309,6 @@
   <url>
     <loc>https://dealledger.org/listing/1090203851</loc>
     <lastmod>2026-07-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1090189439</loc>
-    <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -37887,6 +38049,12 @@
   <url>
     <loc>https://dealledger.org/listing/1086566224</loc>
     <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1086563640</loc>
+    <lastmod>2026-03-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -39697,6 +39865,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1082456736</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1082454799</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -40041,12 +40215,6 @@
   <url>
     <loc>https://dealledger.org/listing/1081853431</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1081852788</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -41365,12 +41533,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/1079049645</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/1079030305</loc>
     <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -41925,12 +42087,6 @@
   <url>
     <loc>https://dealledger.org/listing/1077856085</loc>
     <lastmod>2026-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1077853953</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -42555,6 +42711,12 @@
   <url>
     <loc>https://dealledger.org/listing/1076337272</loc>
     <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1076327479</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -43585,6 +43747,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1074239598</loc>
+    <lastmod>2026-02-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1074238441</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -44181,6 +44349,12 @@
   <url>
     <loc>https://dealledger.org/listing/1073144794</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1073116059</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -45283,6 +45457,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1070634769</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1070634451</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -45417,12 +45597,6 @@
   <url>
     <loc>https://dealledger.org/listing/1070406523</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1070405507</loc>
-    <lastmod>2026-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -46651,6 +46825,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1067909150</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1067907641</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -47179,6 +47359,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1066804830</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1066791222</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -47391,12 +47577,6 @@
   <url>
     <loc>https://dealledger.org/listing/1066439970</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1066418562</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -47857,6 +48037,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1065581454</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1065574586</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1065573694</loc>
     <lastmod>2026-09-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -47907,6 +48099,12 @@
   <url>
     <loc>https://dealledger.org/listing/1065463820</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1065430319</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -52075,6 +52273,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1055992340</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1055972111</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -55315,6 +55519,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1049334331</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1049331353</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -57223,6 +57433,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1045290051</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1045268843</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -57711,6 +57927,12 @@
   <url>
     <loc>https://dealledger.org/listing/1044209747</loc>
     <lastmod>2026-03-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1044199072</loc>
+    <lastmod>2026-07-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -58275,12 +58497,6 @@
   <url>
     <loc>https://dealledger.org/listing/1042867239</loc>
     <lastmod>2026-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1042864521</loc>
-    <lastmod>2026-03-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -58951,6 +59167,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1041570282</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1041563101</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -59545,6 +59767,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1040333939</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1040312771</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -60057,6 +60285,12 @@
   <url>
     <loc>https://dealledger.org/listing/1039311809</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1039266034</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -60633,6 +60867,12 @@
   <url>
     <loc>https://dealledger.org/listing/1038243249</loc>
     <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1038233759</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -61269,12 +61509,6 @@
   <url>
     <loc>https://dealledger.org/listing/1037026631</loc>
     <lastmod>2026-07-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1037014678</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -62731,6 +62965,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1033829258</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1033815315</loc>
     <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -63343,6 +63583,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1032614846</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1032614046</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -63751,6 +63997,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1031799734</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1031783413</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -63795,6 +64047,12 @@
   <url>
     <loc>https://dealledger.org/listing/1031682179</loc>
     <lastmod>2026-03-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1031681706</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -64587,6 +64845,12 @@
   <url>
     <loc>https://dealledger.org/listing/1030246808</loc>
     <lastmod>2026-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1030223030</loc>
+    <lastmod>2026-03-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -65785,6 +66049,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1027426341</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1027403844</loc>
     <lastmod>2026-07-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -65979,6 +66249,12 @@
   <url>
     <loc>https://dealledger.org/listing/1026996776</loc>
     <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1026993294</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -66651,12 +66927,6 @@
   <url>
     <loc>https://dealledger.org/listing/1025720395</loc>
     <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1025717942</loc>
-    <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -68587,6 +68857,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1021559986</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1021552280</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -70105,6 +70381,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1018037149</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1018037030</loc>
     <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -70695,12 +70977,6 @@
   <url>
     <loc>https://dealledger.org/listing/1016776215</loc>
     <lastmod>2026-10-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1016762141</loc>
-    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -73975,6 +74251,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1009887798</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1009851132</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -74533,6 +74815,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1008600436</loc>
+    <lastmod>2026-02-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1008585891</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -74595,6 +74883,12 @@
   <url>
     <loc>https://dealledger.org/listing/1008432964</loc>
     <lastmod>2026-07-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1008419162</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -75087,12 +75381,6 @@
   <url>
     <loc>https://dealledger.org/listing/1007291603</loc>
     <lastmod>2026-07-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/1007271402</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -77131,6 +77419,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1003253122</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1003248208</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -77863,6 +78157,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/1001767737</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/1001765359</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -78195,6 +78495,12 @@
   <url>
     <loc>https://dealledger.org/listing/1001113704</loc>
     <lastmod>2026-07-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/1001107407</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -80407,12 +80713,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/996891664</loc>
-    <lastmod>2026-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/996881345</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -80463,6 +80763,12 @@
   <url>
     <loc>https://dealledger.org/listing/996786319</loc>
     <lastmod>2026-09-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/996784421</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -81601,6 +81907,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/994619426</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/994606207</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -81669,6 +81981,12 @@
   <url>
     <loc>https://dealledger.org/listing/994429104</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/994418907</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -81801,6 +82119,12 @@
   <url>
     <loc>https://dealledger.org/listing/994233522</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/994217706</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -82945,6 +83269,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/991803725</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/991795505</loc>
     <lastmod>2026-09-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -82977,12 +83307,6 @@
   <url>
     <loc>https://dealledger.org/listing/991734734</loc>
     <lastmod>2026-09-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/991683940</loc>
-    <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -83073,6 +83397,12 @@
   <url>
     <loc>https://dealledger.org/listing/991497094</loc>
     <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/991488965</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -83349,6 +83679,12 @@
   <url>
     <loc>https://dealledger.org/listing/990737670</loc>
     <lastmod>2026-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/990715287</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -84615,12 +84951,6 @@
   <url>
     <loc>https://dealledger.org/listing/988173600</loc>
     <lastmod>2026-04-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/988160442</loc>
-    <lastmod>2026-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -88093,12 +88423,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/980545328</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/980523321</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
@@ -88143,12 +88467,6 @@
   <url>
     <loc>https://dealledger.org/listing/980413070</loc>
     <lastmod>2026-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://dealledger.org/listing/980406478</loc>
-    <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -88807,6 +89125,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/979308495</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/979307391</loc>
     <lastmod>2026-07-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -89323,6 +89647,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/978484780</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/978483874</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -89577,6 +89907,12 @@
   <url>
     <loc>https://dealledger.org/listing/977929801</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/977927372</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -91221,6 +91557,12 @@
   <url>
     <loc>https://dealledger.org/listing/974518396</loc>
     <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/974498553</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -96265,12 +96607,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/963405836</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/963399635</loc>
     <lastmod>2026-03-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -96915,6 +97251,12 @@
   <url>
     <loc>https://dealledger.org/listing/961972019</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/961969829</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -98377,6 +98719,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/958785206</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/958763822</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -98511,6 +98859,12 @@
   <url>
     <loc>https://dealledger.org/listing/958527332</loc>
     <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/958515405</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -99453,6 +99807,12 @@
   <url>
     <loc>https://dealledger.org/listing/956379332</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/956342125</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -101779,6 +102139,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/951292086</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/951277654</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -103627,6 +103993,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/947338791</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/947336132</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -104263,6 +104635,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/945850225</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/945816565</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -104721,6 +105099,12 @@
   <url>
     <loc>https://dealledger.org/listing/944825620</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/944817557</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -106939,12 +107323,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dealledger.org/listing/940131804</loc>
-    <lastmod>2026-09-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://dealledger.org/listing/940103376</loc>
     <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
@@ -108369,6 +108747,12 @@
   <url>
     <loc>https://dealledger.org/listing/937291634</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/937268719</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -110619,6 +111003,12 @@
   <url>
     <loc>https://dealledger.org/listing/932469173</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/932468692</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -113011,6 +113401,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/927473106</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/927468546</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -113853,6 +114249,12 @@
   <url>
     <loc>https://dealledger.org/listing/925908091</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/925880380</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -116473,6 +116875,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/920323873</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/920318750</loc>
     <lastmod>2026-07-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -116937,6 +117345,12 @@
   <url>
     <loc>https://dealledger.org/listing/919188796</loc>
     <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/919187550</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -118119,6 +118533,12 @@
   <url>
     <loc>https://dealledger.org/listing/916511432</loc>
     <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/916491970</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -121849,6 +122269,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://dealledger.org/listing/908020339</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://dealledger.org/listing/908019693</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -121917,6 +122343,12 @@
   <url>
     <loc>https://dealledger.org/listing/907909975</loc>
     <lastmod>2026-09-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/907909894</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -123297,6 +123729,12 @@
   <url>
     <loc>https://dealledger.org/listing/905022033</loc>
     <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/905020322</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -124947,6 +125385,12 @@
   <url>
     <loc>https://dealledger.org/listing/901424062</loc>
     <lastmod>2026-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dealledger.org/listing/901413667</loc>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
