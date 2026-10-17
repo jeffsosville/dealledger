@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-17T17:14:11.530673+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 488,
+  "brokers_failed": 265,
+  "total_listings": 9279,
+  "listings_with_price": 8230,
+  "listings_with_cashflow": 4136,
+  "listings_with_state": 7233,
+  "detail_pages_fetched": 237,
+  "patterns_cached": 533,
+  "patterns_learned": 465,
+  "verticals": {
+    "restaurant": 2299,
+    "automotive": 565,
+    "technology": 1542,
+    "other": 2087,
+    "manufacturing": 203,
+    "landscaping": 92,
+    "retail": 996,
+    "construction": 394,
+    "healthcare": 486,
+    "roofing": 29,
+    "cleaning": 133,
+    "electrical": 61,
+    "plumbing": 99,
+    "hvac": 157,
+    "vending": 129,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "HTTP_403": 29,
+    "EMBED_BBS": 47,
+    "NO_PATTERN": 150,
+    "FETCH_ERROR": 15,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 20,
+  "slowest_brokers": [
+    [
+      1975,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      1896,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1251,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      464,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      392,
+      "lvcbs.com",
+      0
+    ],
+    [
+      379,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      352,
+      "toddbusinesssolutions.com",
+      3
+    ],
+    [
+      309,
+      "jpar.com",
+      4
+    ],
+    [
+      297,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      278,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      254,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      224,
+      "southeastbusinessadvisors.com",
+      2
+    ],
+    [
+      214,
+      "www.usbizsell.com",
+      3
+    ],
+    [
+      213,
+      "www.huntington.com",
+      2
+    ],
+    [
+      210,
+      "businesslynx.com",
+      1
+    ]
+  ],
+  "seconds_total": 33607,
+  "completed": "2026-10-17T19:57:26.814143+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
