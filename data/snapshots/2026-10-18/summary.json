@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-18T10:24:47.350696+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 481,
+  "brokers_failed": 279,
+  "total_listings": 9570,
+  "listings_with_price": 8520,
+  "listings_with_cashflow": 4294,
+  "listings_with_state": 7557,
+  "detail_pages_fetched": 160,
+  "patterns_cached": 537,
+  "patterns_learned": 457,
+  "verticals": {
+    "restaurant": 2352,
+    "automotive": 583,
+    "technology": 1574,
+    "other": 2210,
+    "manufacturing": 208,
+    "landscaping": 95,
+    "retail": 1036,
+    "construction": 404,
+    "healthcare": 479,
+    "cleaning": 136,
+    "hvac": 163,
+    "plumbing": 100,
+    "electrical": 63,
+    "vending": 131,
+    "roofing": 29,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "HTTP_403": 28,
+    "NO_PATTERN": 164,
+    "FETCH_ERROR": 16,
+    "EMBED_BBS": 40,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 103,
+  "slowest_brokers": [
+    [
+      2088,
+      "businessbrokersofutah.com",
+      5
+    ],
+    [
+      2087,
+      "peakbusinessbrokersllc.com",
+      18
+    ],
+    [
+      2073,
+      "businessbrokersofamerica.com",
+      2
+    ],
+    [
+      2066,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2066,
+      "businesses-toronto.com",
+      6
+    ],
+    [
+      1271,
+      "metrocbb.com",
+      7
+    ],
+    [
+      699,
+      "horizonmaa.com",
+      8
+    ],
+    [
+      520,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      518,
+      "pacificrb.com",
+      8
+    ],
+    [
+      463,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      462,
+      "goodmanonline.com",
+      11
+    ],
+    [
+      460,
+      "listyourhomesocal.com",
+      14
+    ],
+    [
+      459,
+      "buygasstations.com",
+      3
+    ],
+    [
+      382,
+      "lvcbs.com",
+      0
+    ],
+    [
+      301,
+      "jpar.com",
+      4
+    ]
+  ],
+  "seconds_total": 42661,
+  "completed": "2026-10-18T13:55:18.933084+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
