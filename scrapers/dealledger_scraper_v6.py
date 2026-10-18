@@ -431,6 +431,65 @@ def _best_detail_link(element, base_url=""):
     return candidates[0]
 
 
+# Brokers whose list-page card carries no <a href> of its own: the link sits on
+# a wrapper or a sibling (e.g. a mobile twin `div.mob` next to the desktop
+# block), or only in an attribute. Without it every card was saved under the
+# search-page URL, the insert guard quarantined them, and the real rows were
+# never refreshed (restaurantrealty.com: 189 published rows unseen since
+# 2026-09-13). Opt-in per domain so no other broker's link choice changes.
+WRAPPER_LINK_DOMAINS = {"restaurantrealty.com"}
+_ATTR_LISTING_HREF_RE = re.compile(r"""((?:https?://[^\s"'<>]+)?/listing/\?listing=[^\s"'<>]+)""", re.I)
+
+
+def _unique_detail_hrefs(node):
+    seen = []
+    anchors = node.find_all("a", href=True)
+    if node.name == "a" and node.get("href"):
+        anchors = [node] + anchors
+    for a in anchors:
+        href = (a.get("href") or "").strip()
+        low = href.lower()
+        if (href and any(tok in low for tok in _DETAIL_HREF_TOKENS)
+                and not any(tok in low for tok in _NON_DETAIL_HREF_TOKENS)
+                and href not in seen):
+            seen.append(href)
+    return seen
+
+
+def _wrapper_detail_link(element, base_url=""):
+    """Find THIS card's detail link outside the card itself. Only accepts a
+    link when exactly one distinct detail href is in scope, so a wrapper that
+    holds several cards can never hand one card another card's URL."""
+    bare = urlparse(base_url).netloc.lower().removeprefix("www.")
+    if bare not in WRAPPER_LINK_DOMAINS:
+        return None
+    # 1. a listing URL kept in an attribute (data-href, data-url, onclick...)
+    for el in [element] + element.find_all(True):
+        for v in el.attrs.values():
+            v = " ".join(v) if isinstance(v, list) else str(v)
+            m = _ATTR_LISTING_HREF_RE.search(v)
+            if m:
+                return m.group(1)
+    # 2. immediate siblings (desktop/mobile twin blocks)
+    for sib in (element.find_previous_sibling(), element.find_next_sibling()):
+        if sib is not None and hasattr(sib, "find_all"):
+            hrefs = _unique_detail_hrefs(sib)
+            if len(hrefs) == 1:
+                return hrefs[0]
+    # 3. up to three wrappers, stopping as soon as a wrapper spans >1 listing
+    node = element
+    for _ in range(3):
+        node = node.parent
+        if node is None or node.name in ("body", "html", "[document]"):
+            break
+        hrefs = _unique_detail_hrefs(node)
+        if len(hrefs) == 1:
+            return hrefs[0]
+        if len(hrefs) > 1:
+            break
+    return None
+
+
 def has_detail_link(element, base_url=""):
     """True if the element links to a plausible listing detail page (not a
     nav item, on-page anchor, mailto/tel, or the site homepage)."""
@@ -1555,6 +1614,10 @@ class ListingExtractor:
             b = base_url.rstrip("/")
             if d == b or "#" in d.split("?")[0][-5:]:
                 detail_url = None
+        if not detail_url:
+            wrapped = _wrapper_detail_link(element, base_url)
+            if wrapped:
+                detail_url = urljoin(base_url, wrapped)
 
         # Marketplace gate (2026-10-08): some brokers list a deal on their own
         # page but link the card out to its marketplace copy (bizbuysell.com,
