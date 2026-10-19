@@ -245,7 +245,9 @@ class MurphyScraper:
     
     BASE = "https://murphybusiness.com"
     LIST_URL = f"{BASE}/business-brokerage/view-our-listings/"
+    AJAX_URL = f"{BASE}/wp-admin/admin-ajax.php"
     SDE_RE = re.compile(r"SDE:\s*\$([\d,]+)", re.I)
+    TOKEN_RE = re.compile(r'api_token\s*=\s*"([A-Za-z0-9]+)"')
 
     @staticmethod
     def scrape(broker_account: str, max_pages: int = 50, headless: bool = True, verbose: bool = True) -> List[Dict]:
@@ -253,7 +255,96 @@ class MurphyScraper:
             print(f"\n{'='*60}")
             print("Murphy Business & Financial Corporation")
             print('='*60)
-        
+
+        # 2026-10-19: headless Chrome started timing out on the listings page
+        # (both runs failed with TimeoutException after ~24s, on Actions and
+        # the Mac). The page's own pagination is a plain admin-ajax POST, and
+        # per_page=600 returns the whole set (479 cards) in one response, so
+        # no browser is needed. Selenium stays as the fallback.
+        try:
+            listings = MurphyScraper._scrape_ajax(broker_account, verbose)
+            if listings:
+                return listings
+            print("[Murphy] AJAX path returned 0 listings — falling back to Selenium")
+        except Exception as e:
+            print(f"[Murphy] AJAX path failed ({type(e).__name__}: {e}) — falling back to Selenium")
+        return MurphyScraper._scrape_selenium(broker_account, max_pages, headless, verbose)
+
+    @staticmethod
+    def _parse_card(card) -> Optional[Dict]:
+        """One div.card-body -> raw fields. Same markup the Selenium path read."""
+        a = card.select_one("a.btn.btn-primary[href]")
+        if not a:
+            return None
+        title_el = card.select_one("h5.card-title")
+        price_el = card.select_one("p.price")
+        txt = card.get_text("\n", strip=True)
+        m = MurphyScraper.SDE_RE.search(txt)
+        location = None
+        pin = card.select_one("li img[src*='pin']")
+        if pin is not None:
+            location = pin.parent.get_text(" ", strip=True) or None
+        return {
+            'url': a["href"].strip(),
+            'title': title_el.get_text(" ", strip=True) if title_el else None,
+            'price_text': price_el.get_text(" ", strip=True) if price_el else None,
+            'sde_text': m.group(1) if m else None,
+            'location': location,
+            'text': txt,
+        }
+
+    @staticmethod
+    def _scrape_ajax(broker_account: str, verbose: bool = True) -> List[Dict]:
+        session = requests.Session(impersonate="chrome120")
+        page = session.get(MurphyScraper.LIST_URL, timeout=40)
+        page.raise_for_status()
+        # The token rotates on every page load; read it fresh each run.
+        m = MurphyScraper.TOKEN_RE.search(page.text)
+        if not m:
+            raise RuntimeError("api_token not found on listings page")
+        resp = session.post(
+            MurphyScraper.AJAX_URL,
+            data={
+                'action': 'ajax_new_business_search_result',
+                'page_number': 1,
+                'per_page': 2000,
+                'api_token': m.group(1),
+            },
+            headers={'Referer': MurphyScraper.LIST_URL,
+                     'X-Requested-With': 'XMLHttpRequest'},
+            timeout=90,
+        )
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        listings, seen = [], set()
+        for card in soup.select("div.card-body"):
+            item = MurphyScraper._parse_card(card)
+            if not item or item['url'] in seen:
+                continue
+            seen.add(item['url'])
+            city, state = extract_city_state(item['location'])
+            listings.append(format_listing(
+                url=item['url'],
+                broker_account=broker_account,
+                title=item['title'],
+                price=parse_money(item['price_text']),
+                price_text=item['price_text'],
+                location=item['location'],
+                city=city,
+                state=state,
+                description=item['text'],
+                cash_flow=parse_money(item['sde_text'])
+            ))
+
+        if verbose:
+            with_price = sum(1 for l in listings if l.get('price'))
+            with_cf = sum(1 for l in listings if l.get('cash_flow'))
+            print(f"\n✓ {len(listings)} Murphy listings via AJAX ({with_price} with price, {with_cf} with SDE)")
+        return listings
+
+    @staticmethod
+    def _scrape_selenium(broker_account: str, max_pages: int = 50, headless: bool = True, verbose: bool = True) -> List[Dict]:
         driver = create_chrome_driver(headless)
         listings = []
         seen_urls = set()
