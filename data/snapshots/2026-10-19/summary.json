@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-19T10:24:59.484400+00:00",
+  "brokers_attempted": 616,
+  "brokers_success": 366,
+  "brokers_failed": 215,
+  "total_listings": 7499,
+  "listings_with_price": 6629,
+  "listings_with_cashflow": 3438,
+  "listings_with_state": 5944,
+  "detail_pages_fetched": 156,
+  "patterns_cached": 528,
+  "patterns_learned": 343,
+  "verticals": {
+    "restaurant": 1715,
+    "automotive": 430,
+    "technology": 1312,
+    "other": 1866,
+    "manufacturing": 166,
+    "landscaping": 78,
+    "cleaning": 114,
+    "retail": 768,
+    "healthcare": 404,
+    "construction": 337,
+    "hvac": 132,
+    "plumbing": 78,
+    "electrical": 52,
+    "roofing": 19,
+    "pest_control": 7,
+    "vending": 21
+  },
+  "failure_types": {
+    "HTTP_403": 30,
+    "EMBED_BBS": 34,
+    "NO_PATTERN": 119,
+    "FETCH_ERROR": 14,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 2,
+  "interrupted": true,
+  "slowest_brokers": [
+    [
+      1065,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      437,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      410,
+      "lvcbs.com",
+      0
+    ],
+    [
+      407,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      355,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      295,
+      "empiregbb.com",
+      3
+    ],
+    [
+      290,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      239,
+      "progressivepracticesales.com",
+      99
+    ],
+    [
+      229,
+      "jpar.com",
+      4
+    ],
+    [
+      213,
+      "mavenoadvisors.com",
+      3
+    ],
+    [
+      209,
+      "www.huntington.com",
+      2
+    ],
+    [
+      206,
+      "houlihanbusinessbrokers.net",
+      1
+    ],
+    [
+      202,
+      "therockbridge.group",
+      7
+    ],
+    [
+      200,
+      "compasscommercial.com",
+      1
+    ],
+    [
+      200,
+      "cannabis-brokers.com",
+      1
+    ]
+  ],
+  "seconds_total": 24303,
+  "completed": "2026-10-19T15:09:57.611870+00:00",
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
