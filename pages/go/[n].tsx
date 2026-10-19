@@ -9,13 +9,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader('Cache-Control', 'no-store');
   ctx.res.setHeader('X-Robots-Tag', 'noindex, nofollow');
 
-  const { source, referrer, ua } = requestMeta(ctx);
+  const { source, referrer, ua, human } = requestMeta(ctx);
   try {
     const { data } = await getSupabase().rpc('dl_click', {
       p_listing_number: Number(raw),
       p_source: source,
       p_referrer: referrer,
       p_ua: ua,
+      p_human: human,
     });
     return redirectTo(typeof data === 'string' ? data : null, `/listing/${raw}`);
   } catch {

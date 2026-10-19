@@ -17,12 +17,27 @@ export const goListing = (listingNumber: number | string, source: string) =>
 export const goBroker = (slug: string, kind: 'home' | 'listings', source: string) =>
   `/go/b/${encodeURIComponent(slug)}?to=${kind}&s=${encodeURIComponent(source)}`;
 
+/**
+ * True only for a user-initiated click from a page on dealledger.org. Real
+ * browsers send Sec-Fetch-User: ?1 for a click and Sec-Fetch-Site:
+ * same-origin/same-site when the link was on our own page. Crawlers that pull
+ * /go URLs out of the HTML (and ignore robots.txt) don't send these, which is
+ * how ~10,000 fake click-outs a day got counted before Oct 19, 2026.
+ */
+export const isHumanClick = (ctx: GetServerSidePropsContext): boolean => {
+  const h = ctx.req.headers;
+  const user = h['sec-fetch-user'];
+  const site = h['sec-fetch-site'];
+  return user === '?1' && (site === 'same-origin' || site === 'same-site');
+};
+
 export const requestMeta = (ctx: GetServerSidePropsContext) => {
   const s = ctx.query.s;
   return {
     source: typeof s === 'string' ? s.slice(0, 32) : null,
     referrer: (ctx.req.headers.referer as string | undefined) ?? null,
     ua: (ctx.req.headers['user-agent'] as string | undefined) ?? null,
+    human: isHumanClick(ctx),
   };
 };
 
