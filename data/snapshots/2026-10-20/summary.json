@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-20T10:25:17.793999+00:00",
+  "brokers_attempted": 773,
+  "brokers_success": 465,
+  "brokers_failed": 266,
+  "total_listings": 9139,
+  "listings_with_price": 8216,
+  "listings_with_cashflow": 4108,
+  "listings_with_state": 7265,
+  "detail_pages_fetched": 309,
+  "patterns_cached": 530,
+  "patterns_learned": 445,
+  "verticals": {
+    "other": 2162,
+    "healthcare": 468,
+    "automotive": 567,
+    "retail": 978,
+    "technology": 1514,
+    "restaurant": 2290,
+    "cleaning": 129,
+    "construction": 287,
+    "plumbing": 88,
+    "manufacturing": 196,
+    "landscaping": 89,
+    "hvac": 149,
+    "electrical": 60,
+    "roofing": 28,
+    "vending": 126,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "HTTP_403": 50,
+    "NO_PATTERN": 131,
+    "FETCH_ERROR": 16,
+    "EMBED_BBS": 41
+  },
+  "site_pages_dropped": 8,
+  "interrupted": true,
+  "slowest_brokers": [
+    [
+      2086,
+      "totalbusinessbrokers.com",
+      6
+    ],
+    [
+      2071,
+      "invictusweb.net",
+      3
+    ],
+    [
+      2071,
+      "bizbrothers.net",
+      1
+    ],
+    [
+      2064,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      1145,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      687,
+      "wncbusinessbrokerage.com",
+      1
+    ],
+    [
+      494,
+      "robbinex.com",
+      2
+    ],
+    [
+      494,
+      "restaurantrealty.com",
+      110
+    ],
+    [
+      484,
+      "strategicmedicalbrokers.com",
+      7
+    ],
+    [
+      460,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      437,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      435,
+      "buygasstations.com",
+      3
+    ],
+    [
+      417,
+      "empiregbb.com",
+      3
+    ],
+    [
+      380,
+      "lvcbs.com",
+      0
+    ],
+    [
+      292,
+      "vrspringfield-branson.com",
+      0
+    ]
+  ],
+  "seconds_total": 39998,
+  "completed": "2026-10-20T15:10:38.659547+00:00",
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
