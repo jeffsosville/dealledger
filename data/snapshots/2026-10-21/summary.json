@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-21T10:25:25.512272+00:00",
+  "brokers_attempted": 623,
+  "brokers_success": 372,
+  "brokers_failed": 216,
+  "total_listings": 6408,
+  "listings_with_price": 5616,
+  "listings_with_cashflow": 2969,
+  "listings_with_state": 4799,
+  "detail_pages_fetched": 232,
+  "patterns_cached": 543,
+  "patterns_learned": 358,
+  "verticals": {
+    "technology": 1298,
+    "restaurant": 1270,
+    "healthcare": 354,
+    "construction": 213,
+    "landscaping": 58,
+    "retail": 515,
+    "automotive": 475,
+    "other": 1618,
+    "cleaning": 79,
+    "manufacturing": 157,
+    "plumbing": 66,
+    "vending": 120,
+    "hvac": 126,
+    "electrical": 37,
+    "pest_control": 7,
+    "roofing": 15
+  },
+  "failure_types": {
+    "HTTP_403": 14,
+    "EMBED_BBS": 34,
+    "NO_PATTERN": 137,
+    "FETCH_ERROR": 15
+  },
+  "site_pages_dropped": 53,
+  "slowest_brokers": [
+    [
+      2091,
+      "winbusinessadvisors.com",
+      2
+    ],
+    [
+      2067,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2014,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1944,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      359,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      337,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      318,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      272,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      252,
+      "acquisitionsdirect.com",
+      13
+    ],
+    [
+      221,
+      "powerofpluck.com",
+      5
+    ],
+    [
+      215,
+      "empiregbb.com",
+      3
+    ],
+    [
+      212,
+      "californiabusinessbrokers.com",
+      7
+    ],
+    [
+      211,
+      "mavenoadvisors.com",
+      3
+    ],
+    [
+      203,
+      "therockbridge.group",
+      7
+    ],
+    [
+      202,
+      "birminghambusinessbroker.com",
+      6
+    ]
+  ],
+  "seconds_total": 29948,
+  "completed": "2026-10-21T15:10:27.590293+00:00",
+  "interrupted": true,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
