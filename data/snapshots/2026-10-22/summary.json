@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-22T10:25:10.708517+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 486,
+  "brokers_failed": 271,
+  "total_listings": 9518,
+  "listings_with_price": 8575,
+  "listings_with_cashflow": 4322,
+  "listings_with_state": 7609,
+  "detail_pages_fetched": 213,
+  "patterns_cached": 532,
+  "patterns_learned": 462,
+  "verticals": {
+    "restaurant": 2360,
+    "automotive": 605,
+    "technology": 1578,
+    "other": 2227,
+    "manufacturing": 203,
+    "landscaping": 92,
+    "cleaning": 132,
+    "retail": 1037,
+    "healthcare": 502,
+    "construction": 311,
+    "plumbing": 93,
+    "hvac": 156,
+    "electrical": 61,
+    "vending": 128,
+    "roofing": 26,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "HTTP_403": 23,
+    "EMBED_BBS": 43,
+    "NO_PATTERN": 162,
+    "FETCH_ERROR": 18
+  },
+  "site_pages_dropped": 60,
+  "slowest_brokers": [
+    [
+      1885,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      547,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      504,
+      "restaurantrealty.com",
+      112
+    ],
+    [
+      498,
+      "pacificrb.com",
+      8
+    ],
+    [
+      463,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      460,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      391,
+      "lvcbs.com",
+      0
+    ],
+    [
+      372,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      358,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      337,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      335,
+      "coastalbizbrokers.com",
+      0
+    ],
+    [
+      297,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      287,
+      "progressivepracticesales.com",
+      99
+    ],
+    [
+      270,
+      "nextwavecommercial.com",
+      0
+    ],
+    [
+      264,
+      "jpar.com",
+      4
+    ]
+  ],
+  "seconds_total": 34890,
+  "completed": "2026-10-22T13:39:59.840166+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
