@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-23T10:25:19.067506+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 489,
+  "brokers_failed": 267,
+  "total_listings": 9287,
+  "listings_with_price": 8260,
+  "listings_with_cashflow": 4192,
+  "listings_with_state": 7296,
+  "detail_pages_fetched": 238,
+  "patterns_cached": 534,
+  "patterns_learned": 461,
+  "verticals": {
+    "restaurant": 2344,
+    "automotive": 583,
+    "technology": 1573,
+    "other": 2081,
+    "manufacturing": 198,
+    "landscaping": 93,
+    "retail": 998,
+    "healthcare": 497,
+    "cleaning": 130,
+    "electrical": 60,
+    "plumbing": 96,
+    "construction": 308,
+    "hvac": 163,
+    "roofing": 28,
+    "vending": 128,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "HTTP_403": 35,
+    "EMBED_BBS": 44,
+    "NO_PATTERN": 147,
+    "FETCH_ERROR": 19,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 57,
+  "slowest_brokers": [
+    [
+      2090,
+      "winbusinessadvisors.com",
+      2
+    ],
+    [
+      2064,
+      "pacificrb.com",
+      8
+    ],
+    [
+      618,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      490,
+      "nextwavecommercial.com",
+      90
+    ],
+    [
+      462,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      433,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      374,
+      "lvcbs.com",
+      0
+    ],
+    [
+      368,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      359,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      343,
+      "beehivebusinessbrokers.com",
+      1
+    ],
+    [
+      341,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      300,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      291,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      238,
+      "rockwaterme.com",
+      1
+    ]
+  ],
+  "seconds_total": 35332,
+  "completed": "2026-10-23T13:28:35.642577+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
