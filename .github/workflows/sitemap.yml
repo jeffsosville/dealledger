@@ -20,7 +20,7 @@ on:
         default: false
       min_listings:
         description: "Refuse to write a sitemap smaller than this"
-        default: "15000"
+        default: "8000"
 
 permissions:
   contents: write
@@ -50,7 +50,7 @@ jobs:
         run: |
           python3 scripts/generate_sitemap.py \
             ${{ inputs.dry_run && '--dry-run' || '' }} \
-            --min-listings ${{ inputs.min_listings || '15000' }}
+            --min-listings ${{ inputs.min_listings || '8000' }}
 
       # Vercel auto-deploys on push to main, so the commit IS the publish.
       - name: Commit

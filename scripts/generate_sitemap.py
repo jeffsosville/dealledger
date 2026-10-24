@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Generate sitemap.xml for dealledger.org from Supabase.
 
-Only emits URLs for pages that actually exist: active listings that have
-a title, and broker firms that currently have active listings. Dead
+Only emits URLs for pages worth indexing: active listings that have a
+title, an asking price, a state and a cash flow figure, and broker firms
+that currently have active listings. Listings missing those fields still
+exist and are linked from browse and broker pages; they are just not
+advertised to Google. In Oct 2026 Search Console had ~20K of the 21.4K
+listing URLs parked at "Discovered - currently not indexed" while only
+~2K were indexed: asking Google to index thin pages costs the strong ones. Dead
 listings are deliberately excluded — submitting URLs that 404 or render
 empty wastes crawl budget and can suppress the rest of the site.
 
@@ -117,7 +122,7 @@ def main():
     ap.add_argument("--no-brokers", action="store_true",
                     help="skip broker pages entirely")
     ap.add_argument("--min-listings", type=int,
-                    default=int(os.environ.get("MIN_LISTINGS", "15000")),
+                    default=int(os.environ.get("MIN_LISTINGS", "8000")),
                     help="fail rather than write a sitemap smaller than this")
     args = ap.parse_args()
 
@@ -127,11 +132,17 @@ def main():
     # ---- active listings -------------------------------------------------
     print("[*] Fetching active listings...")
     rows = fetch_all(sb, "listings",
-                     "listing_number,last_seen,estimated_listed_date,header",
+                     "listing_number,last_seen,estimated_listed_date,header,price,state,cash_flow",
                      key_col="listing_number", label="listings",
                      is_active=True)
 
-    listings, seen_numbers = [], set()
+    def _pos(v):
+        try:
+            return float(v) > 0
+        except (TypeError, ValueError):
+            return False
+
+    listings, seen_numbers, thin = [], set(), 0
     for r in rows:
         ln = r.get("listing_number")
         if not ln or ln in seen_numbers:
@@ -139,8 +150,14 @@ def main():
         if not (r.get("header") or "").strip():
             continue
         seen_numbers.add(ln)
+        # Indexable bar: price, state and cash flow. A listing page without
+        # them is a title and a broker link, which is all Google needs to
+        # file it under thin content.
+        if not (_pos(r.get("price")) and (r.get("state") or "").strip() and _pos(r.get("cash_flow"))):
+            thin += 1
+            continue
         listings.append(r)
-    print(f"[+] {len(listings):,} active listings with titles")
+    print(f"[+] {len(listings):,} indexable listings ({thin:,} active but thin, left out)")
 
     # Marketplaces are not brokers; keep in sync with lib/brokerRegistry.ts.
     MARKETPLACE_DOMAINS = ("bizbuysell.com", "bizquest.com", "businessesforsale.com",
@@ -234,7 +251,8 @@ def main():
 
     # sitemap-browse.xml is served live by pages/api/sitemap-browse.ts (the
     # /businesses-for-sale pages); it is not a file here, but the index lists it.
-    write_index(os.path.join(OUT_DIR, "sitemap.xml"), written + ["sitemap-browse.xml"], today)
+    # Browse pages first: they are the pages that rank (state, type, combo).
+    write_index(os.path.join(OUT_DIR, "sitemap.xml"), ["sitemap-browse.xml"] + written, today)
 
     print(f"\n[+] Done — {total:,} URLs.")
     print(f"[i] Canonical host: {BASE}")
