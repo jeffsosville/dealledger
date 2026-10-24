@@ -1367,6 +1367,16 @@ def _find_listings_page_once(base_url, verbose=False):
                 try_url(cand, "menu link")
                 if strong_enough():
                     break
+            # A menu link has no keyword vouching for it, so words alone
+            # ("listing", "for sale" on a podcast, client list or deal-notes
+            # page) are not enough: it must show real prices or listing
+            # links (first run 2026-10-24 picked /podcast, /our-clients,
+            # /learning-center, /industries/education).
+            LAST_FIND["candidates"] = [
+                c for c in LAST_FIND["candidates"]
+                if c["source"] != "menu link"
+                or (c["prices"] >= 3 and not c["detail_page"])
+                or c["details"] >= 5]
         except Exception as exc:
             reasons.append(f"menu: {type(exc).__name__}")
     if strong_enough():
