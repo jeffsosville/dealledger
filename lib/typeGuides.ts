@@ -51,6 +51,188 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
     ],
   },
 
+  cleaning: {
+    title: 'Cleaning Businesses for Sale: {n} Janitorial, Maid & Commercial Cleaning Companies | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of a cleaning business',
+        body: [
+          'Owner-operated cleaning companies are priced on seller’s discretionary earnings. Where a business lands in the range depends mostly on what kind of revenue it has: contracted commercial accounts, recurring residential clients, or one-off jobs.',
+          'Commercial and janitorial companies are valued on their contracts. Written, assignable agreements spread across many customers are worth more than handshake accounts, and one customer above roughly a quarter of revenue usually lowers the price.',
+          'Residential and maid services are valued on recurring frequency and retention. A book of weekly and biweekly clients billed automatically is worth more than the same revenue from move-outs and deep cleans.',
+          'Labor is the risk buyers price hardest. Properly classified crews, low turnover and a supervisor between the owner and the customers all move a business up the range.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Get revenue by customer for the last two to three years, and check how many of today’s accounts were there a year ago.',
+          'Read every large contract for term, termination notice and whether it can be assigned to a new owner.',
+          'Ask how cleaners are paid and classified, and what payroll looks like as a share of revenue. Misclassified 1099 crews are a liability that transfers with the business.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are cleaning businesses for sale priced?',
+        a: 'Usually as a multiple of seller’s discretionary earnings, higher for contracted commercial revenue and recurring residential clients, lower for one-off work or businesses that depend on the owner. The median asking price and price-to-cash-flow ratio at the top of this page come from the listings below.',
+      },
+      {
+        q: 'Is a commercial or residential cleaning business a better buy?',
+        a: 'Commercial businesses usually have larger, contracted accounts and more concentration risk; residential businesses have many small clients and more churn. Which is better depends on whether you would rather manage customer relationships or a high volume of scheduling.',
+      },
+      {
+        q: 'Where do these cleaning business listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  roofing: {
+    title: 'Roofing Companies for Sale: {n} Roofing Businesses Listed by Brokers | DealLedger',
+    h1: 'Roofing Companies for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a roofing company',
+        body: [
+          'Roofing revenue is project-based, so buyers pay most for a business that wins work without the owner. A sales process with estimators, a steady lead source and a backlog of signed jobs is worth more than an owner who sells every roof personally.',
+          'The mix of work matters. Residential re-roofing, commercial maintenance contracts and insurance or storm work each carry different risk. Storm-driven revenue can make one or two years look far better than normal, and buyers will average it out.',
+          'Licensing, insurance and warranty exposure carry over. A clean claims history and manageable warranty obligations make a company easier to finance and easier to sell.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue by year and by type of work, with storm and insurance jobs broken out, so you can see the underlying run rate.',
+          'Whose license the company operates under, and how it transfers or who replaces it.',
+          'Outstanding warranties, open claims, crew structure (employees or subcontractors), and any manufacturer certifications that may not transfer automatically.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are roofing companies valued?',
+        a: 'As a multiple of seller’s discretionary earnings for owner-operated companies, or EBITDA for larger ones with managers in place. Buyers normalize storm-heavy years and look closely at how much of the sales process depends on the owner.',
+      },
+      {
+        q: 'Can I buy a roofing company with an SBA loan?',
+        a: 'Yes. Lenders look for verified earnings across several years, a licensed qualifier, and insurance and warranty exposure they can understand.',
+      },
+      {
+        q: 'Where do these roofing listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  amusement: {
+    title: 'Entertainment Businesses for Sale: {n} Family Entertainment Centers, Arcades & More | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of an entertainment business',
+        body: [
+          'Family entertainment centers, arcades, trampoline parks, bowling alleys and similar businesses are capital-heavy and location-bound, so the lease and the equipment shape the price as much as the earnings do.',
+          'Revenue is seasonal and event-driven. Birthday parties, group bookings and memberships smooth it out; a business that lives on walk-in weekend traffic is riskier and priced that way.',
+          'Equipment and attractions wear out and go out of fashion. Buyers model the cost of refreshing them in the first few years, so the age and condition of the attractions come straight off the price.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'The lease: remaining term, options, rent as a share of revenue, and the landlord’s willingness to assign it.',
+          'Revenue by month and by stream (admissions, parties, food and beverage, games), so you can see seasonality and margin.',
+          'An equipment list with ages and maintenance records, plus insurance history and any required inspections for rides or attractions.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are entertainment businesses valued?',
+        a: 'Usually as a multiple of seller’s discretionary earnings or EBITDA, adjusted for lease term and the capital needed to keep attractions current. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Is a family entertainment center a good business to buy?',
+        a: 'It can be, but it is closer to running a venue than a service business: high fixed costs, seasonal swings and ongoing capital spending. The strongest ones have party and group revenue that keeps weekdays busy.',
+      },
+      {
+        q: 'Where do these listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  restaurant: {
+    title: 'Restaurants for Sale: {n} Restaurants Listed by Business Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of a restaurant',
+        body: [
+          'Many restaurants for sale are priced closer to the value of the space and equipment than to earnings, because margins are thin and a new owner often changes the concept. Profitable, established restaurants with clean books are the ones that sell on a multiple of earnings.',
+          'The lease is often the most valuable thing being sold: location, remaining term, rent as a share of sales, and whether the landlord will assign it.',
+          'Franchise resales are priced differently from independents. The franchisor’s transfer fee, approval process and any required remodel all affect what a buyer can pay.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Point-of-sale reports and sales tax filings alongside the profit and loss statement. In a cash-heavy business they are the most reliable check on reported sales.',
+          'Food, labor and occupancy costs as a share of sales, compared month by month.',
+          'The liquor license, if any, and how it transfers in that state; health inspection history; and the age of major kitchen equipment.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are restaurants for sale priced?',
+        a: 'Profitable restaurants usually sell on a multiple of seller’s discretionary earnings. Restaurants with little or no profit are priced on the value of the lease, build-out and equipment. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Is it better to buy an existing restaurant or a franchise resale?',
+        a: 'An independent gives you control of the concept; a franchise resale gives you a proven system with fees, rules and a transfer process. Either way, verify sales from point-of-sale and tax records rather than the listing.',
+      },
+      {
+        q: 'Where do these restaurant listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  landscaping: {
+    title: 'Landscaping Businesses for Sale: {n} Lawn Care & Landscaping Companies | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of a landscaping business',
+        body: [
+          'Recurring maintenance contracts are what buyers pay for. A book of weekly mowing and maintenance accounts, especially commercial ones under contract, is worth more than the same revenue from one-off installation projects.',
+          'Equipment is a large part of the deal. Buyers look at the age and condition of trucks, trailers and mowers and price in what will need replacing soon.',
+          'Labor and seasonality are the main risks. Crews that come back every season, and snow removal or year-round work in colder climates, make earnings steadier and the business easier to finance.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue split between maintenance contracts, installation projects and snow or seasonal work, for at least three years.',
+          'Customer concentration and contract terms for commercial accounts, including whether they can be assigned.',
+          'An equipment list with ages, titles and liens, and how crews are hired, paid and classified.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are landscaping businesses valued?',
+        a: 'As a multiple of seller’s discretionary earnings, higher for recurring maintenance contracts and lower for project-based installation work. Equipment value and condition are considered alongside earnings.',
+      },
+      {
+        q: 'Can I buy a lawn care business with an SBA loan?',
+        a: 'Yes. Lenders want verified earnings, and they will look at equipment as collateral and at how dependent the business is on the seller.',
+      },
+      {
+        q: 'Where do these landscaping listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
   hvac: {
     title: 'HVAC Businesses for Sale: {n} HVAC Companies Listed by Brokers | DealLedger',
     h1: 'HVAC Businesses for Sale',
