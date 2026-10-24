@@ -526,7 +526,10 @@ def head_ok(url, explain=False):
 
     # A listings index usually shows several prices, or repeats listing
     # language. One price is a homepage teaser, not an index.
-    prices = len(set(re.findall(r"\$\s?[\d,]{4,}", body)))
+    # "$1,250,000" and also "$1.2M" / "$850K" / "$2.5 million", which
+    # practice brokers use for revenue (cpasales.com, 2026-10-24).
+    prices = len(set(re.findall(
+        r"\$\s?(?:[\d,]{4,}|\d{1,3}(?:\.\d+)?\s?(?:k|m|mm|million)\b)", body, re.I)))
     cues = sum(low.count(c) for c in (
         "listing", "for sale", "asking price", "cash flow", "sde", "ebitda",
         # Practice / agency brokers state size differently (2026-10-24).
@@ -541,6 +544,14 @@ def head_ok(url, explain=False):
                          "strength": min(prices, 60) + 2 * min(details, 60)}
     if prices >= 3 or cues >= 8 or (details >= 5 and cues >= 3):
         return out(True, f"content match ({prices} prices, {details} detail links)")
+    # A page whose own address says "<something>-for-sale" and that repeats
+    # listing language is an index even with few dollar figures: practice
+    # brokers often list revenue ranges in words (cpasales.com, 6-7 cues).
+    if cues >= 4 and re.search(r"/[a-z-]*for-sale\b|/available-[a-z-]+|/current-listings",
+                               urlparse(getattr(r, "url", None) or url).path, re.I) \
+            and not _BLOG_PATH.search(urlparse(url).path):
+        HEAD_METRICS[url]["strength"] = max(HEAD_METRICS[url]["strength"], 2 + cues // 2)
+        return out(True, f"for-sale path + {cues} cues")
 
     # Client-rendered pages have neither in the raw HTML. Transworld and
     # Sunbelt franchise sites both failed here despite carrying 100+ listings.
@@ -1329,6 +1340,36 @@ def _find_listings_page_once(base_url, verbose=False):
             pass
     if strong_enough() or (LAST_FIND["candidates"] and
                            max(c["strength"] for c in LAST_FIND["candidates"]) >= 6):
+        return best()
+
+    # ── Stage 2b: menu pages with no keyword in them ──
+    # Menus like "ATM Routes" or "Our Car Washes" don't score, so try the
+    # short same-site menu links directly; the page content decides
+    # (carwashsale, acmeatm, aestheticbrokers had 0 scored links, 2026-10-24).
+    if not LAST_FIND["candidates"] and LAST_FIND.get("home_status") == 200:
+        try:
+            soup = BeautifulSoup(body, "html.parser")
+            menu, seen_m = [], set()
+            for a in soup.select("nav a[href], header a[href], .menu a[href], [class*='nav'] a[href]"):
+                full = urljoin(LAST_FIND["landed"] or base_url, a["href"].strip()).split("#")[0].rstrip("/")
+                pu = urlparse(full)
+                segs = [x for x in pu.path.split("/") if x]
+                label = a.get_text(" ", strip=True).lower()
+                if (bare(pu.netloc) not in site_hosts or full in seen_m or not segs
+                        or len(segs) > 2 or _BLOG_PATH.search(pu.path)
+                        or re.search(r"about|contact|team|blog|news|faq|privacy|terms|login|"
+                                     r"sell|valuation|career|testimonial|resource|service",
+                                     pu.path + " " + label)):
+                    continue
+                seen_m.add(full)
+                menu.append(full)
+            for cand in menu[:8]:
+                try_url(cand, "menu link")
+                if strong_enough():
+                    break
+        except Exception as exc:
+            reasons.append(f"menu: {type(exc).__name__}")
+    if strong_enough():
         return best()
 
     # ── Stage 3: sitemap ──
