@@ -625,8 +625,11 @@ def main():
             else:
                 print("    no listings page found")
                 tally["no_listings_page"] = tally.get("no_listings_page", 0) + 1
-                save(domain, base, None, "no_listings_page")
-                update_source(row, "no_listings_page")
+                # Keep the probe trail so a miss can be checked later
+                # (2026-10-24: 38 niche rejects had empty notes).
+                why = "; ".join(dv.LAST_FIND.get("reasons", [])[:6])
+                save(domain, base, None, "no_listings_page", notes=why[:300] or None)
+                update_source(row, "no_listings_page", error=why[:300] or None)
             time.sleep(1.0)
             continue
 

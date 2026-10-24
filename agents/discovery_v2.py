@@ -110,6 +110,22 @@ LISTINGS_PATHS = [
     "/properties",
     "/business-opportunities",
     "/inventory",
+    # Niche brokers (2026-10-24): practices, agencies, firms, routes, deals.
+    "/practices",
+    "/available-practices",
+    "/practice-listings",
+    "/buy-a-practice",
+    "/current-opportunities",
+    "/available-opportunities",
+    "/deals",
+    "/active-listings",
+    "/available-listings",
+    "/agencies-for-sale",
+    "/firms-for-sale",
+    "/companies-for-sale",
+    "/routes-for-sale",
+    "/for-buyers",
+    "/buyers",
 ]
 
 # v4 CSS container patterns
@@ -326,10 +342,32 @@ _LINK_KEYWORDS = (
     ("current listings", 5), ("our listings", 5), ("active listings", 5),
     ("all listings", 5), ("buy a business", 5), ("buy-a-business", 5),
     ("available businesses", 5), ("practices for sale", 5),
-    ("practices-for-sale", 5), ("listings", 4), ("listing", 3),
+    ("practices-for-sale", 5),
+    # Niche brokers (2026-10-24): dental/vet/CPA/RIA practices, agencies,
+    # firms, routes, dealerships, car washes, laundromats, pharmacies.
+    ("available practices", 5), ("available-practices", 5),
+    ("practice listings", 5), ("practice-listings", 5),
+    ("buy a practice", 5), ("buy-a-practice", 5),
+    ("purchase a practice", 5), ("practice opportunities", 5),
+    ("current opportunities", 5), ("current-opportunities", 5),
+    ("available opportunities", 5), ("available-opportunities", 5),
+    ("acquisition opportunities", 4), ("investment opportunities", 3),
+    ("current engagements", 4), ("active engagements", 4),
+    ("available listings", 5), ("available-listings", 5),
+    ("listings", 4), ("listing", 3),
     ("for sale", 3), ("for-sale", 3), ("opportunities", 3), ("inventory", 3),
+    ("practices", 3), ("deals", 3), ("portfolio", 2),
     ("buyers", 2), ("browse", 2), ("search", 2),
 )
+# "<noun> for sale" in a label or path is the site naming its index, whatever
+# the vertical: "Agencies for Sale", "car-washes-for-sale", "Routes For Sale".
+_NOUN_FOR_SALE = re.compile(
+    r"\b(?:[a-z]+[ -])?(?:practices?|agenc(?:y|ies)|firms?|compan(?:y|ies)|"
+    r"clinics?|offices?|dealerships?|routes?|pharmac(?:y|ies)|washes|"
+    r"laundromats?|restaurants?|stations?|stores?|shops?|salons?|spas?|"
+    r"centers?|homes?|schools?|studios?|gyms?|wineries|breweries|"
+    r"distributors?|contractors?|operators?|providers?|services?|"
+    r"opportunit(?:y|ies)|deals?)[ -]for[ -]sale\b")
 _LINK_NARROWING = (
     "visa", "e-2", "e2 ", "franchis", "sold", "previous", "past listing",
     "past-listing", "closed", "recently", "archive", "featured", "spotlight",
@@ -350,6 +388,8 @@ def score_link(label, path):
     for kw, pts in _LINK_KEYWORDS:
         if kw in blob:
             score = max(score, pts)
+    if _NOUN_FOR_SALE.search(blob):
+        score = max(score, 5)
     if score and _NARROW_RE.search(blob):
         score -= 4
     # A detail page is not an index.
@@ -358,10 +398,16 @@ def score_link(label, path):
     return score
 
 
-def sitemap_candidates(base_url, max_files=4, timeout=10):
+_SITEMAP_LISTING_TYPE = re.compile(
+    r"(?:wp-sitemap-posts-|/)(listings?|business(?:es)?|practices?|"
+    r"opportunit(?:y|ies)|deals?|properties|inventory|for-sale|"
+    r"[a-z]+-for-sale)(?:-sitemap\d*|-\d+)?\.xml", re.I)
+
+
+def sitemap_candidates(base_url, max_files=10, timeout=10):
     """Listing-index-looking URLs from robots.txt / sitemap.xml."""
     host = urlparse(base_url).netloc.lower().removeprefix("www.")
-    queue, seen_files, urls = [], set(), []
+    queue, seen_files, urls, type_archives = [], set(), [], []
     try:
         r = get_page(base_url + "/robots.txt", timeout=timeout)
         if r.status_code == 200:
@@ -385,8 +431,19 @@ def sitemap_candidates(base_url, max_files=4, timeout=10):
         if "<sitemapindex" in r.text[:2000].lower():
             # Follow child sitemaps most likely to hold index pages first.
             kids = sorted(locs, key=lambda u: (
-                0 if re.search(r"page|listing|business|for-sale", u, re.I) else 1))
-            queue = kids[:6] + queue
+                0 if _SITEMAP_LISTING_TYPE.search(u) else
+                1 if re.search(r"page|for-sale", u, re.I) else 2))
+            # A WordPress post-type sitemap named after listings
+            # (listing-sitemap.xml, wp-sitemap-posts-practice-1.xml) means
+            # the site has an archive for that type: try /<type>/ and its
+            # plural directly, they are usually the index.
+            for k in kids:
+                m = _SITEMAP_LISTING_TYPE.search(k)
+                if m:
+                    t = m.group(1).lower()
+                    for slug in (t, t + "s" if not t.endswith("s") else t):
+                        type_archives.append(f"{base_url}/{slug}/")
+            queue = kids[:8] + queue
             continue
         for u in locs[:5000]:
             if urlparse(u).netloc.lower().removeprefix("www.") == host:
@@ -398,7 +455,23 @@ def sitemap_candidates(base_url, max_files=4, timeout=10):
             # Shallow paths are indexes; deep ones are usually listing pages.
             depth = len([x for x in urlparse(u).path.split("/") if x])
             scored.append((s - max(0, depth - 2), u))
-    return [u for _, u in sorted(scored, reverse=True)[:6]]
+    # Many listing URLs sharing one parent (/practice/a, /practice/b, ...)
+    # point at that parent as the index, even when no index page is in the
+    # sitemap itself.
+    parents = {}
+    for u in set(urls):
+        segs = [x for x in urlparse(u).path.split("/") if x]
+        if len(segs) >= 2 and _DETAIL_PATH.search("/" + "/".join(segs)):
+            parents["/" + "/".join(segs[:-1])] = parents.get("/" + "/".join(segs[:-1]), 0) + 1
+    for parent, n in sorted(parents.items(), key=lambda x: -x[1])[:3]:
+        if n >= 3:
+            scored.append((6, base_url + parent + "/"))
+    ranked = [u for _, u in sorted(scored, reverse=True)]
+    out = []
+    for u in list(dict.fromkeys(type_archives)) + ranked:
+        if u not in out:
+            out.append(u)
+    return out[:10]
 
 
 def head_ok(url, explain=False):
@@ -456,6 +529,9 @@ def head_ok(url, explain=False):
     prices = len(set(re.findall(r"\$\s?[\d,]{4,}", body)))
     cues = sum(low.count(c) for c in (
         "listing", "for sale", "asking price", "cash flow", "sde", "ebitda",
+        # Practice / agency brokers state size differently (2026-10-24).
+        "gross revenue", "annual revenue", "collections", "gross sales",
+        "net income", "owner benefit", "practice id", "listing id",
     ))
     details = count_detail_links(body, getattr(r, "url", None) or url)
     # strength ranks candidates against each other: distinct prices plus
@@ -477,7 +553,9 @@ def head_ok(url, explain=False):
     strong_path = re.search(
         r"/(businesses?-for-sale|listings?|business-listings|"
         r"buy-a-business|current-listings|our-listings|all-listings|"
-        r"featured-listings|practices-for-sale|opportunities)\b",
+        r"featured-listings|practices-for-sale|opportunities|practices|"
+        r"available-practices|current-opportunities|deals|"
+        r"[a-z-]+-for-sale)\b",
         url, re.I,
     )
     if js_shell and strong_path:
