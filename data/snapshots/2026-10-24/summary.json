@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-24T10:25:14.916773+00:00",
+  "brokers_attempted": 668,
+  "brokers_success": 374,
+  "brokers_failed": 250,
+  "total_listings": 7751,
+  "listings_with_price": 6953,
+  "listings_with_cashflow": 3532,
+  "listings_with_state": 6290,
+  "detail_pages_fetched": 227,
+  "patterns_cached": 527,
+  "patterns_learned": 362,
+  "verticals": {
+    "restaurant": 1864,
+    "automotive": 444,
+    "technology": 1291,
+    "other": 1865,
+    "manufacturing": 158,
+    "landscaping": 69,
+    "retail": 930,
+    "construction": 214,
+    "cleaning": 104,
+    "healthcare": 439,
+    "roofing": 16,
+    "vending": 125,
+    "electrical": 48,
+    "plumbing": 77,
+    "hvac": 101,
+    "pest_control": 6
+  },
+  "failure_types": {
+    "NO_PATTERN": 135,
+    "EMBED_BBS": 43,
+    "FETCH_ERROR": 16,
+    "HTTP_403": 40,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 25,
+  "interrupted": true,
+  "slowest_brokers": [
+    [
+      2066,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2046,
+      "pacificrb.com",
+      8
+    ],
+    [
+      1421,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1177,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      426,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      377,
+      "lvcbs.com",
+      0
+    ],
+    [
+      322,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      291,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      289,
+      "empiregbb.com",
+      3
+    ],
+    [
+      270,
+      "progressivepracticesales.com",
+      99
+    ],
+    [
+      257,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      249,
+      "compasscommercial.com",
+      1
+    ],
+    [
+      241,
+      "polarisintegrated.com",
+      1
+    ],
+    [
+      227,
+      "www.usbizsell.com",
+      3
+    ],
+    [
+      227,
+      "bhhsneproperties.com",
+      3
+    ]
+  ],
+  "seconds_total": 30726,
+  "completed": "2026-10-24T15:10:33.555904+00:00",
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
