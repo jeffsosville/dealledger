@@ -58,7 +58,8 @@ jobs:
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
-          git add -A public/sitemap*.xml
+          # Quoted so git does the matching and stages deleted part files too.
+          git add -A -- 'public/sitemap*.xml'
           if git diff --staged --quiet; then
             echo "Sitemap unchanged."
             exit 0
