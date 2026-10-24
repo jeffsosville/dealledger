@@ -1358,7 +1358,11 @@ def _find_listings_page_once(base_url, verbose=False):
                 if (bare(pu.netloc) not in site_hosts or full in seen_m or not segs
                         or len(segs) > 2 or _BLOG_PATH.search(pu.path)
                         or re.search(r"about|contact|team|blog|news|faq|privacy|terms|login|"
-                                     r"sell|valuation|career|testimonial|resource|service",
+                                     r"sell|valuation|career|testimonial|resource|service|"
+                                     r"podcast|episode|webinar|video|event|report|insight|"
+                                     r"learning|education|industr|sector|client|experience|"
+                                     r"deal-notes|transaction|tombstone|closed|press|media|"
+                                     r"partner|leadership|people|story|case-stud",
                                      pu.path + " " + label)):
                     continue
                 seen_m.add(full)
@@ -1371,11 +1375,12 @@ def _find_listings_page_once(base_url, verbose=False):
             # ("listing", "for sale" on a podcast, client list or deal-notes
             # page) are not enough: it must show real prices or listing
             # links (first run 2026-10-24 picked /podcast, /our-clients,
-            # /learning-center, /industries/education).
+            # /learning-center, /industries/education). Advisory sites quote
+            # deal sizes ("$45M"), so 3 prices was still too few: 5.
             LAST_FIND["candidates"] = [
                 c for c in LAST_FIND["candidates"]
                 if c["source"] != "menu link"
-                or (c["prices"] >= 3 and not c["detail_page"])
+                or (c["prices"] >= 5 and not c["detail_page"])
                 or c["details"] >= 5]
         except Exception as exc:
             reasons.append(f"menu: {type(exc).__name__}")
