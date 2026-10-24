@@ -5,6 +5,7 @@ import {
   Row, Stats, STATES, TYPES, allStats, comboPath, fmtMoney, fmtMultiple, fmtNum, hasComboPage,
   hasTypePage, listingsFor, typeFromSlug, typePath,
 } from '../../../lib/seo';
+import { TYPE_GUIDES } from '../../../lib/typeGuides';
 
 type Props = { vertical: string; stats: Stats; rows: Row[]; byState: { code: string; count: number }[]; otherTypes: { vertical: string; count: number }[] };
 
@@ -31,12 +32,14 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 export default function TypePage({ vertical, stats: s, rows, byState, otherTypes }: InferGetStaticPropsType<typeof getStaticProps>) {
   const t = TYPES[vertical];
   const path = typePath(vertical);
+  const guide = TYPE_GUIDES[vertical];
   const multiple = s.median_multiple != null ? ` and a median of ${fmtMultiple(s.median_multiple)} cash flow` : '';
   return (
     <SeoPage
       path={path}
-      title={`${t.label} for Sale (${fmtNum(s.listings)} listings) — DealLedger`}
-      h1={`${t.label} for Sale`}
+      title={guide ? guide.title.replace('{n}', fmtNum(s.listings)) : `${t.label} for Sale (${fmtNum(s.listings)} listings) — DealLedger`}
+      h1={guide?.h1 || `${t.label} for Sale`}
+      guide={guide}
       eyebrow={`NATIONWIDE · ${t.label.toUpperCase()}`}
       description={`${fmtNum(s.listings)} ${t.noun} for sale across the US from ${fmtNum(s.brokers)} broker websites. Median asking ${fmtMoney(s.median_price)}. True days on market and a direct link to each broker.`}
       intro={`${fmtNum(s.listings)} ${t.noun} are for sale on ${fmtNum(s.brokers)} broker websites that DealLedger reads directly, with ${fmtNum(s.new_30d)} new in the last 30 days, a median asking price of ${fmtMoney(s.median_price)}${multiple}.`}

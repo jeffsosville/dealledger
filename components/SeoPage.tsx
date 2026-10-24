@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import { goListing } from '../lib/clickout';
 import { Row, Stats, STATES, fmtMoney, fmtMultiple, fmtNum, pageUrl } from '../lib/seo';
+import type { TypeGuide } from '../lib/typeGuides';
 
 export type LinkGroup = { title: string; links: { href: string; label: string; count?: number }[] };
 export type Crumb = { href: string; label: string };
@@ -19,6 +20,7 @@ type Props = {
   groups: LinkGroup[];
   showState?: boolean;      // show the state next to the city (national pages)
   refreshedNote?: string;
+  guide?: TypeGuide;        // buyer context + FAQ for national type pages
 };
 
 const place = (r: Row, showState: boolean) => {
@@ -67,6 +69,19 @@ export default function SeoPage(p: Props) {
       '@type': 'BreadcrumbList',
       itemListElement: p.crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: pageUrl(c.href) })),
     },
+    ...(p.guide && p.guide.faqs.length
+      ? [
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: p.guide.faqs.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -190,6 +205,34 @@ export default function SeoPage(p: Props) {
             </section>
           )}
 
+          {p.guide &&
+            p.guide.sections.map((sec) => (
+              <section className="section" key={sec.heading}>
+                <div className="section-eyebrow">— BUYER NOTES</div>
+                <h2 className="section-title">{sec.heading}</h2>
+                <div className="prose">
+                  {sec.body.map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+
+          {p.guide && p.guide.faqs.length > 0 && (
+            <section className="section">
+              <div className="section-eyebrow">— QUESTIONS</div>
+              <h2 className="section-title">Common questions</h2>
+              <div className="prose">
+                {p.guide.faqs.map((f) => (
+                  <div key={f.q}>
+                    <h3>{f.q}</h3>
+                    <p>{f.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {p.groups.filter((g) => g.links.length).map((g) => (
             <section className="section" key={g.title}>
               <div className="section-eyebrow">— BROWSE</div>
@@ -273,6 +316,9 @@ export default function SeoPage(p: Props) {
         .links li { break-inside: avoid; padding: 4px 0; }
         .count { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
         .prose p { margin: 0; color: var(--ink-soft); max-width: 75ch; font-size: 14px; }
+        .prose p + p { margin-top: 10px; }
+        .prose h3 { margin: 18px 0 4px 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+        .prose div:first-child h3 { margin-top: 0; }
         .footer { margin-top: 80px; }
         .footer-rule { border-top: 1px solid var(--rule); margin-bottom: 20px; }
         .footer-text { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
