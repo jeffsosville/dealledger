@@ -12,6 +12,7 @@ validate_listing_set). Python then runs the selector every night; no AI on daily
     python3 agents/pattern_maps.py run --domain naz-business.com --write  # store if OK
     python3 agents/pattern_maps.py run --limit 20                         # first 20 targets, dry run
     python3 agents/pattern_maps.py run --all --write                      # every target (needs Jeff's go-ahead)
+    python3 agents/pattern_maps.py run --targets data/pattern_maps/targets-2026-10-25.csv --limit 100
 
 Never writes to Supabase. --write only updates data/pattern_cache.json; listings change
 on the next nightly crawl, through the normal gates. Every run writes
@@ -197,13 +198,13 @@ def process(target, fetcher, client, cache, write):
     return row
 
 
-def load_targets(domain=None):
-    rows = list(csv.DictReader(open(TARGETS)))
+def load_targets(domain=None, path=None):
+    rows = list(csv.DictReader(open(path or TARGETS)))
     if domain:
         d = domain.lower().removeprefix("www.")
         rows = [r for r in rows if r["domain"].lower().removeprefix("www.") == d]
         if not rows:
-            sys.exit(f"{domain} is not in {TARGETS.name}")
+            sys.exit(f"{domain} is not in {Path(path or TARGETS).name}")
     return rows
 
 
@@ -215,9 +216,10 @@ def main():
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--write", action="store_true", help="store OK patterns in data/pattern_cache.json")
     ap.add_argument("--no-ai", action="store_true", help="detector only, no Claude calls")
+    ap.add_argument("--targets", help="targets CSV (default: %s)" % TARGETS.name)
     a = ap.parse_args()
 
-    targets = load_targets(a.domain)
+    targets = load_targets(a.domain, a.targets)
     if not (a.domain or a.all or a.limit):
         sys.exit("Pick one: --domain D, --limit N, or --all")
     if a.limit:
