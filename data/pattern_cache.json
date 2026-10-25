@@ -195,11 +195,14 @@
     "last_used": "2026-02-21T19:34:21.556888"
   },
   "armennazarian.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 2,
-    "total_listings": 122,
-    "first_seen": "2026-02-19T22:49:37.031255",
-    "last_used": "2026-02-21T19:56:37.934955"
+    "container_selector": "table.business-list-table-small tr:not(.heading)",
+    "count": 25,
+    "score": 28,
+    "sample_text": "File Number #0861 Name/Location Franchise Pizzeria Suburban Wayne County Gross Sales $713,984 Cash Flow TBD Price $249,900 Down Payment $125,000 View View",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:25:54Z",
+    "total_listings": 24
   },
   "prolevelbusiness.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
@@ -325,10 +328,14 @@
     "last_used": "2026-02-21T20:49:24.703716"
   },
   "naz-business.com": {
-    "container_selector": "div.x-el.c1-1.c1-2.c1-1q.c1-1r.c1-4n.c1-29.c1-2a.c1-5b.c1-88.c1-89.c1-8a.c1-8b.c1-8c.c1-8d.c1-8e.c1-8f.c1-8g.c1-8h.c1-8i.c1-8j.c1-8k.c1-8l.c1-8m.c1-8n.c1-8o.c1-8p.c1-8q.c1-8r.c1-8s.c1-8t.c1-8u.c1-8v.c1-8w.c1-8x.c1-8y.c1-8z.c1-90.c1-91.c1-92.c1-93.c1-4.c1-5u.c1-b.c1-c.c1-3y.c1-3e.c1-d.c1-e.c1-f.c1-g.x-rt",
+    "container_selector": "div.x-el.c1-1.c1-2.c1-1r.c1-1s.c1-4n.c1-2a.c1-2b.c1-5b.c1-8g.c1-8h.c1-8i.c1-8j.c1-8k.c1-8l.c1-8m.c1-8n.c1-8o.c1-8p.c1-8q.c1-8r.c1-8s.c1-8t.c1-8u.c1-8v.c1-8w.c1-8x.c1-8y.c1-8z.c1-90.c1-91.c1-92.c1-93.c1-94.c1-95.c1-96.c1-97.c1-98.c1-99.c1-9a.c1-9b.c1-4.c1-5t.c1-b.c1-c.c1-3y.c1-3e.c1-d.c1-e.c1-f.c1-g.x-rt",
     "count": 32,
     "score": 30,
-    "sample_text": "2246 Asking Price: \u00a0$ 200,000"
+    "sample_text": "2246 Asking Price: \u00a0$ 200,000",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:24:27Z",
+    "total_listings": 25
   },
   "practicetransitionsgroup.com": {
     "container_selector": "div[style*=\"margin-bottom: 2em\"]",
@@ -681,11 +688,14 @@
     "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
   },
   "tucsonbusiness.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 3,
-    "first_seen": "2026-02-23T15:50:02.527272",
-    "last_used": "2026-02-23T15:50:02.527279"
+    "container_selector": "div.portfolio-item.mb-3.pb-1",
+    "count": 10,
+    "score": 13,
+    "sample_text": "Construction Management Business $475,000 Profitable & Homebased",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:39:07Z",
+    "total_listings": 9
   },
   "blbrokers.com": {
     "pattern": "div|children:div|has_link|has_img|text:long",
@@ -751,11 +761,14 @@
     "last_used": "2026-02-23T16:19:19.242195"
   },
   "cincybizbroker.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 5,
-    "first_seen": "2026-02-23T16:19:35.828184",
-    "last_used": "2026-02-23T16:19:35.828191"
+    "container_selector": "div.lsd-listing",
+    "count": 3,
+    "score": 6,
+    "sample_text": "20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow Asking Price: $619,000 Sales: $2,730,000 Cash Flow: $255,000 Business For Sale Share 20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:32:25Z",
+    "total_listings": 3
   },
   "bizex.net": {
     "pattern": "div|children:a,p|has_link|text:long|has_price",
@@ -837,11 +850,14 @@
     "last_used": "2026-02-23T16:52:42.341965"
   },
   "hscbrokers.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 2,
-    "first_seen": "2026-02-23T16:52:59.844708",
-    "last_used": "2026-02-23T16:52:59.844718"
+    "container_selector": "div.fusion-column-wrapper.fusion-flex-justify-content-flex-start.fusion-content-layout-column",
+    "count": 121,
+    "score": 24,
+    "sample_text": "",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:35:59Z",
+    "total_listings": 107
   },
   "list.roibusinessbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -865,11 +881,14 @@
     "last_used": "2026-02-23T16:54:30.768386"
   },
   "neumannassociates.com": {
-    "pattern": "div|children:div|has_link|has_img|text:long",
-    "success_count": 1,
-    "total_listings": 3,
-    "first_seen": "2026-02-23T16:54:44.174007",
-    "last_used": "2026-02-23T16:54:44.174017"
+    "container_selector": "div.card-body",
+    "count": 8,
+    "score": 16,
+    "sample_text": "E-Commerce Furniture Distributor \u2013 $30m Southeast",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:28:18Z",
+    "total_listings": 8
   },
   "nestfully.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1004,10 +1023,14 @@
     "last_used": "2026-02-23T17:06:34.579521"
   },
   "landscapedepotinvestments.com": {
-    "container_selector": "div.row",
-    "count": 14,
-    "score": 23,
-    "sample_text": "Businesses For Sale"
+    "container_selector": "div.search-result-list-row.clearfix",
+    "count": 13,
+    "score": 24,
+    "sample_text": "Listing ID County/State Type of Business Price Net Profit Assets Gross Sales",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:37:40Z",
+    "total_listings": 4
   },
   "apex-cre.com": {
     "pattern": "div|children:a,h1|has_link|has_img|text:medium|has_price",
@@ -1066,11 +1089,14 @@
     "last_used": "2026-02-23T17:09:44.071347"
   },
   "businessusa.biz": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 582,
-    "first_seen": "2026-02-23T17:30:33.552467",
-    "last_used": "2026-02-23T17:30:33.552479"
+    "container_selector": "table.table-bordered tbody tr",
+    "count": 15,
+    "score": 30,
+    "sample_text": "9060 Auto Repair Montgomery MD $ 189,000.00 $ 3,100,000.00 *Auto Repair shop with 3 bays $50,000/month",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:44:41Z",
+    "total_listings": 15
   },
   "craftbusinesssales.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1374,11 +1400,14 @@
     "last_used": "2026-02-23T18:06:55.124831"
   },
   "businessbrokerphoenixaz.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 3,
-    "first_seen": "2026-02-23T18:07:09.366869",
-    "last_used": "2026-02-23T18:07:09.366880"
+    "container_selector": "a.woocommerce-LoopProduct-link.woocommerce-loop-product__link",
+    "count": 7,
+    "score": 12,
+    "sample_text": "Profitable and Established Construction Company For Sale $ 5,500,000.00",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:35:17Z",
+    "total_listings": 6
   },
   "americanbusinessbrokers.com": {
     "pattern": "tr|children:td|has_link|has_img|text:long",
@@ -1772,11 +1801,14 @@
     "sample_text": "For Sale 20 FedEx P&D Routes ( Carve-Out)-North Alabama Route ID 438 Asking Price $1,849,000 EBITDA $578,779 Revenue $2,108,203 Fleet Value $624,500 # of Vehicles 26 # of Employees 20 Financing Type C"
   },
   "californiabusinesssale.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 1,
-    "total_listings": 1,
-    "first_seen": "2026-02-24T03:34:36.898425",
-    "last_used": "2026-02-24T03:34:36.898436"
+    "container_selector": "div.detail",
+    "count": 9,
+    "score": 17,
+    "sample_text": "Ref ID: 5470 (280) 99,000 Business Description:\n\n* Gas station with beer wine  & food mart for sale located in Stanislaus County, Ca.\n\n* U Haul Service available plus separate kitchen area. \n\n* This i",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:55:22Z",
+    "total_listings": 8
   },
   "houlihanbusinessbrokers.net": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -1882,10 +1914,14 @@
     "last_used": "2026-02-24T07:30:25.410799"
   },
   "springfieldstrategies.com": {
-    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-6z.c1-6q.c1-78.c1-9e.c1-9k.c1-26.c1-7a.c1-3j.c1-7b.c1-z.c1-8j.c1-b.c1-c.c1-9l.c1-9m.c1-7f.c1-7g.c1-9f.c1-7i.c1-d.c1-9n.c1-9o.c1-e.c1-f.c1-g",
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-6y.c1-6p.c1-77.c1-9d.c1-9j.c1-26.c1-79.c1-3j.c1-7a.c1-z.c1-8i.c1-b.c1-c.c1-9k.c1-9l.c1-7e.c1-7f.c1-9e.c1-7h.c1-d.c1-9m.c1-9n.c1-e.c1-f.c1-g",
     "count": 31,
-    "score": 27,
-    "sample_text": "Used Auto Dealership w/ Real Estate. $17.5mm in Revenue! $4,500,000 North Georgia Revenue: $17,500,000 Ideal location w/ approx 265 ft of high-visibility road frontage on main corridor."
+    "score": 25,
+    "sample_text": "Used Auto Dealership w/ Real Estate. $17.5mm in Revenue! $4,500,000 North Georgia Revenue: $17,500,000 Ideal location w/ approx 265 ft of high-visibility road frontage on main corridor.",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:23:36Z",
+    "total_listings": 4
   },
   "ecbrokers.com": {
     "pattern": "div|children:div|has_link|text:medium",
@@ -2535,10 +2571,14 @@
     "sample_text": "#1 NATIONAL PET FOOD FRANCHISE *Price Reduced*  - 8 YRS ESTABLISHED $399,000.00 West of GTA A premium franchise opportunity in a specialized pet retailer focused on natural and organic products for al"
   },
   "www.hscbrokers.com": {
-    "container_selector": ".fusion-text p",
-    "count": 27,
-    "score": 50,
-    "sample_text": "Fantastic LI Car Wash with Real Estate ASKING PRICE: $10,500,000 GROSS REVENUE: $1,400,000 Rare opportunity to buy a Long Island car wash with real estate."
+    "container_selector": "div.fusion-column-wrapper.fusion-flex-justify-content-flex-start.fusion-content-layout-column",
+    "count": 121,
+    "score": 24,
+    "sample_text": "",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:35:59Z",
+    "total_listings": 107
   },
   "www.equity55.com": {
     "container_selector": "div.card",
@@ -2787,10 +2827,14 @@
     "sample_text": "Asking Price: $6,750,000 Gross Sales: $7,401,496 Cash Flow: $1,638,147 Grading & Excavation Construction Company-SoCAL Phelan, CA Well-established heavy civil construction company based in the San Ber"
   },
   "bwbrokerage.com": {
-    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-a1.c1-a2.c1-a3.c1-4.c1-1r.c1-1s.c1-b.c1-c.c1-d.c1-e.c1-f.c1-g",
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-a0.c1-a1.c1-a2.c1-4.c1-1r.c1-1s.c1-b.c1-c.c1-d.c1-e.c1-f.c1-g",
     "count": 16,
     "score": 30,
-    "sample_text": "Community Oriented Coffee Shop-  - SOLD $45,000 Cecil County, Maryland Gross Revenue: $144,079 Established: 2021"
+    "sample_text": "Community Oriented Coffee Shop-  - SOLD $45,000 Cecil County, Maryland Gross Revenue: $144,079 Established: 2021",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:44:53Z",
+    "total_listings": 16
   },
   "healthcarebizbrokers.com": {
     "container_selector": "div.shadcn-card.rounded-xl.border.text-card-foreground.shadow-sm.h-full.flex.flex-col.overflow-hidden.hover\\:shadow-xl.transition-all.duration-300.border-border\\/50.bg-white.group",
@@ -2875,5 +2919,295 @@
     "count": 16,
     "score": 30,
     "sample_text": "Auto Wholesale Dealer & Service Center- Sales: $380M EBITDA: $7.5M Location: Southeast Available Listing Details"
+  },
+  "www.armennazarian.com": {
+    "container_selector": "table.business-list-table-small tr:not(.heading)",
+    "count": 25,
+    "score": 28,
+    "sample_text": "File Number #0861 Name/Location Franchise Pizzeria Suburban Wayne County Gross Sales $713,984 Cash Flow TBD Price $249,900 Down Payment $125,000 View View",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:25:54Z",
+    "total_listings": 24
+  },
+  "bizbrokerplus.com": {
+    "container_selector": "div.rounded-2xl.border-\\[--hairline\\].text-card-foreground.shadow-\\[0_1px_2px_rgba\\(0\\,0\\,0\\,0\\.04\\)\\,0_8px_24px_rgba\\(0\\,0\\,0\\,0\\.05\\)\\].card-hover.overflow-hidden.border.bg-card.font-poppins",
+    "count": 112,
+    "score": 28,
+    "sample_text": "Established Business SBA Eligible Seller Financing Active Texas Semi-Absentee Labor & Consulting Business Midland, TX $6.5M Revenue: $9.2M Cash Flow: $1.9M Listed By: Michelle Ellis",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:43:08Z",
+    "total_listings": 102
+  },
+  "www.bizbrokerplus.com": {
+    "container_selector": "div.rounded-2xl.border-\\[--hairline\\].text-card-foreground.shadow-\\[0_1px_2px_rgba\\(0\\,0\\,0\\,0\\.04\\)\\,0_8px_24px_rgba\\(0\\,0\\,0\\,0\\.05\\)\\].card-hover.overflow-hidden.border.bg-card.font-poppins",
+    "count": 112,
+    "score": 28,
+    "sample_text": "Established Business SBA Eligible Seller Financing Active Texas Semi-Absentee Labor & Consulting Business Midland, TX $6.5M Revenue: $9.2M Cash Flow: $1.9M Listed By: Michelle Ellis",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:43:08Z",
+    "total_listings": 102
+  },
+  "www.businessbrokerphoenixaz.com": {
+    "container_selector": "a.woocommerce-LoopProduct-link.woocommerce-loop-product__link",
+    "count": 7,
+    "score": 12,
+    "sample_text": "Profitable and Established Construction Company For Sale $ 5,500,000.00",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:35:17Z",
+    "total_listings": 6
+  },
+  "www.businessusa.biz": {
+    "container_selector": "table.table-bordered tbody tr",
+    "count": 15,
+    "score": 30,
+    "sample_text": "9060 Auto Repair Montgomery MD $ 189,000.00 $ 3,100,000.00 *Auto Repair shop with 3 bays $50,000/month",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:44:41Z",
+    "total_listings": 15
+  },
+  "www.bwbrokerage.com": {
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-a0.c1-a1.c1-a2.c1-4.c1-1r.c1-1s.c1-b.c1-c.c1-d.c1-e.c1-f.c1-g",
+    "count": 16,
+    "score": 30,
+    "sample_text": "Community Oriented Coffee Shop-  - SOLD $45,000 Cecil County, Maryland Gross Revenue: $144,079 Established: 2021",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:44:53Z",
+    "total_listings": 16
+  },
+  "www.cincybizbroker.com": {
+    "container_selector": "div.lsd-listing",
+    "count": 3,
+    "score": 6,
+    "sample_text": "20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow Asking Price: $619,000 Sales: $2,730,000 Cash Flow: $255,000 Business For Sale Share 20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:32:25Z",
+    "total_listings": 3
+  },
+  "excellenssolutions.com": {
+    "container_selector": "div.FDI5TK.wixui-repeater__item",
+    "count": 8,
+    "score": 15,
+    "sample_text": "Established Auto Broker Business \u2014 Southern California Established automotive brokerage and vehicle leasing business offering new and Certified Pre-Owned vehicles from all major manufacturers. The ass",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:36:40Z",
+    "total_listings": 8
+  },
+  "www.excellenssolutions.com": {
+    "container_selector": "div.FDI5TK.wixui-repeater__item",
+    "count": 8,
+    "score": 15,
+    "sample_text": "Established Auto Broker Business \u2014 Southern California Established automotive brokerage and vehicle leasing business offering new and Certified Pre-Owned vehicles from all major manufacturers. The ass",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:36:40Z",
+    "total_listings": 8
+  },
+  "krbb.com": {
+    "container_selector": "div.ejYUwA.t1Z_7C",
+    "count": 24,
+    "score": 30,
+    "sample_text": "Event production company Price $250,000.00",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:37:23Z",
+    "total_listings": 24
+  },
+  "www.landscapedepotinvestments.com": {
+    "container_selector": "div.search-result-list-row.clearfix",
+    "count": 13,
+    "score": 24,
+    "sample_text": "Listing ID County/State Type of Business Price Net Profit Assets Gross Sales",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:37:40Z",
+    "total_listings": 4
+  },
+  "www.momentumprojects.com": {
+    "container_selector": "div.row.fl-post-image-beside-wrap",
+    "count": 10,
+    "score": 15,
+    "sample_text": "Business Description Exceptional opportunity to acquire a highly profitable and well-established restaurant and bar operation in a desirable coastal North Carolina market. The business has demonstrate",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:39:42Z",
+    "total_listings": 10
+  },
+  "morganandwestfield.com": {
+    "container_selector": "article.business-for-sale",
+    "count": 7,
+    "score": 13,
+    "sample_text": "Pending Award-Winning Distillery & Co-Packing Business | $7.58M Revenue Location: Texas Revenue: $7,580,000 Asking Price: Not Disclosed Cash Flow: $418,686 Acquire an established Texas distillery with",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:31:07Z",
+    "total_listings": 7
+  },
+  "www.morganandwestfield.com": {
+    "container_selector": "article.business-for-sale",
+    "count": 7,
+    "score": 13,
+    "sample_text": "Pending Award-Winning Distillery & Co-Packing Business | $7.58M Revenue Location: Texas Revenue: $7,580,000 Asking Price: Not Disclosed Cash Flow: $418,686 Acquire an established Texas distillery with",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:31:07Z",
+    "total_listings": 7
+  },
+  "www.naz-business.com": {
+    "container_selector": "div.x-el.c1-1.c1-2.c1-1r.c1-1s.c1-4n.c1-2a.c1-2b.c1-5b.c1-8g.c1-8h.c1-8i.c1-8j.c1-8k.c1-8l.c1-8m.c1-8n.c1-8o.c1-8p.c1-8q.c1-8r.c1-8s.c1-8t.c1-8u.c1-8v.c1-8w.c1-8x.c1-8y.c1-8z.c1-90.c1-91.c1-92.c1-93.c1-94.c1-95.c1-96.c1-97.c1-98.c1-99.c1-9a.c1-9b.c1-4.c1-5t.c1-b.c1-c.c1-3y.c1-3e.c1-d.c1-e.c1-f.c1-g.x-rt",
+    "count": 32,
+    "score": 30,
+    "sample_text": "2246 Asking Price: \u00a0$ 200,000",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:24:27Z",
+    "total_listings": 25
+  },
+  "www.neumannassociates.com": {
+    "container_selector": "div.card-body",
+    "count": 8,
+    "score": 16,
+    "sample_text": "E-Commerce Furniture Distributor \u2013 $30m Southeast",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:28:18Z",
+    "total_listings": 8
+  },
+  "stlbroker.net": {
+    "container_selector": "div.item-header",
+    "count": 15,
+    "score": 23,
+    "sample_text": "Featured For Lease NNN $14",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:46:26Z",
+    "total_listings": 4
+  },
+  "www.stlbroker.net": {
+    "container_selector": "div.item-header",
+    "count": 15,
+    "score": 23,
+    "sample_text": "Featured For Lease NNN $14",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:46:26Z",
+    "total_listings": 4
+  },
+  "www.tucsonbusiness.com": {
+    "container_selector": "div.portfolio-item.mb-3.pb-1",
+    "count": 10,
+    "score": 13,
+    "sample_text": "Construction Management Business $475,000 Profitable & Homebased",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:39:07Z",
+    "total_listings": 9
+  },
+  "www.californiabusinesssale.com": {
+    "container_selector": "div.detail",
+    "count": 9,
+    "score": 17,
+    "sample_text": "Ref ID: 5470 (280) 99,000 Business Description:\n\n* Gas station with beer wine  & food mart for sale located in Stanislaus County, Ca.\n\n* U Haul Service available plus separate kitchen area. \n\n* This i",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:55:22Z",
+    "total_listings": 8
+  },
+  "collaborativecommercial.com": {
+    "container_selector": "div.comp-luk47tkk.wixui-repeater__item",
+    "count": 14,
+    "score": 19,
+    "sample_text": "Waste Removal Wisconsin Price: $2,700,000 Learn more...",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:55:42Z",
+    "total_listings": 10
+  },
+  "www.collaborativecommercial.com": {
+    "container_selector": "div.comp-luk47tkk.wixui-repeater__item",
+    "count": 14,
+    "score": 19,
+    "sample_text": "Waste Removal Wisconsin Price: $2,700,000 Learn more...",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:55:42Z",
+    "total_listings": 10
+  },
+  "exit360brokers.com": {
+    "container_selector": "div.FDI5TK.wixui-repeater__item",
+    "count": 21,
+    "score": 28,
+    "sample_text": "FOR SALE \u200b \u200b NATIONAL LAND SERVICE BUSINESS \u200b Sales Price: $1,125,000 Additional Info",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:57:01Z",
+    "total_listings": 20
+  },
+  "www.exit360brokers.com": {
+    "container_selector": "div.FDI5TK.wixui-repeater__item",
+    "count": 21,
+    "score": 28,
+    "sample_text": "FOR SALE \u200b \u200b NATIONAL LAND SERVICE BUSINESS \u200b Sales Price: $1,125,000 Additional Info",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T22:57:01Z",
+    "total_listings": 20
+  },
+  "jensmartconsulting.com": {
+    "container_selector": "table.frlist tr:not(:first-child)",
+    "count": 50,
+    "score": 30,
+    "sample_text": "1+1 Cares Senior Care & Home Health Services $66,000 - $124,000",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T23:00:50Z",
+    "total_listings": 50
+  },
+  "www.jensmartconsulting.com": {
+    "container_selector": "table.frlist tr:not(:first-child)",
+    "count": 50,
+    "score": 30,
+    "sample_text": "1+1 Cares Senior Care & Home Health Services $66,000 - $124,000",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T23:00:50Z",
+    "total_listings": 50
+  },
+  "performancebrokerageservices.com": {
+    "container_selector": "div.transactions-slider-item",
+    "count": 8,
+    "score": 14,
+    "sample_text": "For Sale Northeast Domestic Platform Over $75M in revenue for 2025. Image-compliant facility. Real estate available for purchase. Dedicated commercial & fleet service operation with recurring clients.",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T23:04:07Z",
+    "total_listings": 8
+  },
+  "www.performancebrokerageservices.com": {
+    "container_selector": "div.transactions-slider-item",
+    "count": 8,
+    "score": 14,
+    "sample_text": "For Sale Northeast Domestic Platform Over $75M in revenue for 2025. Image-compliant facility. Real estate available for purchase. Dedicated commercial & fleet service operation with recurring clients.",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-19T23:04:07Z",
+    "total_listings": 8
+  },
+  "www.springfieldstrategies.com": {
+    "container_selector": "div.x-el.x-el-div.c1-1.c1-2.c1-6y.c1-6p.c1-77.c1-9d.c1-9j.c1-26.c1-79.c1-3j.c1-7a.c1-z.c1-8i.c1-b.c1-c.c1-9k.c1-9l.c1-7e.c1-7f.c1-9e.c1-7h.c1-d.c1-9m.c1-9n.c1-e.c1-f.c1-g",
+    "count": 31,
+    "score": 25,
+    "sample_text": "Used Auto Dealership w/ Real Estate. $17.5mm in Revenue! $4,500,000 North Georgia Revenue: $17,500,000 Ideal location w/ approx 265 ft of high-visibility road frontage on main corridor.",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-25T18:23:36Z",
+    "total_listings": 4
   }
 }
