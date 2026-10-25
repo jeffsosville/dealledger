@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-25T10:25:12.984109+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 511,
+  "brokers_failed": 259,
+  "total_listings": 9611,
+  "listings_with_price": 8608,
+  "listings_with_cashflow": 4242,
+  "listings_with_state": 7589,
+  "detail_pages_fetched": 534,
+  "patterns_cached": 542,
+  "patterns_learned": 481,
+  "verticals": {
+    "restaurant": 2298,
+    "automotive": 680,
+    "technology": 1617,
+    "other": 2151,
+    "manufacturing": 208,
+    "landscaping": 94,
+    "healthcare": 608,
+    "plumbing": 107,
+    "roofing": 32,
+    "retail": 1008,
+    "hvac": 158,
+    "construction": 302,
+    "electrical": 60,
+    "cleaning": 148,
+    "vending": 133,
+    "pest_control": 7
+  },
+  "failure_types": {
+    "HTTP_403": 47,
+    "EMBED_BBS": 30,
+    "NO_PATTERN": 130,
+    "FETCH_ERROR": 21,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 67,
+  "slowest_brokers": [
+    [
+      1949,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1537,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      1516,
+      "craftbusinesssales.com",
+      1
+    ],
+    [
+      1233,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      648,
+      "www.wesellgyms.com",
+      34
+    ],
+    [
+      611,
+      "therouteexchange.com",
+      109
+    ],
+    [
+      462,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      460,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      460,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      393,
+      "lvcbs.com",
+      0
+    ],
+    [
+      390,
+      "bestchoiceinvestments.com",
+      0
+    ],
+    [
+      312,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      311,
+      "progressivepracticesales.com",
+      99
+    ],
+    [
+      291,
+      "hudsonrobinson.com",
+      0
+    ],
+    [
+      285,
+      "acquisitionsdirect.com",
+      13
+    ]
+  ],
+  "seconds_total": 37906,
+  "completed": "2026-10-25T13:36:05.654134+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
