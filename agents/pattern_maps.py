@@ -78,10 +78,11 @@ def ask_claude(client, url, html):
         messages=[{"role": "user", "content": PROMPT.format(url=url, html=trim_html(html))}])
     text = "".join(c.text for c in msg.content if c.type == "text").strip()
     text = re.sub(r"^```(?:json)?|```$", "", text).strip()
+    m = re.search(r"\{.*\}", text, re.S)   # model sometimes wraps the JSON in prose
     try:
-        data = json.loads(text)
+        data = json.loads(m.group(0) if m else text)
     except json.JSONDecodeError:
-        return [], "unparseable reply"
+        return [], "unparseable reply: " + re.sub(r"\s+", " ", text)[:160]
     sels = [s for s in data.get("selectors") or [] if isinstance(s, str) and s.strip()]
     return sels[:3], data.get("notes", "")
 
