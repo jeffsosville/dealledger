@@ -56,6 +56,26 @@ def test_few_prices_is_proposed():
     assert any("prices" in f for f in fails)
 
 
+ASSOC = BROKER + (" <a>Membership Pricing</a> <a>Board of Directors</a> "
+                  "<a>Continuing Education</a> <a>TCA Constitution and Bylaws</a>")
+
+
+def test_association_name_is_proposed():
+    fails = db.gate_failures(_ev(BROKER), 5, None, None, domain="chirotexas.org",
+                             company="Texas Chiropractic Association classifieds")
+    assert any("association" in f for f in fails)
+
+
+def test_association_page_is_proposed():
+    fails = db.gate_failures(_ev(ASSOC), 5, None, None, domain="chirotexas.org")
+    assert any("association" in f for f in fails)
+
+
+def test_broker_named_business_brokers_still_promotes():
+    assert db.gate_failures(_ev(BROKER), 5, None, None, domain="acme.com",
+                            company="Acme Business Brokers") == []
+
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

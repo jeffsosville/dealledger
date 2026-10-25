@@ -350,6 +350,33 @@ _PARKED = re.compile(
     r"site (?:is )?(?:currently )?unavailable", re.I)
 
 
+# State associations, broker MLS and trade-group classifieds are discovery
+# seeds only, never a listing source (CLAUDE.md hard rule). 2026-10-25:
+# chirotexas.org (Texas Chiropractic Association classifieds) auto-promoted
+# and its bylaws / board / job-board pages reached the site.
+_ASSOC_NAME = re.compile(
+    r"\bassociation\b|\bassn\b|\bsociety\b|chamber of commerce|\bfederation\b|"
+    r"\bclassifieds?\b|\bguild\b|\bcouncil\b", re.I)
+_ASSOC_PAGE = re.compile(
+    r"membership (?:pricing|dues|benefits|application)|become a member|"
+    r"join (?:the |our )?association|members? only|member directory|bylaws|"
+    r"board of directors|continuing education|annual convention|"
+    r"\bCE (?:credits?|hours)\b|district \d+\b", re.I)
+
+
+def association_reason(domain, company, ev):
+    """Why this looks like an association/MLS/classifieds site, or None."""
+    name = company or ""
+    if _ASSOC_NAME.search(name):
+        return f"association or classifieds ('{name[:40]}')"
+    hits = ev.get("assoc_hits", 0)
+    if (domain or "").endswith(".org") and hits >= 1:
+        return f"association site (.org with {hits} membership/bylaws terms)"
+    if hits >= 3:
+        return f"association site ({hits} membership/bylaws terms)"
+    return None
+
+
 def _host(url):
     h = urlparse(url or "").netloc.lower().split(":")[0]
     return h[4:] if h.startswith("www.") else h
@@ -369,7 +396,7 @@ def page_evidence(dv, url, domain=None):
     """
     ev = {"listings_url": url, "final_url": None, "http": None, "prices": 0,
           "listing_words": 0, "re_hits": 0, "biz_hits": 0, "parked": None,
-          "off_domain": False}
+          "off_domain": False, "assoc_hits": 0}
     try:
         r = dv.get_page(url, timeout=15)
     except Exception as exc:
@@ -387,6 +414,7 @@ def page_evidence(dv, url, domain=None):
     ev["listing_words"] = sum(1 for w in _LISTING_WORDS if w in low)
     ev["re_hits"] = len(_RE_TERMS.findall(text))
     ev["biz_hits"] = len(_BIZ_TERMS.findall(text))
+    ev["assoc_hits"] = len(set(m.group(0).lower() for m in _ASSOC_PAGE.finditer(text)))
     m = _PARKED.search(text[:20_000])
     ev["parked"] = m.group(0) if m else None
     if ev["listing_words"] >= 2:
@@ -400,9 +428,12 @@ def looks_real_estate(ev):
     return re_hits >= GATE["re_min_hits"] and re_hits >= GATE["re_ratio"] * max(biz, 1)
 
 
-def gate_failures(ev, items, archive, why):
+def gate_failures(ev, items, archive, why, domain=None, company=None):
     """Every reason this candidate can't be auto-promoted. Empty = promote."""
     fails = []
+    assoc = association_reason(domain, company, ev)
+    if assoc:
+        fails.append(assoc)
     if archive:
         fails.append(f"archive path ({archive})")
     if ev.get("parked"):
@@ -701,7 +732,8 @@ def main():
                 ev["moved_to"] = fh
             why = suspicious(listings_url, method, platform,
                              result if isinstance(result, dict) else {})
-            fails = gate_failures(ev, int(found or 0), archive, why)
+            fails = gate_failures(ev, int(found or 0), archive, why,
+                                  domain=domain, company=row.get("company"))
             # 2026-10-12 first run: three auto-promotions were a single
             # listing or a seller guide page (smithallengroup, childcarebrokers).
             # Only an index page may be auto-promoted.
