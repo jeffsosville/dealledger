@@ -106,6 +106,8 @@ def finish_run(
     key = _key()
     if run_id is None or not key:
         return
+    if status == "ok":
+        status, error = _truncation_check(run_id, int(listings_seen or 0), key, error)
     if status not in _VALID_STATUS:
         # crawl_run_status_check rejects anything else, and a rejected PATCH
         # leaves the row 'running' forever (96 zombie rows by 2026-09-24,
@@ -132,6 +134,76 @@ def finish_run(
                         r.status_code, run_id, r.text[:200])
     except Exception as e:                                  # never raise
         log.warning("crawl_run finish failed: %s", e)
+
+
+# Truncation guard (2026-10-26, Jeff approved).
+# reputedbrokerage closed two runs as 'ok' after seeing 2 listings, down from
+# 333. An 'ok' run is read as "the broker's full index was seen" by
+# v_dom_direct, v_stale_check_queue and public_stats, so a run that sees a
+# small fraction of the recent normal count closes as 'partial' instead.
+# 'partial' is an allowed status and none of those views treat it as coverage.
+TRUNCATION_RATIO = 0.20     # below 20% of the recent normal count
+TRUNCATION_MIN_BASELINE = 20  # ignore brokers that normally list fewer
+TRUNCATION_LOOKBACK = "14 days"
+
+
+def _norm_domain(d: str | None) -> str:
+    d = (d or "").strip().lower()
+    return d[4:] if d.startswith("www.") else d
+
+
+def is_truncated(listings_seen: int, recent_ok_counts: list[int]) -> tuple[bool, int]:
+    """Pure check. Baseline = max of the last 3 'ok' runs' listings_seen."""
+    recent = [int(c or 0) for c in recent_ok_counts[:3]]
+    baseline = max(recent) if recent else 0
+    if baseline < TRUNCATION_MIN_BASELINE:
+        return False, baseline
+    return listings_seen < TRUNCATION_RATIO * baseline, baseline
+
+
+def _truncation_check(run_id: int, listings_seen: int, key: str,
+                      error: str | None) -> tuple[str, str | None]:
+    """Return ('partial', reason) for a truncated crawl, else ('ok', error).
+    Any lookup failure keeps 'ok' (the old behaviour). Never raises."""
+    try:
+        h = _headers(key)
+        r = requests.get(f"{_url()}/rest/v1/crawl_run", headers=h,
+                         params={"id": f"eq.{run_id}", "select": "broker_domain"},
+                         timeout=15)
+        rows = r.json() if r.ok else []
+        dom = _norm_domain(rows[0].get("broker_domain") if rows else None)
+        if not dom:
+            return "ok", error
+        r = requests.get(
+            f"{_url()}/rest/v1/crawl_run", headers=h,
+            params={
+                "select": "listings_seen",
+                "status": "eq.ok",
+                "id": f"neq.{run_id}",
+                "broker_domain": f"in.({dom},www.{dom})",
+                "started_at": f"gt.{_lookback_iso()}",
+                "order": "started_at.desc",
+                "limit": "3",
+            },
+            timeout=15,
+        )
+        if not r.ok:
+            return "ok", error
+        counts = [row.get("listings_seen") or 0 for row in r.json()]
+        truncated, baseline = is_truncated(listings_seen, counts)
+        if truncated:
+            log.warning("crawl_run %s: %s saw %d vs recent %d, closing as partial",
+                        run_id, dom, listings_seen, baseline)
+            return "partial", f"TRUNCATED: saw {listings_seen}, recent ok max {baseline}"
+    except Exception as e:                                  # never raise
+        log.warning("crawl_run truncation check failed: %s", e)
+    return "ok", error
+
+
+def _lookback_iso() -> str:
+    from datetime import datetime, timedelta, timezone
+    days = int(TRUNCATION_LOOKBACK.split()[0])
+    return (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
 
 
 def expire_stale_runs(max_age: str = "6 hours") -> int:
