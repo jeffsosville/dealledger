@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-26T10:25:11.069424+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 527,
+  "brokers_failed": 226,
+  "total_listings": 10489,
+  "listings_with_price": 9455,
+  "listings_with_cashflow": 4511,
+  "listings_with_state": 8473,
+  "detail_pages_fetched": 404,
+  "patterns_cached": 568,
+  "patterns_learned": 478,
+  "verticals": {
+    "landscaping": 97,
+    "manufacturing": 210,
+    "construction": 317,
+    "restaurant": 2372,
+    "automotive": 747,
+    "vending": 135,
+    "technology": 1665,
+    "healthcare": 642,
+    "other": 2682,
+    "roofing": 29,
+    "retail": 1102,
+    "electrical": 68,
+    "cleaning": 143,
+    "plumbing": 102,
+    "hvac": 170,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 47,
+    "FETCH_ERROR": 18,
+    "NO_PATTERN": 116,
+    "HTTP_403": 38,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 57,
+  "slowest_brokers": [
+    [
+      2076,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      2066,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2066,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      2060,
+      "wncbusinessbrokerage.com",
+      1
+    ],
+    [
+      1996,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1966,
+      "polarisintegrated.com",
+      1
+    ],
+    [
+      539,
+      "craftbusinesssales.com",
+      1
+    ],
+    [
+      488,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      461,
+      "buygasstations.com",
+      3
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      387,
+      "ibexbeyond.com",
+      38
+    ],
+    [
+      386,
+      "lvcbs.com",
+      0
+    ],
+    [
+      339,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      273,
+      "progressivepracticesales.com",
+      97
+    ],
+    [
+      261,
+      "powerrealty1.com",
+      3
+    ]
+  ],
+  "seconds_total": 43597,
+  "completed": "2026-10-26T14:57:47.601589+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
