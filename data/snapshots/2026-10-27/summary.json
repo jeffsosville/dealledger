@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-27T10:25:05.598824+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 563,
+  "brokers_failed": 192,
+  "total_listings": 11479,
+  "listings_with_price": 10247,
+  "listings_with_cashflow": 4897,
+  "listings_with_state": 9210,
+  "detail_pages_fetched": 771,
+  "patterns_cached": 574,
+  "patterns_learned": 516,
+  "verticals": {
+    "technology": 1760,
+    "restaurant": 2616,
+    "healthcare": 656,
+    "construction": 342,
+    "retail": 1154,
+    "automotive": 781,
+    "other": 3130,
+    "electrical": 77,
+    "cleaning": 172,
+    "hvac": 171,
+    "vending": 138,
+    "landscaping": 100,
+    "manufacturing": 222,
+    "plumbing": 115,
+    "roofing": 35,
+    "pest_control": 10
+  },
+  "failure_types": {
+    "EMBED_BBS": 45,
+    "NO_PATTERN": 110,
+    "FETCH_ERROR": 20,
+    "HTTP_403": 5,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 92,
+  "slowest_brokers": [
+    [
+      2069,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      2061,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      2005,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      1827,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1758,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      1148,
+      "pacificrb.com",
+      8
+    ],
+    [
+      463,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      459,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      459,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      454,
+      "nextwavecommercial.com",
+      90
+    ],
+    [
+      379,
+      "lvcbs.com",
+      0
+    ],
+    [
+      274,
+      "jpar.com",
+      1
+    ],
+    [
+      267,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      266,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      264,
+      "gottesman-company.com",
+      30
+    ]
+  ],
+  "seconds_total": 41017,
+  "completed": "2026-10-27T13:51:36.378883+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
