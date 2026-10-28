@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-28T10:25:10.203043+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 567,
+  "brokers_failed": 188,
+  "total_listings": 11326,
+  "listings_with_price": 10206,
+  "listings_with_cashflow": 4948,
+  "listings_with_state": 9006,
+  "detail_pages_fetched": 337,
+  "patterns_cached": 575,
+  "patterns_learned": 517,
+  "verticals": {
+    "restaurant": 2454,
+    "automotive": 797,
+    "technology": 1785,
+    "other": 2974,
+    "manufacturing": 242,
+    "landscaping": 105,
+    "retail": 1174,
+    "electrical": 82,
+    "plumbing": 132,
+    "cleaning": 177,
+    "construction": 363,
+    "roofing": 40,
+    "hvac": 184,
+    "healthcare": 667,
+    "pest_control": 10,
+    "vending": 140
+  },
+  "failure_types": {
+    "EMBED_BBS": 45,
+    "NO_PATTERN": 111,
+    "FETCH_ERROR": 18,
+    "HTTP_403": 3,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 79,
+  "slowest_brokers": [
+    [
+      2116,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      2098,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      2088,
+      "peakbusinessbrokersllc.com",
+      18
+    ],
+    [
+      2080,
+      "businessbrokersofamerica.com",
+      2
+    ],
+    [
+      2077,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      2066,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      1452,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1277,
+      "metrocbb.com",
+      7
+    ],
+    [
+      519,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      463,
+      "buygasstations.com",
+      3
+    ],
+    [
+      462,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      461,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      459,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      450,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      378,
+      "lvcbs.com",
+      0
+    ]
+  ],
+  "seconds_total": 46966,
+  "completed": "2026-10-28T15:07:45.996412+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
