@@ -2089,23 +2089,63 @@ class PageFetcher:
 
 class PaginationHandler:
 
+    # Link text that means "next page" once whitespace (incl. &nbsp;) is
+    # collapsed and case folded. "››" / "»" alone are Drupal / WP pagers.
+    _NEXT_TEXTS = {"next", "next »", "next ›", "next >", "next page", "next »»",
+                   "→", ">", "›", "»", "››", ">>", "next →"}
+
     @staticmethod
-    def find_next_page(soup, current_url):
+    def _norm_text(s):
+        return re.sub(r"\s+", " ", (s or "").replace("\xa0", " ")).strip().lower()
+
+    @classmethod
+    def find_next_page(cls, soup, current_url):
         for sel in ["a.next", "a.next-page", "a[rel='next']", "li.next a",
                     "a.pagination-next", "a[aria-label='Next']",
+                    "li.pager__item--next a", "a.page-numbers.next",
                     ".pagination a.active + a"]:
             try:
                 el = soup.select_one(sel)
-                if el and el.get("href"):
+                if el and el.get("href") and not el["href"].startswith(("#", "javascript")):
                     return urljoin(current_url, el["href"])
             except Exception:
                 pass
 
         for a in soup.find_all("a", href=True):
-            if a.get_text(strip=True).lower() in ["next", "next »", "next ›",
-                                                   "next page", "→", ">"]:
-                return urljoin(current_url, a["href"])
+            href = a["href"]
+            if href.startswith(("#", "javascript")):
+                continue
+            label = cls._norm_text(a.get("aria-label") or a.get("title"))
+            if label in ("next", "next page", "go to next page"):
+                return urljoin(current_url, href)
+            if cls._norm_text(a.get_text(" ", strip=True)) in cls._NEXT_TEXTS:
+                return urljoin(current_url, href)
         return None
+
+    # Per-broker override, from broker_sources.pagination_mode /
+    # pagination_param (or --pagination MODE[:PARAM] on a --broker test):
+    #   param   ?<param>=N, 1-based (default param 'page')
+    #   param0  ?<param>=N-1, 0-based (Drupal pagers: ?page=1 is page 2)
+    #   offset  ?<param>=(N-1)*page_size (default param 'offset')
+    #   path    /page/N/
+    #   none    page 1 only (site renders every listing at once)
+    _OVERRIDE_DEFAULTS = {"param": "page", "param0": "page", "offset": "offset",
+                          "path": None}
+
+    @classmethod
+    def parse_override(cls, mode, param=None):
+        """Template tuple, the string 'none', or None (no override)."""
+        mode = (str(mode).strip().lower() if mode is not None else "")
+        if mode in ("", "nan", "auto"):
+            return None
+        if mode == "none":
+            return "none"
+        if mode not in cls._OVERRIDE_DEFAULTS:
+            print(f"   ⚠️  unknown pagination_mode {mode!r} - ignoring")
+            return None
+        p = (str(param).strip() if param is not None and str(param).strip()
+             not in ("", "nan") else cls._OVERRIDE_DEFAULTS[mode])
+        return (mode, p)
 
     # Query params (and path form) used for numbered pagination when a site
     # has NO explicit next-link (numbered pages, JS pagination, "Load More").
@@ -2124,8 +2164,13 @@ class PaginationHandler:
     def candidate_page_urls(cls, base_url, page_num, page_size):
         """Candidate URLs for `page_num` (>=2), each tagged with a template so
         the winner can be reused for later pages. Tries ?page=N / ?paged=N /
-        ?p=N / ?pg=N / ?wpv_paged=N, ?offset=N*size / ?start=N*size, /page/N/."""
-        out = []
+        ?p=N / ?pg=N / ?wpv_paged=N, ?offset=N*size / ?start=N*size, /page/N/.
+
+        0-based ?page=N-1 goes first: on a 1-based site ?page=1 serves page 1
+        again and is rejected by the caller's first-page check, so the cost is
+        one fetch; on a Drupal site it is the only candidate that lands on
+        page 2 instead of skipping to page 3."""
+        out = [(cls._with_param(base_url, "page", page_num - 1), ("param0", "page"))]
         for param in cls._PAGE_PARAMS:
             out.append((cls._with_param(base_url, param, page_num), ("param", param)))
         off = (page_num - 1) * max(page_size, 1)
@@ -2142,6 +2187,8 @@ class PaginationHandler:
         kind, param = template
         if kind == "param":
             return cls._with_param(base_url, param, page_num)
+        if kind == "param0":
+            return cls._with_param(base_url, param, page_num - 1)
         if kind == "offset":
             return cls._with_param(base_url, param, (page_num - 1) * max(page_size, 1))
         if kind == "path":
@@ -2460,7 +2507,13 @@ class DealLedgerScraper:
             name = (str(row[name_col]).strip()
                     if name_col and pd.notna(row.get(name_col))
                     else domain)
-            brokers.append({"name": name, "url": url, "domain": domain})
+            b = {"name": name, "url": url, "domain": domain}
+            # Optional per-broker pagination override (export_brokers_csv.py
+            # carries broker_sources.pagination_mode / pagination_param).
+            for col in ("pagination_mode", "pagination_param"):
+                if col in df.columns and pd.notna(row.get(col)) and str(row[col]).strip():
+                    b[col] = str(row[col]).strip()
+            brokers.append(b)
 
         msg = f"📋 Loaded {len(brokers)} brokers from {csv_path}"
         if skipped:
@@ -3016,6 +3069,17 @@ class DealLedgerScraper:
             current_url = url
             pending_html = html          # page 1 already fetched
             template = None              # locked pagination template once found
+            stop_reason = "max_pages"    # printed with the card count
+            # Per-broker override (broker_sources.pagination_mode/_param).
+            # A forced template is used for every page and skips next-link
+            # following and template discovery.
+            override = PaginationHandler.parse_override(
+                broker.get("pagination_mode"), broker.get("pagination_param"))
+            forced = override if isinstance(override, tuple) else None
+            if forced:
+                template = forced
+                print(f"   🔧 pagination override: {forced[0]}"
+                      + (f" ({forced[1]})" if forced[1] else ""))
 
             def _cards_from(html_text, page_url):
                 soup = BeautifulSoup(html_text, "html.parser")
@@ -3036,10 +3100,12 @@ class DealLedgerScraper:
                 if over_budget():
                     print(f"   ⏱️  {BROKER_TIME_BUDGET}s budget reached on page {page_num} "
                           f"- keeping {len(unique_cards)} cards")
+                    stop_reason = "time_budget"
                     break
                 if len(unique_cards) >= MAX_CARDS_PER_BROKER:
                     print(f"   ⚠️  hit {MAX_CARDS_PER_BROKER}-card ceiling for this "
                           f"broker - stopping (suspect pagination loop)")
+                    stop_reason = "card_ceiling"
                     break
                 if pending_html is not None:
                     cur_html, pending_html = pending_html, None
@@ -3047,11 +3113,13 @@ class DealLedgerScraper:
                     time.sleep(random.uniform(1, 3))
                     try:
                         cur_html, _ = self.fetcher.fetch(current_url, use_proxy=use_proxy)
-                    except Exception:
+                    except Exception as e:
+                        stop_reason = f"fetch_error p{page_num}: {type(e).__name__}"
                         break
 
                 soup, page_cards = _cards_from(cur_html, current_url)
                 if not page_cards:
+                    stop_reason = f"no_cards p{page_num}"
                     break
                 page_ids = {c["id"] for c in page_cards}
 
@@ -3071,10 +3139,12 @@ class DealLedgerScraper:
                 else:
                     if page_sig in seen_sigs:
                         print(f"   ↩︎  page {page_num} repeats earlier content - stopping")
+                        stop_reason = f"repeat_content p{page_num}"
                         break
                     seen_sigs.add(page_sig)
 
                     if not (page_ids - seen_ids) or page_ids == first_page_ids:
+                        stop_reason = f"no_new_ids p{page_num}"
                         break  # nothing new / pagination looped back to page 1
 
                     # A site that ignores the page parameter serves page 1
@@ -3084,6 +3154,7 @@ class DealLedgerScraper:
                     if page_titles and len(page_titles - prev_titles) / len(page_titles) < 0.2:
                         print(f"   ↩︎  page {page_num} is {100 - int(100*len(page_titles - prev_titles)/len(page_titles))}% "
                               f"repeat titles - stopping")
+                        stop_reason = f"repeat_titles p{page_num}"
                         break
 
                 new = [c for c in page_cards if c["id"] not in seen_ids]
@@ -3093,7 +3164,10 @@ class DealLedgerScraper:
                     print(f"   📄 Page {page_num}: {len(new)} new cards")
 
                 # ── decide next page ──────────────────────────────────────
-                nxt = PaginationHandler.find_next_page(soup, current_url)
+                if override == "none":
+                    stop_reason = "override_none"
+                    break
+                nxt = None if forced else PaginationHandler.find_next_page(soup, current_url)
                 if nxt:
                     current_url, template = nxt, None
                     page_num += 1
@@ -3119,6 +3193,8 @@ class DealLedgerScraper:
                         discovered = True
                         break
                 if not discovered:
+                    stop_reason = ("single_page" if page_num == 1
+                                   else f"no_next p{page_num}")
                     break
 
             if not unique_cards:
@@ -3130,7 +3206,9 @@ class DealLedgerScraper:
                 self.stats["brokers_failed"] += 1
                 return []
 
-            print(f"   📋 {len(unique_cards)} cards ({page_num-1} pages)")
+            print(f"   📋 {len(unique_cards)} cards (reached page {page_num}, "
+                  f"stopped: {stop_reason}"
+                  + (f", template {template[0]}:{template[1]}" if template else "") + ")")
 
             # ── Phase 2: fetch detail pages ───────────────────────────────
             with_detail = [
@@ -3469,6 +3547,9 @@ def main():
     src.add_argument("--broker",  help="Single broker URL (test gate)")
     src.add_argument("--brokers", help="Brokers CSV path")
     parser.add_argument("--name",        default="Test Broker")
+    parser.add_argument("--pagination",  metavar="MODE[:PARAM]",
+                        help="--broker test only: force pagination, e.g. "
+                             "param0:page, param:paged, path, offset:start, none")
     parser.add_argument("--test",        action="store_true")
     parser.add_argument("--top-n",       type=int)
     parser.add_argument("--all",         action="store_true")
@@ -3523,6 +3604,11 @@ def main():
                   + ("" if use_supabase else " — Supabase disabled (pass --write to write to production)")
                   + "\n")
             brokers = [{"name": args.name, "url": args.broker, "domain": domain}]
+            if args.pagination:
+                mode, _, param = args.pagination.partition(":")
+                brokers[0]["pagination_mode"] = mode
+                if param:
+                    brokers[0]["pagination_param"] = param
         else:
             brokers = scraper._load_brokers(args.brokers)
 
@@ -3567,8 +3653,12 @@ def main():
                 os.makedirs(os.path.dirname(os.path.abspath(args.plan_out)), exist_ok=True)
                 pd.DataFrame(
                     [{"broker_name": b["name"], "listing_url": b["url"],
-                      "domain": b["domain"]} for b in brokers],
-                    columns=["broker_name", "listing_url", "domain"],
+                      "domain": b["domain"],
+                      "pagination_mode": b.get("pagination_mode", ""),
+                      "pagination_param": b.get("pagination_param", "")}
+                     for b in brokers],
+                    columns=["broker_name", "listing_url", "domain",
+                             "pagination_mode", "pagination_param"],
                 ).to_csv(args.plan_out, index=False)
                 print(f"🗺️  plan: wrote {len(brokers)} ordered brokers to {args.plan_out}")
                 return

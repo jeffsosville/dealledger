@@ -47,7 +47,8 @@ def main() -> int:
             f"{url}/rest/v1/broker_sources",
             headers={**headers, "Range-Unit": "items", "Range": f"{start}-{start + page - 1}"},
             params={
-                "select": "id,broker_name,company_name,domain,listing_url,homepage_url,discovery_stage",
+                "select": "id,broker_name,company_name,domain,listing_url,homepage_url,discovery_stage,"
+                          "pagination_mode,pagination_param",
                 "discovery_stage": f"in.({','.join(STAGES)})",
                 "order": "first_seeded_at.asc.nullsfirst,created_at.asc,id.asc",
             },
@@ -69,7 +70,9 @@ def main() -> int:
             continue
         seen.add(link)
         name = (b.get("broker_name") or b.get("company_name") or b.get("domain") or "").strip()
-        out.append({"broker_name": name, "listing_url": link, "domain": b.get("domain") or ""})
+        out.append({"broker_name": name, "listing_url": link, "domain": b.get("domain") or "",
+                    "pagination_mode": b.get("pagination_mode") or "",
+                    "pagination_param": b.get("pagination_param") or ""})
 
     by_stage = {s: sum(1 for b in rows if b.get("discovery_stage") == s) for s in STAGES}
     print(f"📋 broker_sources: {len(rows)} rows {by_stage} -> {len(out)} unique listing URLs")
@@ -80,7 +83,8 @@ def main() -> int:
 
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["broker_name", "listing_url", "domain"])
+        w = csv.DictWriter(f, fieldnames=["broker_name", "listing_url", "domain",
+                                           "pagination_mode", "pagination_param"])
         w.writeheader()
         w.writerows(out)
     print(f"✅ wrote {args.out}")
