@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-29T10:25:16.689231+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 553,
+  "brokers_failed": 203,
+  "total_listings": 11602,
+  "listings_with_price": 10517,
+  "listings_with_cashflow": 4711,
+  "listings_with_state": 8626,
+  "detail_pages_fetched": 302,
+  "patterns_cached": 577,
+  "patterns_learned": 505,
+  "verticals": {
+    "restaurant": 2507,
+    "automotive": 704,
+    "technology": 1804,
+    "other": 3302,
+    "manufacturing": 235,
+    "landscaping": 101,
+    "retail": 1133,
+    "plumbing": 124,
+    "healthcare": 747,
+    "roofing": 41,
+    "hvac": 170,
+    "electrical": 79,
+    "pest_control": 10,
+    "construction": 355,
+    "cleaning": 176,
+    "vending": 114
+  },
+  "failure_types": {
+    "EMBED_BBS": 44,
+    "NO_PATTERN": 123,
+    "FETCH_ERROR": 19,
+    "HTTP_403": 5,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 12,
+  "slowest_brokers": [
+    [
+      2108,
+      "peakbusinessbrokersllc.com",
+      18
+    ],
+    [
+      2080,
+      "coinlaundrysales.com",
+      3
+    ],
+    [
+      2000,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      1995,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1780,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1778,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1268,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1033,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      696,
+      "horizonmaa.com",
+      8
+    ],
+    [
+      387,
+      "lvcbs.com",
+      0
+    ],
+    [
+      330,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      294,
+      "brokerbusiness.biz",
+      0
+    ],
+    [
+      260,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      258,
+      "jpar.com",
+      4
+    ],
+    [
+      243,
+      "progressivepracticesales.com",
+      94
+    ]
+  ],
+  "seconds_total": 43304,
+  "completed": "2026-10-29T14:52:27.943035+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
