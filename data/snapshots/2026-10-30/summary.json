@@ -1,0 +1,125 @@
+{
+  "started": "2026-10-30T10:25:15.958877+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 557,
+  "brokers_failed": 199,
+  "total_listings": 11289,
+  "listings_with_price": 10203,
+  "listings_with_cashflow": 4977,
+  "listings_with_state": 9103,
+  "detail_pages_fetched": 232,
+  "patterns_cached": 575,
+  "patterns_learned": 503,
+  "verticals": {
+    "restaurant": 2448,
+    "automotive": 752,
+    "technology": 1780,
+    "other": 3050,
+    "manufacturing": 240,
+    "landscaping": 101,
+    "retail": 1194,
+    "roofing": 30,
+    "hvac": 186,
+    "construction": 361,
+    "vending": 138,
+    "plumbing": 109,
+    "healthcare": 658,
+    "cleaning": 159,
+    "electrical": 75,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 44,
+    "NO_PATTERN": 119,
+    "FETCH_ERROR": 25,
+    "HTTP_403": 3,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "site_pages_dropped": 49,
+  "slowest_brokers": [
+    [
+      2235,
+      "ctacquisitions.com",
+      20
+    ],
+    [
+      2068,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      2067,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      2067,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1633,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      642,
+      "pacificrb.com",
+      8
+    ],
+    [
+      490,
+      "rogersonbusinessservices.com",
+      3
+    ],
+    [
+      465,
+      "pacificrestaurantbrokers.com",
+      12
+    ],
+    [
+      459,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      459,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      443,
+      "therouteexchange.com",
+      112
+    ],
+    [
+      438,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      409,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      406,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      387,
+      "nedrowba.com",
+      0
+    ]
+  ],
+  "seconds_total": 43599,
+  "completed": "2026-10-30T13:51:20.895102+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
