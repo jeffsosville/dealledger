@@ -767,7 +767,7 @@
     "sample_text": "20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow Asking Price: $619,000 Sales: $2,730,000 Cash Flow: $255,000 Business For Sale Share 20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow",
     "source": "pattern_maps",
     "model": "claude-sonnet-4-6",
-    "generated_at": "2026-10-19T22:32:25Z",
+    "generated_at": "2026-10-25T18:46:22Z",
     "total_listings": 3
   },
   "bizex.net": {
@@ -2987,7 +2987,7 @@
     "sample_text": "20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow Asking Price: $619,000 Sales: $2,730,000 Cash Flow: $255,000 Business For Sale Share 20+ Year Home Improvement Co. \u2013 $255,000 Cash Flow",
     "source": "pattern_maps",
     "model": "claude-sonnet-4-6",
-    "generated_at": "2026-10-19T22:32:25Z",
+    "generated_at": "2026-10-25T18:46:22Z",
     "total_listings": 3
   },
   "excellenssolutions.com": {
@@ -3208,6 +3208,166 @@
     "source": "pattern_maps",
     "model": "claude-sonnet-4-6",
     "generated_at": "2026-10-25T18:23:36Z",
+    "total_listings": 4
+  },
+  "baallc.biz": {
+    "container_selector": "div.elementor-container.elementor-column-gap-default",
+    "count": 12,
+    "score": 22,
+    "sample_text": "Current Acquisition Opportunities",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:45:32Z",
+    "total_listings": 5
+  },
+  "www.baallc.biz": {
+    "container_selector": "div.elementor-container.elementor-column-gap-default",
+    "count": 12,
+    "score": 22,
+    "sample_text": "Current Acquisition Opportunities",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:45:32Z",
+    "total_listings": 5
+  },
+  "capitalbusinessbrokerage.biz": {
+    "container_selector": "div.main-container",
+    "count": 27,
+    "score": 30,
+    "sample_text": "Featured Seller Financing #C2805 High-Volume Trendy Restaurant Oakland County Our firm is proud to present a highly unique and fast-growing Asian restaurant concept with a full liquor license located ",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:45:37Z",
+    "total_listings": 27
+  },
+  "www.capitalbusinessbrokerage.biz": {
+    "container_selector": "div.main-container",
+    "count": 27,
+    "score": 30,
+    "sample_text": "Featured Seller Financing #C2805 High-Volume Trendy Restaurant Oakland County Our firm is proud to present a highly unique and fast-growing Asian restaurant concept with a full liquor license located ",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:45:37Z",
+    "total_listings": 27
+  },
+  "integrabrokers.com": {
+    "container_selector": "div.drts-col-12.drts-view-entity-container",
+    "count": 20,
+    "score": 30,
+    "sample_text": "ESTABLISHED DOG DAYCARE, BOARDING & GROOMING BU... ID 4360 Location Atlanta, Georgia Categories Service Asking Price $575,000.00 Annual Receipts $1,489,800.00 Cash Flow $171,300.00 Business Summary Ra",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:46:35Z",
+    "total_listings": 20
+  },
+  "www.integrabrokers.com": {
+    "container_selector": "div.drts-col-12.drts-view-entity-container",
+    "count": 20,
+    "score": 30,
+    "sample_text": "ESTABLISHED DOG DAYCARE, BOARDING & GROOMING BU... ID 4360 Location Atlanta, Georgia Categories Service Asking Price $575,000.00 Annual Receipts $1,489,800.00 Cash Flow $171,300.00 Business Summary Ra",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:46:35Z",
+    "total_listings": 20
+  },
+  "gabusinessbrokers.com": {
+    "container_selector": "div.clearfix.list-post",
+    "count": 23,
+    "score": 30,
+    "sample_text": "Profitable Fresh-Cut Fruit & Sushi Businesses in High-Volume Kroger Food and Restaurants Jackson County, GA $250,000 Cash Flow: $133,500 Excellent opportunity to acquire two complementary food busines",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-31T20:36:51Z",
+    "total_listings": 22
+  },
+  "www.gabusinessbrokers.com": {
+    "container_selector": "div.clearfix.list-post",
+    "count": 23,
+    "score": 30,
+    "sample_text": "Profitable Fresh-Cut Fruit & Sushi Businesses in High-Volume Kroger Food and Restaurants Jackson County, GA $250,000 Cash Flow: $133,500 Excellent opportunity to acquire two complementary food busines",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-31T20:36:51Z",
+    "total_listings": 22
+  },
+  "greenlifebusiness.com": {
+    "container_selector": "div.item-listing-wrap.item-wrap-v2",
+    "count": 428,
+    "score": 28,
+    "sample_text": "Featured In Escrow Med New Popular Turn Key Call For Offers 12M Annual Revenue SLV Dispensary Prime Location, State of the Art Dispensary! Submit your Bid (Las Vegas, Nevada) #2032 Dispensary Retail N",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:46:57Z",
+    "total_listings": 332
+  },
+  "www.greenlifebusiness.com": {
+    "container_selector": "div.item-listing-wrap.item-wrap-v2",
+    "count": 428,
+    "score": 28,
+    "sample_text": "Featured In Escrow Med New Popular Turn Key Call For Offers 12M Annual Revenue SLV Dispensary Prime Location, State of the Art Dispensary! Submit your Bid (Las Vegas, Nevada) #2032 Dispensary Retail N",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T21:46:57Z",
+    "total_listings": 332
+  },
+  "childcaredirect.com": {
+    "container_selector": "table.tablepress tbody tr",
+    "count": 13,
+    "score": 24,
+    "sample_text": "New Jersey Gloucester Lic Cap 100 $1,100,000 Business & Real Estate -This is a well-established private preschool offering full and half day programs for toddlers through preschool. Operation is fully",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-31T20:48:16Z",
+    "total_listings": 5
+  },
+  "www.childcaredirect.com": {
+    "container_selector": "table.tablepress tbody tr",
+    "count": 13,
+    "score": 24,
+    "sample_text": "New Jersey Gloucester Lic Cap 100 $1,100,000 Business & Real Estate -This is a well-established private preschool offering full and half day programs for toddlers through preschool. Operation is fully",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-31T20:48:16Z",
+    "total_listings": 5
+  },
+  "liquorlicensepanj.com": {
+    "container_selector": "div.entry-content ul li",
+    "count": 58,
+    "score": 28,
+    "sample_text": "Egg Harbor Township \u2013 Retail Consumption License \u201c33\u201d \u2013 Listing price $100,000 \u2013 Will present all offers!\u00a0 Clean license, ready to transfer!!!",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T22:00:07Z",
+    "total_listings": 55
+  },
+  "www.liquorlicensepanj.com": {
+    "container_selector": "div.entry-content ul li",
+    "count": 58,
+    "score": 28,
+    "sample_text": "Egg Harbor Township \u2013 Retail Consumption License \u201c33\u201d \u2013 Listing price $100,000 \u2013 Will present all offers!\u00a0 Clean license, ready to transfer!!!",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T22:00:07Z",
+    "total_listings": 55
+  },
+  "practicebrokers.com": {
+    "container_selector": "div.et_pb_text_inner",
+    "count": 8,
+    "score": 8,
+    "sample_text": "Practices For Sale",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T22:03:13Z",
+    "total_listings": 4
+  },
+  "www.practicebrokers.com": {
+    "container_selector": "div.et_pb_text_inner",
+    "count": 8,
+    "score": 8,
+    "sample_text": "Practices For Sale",
+    "source": "pattern_maps",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-10-26T22:03:13Z",
     "total_listings": 4
   }
 }
