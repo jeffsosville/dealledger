@@ -1,0 +1,124 @@
+{
+  "started": "2026-10-31T10:25:09.229078+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 539,
+  "brokers_failed": 217,
+  "total_listings": 10746,
+  "listings_with_price": 9672,
+  "listings_with_cashflow": 4649,
+  "listings_with_state": 8674,
+  "detail_pages_fetched": 246,
+  "patterns_cached": 570,
+  "patterns_learned": 489,
+  "verticals": {
+    "restaurant": 2400,
+    "automotive": 749,
+    "technology": 1720,
+    "other": 2779,
+    "manufacturing": 226,
+    "landscaping": 102,
+    "retail": 1130,
+    "construction": 330,
+    "plumbing": 105,
+    "healthcare": 628,
+    "cleaning": 150,
+    "roofing": 33,
+    "hvac": 180,
+    "electrical": 69,
+    "vending": 136,
+    "pest_control": 9
+  },
+  "failure_types": {
+    "EMBED_BBS": 44,
+    "NO_PATTERN": 113,
+    "FETCH_ERROR": 43,
+    "HTTP_403": 4
+  },
+  "site_pages_dropped": 64,
+  "slowest_brokers": [
+    [
+      2067,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1999,
+      "pacificrb.com",
+      8
+    ],
+    [
+      1549,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      510,
+      "gabusinessbrokers.com",
+      22
+    ],
+    [
+      501,
+      "pinnaclepartnerservice.com",
+      3
+    ],
+    [
+      471,
+      "selectbg.com",
+      7
+    ],
+    [
+      465,
+      "pacificrestaurantbrokers.com",
+      12
+    ],
+    [
+      446,
+      "californiabusinessbrokers.com",
+      7
+    ],
+    [
+      433,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      412,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      408,
+      "lvcbs.com",
+      0
+    ],
+    [
+      400,
+      "premierbb.com",
+      62
+    ],
+    [
+      400,
+      "ecrestaurantbrokers.com",
+      3
+    ],
+    [
+      399,
+      "bestchoiceinvestments.com",
+      0
+    ],
+    [
+      398,
+      "tampabusinessbroker.com",
+      2
+    ]
+  ],
+  "seconds_total": 40354,
+  "completed": "2026-10-31T14:00:56.171432+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
