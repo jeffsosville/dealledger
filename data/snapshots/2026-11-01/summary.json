@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-01T10:25:05.057086+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 521,
+  "brokers_failed": 238,
+  "total_listings": 11112,
+  "listings_with_price": 10085,
+  "listings_with_cashflow": 4642,
+  "listings_with_state": 9044,
+  "detail_pages_fetched": 284,
+  "patterns_cached": 590,
+  "patterns_learned": 474,
+  "verticals": {
+    "technology": 1713,
+    "restaurant": 2480,
+    "healthcare": 624,
+    "construction": 330,
+    "retail": 1365,
+    "automotive": 648,
+    "plumbing": 95,
+    "landscaping": 95,
+    "cleaning": 137,
+    "hvac": 170,
+    "other": 2935,
+    "electrical": 69,
+    "manufacturing": 281,
+    "roofing": 32,
+    "pest_control": 8,
+    "vending": 130
+  },
+  "failure_types": {
+    "EMBED_BBS": 41,
+    "NO_PATTERN": 130,
+    "FETCH_ERROR": 36,
+    "HTTP_403": 3
+  },
+  "site_pages_dropped": 23,
+  "slowest_brokers": [
+    [
+      2320,
+      "peakbusinessbrokersllc.com",
+      18
+    ],
+    [
+      2302,
+      "businesses-toronto.com",
+      6
+    ],
+    [
+      2301,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      2298,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      2296,
+      "metrocbb.com",
+      7
+    ],
+    [
+      1420,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      1198,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      505,
+      "greenlifebusiness.com",
+      330
+    ],
+    [
+      498,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      487,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      462,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      461,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      448,
+      "capitalroutesales.com",
+      6
+    ],
+    [
+      429,
+      "blbrokers.com",
+      19
+    ],
+    [
+      425,
+      "sunshineagle.com",
+      12
+    ]
+  ],
+  "seconds_total": 51099,
+  "completed": "2026-11-01T15:01:25.196548+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
