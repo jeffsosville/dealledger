@@ -61,6 +61,17 @@ export const TYPES: Record<string, { slug: string; label: string; noun: string }
   pest_control:     { slug: 'pest-control',     label: 'Pest Control Companies',         noun: 'pest control companies' },
   atm:              { slug: 'atm',              label: 'ATM Routes',                     noun: 'ATM routes' },
   pressure_washing: { slug: 'pressure-washing', label: 'Pressure Washing Businesses',    noun: 'pressure washing businesses' },
+  // Added 2026-11-02, mostly recovered from 'other' by title (sql/2026-11-02_seo_title_verticals.sql).
+  car_wash:         { slug: 'car-washes',       label: 'Car Washes',                     noun: 'car washes' },
+  salon_spa:        { slug: 'salons-and-spas',  label: 'Salons & Spas',                  noun: 'salons, barbershops and spas' },
+  gas_station:      { slug: 'gas-stations',     label: 'Gas Stations & Convenience Stores', noun: 'gas stations and convenience stores' },
+  childcare:        { slug: 'childcare',        label: 'Childcare Centers',              noun: 'childcare centers and preschools' },
+  pet:              { slug: 'pet-businesses',   label: 'Pet Businesses',                 noun: 'pet businesses' },
+  liquor_store:     { slug: 'liquor-stores',    label: 'Liquor Stores',                  noun: 'liquor stores and licenses' },
+  accounting:       { slug: 'accounting-firms', label: 'Accounting & Tax Practices',     noun: 'accounting and tax practices' },
+  fitness:          { slug: 'gyms-and-fitness', label: 'Gyms & Fitness Studios',         noun: 'gyms and fitness studios' },
+  sign_print:       { slug: 'sign-and-print',   label: 'Sign & Print Shops',             noun: 'sign and print shops' },
+  trucking:         { slug: 'trucking',         label: 'Trucking & Logistics Companies', noun: 'trucking and logistics companies' },
 };
 
 export const typeFromSlug = (slug: string): string | null =>
