@@ -85,3 +85,12 @@ jobs:
             sleep 60
           done
           echo "::warning::sitemap.xml did not return 200 after the deploy window"
+
+      # Push the browse and static pages to IndexNow (Bing feeds ChatGPT search
+      # and Copilot). Browse pages come from mv_seo_page_stats, refreshed at
+      # 15:45 UTC, so new state x type pages are submitted the day they appear.
+      # A failed submission shouldn't fail the sitemap run.
+      - name: IndexNow
+        if: ${{ !inputs.dry_run }}
+        continue-on-error: true
+        run: python3 scripts/indexnow.py
