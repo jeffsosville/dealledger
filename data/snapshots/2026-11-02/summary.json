@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-02T10:25:24.539036+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 534,
+  "brokers_failed": 221,
+  "total_listings": 11034,
+  "listings_with_price": 10001,
+  "listings_with_cashflow": 4694,
+  "listings_with_state": 8862,
+  "detail_pages_fetched": 184,
+  "patterns_cached": 581,
+  "patterns_learned": 484,
+  "verticals": {
+    "retail": 1185,
+    "other": 2767,
+    "vending": 138,
+    "plumbing": 115,
+    "restaurant": 2574,
+    "cleaning": 166,
+    "automotive": 751,
+    "technology": 1768,
+    "hvac": 171,
+    "landscaping": 99,
+    "healthcare": 641,
+    "manufacturing": 220,
+    "electrical": 71,
+    "construction": 326,
+    "roofing": 34,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 45,
+    "NO_PATTERN": 115,
+    "FETCH_ERROR": 37,
+    "HTTP_403": 4
+  },
+  "site_pages_dropped": 32,
+  "slowest_brokers": [
+    [
+      2295,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      1742,
+      "naz-business.com",
+      25
+    ],
+    [
+      514,
+      "gabusinessbrokers.com",
+      22
+    ],
+    [
+      489,
+      "nextwavecommercial.com",
+      92
+    ],
+    [
+      474,
+      "lighthousebusinessbrokers.com",
+      4
+    ],
+    [
+      473,
+      "laundromat-broker.com",
+      104
+    ],
+    [
+      461,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      460,
+      "buygasstations.com",
+      3
+    ],
+    [
+      456,
+      "capitalbusinessbrokerage.biz",
+      27
+    ],
+    [
+      455,
+      "psbroker.com",
+      35
+    ],
+    [
+      452,
+      "capitalroutesales.com",
+      6
+    ],
+    [
+      429,
+      "sbpoolroutes.com",
+      3
+    ],
+    [
+      414,
+      "greenandco.biz",
+      20
+    ],
+    [
+      389,
+      "baallc.biz",
+      5
+    ],
+    [
+      388,
+      "bestchoiceinvestments.com",
+      0
+    ]
+  ],
+  "seconds_total": 40575,
+  "completed": "2026-11-02T14:46:06.232627+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
