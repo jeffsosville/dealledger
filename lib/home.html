@@ -151,6 +151,7 @@ h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spac
 .lk-head{font-size:17px;font-weight:600;margin-bottom:4px}
 .lk-big{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1.1;margin:10px 0 2px}
 .lk-sub{font-size:13px;color:var(--text-muted)}
+.lk-proven{margin-top:6px;color:var(--text)}
 .lk-meta{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:8px}
 
 /* browse */
@@ -536,6 +537,23 @@ function lkDays(d, basis){
   return d.toLocaleString() + (basis === 'floor' ? '+' : '') + ' days';
 }
 
+// Two numbers come out of listing-number sequencing. The estimate places the
+// listing between archived neighbors. The minimum is what is certain: a
+// higher-numbered listing was captured by provable_listed_by, and numbers are
+// issued in order, so this one existed by then. Only the minimum is "at least".
+function lkProven(d){
+  if (d.provable_days == null || d.basis === 'ceiling') return '';
+  const same = d.days != null && d.provable_days >= d.days;
+  return '<div class="lk-sub lk-proven"><strong>' + (same ? 'At least this long' : 'At least ' + lkDays(d.provable_days)) +
+    '</strong> for certain — a higher-numbered listing was in the Internet Archive by ' + esc(d.provable_listed_by) + '.</div>';
+}
+function lkNote(d){
+  if (d.basis === 'ceiling') return d.note || '';
+  return 'Estimated from where this listing number falls between Internet Archive captures of nearby listings. ' +
+    'Numbers are issued in order, so an archived higher-numbered listing proves this one existed by that date. ' +
+    'A listing number shows when the listing was created, not that it stayed up the whole time.';
+}
+
 function lkCard(d){
   if (d.kind === 'direct') {
     return '<div class="lk-card">' +
@@ -553,7 +571,8 @@ function lkCard(d){
       '<div class="lk-kind">Estimated from the listing number</div>' +
       '<div class="lk-big">≈ ' + lkDays(d.days) + '</div>' +
       '<div class="lk-sub">Listed around ' + esc(d.estimated_listed_date) + '</div>' +
-      '<div class="lk-meta">' + esc(d.note || '') + '</div>' +
+      lkProven(d) +
+      '<div class="lk-meta">' + esc(lkNote(d)) + '</div>' +
     '</div>';
   }
   return '<div class="lk-card">' +
@@ -583,7 +602,7 @@ lkForm.addEventListener('submit', async e => {
   lkMsg.textContent = 'Checking…';
   if (window.gtag) gtag('event', 'listing_lookup');
   try {
-    const res = await fetch(API + '/rpc/dl_lookup', {
+    const res = await fetch(API + '/rpc/dl_lookup_evidence', {
       method: 'POST',
       headers: Object.assign({ 'Content-Type': 'application/json' }, HEAD),
       body: JSON.stringify({ q: v })
