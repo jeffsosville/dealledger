@@ -1,7 +1,7 @@
 // components/SeoPage.tsx — shared layout for the /businesses-for-sale browse pages.
 import Head from 'next/head';
 import { goListing } from '../lib/clickout';
-import { Row, Stats, STATES, fmtMoney, fmtMultiple, fmtNum, pageUrl } from '../lib/seo';
+import { Row, Stats, STATES, displayTitle, fmtAsOf, fmtMoney, fmtMultiple, fmtNum, pageUrl } from '../lib/seo';
 import type { TypeGuide } from '../lib/typeGuides';
 
 export type LinkGroup = { title: string; links: { href: string; label: string; count?: number }[] };
@@ -40,6 +40,7 @@ export default function SeoPage(p: Props) {
   const url = pageUrl(p.path);
   const shown = p.rows.length;
   const total = p.stats?.listings ?? shown;
+  const asOf = fmtAsOf(p.stats?.refreshed_at);
 
   const ld = [
     {
@@ -49,6 +50,7 @@ export default function SeoPage(p: Props) {
       url,
       description: p.description,
       isPartOf: { '@type': 'WebSite', name: 'DealLedger', url: 'https://dealledger.org' },
+      ...(p.stats?.refreshed_at ? { dateModified: p.stats.refreshed_at } : {}),
       ...(shown
         ? {
             mainEntity: {
@@ -58,7 +60,7 @@ export default function SeoPage(p: Props) {
                 '@type': 'ListItem',
                 position: i + 1,
                 url: pageUrl(`/listing/${r.listing_number}`),
-                name: r.title || 'Business for sale',
+                name: displayTitle(r),
               })),
             },
           }
@@ -142,7 +144,10 @@ export default function SeoPage(p: Props) {
           </nav>
           <div className="eyebrow">— {p.eyebrow}</div>
           <h1 className="headline">{p.h1}</h1>
-          <p className="intro">{p.intro}</p>
+          <p className="intro">
+            {p.intro}
+            {asOf && <span className="asof"> Data as of {asOf}.</span>}
+          </p>
 
           {p.stats && (
             <div className="stats">
@@ -186,7 +191,7 @@ export default function SeoPage(p: Props) {
                 {p.rows.map((r) => (
                   <div className="t-row" key={r.listing_number}>
                     <div className="t-title">
-                      <a href={`/listing/${r.listing_number}`}>{r.title || 'Untitled listing'}</a>
+                      <a href={`/listing/${r.listing_number}`}>{displayTitle(r)}</a>
                       <a className="src" href={goListing(r.listing_number, 'seo')} target="_blank" rel="nofollow noopener">
                         broker ↗
                       </a>
@@ -289,6 +294,7 @@ export default function SeoPage(p: Props) {
         .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 14px; }
         .headline { font-weight: 500; font-size: 44px; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 14px 0; }
         .intro { font-size: 17px; color: var(--ink-soft); margin: 0 0 32px 0; max-width: 72ch; }
+        .asof { font-family: var(--mono); font-size: 13px; color: var(--ink-mute); white-space: nowrap; }
         .stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--rule); background: var(--bg-card); }
         .stat { padding: 18px 20px; border-right: 1px solid var(--rule); }
         .stat:last-child { border-right: none; }
