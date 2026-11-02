@@ -9,6 +9,7 @@
 -- liquor_store, accounting, fitness, sign_print, trucking.
 --
 -- vertical_source records which rule set it: scraper | title.
+-- last_seen (latest crawl that saw the listing) feeds the per-page CSV downloads.
 -- APPLIED to production on 2026-11-02.
 
 create or replace function public.dl_vertical_from_title(t text)
@@ -47,7 +48,7 @@ drop materialized view if exists public.mv_seo_listings;
 
 create materialized view public.mv_seo_listings as
 with d as (
-  select distinct on (url) url, vertical, state_norm, state, location_raw, city, cash_flow, revenue
+  select distinct on (url) url, vertical, state_norm, state, location_raw, city, cash_flow, revenue, last_seen
   from public.listings_direct
   where url is not null
   order by url, last_seen desc nulls last
@@ -77,7 +78,8 @@ base as (
          m.dom_basis,
          m.dom_display,
          m.estimated_listed_date,
-         m.relisted
+         m.relisted,
+         d.last_seen::date                                      as last_seen
   from public.mv_listings_page m
   join public.listings l using (listing_number)
   left join d on d.url = m.source_url
@@ -117,7 +119,8 @@ select listing_number,
        dom_basis,
        dom_display,
        estimated_listed_date,
-       relisted
+       relisted,
+       last_seen
 from resolved;
 
 create unique index mv_seo_listings_pk on public.mv_seo_listings (listing_number);

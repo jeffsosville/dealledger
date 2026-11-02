@@ -17,7 +17,12 @@ const nextConfig = {
 
   async rewrites() {
     return {
-      beforeFiles: [],
+      beforeFiles: [
+        // CSV download of every listing behind a browse page (pages/api/browse-csv.ts).
+        { source: '/businesses-for-sale/type/:type([a-z0-9-]+)\\.csv', destination: '/api/browse-csv?type=:type' },
+        { source: '/businesses-for-sale/:state([a-z-]+)/:type([a-z0-9-]+)\\.csv', destination: '/api/browse-csv?state=:state&type=:type' },
+        { source: '/businesses-for-sale/:state([a-z-]+)\\.csv', destination: '/api/browse-csv?state=:state' },
+      ],
       afterFiles: [
         { source: '/sitemap-browse.xml', destination: '/api/sitemap-browse' },
       ],

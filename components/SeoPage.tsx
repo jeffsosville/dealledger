@@ -41,6 +41,7 @@ export default function SeoPage(p: Props) {
   const shown = p.rows.length;
   const total = p.stats?.listings ?? shown;
   const asOf = fmtAsOf(p.stats?.refreshed_at);
+  const csv = p.stats ? `${p.path}.csv` : null;
 
   const ld = [
     {
@@ -71,6 +72,24 @@ export default function SeoPage(p: Props) {
       '@type': 'BreadcrumbList',
       itemListElement: p.crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: pageUrl(c.href) })),
     },
+    ...(csv
+      ? [
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Dataset',
+            name: `${p.h1} — DealLedger listings`,
+            description: p.description,
+            url,
+            license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+            isAccessibleForFree: true,
+            creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
+            ...(p.stats?.refreshed_at ? { dateModified: p.stats.refreshed_at } : {}),
+            spatialCoverage: 'United States',
+            variableMeasured: ['asking price', 'cash flow', 'price to cash flow', 'revenue', 'days on market'],
+            distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: pageUrl(csv) }],
+          },
+        ]
+      : []),
     ...(p.guide && p.guide.faqs.length
       ? [
           {
@@ -92,6 +111,7 @@ export default function SeoPage(p: Props) {
         <title>{p.title}</title>
         <meta name="description" content={p.description} />
         <link rel="canonical" href={url} />
+        {csv && <link rel="alternate" type="text/csv" href={csv} title="All listings on this page as CSV (CC0)" />}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={p.title} />
         <meta property="og:description" content={p.description} />
@@ -207,6 +227,13 @@ export default function SeoPage(p: Props) {
                 “broker ↗” opens the listing on the broker’s own website. DealLedger never stands
                 between you and the seller’s broker.
               </p>
+              {csv && (
+                <p className="download">
+                  <a href={csv}>Download all {fmtNum(total)} listings as CSV</a>
+                  {' '}— every column on this page plus source links, first and last seen dates, and
+                  how each state and type was assigned. Public domain (CC0): use it, cite it, build on it.
+                </p>
+              )}
             </section>
           )}
 
@@ -318,6 +345,8 @@ export default function SeoPage(p: Props) {
         .num { font-family: var(--mono); text-align: right; }
         .t-date { font-size: 12px; color: var(--ink-soft); }
         .more { font-size: 13px; color: var(--ink-mute); margin: 12px 0 0 0; }
+        .download { font-size: 14px; color: var(--ink-soft); margin: 10px 0 0 0; }
+        .download a { font-family: var(--mono); font-weight: 500; }
         .links { list-style: none; padding: 0; margin: 0; columns: 3; column-gap: 32px; font-size: 15px; }
         .links li { break-inside: avoid; padding: 4px 0; }
         .count { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
