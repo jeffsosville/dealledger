@@ -13,8 +13,8 @@
 
 import { getSupabase } from './supabase';
 
-export const STATE_MIN = 50;   // listings needed for a state page
-export const COMBO_MIN = 25;   // listings needed for a type-in-state page
+export const STATE_MIN = 20;   // listings needed for a state page
+export const COMBO_MIN = 5;    // listings needed for a type-in-state page (summary + stats still read well at 5)
 export const TYPE_MIN = 10;    // listings needed for a national type page
 export const LIST_LIMIT = 200; // listings shown per page
 
@@ -78,6 +78,7 @@ export type Stats = {
   new_30d: number;
   relisted: number;
   with_cash_flow: number;
+  refreshed_at: string | null;
 };
 
 export type Row = {
@@ -95,12 +96,12 @@ export type Row = {
 };
 
 const STAT_COLS =
-  'scope, page_vertical, page_state, listings, brokers, median_price, median_cash_flow, median_multiple, new_30d, relisted, with_cash_flow';
+  'scope, page_vertical, page_state, listings, brokers, median_price, median_cash_flow, median_multiple, new_30d, relisted, with_cash_flow, refreshed_at';
 const ROW_COLS =
   'listing_number, title, city, state_code, vertical, price, cash_flow, dom_display, dom_basis, estimated_listed_date, broker_domain';
 
 export async function allStats(): Promise<Stats[]> {
-  const { data } = await getSupabase().from('mv_seo_page_stats').select(STAT_COLS).range(0, 1999);
+  const { data } = await getSupabase().from('mv_seo_page_stats').select(STAT_COLS).range(0, 4999);
   return (data || []) as Stats[];
 }
 
@@ -134,3 +135,26 @@ export const fmtMoney = (n: number | null) => {
 };
 export const fmtNum = (n: number | null) => (n == null ? '—' : n.toLocaleString('en-US'));
 export const fmtMultiple = (n: number | null) => (n == null ? '—' : `${n.toFixed(1)}×`);
+
+// Some broker feeds publish internal codes as titles ("13826117VS4 General
+// Services-Laundromat"). Strip the code; when what is left is only a category,
+// build a plain title from the category, place and price instead.
+const CODE_PREFIX = /^\s*\d{6,}[A-Z]{1,5}\d\s+/;
+const CATEGORY_ONLY = /^general services\s*-\s*(.+)$/i;
+
+export function displayTitle(r: Pick<Row, 'title' | 'city' | 'state_code' | 'price'>): string {
+  let t = (r.title || '').replace(CODE_PREFIX, '').replace(/^[\s|–-]+/, '').trim();
+  const cat = t.match(CATEGORY_ONLY);
+  if (cat || !t) {
+    const what = cat ? cat[1].trim() : 'Business';
+    const noun = what.charAt(0).toUpperCase() + what.slice(1);
+    const where = [r.city, r.state_code].filter(Boolean).join(', ');
+    const price = r.price && r.price > 0 ? `${fmtMoney(r.price)} asking` : null;
+    return [`${noun} for sale`, where || null, price].filter(Boolean).join(' · ');
+  }
+  if (t.length > 110) t = t.slice(0, 107).replace(/\s+\S*$/, '').replace(/[.,;:]+$/, '') + '…';
+  return t;
+}
+
+export const fmtAsOf = (iso: string | null | undefined) =>
+  iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : null;
