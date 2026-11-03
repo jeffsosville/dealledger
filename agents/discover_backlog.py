@@ -455,6 +455,40 @@ def gate_failures(ev, items, archive, why, domain=None, company=None):
 MIN_PRICES = GATE["min_prices"]
 
 
+# 2026-11-03: two non-brokers got auto-promoted in two days. focuscfo.com's
+# listings page was "/blog" (no trailing slash, so the old "blog/" check
+# missed it) with 0 listings parsed, and merceradvisors.com's was a
+# "/taxes/selling-real-estate-..." article. A page now fails when its path is
+# a content, service or tool page, and when nothing was parsed the URL itself
+# has to look like a listings index.
+_CONTENT_PATH = re.compile(
+    r"by-owner|fsbo|selling-a-|sell-your|how-to|guide"
+    r"|(^|/)(blog|news|articles?|insights?|resources?|taxes?|podcasts?|webinars?"
+    r"|events?|tools?|calculators?|careers?|why-us|engagements?)(/|$)"
+    r"|estimator|sba-loans?|mortgage|lending|residential|reo-listings"
+    r"|selling-real-estate|financial-planning|change-management|consulting-advisory",
+    re.I)
+_INDEX_PATH = re.compile(
+    r"for-?sale|listing|buy|businesses|practices|routes|inventory|available"
+    r"|opportunit|current|portfolio|acquisition|companies|franchises|offerings",
+    re.I)
+
+
+def path_failures(listings_path, final_path, items):
+    """Reasons the listings URL itself can't be auto-promoted."""
+    fails = []
+    for path in dict.fromkeys(p for p in (listings_path, final_path) if p):
+        if _CONTENT_PATH.search(path):
+            fails.append(f"{path} is a content, service or seller-guide page")
+            break
+    if items < GATE["min_items"]:
+        path = final_path or listings_path or "/"
+        if not _INDEX_PATH.search(path):
+            fails.append(f"only {items} listings parsed and {path} "
+                         "doesn't look like a listings index")
+    return fails
+
+
 def suspicious(listings_url, method, platform, result):
     """Reason an 'ok' can't be trusted, or None.
 
@@ -740,8 +774,7 @@ def main():
             pu = urlparse(ev.get("final_url") or listings_url)
             if getattr(dv, "_is_detail_page", None) and dv._is_detail_page(pu):
                 fails.append("single listing page, not the listings index")
-            if re.search(r"by-owner|fsbo|selling-a-|sell-your|how-to|guide|blog/", pu.path, re.I):
-                fails.append(f"{pu.path} is a seller or guide page")
+            fails += path_failures(urlparse(listings_url).path, pu.path, int(found or 0))
             evidence = {**ev, "items_parsed": int(found or 0), "method": method,
                         "platform": platform, "fingerprint_note": why,
                         "candidates": (getattr(dv, "LAST_FIND", {}).get("candidates") or [])[:4],

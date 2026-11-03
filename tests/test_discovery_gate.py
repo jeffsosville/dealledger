@@ -81,3 +81,38 @@ if __name__ == "__main__":
     for t in tests:
         t()
     print(f"discovery gate: {len(tests)} checks passed")
+
+
+# 2026-11-03: focuscfo (/blog, 0 parsed) and merceradvisors (tax article) were
+# auto-promoted. These paths must now be proposed; real index pages still pass.
+BAD_PATHS = ["/blog", "/blog/", "/taxes/selling-real-estate-consider-these-financial-planning-opportunities/",
+             "/engagements", "/sba-loans", "/business-concepts-we-teach.html",
+             "/alcoholic-beverage-vendors-license-cost-florida", "/consulting-advisory",
+             "/tools/inventory-value-estimator/", "/residential-listings",
+             "/Personal/Lending-comparison/mortgage-loan-comparison/reo-listings"]
+GOOD_PATHS = ["/listings/", "/franchises-for-sale", "/buy-a-business/", "/buyers",
+              "/dental-transition/dental-practices-for-sale", "/viewlistings",
+              "/jacksonville-business-forSale.asp", "/routes-for-sale/", "/active-listings",
+              "/listings.php", "/services/businesses-for-sale/",
+              "/home/companies-available-for-mergers-acquisitions-investments"]
+
+
+def test_content_and_service_paths_are_proposed():
+    for p in BAD_PATHS:
+        assert db.path_failures(p, p, 0), p
+
+
+
+def test_content_paths_fail_even_when_listings_parsed():
+    # merceradvisors had 4 items parsed off a tax article.
+    for p in ["/blog", "/taxes/selling-real-estate-x/", "/sba-loans", "/residential-listings"]:
+        assert db.path_failures(p, p, 10), p
+
+
+def test_listing_index_paths_pass_even_with_nothing_parsed():
+    for p in GOOD_PATHS:
+        assert db.path_failures(p, p, 0) == [], p
+
+
+def test_trailing_slash_does_not_matter():
+    assert db.path_failures("/blog/", "/blog", 0)
