@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-03T10:25:26.008557+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 539,
+  "brokers_failed": 221,
+  "total_listings": 11427,
+  "listings_with_price": 10084,
+  "listings_with_cashflow": 4775,
+  "listings_with_state": 9163,
+  "detail_pages_fetched": 328,
+  "patterns_cached": 585,
+  "patterns_learned": 490,
+  "verticals": {
+    "restaurant": 2479,
+    "automotive": 763,
+    "technology": 1764,
+    "other": 3021,
+    "manufacturing": 291,
+    "landscaping": 100,
+    "hvac": 174,
+    "healthcare": 687,
+    "electrical": 70,
+    "plumbing": 111,
+    "construction": 316,
+    "retail": 1325,
+    "cleaning": 153,
+    "vending": 135,
+    "roofing": 30,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 40,
+    "NO_PATTERN": 113,
+    "HTTP_403": 4,
+    "FETCH_ERROR": 41
+  },
+  "site_pages_dropped": 30,
+  "slowest_brokers": [
+    [
+      2298,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      2294,
+      "metrocbb.com",
+      7
+    ],
+    [
+      2270,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      2147,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1552,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      989,
+      "pacificrb.com",
+      8
+    ],
+    [
+      589,
+      "winbusinessadvisors.com",
+      2
+    ],
+    [
+      570,
+      "greenlifebusiness.com",
+      330
+    ],
+    [
+      542,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      529,
+      "bcbusinessbroker.ca",
+      22
+    ],
+    [
+      525,
+      "californiabusinessbrokers.com",
+      7
+    ],
+    [
+      515,
+      "desertbusinessbrokers.com",
+      14
+    ],
+    [
+      507,
+      "capitalroutesales.com",
+      6
+    ],
+    [
+      505,
+      "seilertucker.com",
+      5
+    ],
+    [
+      468,
+      "bma1.com",
+      1
+    ]
+  ],
+  "seconds_total": 51232,
+  "completed": "2026-11-03T14:52:07.921363+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
