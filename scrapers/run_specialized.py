@@ -582,6 +582,9 @@ def cleanup_stale_wesell_rows() -> int:
     return deleted
 
 
+EMPTY_RETRY_WAIT = int(os.environ.get("EMPTY_RETRY_WAIT", "90"))
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def run(broker_filter: list[str] | None, dry_run: bool):
     if not SUPABASE_SERVICE_KEY and not dry_run:
@@ -623,6 +626,14 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         outcome = ("failed", 0, 0, "interrupted")
         try:
             listings = broker_meta["fn"]()
+            # 2026-11-04: Transworld, Sunbelt, routesforsale and Vested come
+            # back EMPTY on one of the two daily runs and fine on the other.
+            # Retry an empty result once after a pause before closing it as
+            # failed/EMPTY. Never retried for dry runs.
+            if not listings and not dry_run:
+                log.warning(f"[{name}] 0 listings; retrying once in {EMPTY_RETRY_WAIT}s")
+                time.sleep(EMPTY_RETRY_WAIT)
+                listings = broker_meta["fn"]()
             log.info(f"[{name}] Got {len(listings)} listings")
             results[name] = len(listings)
 
