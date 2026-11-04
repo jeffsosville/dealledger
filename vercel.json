@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/removed",
+      "destination": "/removed.html"
+    },
+    {
+      "source": "/pulse",
+      "destination": "/pulse.html"
+    },
+    {
+      "source": "/methodology",
+      "destination": "/methodology.html"
+    },
+    {
       "source": "/why",
       "destination": "/why.html"
     },
