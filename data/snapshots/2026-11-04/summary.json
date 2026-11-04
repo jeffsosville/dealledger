@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-04T10:25:29.850359+00:00",
+  "brokers_attempted": 799,
+  "brokers_success": 544,
+  "brokers_failed": 211,
+  "total_listings": 11300,
+  "listings_with_price": 10284,
+  "listings_with_cashflow": 4859,
+  "listings_with_state": 9227,
+  "detail_pages_fetched": 197,
+  "patterns_cached": 588,
+  "patterns_learned": 494,
+  "verticals": {
+    "retail": 1325,
+    "technology": 1734,
+    "automotive": 764,
+    "construction": 326,
+    "restaurant": 2488,
+    "plumbing": 106,
+    "healthcare": 696,
+    "landscaping": 102,
+    "cleaning": 147,
+    "other": 2903,
+    "electrical": 72,
+    "manufacturing": 286,
+    "hvac": 180,
+    "roofing": 29,
+    "vending": 133,
+    "pest_control": 9
+  },
+  "failure_types": {
+    "EMBED_BBS": 43,
+    "NO_PATTERN": 117,
+    "FETCH_ERROR": 27,
+    "HTTP_403": 4
+  },
+  "site_pages_dropped": 67,
+  "interrupted": true,
+  "slowest_brokers": [
+    [
+      2294,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      2290,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2215,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1844,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1286,
+      "naz-business.com",
+      25
+    ],
+    [
+      784,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      554,
+      "routeadvisors.com",
+      47
+    ],
+    [
+      543,
+      "greenlifebusiness.com",
+      330
+    ],
+    [
+      519,
+      "profilesrealty.com",
+      0
+    ],
+    [
+      501,
+      "gabusinessbrokers.com",
+      22
+    ],
+    [
+      476,
+      "theveldgroup.com",
+      54
+    ],
+    [
+      470,
+      "lighthousebusinessbrokers.com",
+      4
+    ],
+    [
+      464,
+      "pacificrestaurantbrokers.com",
+      12
+    ],
+    [
+      463,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      459,
+      "vistapoolroutes.com",
+      2
+    ]
+  ],
+  "seconds_total": 47602,
+  "completed": "2026-11-04T15:10:28.485460+00:00",
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
