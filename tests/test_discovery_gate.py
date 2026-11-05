@@ -116,3 +116,15 @@ def test_listing_index_paths_pass_even_with_nothing_parsed():
 
 def test_trailing_slash_does_not_matter():
     assert db.path_failures("/blog/", "/blog", 0)
+
+
+def test_past_deals_pages_are_proposed_even_with_listings_parsed():
+    # syedbrokerage.capital: 40 items parsed off /performance (past deals).
+    for p in ["/performance", "/track-record/", "/closed-deals", "/sold", "/recently-sold/",
+              "/recent-transactions", "/tombstones"]:
+        assert db.path_failures(p, p, 40), p
+
+
+def test_sold_in_a_listings_slug_is_not_a_past_deals_page():
+    for p in ["/listings/", "/businesses-for-sale/", "/soldier-field-cafe-for-sale"]:
+        assert db.path_failures(p, p, 40) == [], p

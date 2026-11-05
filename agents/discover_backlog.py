@@ -466,7 +466,10 @@ _CONTENT_PATH = re.compile(
     r"|(^|/)(blog|news|articles?|insights?|resources?|taxes?|podcasts?|webinars?"
     r"|events?|tools?|calculators?|careers?|why-us|engagements?)(/|$)"
     r"|estimator|sba-loans?|mortgage|lending|residential|reo-listings"
-    r"|selling-real-estate|financial-planning|change-management|consulting-advisory",
+    r"|selling-real-estate|financial-planning|change-management|consulting-advisory"
+    # 2026-11-04: syedbrokerage.capital's /performance was a past-deals page.
+    r"|(^|/)(performance|track-record|closed-deals?|past-deals?|recent-transactions"
+    r"|transactions|sold|sold-listings|recently-sold|tombstones?)(/|$|\.)",
     re.I)
 _INDEX_PATH = re.compile(
     r"for-?sale|listing|buy|businesses|practices|routes|inventory|available"
