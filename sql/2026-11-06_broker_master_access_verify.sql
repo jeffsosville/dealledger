@@ -8,8 +8,8 @@
 --
 -- The redirect slug is a production broker_firms slug that is unique and has a
 -- companyurl (checked 2026-11-06), so the lookup must return exactly one URL.
-
-select set_config('verify.redirect_slug', '123bsc-com', false);
+-- It is set inside each transaction below: some runners send the whole file as
+-- one batch, where a ROLLBACK would also undo a session-level setting.
 
 -- 1. Catalog: anon and authenticated, including PUBLIC and inherited privileges.
 --    has_table_privilege / has_column_privilege account for PUBLIC grants and
@@ -17,7 +17,7 @@ select set_config('verify.redirect_slug', '123bsc-com', false);
 do $$
 declare
   r text; obj text; col text; priv text;
-  restricted text[] := array['broker_master','firm_velocity','v_broker_crawl_candidates','dealledger_listings'];
+  restricted text[] := array['broker_master','firm_velocity','v_broker_crawl_candidates'];
   table_privs text[] := array['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'];
 begin
   if current_setting('server_version_num')::int >= 170000 then
@@ -32,6 +32,18 @@ begin
           raise exception '% has % on %', r, priv, obj;
         end if;
       end loop;
+    end loop;
+
+    -- dealledger_listings: checked for reads only. Its write grants predate this
+    -- migration and can't be used (the view is not updatable); out of scope here.
+    if has_table_privilege(r, 'public.dealledger_listings', 'SELECT') then
+      raise exception '% can select dealledger_listings', r;
+    end if;
+    for col in select attname from pg_attribute
+               where attrelid = 'public.dealledger_listings'::regclass and attnum > 0 and not attisdropped loop
+      if has_column_privilege(r, 'public.dealledger_listings', col, 'SELECT') then
+        raise exception '% can select dealledger_listings.%', r, col;
+      end if;
     end loop;
 
     -- No column of the restricted objects is readable or writable.
@@ -118,6 +130,7 @@ end $$;
 --    PostgREST: role switched with set_config inside a read-only transaction,
 --    then a CTE over the requested columns with the filter as a bind parameter.
 begin isolation level read committed read only;
+select set_config('verify.redirect_slug', '123bsc-com', true);
 select set_config('role', 'anon', true), set_config('request.jwt.claims', '{"role":"anon"}', true);
 do $$
 declare n int; body json; s text := current_setting('verify.redirect_slug');
@@ -153,6 +166,7 @@ end $$;
 rollback;
 
 begin isolation level read committed read only;
+select set_config('verify.redirect_slug', '123bsc-com', true);
 select set_config('role', 'authenticated', true), set_config('request.jwt.claims', '{"role":"authenticated"}', true);
 do $$
 declare n int; body json; s text := current_setting('verify.redirect_slug');
