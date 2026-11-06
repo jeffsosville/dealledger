@@ -29,7 +29,6 @@ type Listing = {
   listing_views: number | null;
   is_active: boolean | null;
   price_reduced: boolean | null;
-  bbs_account_id: number | null;
   quality_tier: string | null;
   quality_score: number | null;
   relisted: boolean | null;
@@ -37,26 +36,8 @@ type Listing = {
   dom_basis?: string | null;
 };
 
-type HistoryRow = {
-  price: number | null;
-  source_file: string | null;
-};
-
-type Broker = {
-  account: number;
-  companyname: string | null;
-  companyurl: string | null;
-  regionccode: string | null;
-  firm_key: string | null;
-  active_listings_apr2026: number | null;
-  sold_listings_apr2026: number | null;
-  soldListingsCount: number | null;
-};
-
 type PageProps = {
   listing: Listing | null;
-  history: HistoryRow[];
-  broker: Broker | null;
   registryBroker: { slug: string; name: string } | null;
   domPercentile: number | null;
 };
@@ -82,12 +63,12 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   const { data: listingRow, error: listingErr } = await sb
     .from('listings')
     .select(
-      'id, listing_number, source, header, price, cash_flow, state, city, category, url, first_seen, last_seen, estimated_listed_date, days_on_market, listing_views, is_active, price_reduced, bbs_account_id, quality_tier, quality_score, relisted, firm_key'
+      'id, listing_number, source, header, price, cash_flow, state, city, category, url, first_seen, last_seen, estimated_listed_date, days_on_market, listing_views, is_active, price_reduced, quality_tier, quality_score, relisted, firm_key'
     )
     .eq('listing_number', listingNumber)
     .maybeSingle();
 
-  console.log('[listing] Query 1:', listingErr ? 'ERR' : 'OK', listingRow ? `id=${listingRow.id} bbs_account=${listingRow.bbs_account_id}` : 'null');
+  console.log('[listing] Query 1:', listingErr ? 'ERR' : 'OK', listingRow ? `id=${listingRow.id}` : 'null');
 
   if (listingErr || !listingRow) return { notFound: true };
   const listing = listingRow as Listing;
@@ -107,41 +88,9 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     listing.dom_basis = null;
   }
 
-  const { data: histRows, error: histErr } = await sb
-    .from('listing_history')
-    .select('price, source_file')
-    .eq('listnumber', listingNumber)
-    .order('source_file', { ascending: true });
-
-  console.log('[listing] Query 2: rows=', histRows?.length ?? 0, 'err=', histErr);
-
-  const history: HistoryRow[] = (histRows || []).map((r: any) => ({
-    price: r.price != null ? Number(r.price) : null,
-    source_file: r.source_file ?? null,
-  }));
-
-  let broker: Broker | null = null;
-  if (listing.bbs_account_id != null) {
-    const accountId = typeof listing.bbs_account_id === 'string'
-      ? parseInt(listing.bbs_account_id, 10)
-      : listing.bbs_account_id;
-
-    const { data: brokerRow, error: brokerErr } = await sb
-      .from('broker_master')
-      .select(
-        'account, companyname, companyurl, regionccode, firm_key, active_listings_apr2026, sold_listings_apr2026, "soldListingsCount"'
-      )
-      .eq('account', accountId)
-      .maybeSingle();
-
-    console.log('[listing] Query 3:', brokerRow ? `FOUND ${brokerRow.companyname}` : 'null', 'err=', brokerErr);
-
-    if (brokerRow) broker = brokerRow as Broker;
-  }
-
   // Broker-direct listings: link to the broker's page in the registry, matched by website.
   let registryBroker: { slug: string; name: string } | null = null;
-  if (!broker && listing.url) {
+  if (listing.url) {
     const host = listing.url.replace(/^https?:\/\/(www\.)?/i, '').split(/[/?#:]/)[0].toLowerCase();
     if (host) {
       const { data: rb } = await sb
@@ -175,7 +124,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   console.log('[listing] === SUCCESS ===');
 
   return {
-    props: { listing, history, broker, registryBroker, domPercentile },
+    props: { listing, registryBroker, domPercentile },
     revalidate: 60 * 60 * 6,
   };
 };
@@ -193,9 +142,6 @@ const fmtPriceFull = (n: number | null | undefined) => {
   return `$${new Intl.NumberFormat('en-US').format(n)}`;
 };
 
-const fmtNum = (n: number | null | undefined) =>
-  n == null ? '—' : new Intl.NumberFormat('en-US').format(n);
-
 const fmtMonthYear = (s: string | null | undefined) => {
   if (!s) return '—';
   const d = new Date(s);
@@ -205,67 +151,15 @@ const fmtMonthYear = (s: string | null | undefined) => {
 
 const padDLId = (id: number) => `DL-${String(id).padStart(8, '0')}`;
 
-const buildObservations = (history: HistoryRow[], currentPrice: number | null) => {
-  const obs: { label: string; date: string; price: number | null }[] = [];
-
-  history.forEach((h) => {
-    if (h.source_file === 'nov_2025') {
-      obs.push({ label: 'Nov 2025', date: '2025-11-15', price: h.price });
-    } else if (h.source_file?.startsWith('bizbuysell_listings_')) {
-      obs.push({ label: 'Apr 2026', date: '2026-04-15', price: h.price });
-    }
-  });
-
-  // Dedupe by label
-  const seen = new Set<string>();
-  const dedup = obs.filter((o) => {
-    if (seen.has(o.label)) return false;
-    seen.add(o.label);
-    return true;
-  });
-
-  // Sort chronologically by ISO date — oldest first
-  dedup.sort((a, b) => a.date.localeCompare(b.date));
-
-  // Push "Today" if current price differs from the most recent observation
-  const lastObsPrice = dedup[dedup.length - 1]?.price ?? null;
-  if (
-    currentPrice != null &&
-    lastObsPrice != null &&
-    currentPrice !== lastObsPrice
-  ) {
-    dedup.push({ label: 'Today', date: new Date().toISOString(), price: currentPrice });
-  }
-
-  return dedup;
-};
-
 // ─── PAGE ──────────────────────────────────────────────────────────────────
 export default function ListingPage({
   listing,
-  history,
-  broker,
   registryBroker,
   domPercentile,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!listing) return null;
 
-  const observations = buildObservations(history, listing.price);
-  const earliestObsPrice =
-    observations.length > 0 ? observations[0].price : listing.price;
   const currentPrice = listing.price;
-
-  let reductionPct: number | null = null;
-  if (
-    earliestObsPrice != null &&
-    currentPrice != null &&
-    earliestObsPrice > currentPrice &&
-    earliestObsPrice > 0
-  ) {
-    reductionPct = Math.round(
-      ((earliestObsPrice - currentPrice) / earliestObsPrice) * 100
-    );
-  }
 
   let domContext = 'No DOM data';
   if (domPercentile != null) {
@@ -282,35 +176,6 @@ export default function ListingPage({
 
   type ChangeLogEntry = { date: string; description: string };
   const changeLog: ChangeLogEntry[] = [];
-
-  // Today's price change (if observed)
-  if (
-    observations.length > 0 &&
-    currentPrice != null &&
-    observations[observations.length - 1].label === 'Today'
-  ) {
-    const prev = observations[observations.length - 2]?.price;
-    if (prev != null && prev !== currentPrice) {
-      changeLog.push({
-        date: new Date().toISOString().slice(0, 10),
-        description: `Asking price ${
-          prev > currentPrice ? 'reduced' : 'increased'
-        } from ${fmtPriceFull(prev)} to ${fmtPriceFull(currentPrice)}`,
-      });
-    }
-  }
-
-  // Snapshot observations — sorted newest first
-  observations
-    .filter((o) => o.label !== 'Today')
-    .slice()
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .forEach((o) => {
-      changeLog.push({
-        date: o.date.slice(0, 10),
-        description: `Observed at ${fmtPriceFull(o.price)}`,
-      });
-    });
 
   const isFloor = listing.dom_basis === 'floor';
   if (listing.estimated_listed_date) {
@@ -333,8 +198,7 @@ export default function ListingPage({
   const locationLine = [listing.city, listing.state].filter(Boolean).join(', ');
   const subtitleParts: string[] = [];
   if (locationLine) subtitleParts.push(locationLine);
-  if (broker?.companyname) subtitleParts.push(`Listed by ${broker.companyname}`);
-  else if (registryBroker) subtitleParts.push(`Listed by ${registryBroker.name}`);
+  if (registryBroker) subtitleParts.push(`Listed by ${registryBroker.name}`);
 
   const pageTitle = `${listing.header || 'Listing'} — ${padDLId(listing.id)} · DealLedger`;
   const canonical = `https://dealledger.org/listing/${listing.listing_number}`;
@@ -385,9 +249,12 @@ export default function ListingPage({
                 '@type': 'Offer',
                 price: listing.price,
                 priceCurrency: 'USD',
-                availability: listing.is_active
-                  ? 'https://schema.org/InStock'
-                  : 'https://schema.org/SoldOut',
+                // Only the active state is asserted. A listing that has left
+                // observation is not known to have sold, so no availability is
+                // claimed for it.
+                ...(listing.is_active
+                  ? { availability: 'https://schema.org/InStock' }
+                  : {}),
                 ...(listing.estimated_listed_date
                   ? { availabilityStarts: listing.estimated_listed_date }
                   : {}),
@@ -404,10 +271,6 @@ export default function ListingPage({
                       },
                     }
                   : {}),
-                ...(broker?.companyname
-                  ? { seller: { '@type': 'Organization', name: broker.companyname,
-                                ...(broker.companyurl ? { url: broker.companyurl } : {}) } }
-                  : {}),
               },
             }
           : {}),
@@ -418,26 +281,20 @@ export default function ListingPage({
         name: `DealLedger observation record ${padDLId(listing.id)}`,
         description:
           'Dated observation record for a single US business-for-sale listing: ' +
-          'asking price, cash flow, location, first-seen date, days on market, ' +
-          'and every change observed since. Part of the DealLedger open index.',
+          'latest recorded asking price, cash flow, location, first-seen date and days on market. ' +
+          'Part of the DealLedger open index.',
         url: canonical,
         license: 'https://creativecommons.org/publicdomain/zero/1.0/',
         isAccessibleForFree: true,
         creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
         isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
         ...(listing.first_seen ? { temporalCoverage: `${listing.first_seen.slice(0, 10)}/..` } : {}),
-        // dateModified is when the LISTING changed, not when we crawled it.
-        // last_seen bumps on every crawl, so using it would make every record
-        // claim a change every night — the same false signal the sitemap's
-        // lastmod was fixed for on 2026-10-08.
-        ...(listing.estimated_listed_date
-          ? { dateModified: listing.estimated_listed_date.slice(0, 10) }
-          : listing.first_seen
-            ? { dateModified: listing.first_seen.slice(0, 10) }
-            : {}),
+        // No `dateModified` field: nothing we store records when the listing itself
+        // last changed (last_seen bumps on every crawl; first_seen and the
+        // estimated listed date are not modification dates).
         ...(listing.state ? { spatialCoverage: { '@type': 'Place', name: listing.state } } : {}),
         variableMeasured: [
-          'asking price', 'cash flow', 'days on market', 'first seen date', 'price changes',
+          'asking price', 'cash flow', 'days on market', 'first seen date',
         ],
       },
     ],
@@ -519,24 +376,13 @@ export default function ListingPage({
             <Stat
               label="Asking Price"
               value={fmtPrice(currentPrice)}
-              sub={
-                reductionPct != null
-                  ? `Reduced ${reductionPct}%`
-                  : currentPrice == null
-                  ? 'Not disclosed'
-                  : 'No price change observed'
-              }
+              sub={currentPrice == null ? 'Not disclosed' : 'Latest recorded'}
             />
             <Stat
               label="Days on Market"
               value={listing.days_on_market != null ? `${listing.days_on_market}${isFloor ? '+' : ''}` : '—'}
               sub={domContext}
               accent={domFlag}
-            />
-            <Stat
-              label="Times Listed"
-              value="1"
-              sub="1 listing observed"
             />
             <Stat
               label="Cash Flow"
@@ -551,19 +397,12 @@ export default function ListingPage({
             />
           </div>
 
-          {(observations.length > 0 || listing.estimated_listed_date) && (
+          {listing.estimated_listed_date && (
             <Section title="TIMELINE" subtitle="Observed events">
               <Timeline
                 listedDate={listing.estimated_listed_date}
                 floor={isFloor}
-                observations={observations}
               />
-            </Section>
-          )}
-
-          {observations.length >= 2 && (
-            <Section title="PRICE HISTORY" subtitle="Asking price over time">
-              <PriceChart observations={observations} />
             </Section>
           )}
 
@@ -580,49 +419,7 @@ export default function ListingPage({
             </Section>
           )}
 
-          {broker && (
-            <Section title="LISTED BY" subtitle="Broker fingerprint">
-              <div className="broker-card">
-                <div className="broker-name">
-                  {broker.companyname || `Account ${broker.account}`}
-                </div>
-                {broker.regionccode && (
-                  <div className="broker-loc">{broker.regionccode}</div>
-                )}
-                <div className="broker-stats">
-                  <div className="broker-stat">
-                    <div className="broker-stat-label">Active Listings</div>
-                    <div className="broker-stat-value">
-                      {fmtNum(broker.active_listings_apr2026)}
-                    </div>
-                  </div>
-                  <div className="broker-stat">
-                    <div className="broker-stat-label">Closes (12mo)</div>
-                    <div className="broker-stat-value">
-                      {broker.sold_listings_apr2026 && broker.sold_listings_apr2026 > 0
-                        ? fmtNum(broker.sold_listings_apr2026)
-                        : '—'}
-                    </div>
-                  </div>
-                  <div className="broker-stat">
-                    <div className="broker-stat-label">Lifetime Sold</div>
-                    <div className="broker-stat-value">
-                      {fmtNum(broker.soldListingsCount)}
-                    </div>
-                  </div>
-                </div>
-                {broker.firm_key && (
-                  <div className="broker-link">
-                    <a href={`/broker/${slugFromFirmKey(broker.firm_key)}`}>
-                      View full broker record →
-                    </a>
-                  </div>
-                )}
-              </div>
-            </Section>
-          )}
-
-          {!broker && registryBroker && (
+          {registryBroker && (
             <Section title="LISTED BY" subtitle={registryBroker.name}>
               <div className="broker-card">
                 <div className="broker-name">{registryBroker.name}</div>
@@ -648,8 +445,9 @@ export default function ListingPage({
           <Section title="METHODOLOGY" subtitle="What we observe">
             <div className="prose">
               <p>
-                DealLedger publishes what is publicly displayed. Price
-                observations are recorded each time the listing is scraped.
+                DealLedger displays the latest recorded asking price from the
+                broker&rsquo;s listing. Historical price changes are not
+                currently tracked.
               </p>
               {listing.quality_tier && listing.quality_tier !== 'Verified' && (
                 <p>
@@ -670,7 +468,7 @@ export default function ListingPage({
           <Section title="RIGHT TO RESPOND" subtitle="">
             <div className="respond">
               <p>
-                If you represent this listing or {broker?.companyname || 'this broker'} and would like
+                If you represent this listing or {registryBroker?.name || 'this broker'} and would like
                 to add context to this record, contact{' '}
                 <a href="mailto:corrections@dealledger.org">
                   corrections@dealledger.org
@@ -972,26 +770,15 @@ function Section({
 function Timeline({
   listedDate,
   floor = false,
-  observations,
 }: {
   listedDate: string | null;
   floor?: boolean;
-  observations: { label: string; date: string; price: number | null }[];
 }) {
   const events: { label: string; date: string }[] = [];
 
   if (listedDate) {
     events.push({ label: floor ? 'Listed by' : 'First seen', date: fmtMonthYear(listedDate) });
   }
-
-  observations.forEach((o, i) => {
-    const prev = i > 0 ? observations[i - 1].price : null;
-    let label = o.price != null ? fmtPrice(o.price) : 'Observed';
-    if (prev != null && o.price != null && prev !== o.price) {
-      label = `${fmtPrice(prev)} → ${fmtPrice(o.price)}`;
-    }
-    events.push({ label, date: o.label });
-  });
 
   if (events.length === 0) return null;
 
@@ -1064,130 +851,3 @@ function Timeline({
   );
 }
 
-function PriceChart({
-  observations,
-}: {
-  observations: { label: string; date: string; price: number | null }[];
-}) {
-  const valid = observations.filter((o) => o.price != null) as {
-    label: string;
-    date: string;
-    price: number;
-  }[];
-
-  if (valid.length < 2) return null;
-
-  const prices = valid.map((o) => o.price);
-  const max = Math.max(...prices);
-  const min = Math.min(...prices);
-  const range = max - min || 1;
-  const yMax = max + range * 0.1;
-  const yMin = Math.max(0, min - range * 0.1);
-  const yRange = yMax - yMin || 1;
-
-  const W = 720;
-  const H = 240;
-  const padL = 60;
-  const padR = 30;
-  const padT = 30;
-  const padB = 40;
-  const innerW = W - padL - padR;
-  const innerH = H - padT - padB;
-
-  const xs = valid.map((_, i) => padL + (innerW * i) / (valid.length - 1));
-  const ys = valid.map((o) => padT + innerH - ((o.price - yMin) / yRange) * innerH);
-
-  let pathD = `M ${xs[0]} ${ys[0]}`;
-  for (let i = 1; i < valid.length; i++) {
-    pathD += ` L ${xs[i]} ${ys[i - 1]}`;
-    pathD += ` L ${xs[i]} ${ys[i]}`;
-  }
-
-  const ticks = [yMin, (yMin + yMax) / 2, yMax];
-
-  return (
-    <div className="chart-wrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="chart-svg">
-        {ticks.map((t, i) => {
-          const y = padT + innerH - ((t - yMin) / yRange) * innerH;
-          return (
-            <g key={i}>
-              <line
-                x1={padL}
-                x2={W - padR}
-                y1={y}
-                y2={y}
-                stroke="var(--rule)"
-                strokeWidth="1"
-                strokeDasharray={i === 0 ? '' : '2 4'}
-              />
-              <text
-                x={padL - 8}
-                y={y + 4}
-                textAnchor="end"
-                fontSize="11"
-                fontFamily="var(--mono)"
-                fill="var(--ink-mute)"
-              >
-                {fmtPrice(t)}
-              </text>
-            </g>
-          );
-        })}
-
-        <path d={pathD} fill="none" stroke="var(--ink-soft)" strokeWidth="2" />
-
-        {valid.map((o, i) => (
-          <g key={i}>
-            <circle cx={xs[i]} cy={ys[i]} r="5" fill="var(--ink-soft)" />
-            <text
-              x={xs[i]}
-              y={ys[i] - 12}
-              textAnchor="middle"
-              fontSize="12"
-              fontFamily="var(--mono)"
-              fontWeight="500"
-              fill="var(--ink)"
-            >
-              {fmtPrice(o.price)}
-            </text>
-          </g>
-        ))}
-
-        {valid.map((o, i) => (
-          <text
-            key={i}
-            x={xs[i]}
-            y={H - 12}
-            textAnchor="middle"
-            fontSize="11"
-            fontFamily="var(--mono)"
-            fill="var(--ink-mute)"
-          >
-            {o.label}
-          </text>
-        ))}
-      </svg>
-      <style jsx>{`
-        .chart-wrap {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          padding: 16px;
-        }
-        .chart-svg {
-          width: 100%;
-          height: auto;
-          display: block;
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function slugFromFirmKey(firmKey: string): string {
-  const value = firmKey.replace(/^(url:|name:)/, '');
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}

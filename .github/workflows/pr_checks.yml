@@ -25,3 +25,13 @@ jobs:
         run: python tests/test_discovery_gate.py
       - name: Marketplace-gate test
         run: python tests/test_marketplace_gate.py
+      - name: Listing page source test
+        run: python tests/test_listing_page_source.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install site dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Listing page render test (local stub, no database)
+        run: python tests/test_listing_page_render.py
