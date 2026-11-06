@@ -45,7 +45,25 @@ import sys
 from datetime import date
 
 csv.field_size_limit(10**9)
-RULES_VERSION = "2026-11-06.v5"
+RULES_VERSION = "2026-11-06.v6"
+# v6 tiers. hard: extraction/identity failure, never reviewed or published.
+# review: plausible but unusual, needs a human verdict. pass: no flags (still reviewed).
+# "listing has no public page" is a publication restriction only (the public view
+# requires a registry page); it never changes the tier.
+HARD_REASONS = {
+    "url is an index page", "not a broker page (platform or file host)", "placeholder or missing title",
+    "placeholder or implausible value", "price swapped with a revenue or cash-flow figure",
+    "price returns to an earlier value (flip-flop)", "price contradicts an asking figure in the title",
+    "price equals a revenue or profit figure in the title", "ratio outside 0.2-5x",
+    "one-day odd prior price with a large move", "odd values on both sides with a large move",
+    "specific titles disagree", "state changed", "city changed",
+    "price shared with 10+ other listings of this domain that day"}
+REVIEW_REASONS = {
+    "change over 60% (needs external evidence)", "price over 15x cash flow", "price over 10x revenue",
+    "price equals revenue or cash flow on the same row", "price shared with other listings of this domain that day",
+    "more than 3 changes on one listing", "cash flow changed more than 2x",
+    "price and cash flow scaled by the same factor", "change under 0.5%"}
+PUBLICATION_REASONS = {"listing has no public page"}
 
 # Files rewritten after their first commit: read the version as first committed.
 REWRITTEN = {
@@ -356,6 +374,8 @@ def main():
                 if shared_price[(dom, r["snapshot_date"], p)] >= 3 or \
                         (shared_price[(dom, r["snapshot_date"], p)] >= 2 and p % 1000):
                     why.append("price shared with other listings of this domain that day")
+                if shared_price[(dom, r["snapshot_date"], p)] - 1 >= 10:
+                    why.append("price shared with 10+ other listings of this domain that day")
                 if r["cash_flow"] and r["cash_flow"] > 0 and p / r["cash_flow"] > 15:
                     why.append("price over 15x cash flow")
                 if r["revenue"] and 0 < r["revenue"] < 1e9 and p / r["revenue"] > 10:
@@ -401,7 +421,10 @@ def main():
             st, pub = status[lid]
             if not pub and st == "a":
                 ident_why.append("listing has no public page")
-            auto = "pass" if not (why or ident_why) else ("identity" if ident_why else "anomaly")
+            reasons = set(why + ident_why)
+            unknown = reasons - HARD_REASONS - REVIEW_REASONS - PUBLICATION_REASONS
+            assert not unknown, unknown
+            auto = "hard" if reasons & HARD_REASONS else ("review" if reasons & REVIEW_REASONS else "pass")
             rv = reviews.get((lid, d1), {})
             changes.append({
                 "listing_id": lid, "identity_url": u,
@@ -413,7 +436,7 @@ def main():
                 "next_source": f"{r1['source_file']}@{r1['source_commit'][:12]}#{r1['row_index']}",
                 "screen_result": auto, "screen_reasons": "; ".join(sorted(set(why + ident_why))),
                 "rules_version": RULES_VERSION,
-                "review_status": rv.get("verdict", "pending") if auto == "pass" else "not_eligible",
+                "review_status": rv.get("verdict", "pending") if auto != "hard" else "not_eligible",
                 "reviewer": rv.get("reviewer", ""), "review_ref": rv.get("ref", ""),
             })
     cols = list(changes[0]) if changes else []

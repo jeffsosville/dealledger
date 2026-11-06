@@ -187,3 +187,255 @@ fc8533a5f501e7de,2026-06-25,approved,claude-2026-11-06,remaining R17
 fdff87f6c8324d73,2026-10-08,approved,claude-2026-11-06,remaining R58
 fe6f0be530758dd5,2026-06-13,approved,claude-2026-11-06,remaining R24
 fe895fce98e6f6e6,2026-10-14,approved,claude-2026-11-06,sample2 #12
+8d5dbf5d9700e182,2026-10-04,rejected,claude-2026-11-06,g1 S1: generic title
+92c89c8cd3dee29d,2026-09-28,rejected,claude-2026-11-06,g1 S2: price equals revenue in title
+38966193958c6e77,2026-09-25,rejected,claude-2026-11-06,g1 S3: price equals revenue
+39e6d8a81e024137,2026-07-12,approved,claude-2026-11-06,"g1 S4: cash flow misparsed (9,300); price and title consistent"
+4144e3d03d8e6c17,2026-10-31,rejected,claude-2026-11-06,g1 S5: book size in title
+144587e49e92af5c,2026-09-16,rejected,claude-2026-11-06,g1 S6: implausible multiple
+55349ce0b42daafc,2026-09-08,rejected,claude-2026-11-06,g1 S7: +321%
+f13d1210bfac892b,2026-09-08,rejected,claude-2026-11-06,g1 S8: price equals revenue
+f78589134b28f89f,2026-10-21,rejected,claude-2026-11-06,g1 S9: price equals revenue
+9676da1efd09d2dc,2026-10-21,rejected,claude-2026-11-06,g1 S10: price equals revenue
+abedab99ef3f4def,2026-10-08,rejected,claude-2026-11-06,g1 S11: -67% with no corroboration
+1a115b2741baa4a6,2026-09-16,rejected,claude-2026-11-06,g1 S12: price equals revenue
+7327a92e94c63a87,2026-09-18,rejected,claude-2026-11-06,g1 S13: price equals revenue
+fdf13ad779e6e575,2026-10-26,rejected,claude-2026-11-06,g1 S14: field contamination
+fa1223c3b3ceb629,2026-11-03,rejected,claude-2026-11-06,g1 S15: field contamination
+0dc18615662d18fb,2026-10-26,rejected,claude-2026-11-06,g1 S16: generic title after
+ecca0b30db38385c,2026-10-26,rejected,claude-2026-11-06,g1 S17: field contamination
+d8fd79be62258ef9,2026-09-25,approved,claude-2026-11-06,g1 S18: cash flow copies price on every row; price consistent
+caa1a9bea01967de,2026-09-25,approved,claude-2026-11-06,g1 S19: cash flow copies price on every row; price consistent
+db66a90694d4df7a,2026-09-02,approved,claude-2026-11-06,"g1 S20: title states both asking prices ($3.6M, $3.75M)"
+a95bc7f5d0523bb7,2026-09-17,rejected,claude-2026-11-06,g1 S21: field contamination
+554ea6a610661eeb,2026-09-16,rejected,claude-2026-11-06,g1 S22: price equals revenue in title
+3094ca18544121c9,2026-09-11,rejected,claude-2026-11-06,g1 S23: field contamination
+bffbe14028801da2,2026-09-16,rejected,claude-2026-11-06,g1 S24: field contamination
+e49dd9158aaf97a4,2026-10-10,rejected,claude-2026-11-06,g1 S25: $6M on $295K revenue
+540da8ed6e1e7300,2026-07-09,rejected,claude-2026-11-06,"g1 S26: image URL, not a listing page"
+a34deb86d1fbd106,2026-07-09,rejected,claude-2026-11-06,g1 S27: image URL
+bd3c8e3c52b2fd79,2026-07-09,rejected,claude-2026-11-06,g1 S28: image URL
+3ea8ee7c1b518484,2026-09-24,rejected,claude-2026-11-06,g1 S29: price equals revenue
+9aee4b1aac7f331c,2026-09-24,rejected,claude-2026-11-06,g1 S30: price equals revenue
+f55ec06c1dfe1a45,2026-08-29,approved,claude-2026-11-06,g1 S31: cash flow equals revenue (misparse); title and price consistent
+c208c6034abe1e0c,2026-11-03,rejected,claude-2026-11-06,g1 S32: price equals revenue
+d8bafe640da1cd2b,2026-04-24,rejected,claude-2026-11-06,g1 S33: price equals revenue
+7cdea991115fbcc4,2026-08-29,rejected,claude-2026-11-06,g1 S34: price equals revenue
+cbad49448dd2d6fe,2026-08-29,rejected,claude-2026-11-06,g1 S35: price equals revenue
+5fa1ed8485ceac7a,2026-08-29,rejected,claude-2026-11-06,g1 S36: price equals revenue
+db2d48ac083b5406,2026-08-29,rejected,claude-2026-11-06,g1 S37: price equals revenue
+6d30496166763335,2026-04-21,rejected,claude-2026-11-06,g1 S38: price equals revenue
+f1b69b7bbe79fbbb,2026-09-05,rejected,claude-2026-11-06,g1 S39: price equals revenue
+83f259c82c2f8847,2026-08-29,rejected,claude-2026-11-06,g1 S40: price equals revenue
+cdc08acb3359efb3,2026-09-23,rejected,claude-2026-11-06,g1 S41: price equals revenue
+a603ba34b84f26c3,2026-08-29,rejected,claude-2026-11-06,g1 S42: price equals revenue
+bf782fbf5113f5fa,2026-10-15,rejected,claude-2026-11-06,g1 S43: price equals revenue
+8b75aad1aa74ffa8,2026-10-20,rejected,claude-2026-11-06,g1 S44: implausible multiple
+74274ca3a395a38e,2026-10-13,rejected,claude-2026-11-06,g1 S45: placeholder value
+87390c33b244d93e,2026-10-27,rejected,claude-2026-11-06,g1 S46: placeholder value
+6c8d1f3d944bc18b,2026-05-29,approved,claude-2026-11-06,g1 S47: broker copies price into revenue/cash flow on every row
+fdf8ad576ec207a3,2026-06-18,approved,claude-2026-11-06,g1 S48: broker copies price into revenue/cash flow on every row
+17bc6d9e25877896,2026-06-05,approved,claude-2026-11-06,g1 S49: broker copies price into revenue/cash flow on every row
+d6cd3607bdf742f8,2026-08-29,approved,claude-2026-11-06,g1 S50: broker copies price into revenue/cash flow on every row
+4474576ff88e194c,2026-10-16,rejected,claude-2026-11-06,g1 S51: placeholder value
+4474576ff88e194c,2026-10-27,rejected,claude-2026-11-06,g1 S52: placeholder value
+c2de1a8f6a7201ab,2026-10-27,rejected,claude-2026-11-06,g1 S53: placeholder value
+132fd634c03798bb,2026-10-22,rejected,claude-2026-11-06,g1 S54: placeholder value
+f3d99b8797506420,2026-10-27,rejected,claude-2026-11-06,g1 S55: placeholder value
+07c50117481b33ce,2026-10-14,rejected,claude-2026-11-06,g1 S56: placeholder value
+8664ee7e5da9cd29,2026-10-27,approved,claude-2026-11-06,g1 S57: field copy of price into cash flow
+e68289260ee3c02d,2026-09-25,rejected,claude-2026-11-06,g1 S58: price equals revenue
+5197e3754fa7d154,2026-08-29,approved,claude-2026-11-06,g1 S59: cash flow copies price; revenue garbage after; price clean
+7ea48cacb1019a84,2026-08-29,approved,claude-2026-11-06,g1 S60: field copy of price into cash flow
+560371a68812d98f,2026-06-12,approved,claude-2026-11-06,g1 S61: field copy of price into cash flow
+98908a0d4359d7fe,2026-09-18,rejected,claude-2026-11-06,g1 S62: price equals revenue in title
+0336cc69594be49b,2026-09-25,approved,claude-2026-11-06,g1 S63: cash flow misparse; price consistent
+cee55acb8e67399f,2026-10-29,rejected,claude-2026-11-06,g1 S64: price equals revenue in title
+8a382d8a4415bbc7,2026-08-29,rejected,claude-2026-11-06,g1 S65: title figure unresolved
+4a426894ac69518e,2026-08-29,rejected,claude-2026-11-06,g1 S66: price equals revenue on every row
+25eb7e1c0bcd0458,2026-06-06,approved,claude-2026-11-06,g1 S67: cash flow copies price on every row
+0989be5f32780ee2,2026-06-20,approved,claude-2026-11-06,g1 S68: cash flow copies price on every row
+0989be5f32780ee2,2026-08-29,approved,claude-2026-11-06,g1 S69: cash flow copies price on every row
+93aac3fa58663c58,2026-05-28,approved,claude-2026-11-06,g1 S70: cash flow copies price on every row
+ed29112439c7f960,2026-10-31,approved,claude-2026-11-06,g1 S71: multiple high because real estate is included; same id and title
+c0bec75b76688360,2026-10-08,rejected,claude-2026-11-06,g1 S72: +50% raise uncorroborated
+8795539c507cd5ca,2026-10-06,rejected,claude-2026-11-06,g1 S73: prior price is the cash flow
+661814db54079125,2026-05-15,rejected,claude-2026-11-06,g1 S74: price equals revenue; title changed
+03a6bc2f5fea1946,2026-06-17,rejected,claude-2026-11-06,g1 S75: title states old price after change
+320fb94863f11964,2026-09-25,rejected,claude-2026-11-06,g1 S76: price equals revenue
+d97f0e538d39fc60,2026-05-26,approved,claude-2026-11-06,g1 S77: cash flow copies price
+00ea94303a8b163c,2026-10-06,rejected,claude-2026-11-06,g1 S78: prior price equals cash flow
+4b1805162243bba3,2026-10-26,approved,claude-2026-11-06,g1 S79: prior cash flow equals revenue (misparse); price consistent
+d5533d188c94cb32,2026-09-11,rejected,claude-2026-11-06,g1 S80: price equals revenue
+4e72889adfe8779d,2026-09-08,rejected,claude-2026-11-06,g1 S81: new price is revenue (prior revenue = new price x1e6)
+f05fe6f8025e125f,2026-09-08,rejected,claude-2026-11-06,g1 S82: new price is revenue
+85dd0e8d9a3554de,2026-09-08,rejected,claude-2026-11-06,g1 S83: new price is revenue
+9f1f2022b4175b79,2026-09-08,rejected,claude-2026-11-06,g1 S84: new price is revenue
+d9be8802cee65616,2026-09-08,rejected,claude-2026-11-06,g1 S85: new price is revenue
+1f70155417e2f195,2026-09-29,rejected,claude-2026-11-06,g1 S86: +79% uncorroborated
+7eab95adf3e33168,2026-06-26,approved,claude-2026-11-06,g1 S87: cash flow copies price on every row
+b6787b0a77b94256,2026-09-08,rejected,claude-2026-11-06,g1 S88: price equals revenue
+7ae61686833d1d92,2026-05-30,rejected,claude-2026-11-06,g1 S89: cf=price and title figure
+05ece3f102c7a279,2026-04-17,rejected,claude-2026-11-06,g1 S90: title figure; revenue moved
+3fc6a1a2356f5f1c,2026-06-19,rejected,claude-2026-11-06,g1 S91: price equals revenue
+b21e7c0adf69a61f,2026-08-29,approved,claude-2026-11-06,"g1 S92: new price corroborated in title ('Price $195,00…')"
+00430d678bbbb13b,2026-09-16,rejected,claude-2026-11-06,g1 S93: price equals revenue figure in title
+af823e4daa409d2e,2026-09-25,rejected,claude-2026-11-06,g1 S94: price=revenue=cash flow
+072a543181be5721,2026-05-16,approved,claude-2026-11-06,g1 S95: cash flow copies price on every row
+072a543181be5721,2026-09-02,approved,claude-2026-11-06,g1 S96: cash flow copies price on every row
+c96ccd043b5e4601,2026-10-26,rejected,claude-2026-11-06,g1 S97: price equals revenue
+48a90596e420b535,2026-10-17,approved,claude-2026-11-06,g1 S98: title corroborates ('JUST REDUCED')
+5ea067882510666f,2026-09-05,rejected,claude-2026-11-06,g1 S99: new price equals cash flow
+bcaa7f7832ec3c24,2026-09-16,rejected,claude-2026-11-06,"g1 S100: +100%, title changed"
+26dca454fd7c7625,2026-08-29,rejected,claude-2026-11-06,g1 S101: +167%
+fd91f61792141a0e,2026-08-29,rejected,claude-2026-11-06,g1 S102: SOLD in title
+f9a13ada94556d79,2026-11-06,rejected,claude-2026-11-06,g1 S103: index page
+c40659e0f80975b5,2026-09-02,approved,claude-2026-11-06,g1 S104: cash flow copies price
+6b607930d0fc0060,2026-09-25,rejected,claude-2026-11-06,g1 S105: location-only title
+d664a71933c2f58a,2026-09-02,rejected,claude-2026-11-06,g1 S106: location-only title
+a6bb727e47e25b39,2026-09-02,rejected,claude-2026-11-06,g1 S107: location-only title
+9c2c406a7e6d360b,2026-09-11,rejected,claude-2026-11-06,g1 S108: price equals revenue; location title
+0afb59f83c56524d,2026-09-11,rejected,claude-2026-11-06,g1 S109: price equals revenue; location title
+3eb215ecd51e19cc,2026-09-11,rejected,claude-2026-11-06,g1 S110: price equals revenue; location title
+c93d5263805e02c8,2026-09-02,rejected,claude-2026-11-06,g1 S111: revenue moves with price
+cbef46fcf4192528,2026-10-08,rejected,claude-2026-11-06,g1 S112: revenue moves; title changed
+ad32ab2452de565a,2026-06-15,rejected,claude-2026-11-06,g1 S113: title is a person's name
+4a1273c58d8d32a4,2026-09-26,approved,claude-2026-11-06,g1 S114: cash flow copies price; revenue not moving
+ceb3b2afa6710cbc,2026-09-26,rejected,claude-2026-11-06,g1 S115: price equals revenue
+7458c00cc9908c42,2026-09-02,rejected,claude-2026-11-06,g1 S116: price equals revenue
+d866ccf6954cc17d,2026-09-26,rejected,claude-2026-11-06,g1 S117: title price ranges
+73e06734b49c0c95,2026-09-18,rejected,claude-2026-11-06,"g1 S118: one-day prior, large move"
+e3793159bf31dc10,2026-11-03,rejected,claude-2026-11-06,g1 S119: -62%
+04924f1c9bf7ca2d,2026-10-20,rejected,claude-2026-11-06,g1 S120: flip pattern
+ae51322ed78e8b98,2026-10-20,rejected,claude-2026-11-06,g1 S121: price=cf=revenue
+508d9eeebe7e9eaa,2026-09-08,rejected,claude-2026-11-06,g1 S122: -79%
+2744d4f3b3442c66,2026-09-08,rejected,claude-2026-11-06,g1 S123: price equals revenue
+cb509cc3851e8474,2026-10-20,rejected,claude-2026-11-06,g1 S124: -69%
+58c3ca9e7c3ac1b1,2026-09-08,rejected,claude-2026-11-06,g1 S125: successive collapses
+6e4ad807b2829e21,2026-10-20,rejected,claude-2026-11-06,g1 S126: price=cf=revenue before
+61590a639c831451,2026-06-03,approved,claude-2026-11-06,"g1 S127: revenue misparsed (1,260)"
+42684e64af738e18,2026-09-27,rejected,claude-2026-11-06,g1 S128: -63%
+c8ab9aa68c518266,2026-09-27,approved,claude-2026-11-06,g1 S129: cash flow is monthly/misparsed; property included
+ac4411160de10b03,2026-10-09,approved,claude-2026-11-06,g1 S130: cash flow is monthly
+87055b1685f92a40,2026-09-27,approved,claude-2026-11-06,g1 S131: cash flow is monthly/misparsed
+af39549fdb3a9e83,2026-10-10,approved,claude-2026-11-06,g1 S132: title states monthly profit; cash flow is monthly
+f9496599e1a033fd,2026-08-29,rejected,claude-2026-11-06,g1 S133: odd 3-day value
+f9496599e1a033fd,2026-09-08,rejected,claude-2026-11-06,g1 S134: odd 3-day value
+57e4bd888768341f,2026-10-09,rejected,claude-2026-11-06,g1 S135: +70%
+7c7947653ca3bda8,2026-11-03,rejected,claude-2026-11-06,"g1 S136: -62%, sister duplicate"
+bc1560822d702d34,2026-10-09,approved,claude-2026-11-06,g1 S137: cash flow misparsed; land and building included
+e69fd3c6984ee0b4,2026-10-20,rejected,claude-2026-11-06,g1 S138: flip pattern
+9f4fe6ae408578e8,2026-10-06,rejected,claude-2026-11-06,g1 S139: title figure unresolved
+bd33a5fbdd101f3c,2026-09-05,rejected,claude-2026-11-06,g1 S140: +186% flip
+71e2c11e7bef47b6,2026-08-29,rejected,claude-2026-11-06,g1 S141: +102%
+6bcb8327d263564c,2026-09-24,rejected,claude-2026-11-06,g1 S142: price equals revenue
+d68b55160176fa6d,2026-10-13,rejected,claude-2026-11-06,g1 S143: price equals revenue
+4e083b34c22a4573,2026-09-27,rejected,claude-2026-11-06,g1 S144: price equals revenue
+c5f6d1d1fc7d87ff,2026-08-29,rejected,claude-2026-11-06,g1 S145: new price equals cash flow
+511199714e6a01f6,2026-09-25,rejected,claude-2026-11-06,g1 S146: +333%
+71d8fd850d6eeb88,2026-09-25,approved,claude-2026-11-06,g1 S147: cash flow copies price on every row; real estate included
+45ef9fc2aaeaafb3,2026-09-08,rejected,claude-2026-11-06,g1 S148: $80M at 32x cash flow
+a6ae24d5e1d79595,2026-09-28,rejected,claude-2026-11-06,g1 S149: prior price was cash flow
+81bb9b733366b6ec,2026-09-25,rejected,claude-2026-11-06,g1 S150: prior price was cash flow
+1e24a2b789513dd7,2026-09-25,rejected,claude-2026-11-06,g1 S151: prior price was cash flow
+eec84e6def0b0ff6,2026-09-25,rejected,claude-2026-11-06,g1 S152: prior price was cash flow
+0c7a6980df413183,2026-09-25,rejected,claude-2026-11-06,g1 S153: same broker batch as 149-154
+cc24acdd7acdb661,2026-09-25,rejected,claude-2026-11-06,g1 S154: prior price was cash flow
+6f31124b02a34ed7,2026-09-25,rejected,claude-2026-11-06,g1 S155: prior price garbage
+5b74598d3a614a4a,2026-09-25,rejected,claude-2026-11-06,g1 S156: prior price not the asking price
+f23e15035f66dd88,2026-10-31,approved,claude-2026-11-06,g1 S157: revenue misparsed (/1000)
+0793bacf7066e4d2,2026-11-04,rejected,claude-2026-11-06,g1 S158: -76%
+70c6e92181e0888d,2026-06-27,rejected,claude-2026-11-06,"g1 S159: price and cash flow moved by the same factor, one-day prior"
+2c69d9533d1f5cbd,2026-04-16,rejected,claude-2026-11-06,g1 S160: price equals revenue
+58c8aa1638191650,2026-04-16,rejected,claude-2026-11-06,g1 S161: price equals revenue
+f0be17693d9a5c3f,2026-05-26,rejected,claude-2026-11-06,g1 S162: price equals revenue
+d53b991533aa8494,2026-08-29,rejected,claude-2026-11-06,g1 S163: price equals revenue
+423a89884196eaaf,2026-06-15,rejected,claude-2026-11-06,g1 S164: price equals revenue
+423a89884196eaaf,2026-06-24,rejected,claude-2026-11-06,g1 S165: price equals revenue
+807df395bc05d124,2026-04-16,rejected,claude-2026-11-06,g1 S166: price equals revenue
+6fbc0851b1ee57e5,2026-05-15,rejected,claude-2026-11-06,g1 S167: price equals revenue
+9edde37cc583dcc0,2026-04-16,rejected,claude-2026-11-06,g1 S168: price equals revenue
+9edde37cc583dcc0,2026-06-22,rejected,claude-2026-11-06,g1 S169: price equals revenue
+4d738c86b36758cc,2026-08-29,rejected,claude-2026-11-06,g1 S170: price equals revenue
+280003204dbdac75,2026-08-29,rejected,claude-2026-11-06,g1 S171: +122%
+89d885fc3778ece7,2026-10-20,rejected,claude-2026-11-06,g1 S172: non-round price at 15x
+2aa074d15365c9cd,2026-10-08,rejected,claude-2026-11-06,g1 S173: price equals revenue
+a263399a16c10ce4,2026-10-08,approved,claude-2026-11-06,g1 S174: revenue misparsed
+19be1f651eec7d80,2026-06-13,rejected,claude-2026-11-06,g1 S175: title changed
+c197c9ee5d683869,2026-05-15,rejected,claude-2026-11-06,g1 S176: financials restated with price
+c5d47a729199f671,2026-09-08,rejected,claude-2026-11-06,g1 S177: odd prior value
+8830d02efb51873a,2026-09-08,rejected,claude-2026-11-06,g1 S178: odd prior value
+2432d34b16a03bb2,2026-09-08,rejected,claude-2026-11-06,g1 S179: odd prior value
+dcc8f04962d37fd4,2026-09-08,rejected,claude-2026-11-06,g1 S180: odd prior value
+2dbf3d9afebd6e28,2026-05-15,rejected,claude-2026-11-06,g1 S181: prior price equals cash flow
+e9d637d1c28f3dfc,2026-08-29,rejected,claude-2026-11-06,g1 S182: title figure; garbage cash flow
+a0c9a7351401640a,2026-09-08,rejected,claude-2026-11-06,g1 S183: odd prior value
+584b9f92533b627b,2026-09-08,rejected,claude-2026-11-06,g1 S184: odd prior value
+7e0c161d89f8a14f,2026-09-08,rejected,claude-2026-11-06,g1 S185: odd prior value
+6725c2962af120e9,2026-09-08,rejected,claude-2026-11-06,g1 S186: odd prior value
+ddbdd2b706eec291,2026-09-08,rejected,claude-2026-11-06,g1 S187: odd prior value
+ddbdd2b706eec291,2026-09-16,approved,claude-2026-11-06,g1 S188: cash flow copies price; same id and title
+23138a0c44d0f842,2026-10-08,approved,claude-2026-11-06,"g2 H1: shared value is a common round price; specific title, long runs"
+fee633c88bedfcc6,2026-10-17,approved,claude-2026-11-06,g2 H2: shared with 2 unrelated listings; round price
+adae96e989cd1525,2026-09-08,rejected,claude-2026-11-06,g2 H3: shared with an index page ('BusinessesFor Sale')
+0deaa9aaddc08927,2026-07-09,rejected,claude-2026-11-06,g2 H4: image URL
+d5e1e79c2db44e02,2026-06-11,rejected,claude-2026-11-06,g2 H5: domain-wide shared value (34 urls)
+d5e1e79c2db44e02,2026-06-12,rejected,claude-2026-11-06,g2 H6: domain-wide shared value
+7ee8623f8bb31005,2026-06-10,rejected,claude-2026-11-06,g2 H7: domain-wide shared value
+8fd2fa35efe5aa1d,2026-06-11,rejected,claude-2026-11-06,g2 H8: domain-wide shared value
+1a078c960a2120bd,2026-10-10,rejected,claude-2026-11-06,g2 H9: domain-wide shared value (18 urls)
+6326a6110f55fa1c,2026-10-06,approved,claude-2026-11-06,g2 H10: shared with 1 sister listing
+fe5bcabfe713a294,2026-10-06,rejected,claude-2026-11-06,g2 H11: +43% raise uncorroborated
+91b124abef9c5b2b,2026-10-27,approved,claude-2026-11-06,g2 H12: shared with 2 unrelated listings
+c71aa606985c75e0,2026-10-16,approved,claude-2026-11-06,g2 H13: shared with 3 unrelated listings; title specific
+ddae490631db5631,2026-11-06,approved,claude-2026-11-06,g2 H14: shared with 1 sister franchise
+d9424ee67afb7715,2026-10-27,approved,claude-2026-11-06,g2 H15: shared with 2 unrelated; 94-day prior run
+ba1efe9fbd3246bf,2026-10-27,approved,claude-2026-11-06,g2 H16: shared with unrelated listings; 88-day prior run
+85c36725f94c3fa4,2026-10-26,rejected,claude-2026-11-06,g2 H17: shared with a blank-title row; one-day prior
+fbbf393906ec9c3f,2026-06-24,rejected,claude-2026-11-06,g2 H18: likely property sale
+03222d9cbfa30cd5,2026-06-24,rejected,claude-2026-11-06,"g2 H19: real estate, not a business"
+3f1c1109e4bd6319,2026-09-05,rejected,claude-2026-11-06,g2 H20: ninbb inflated values
+6965005867828494,2026-09-23,rejected,claude-2026-11-06,g2 H21: $4M shared with a known-bad value
+53dc2ce956afde7b,2026-09-02,rejected,claude-2026-11-06,g2 H22: single observations each side
+ca587b43d12fec31,2026-09-23,approved,claude-2026-11-06,g2 H23: shared with 2 unrelated
+378f6ac5dc5407b3,2026-09-08,rejected,claude-2026-11-06,g2 H24: domain-wide shared value (16 urls)
+ad9d36a5ee023e19,2026-10-27,approved,claude-2026-11-06,g2 H25: shared with 2 unrelated; specific title
+9ff39d894e391c64,2026-10-29,approved,claude-2026-11-06,g2 H26: shared with unrelated; unique to this site
+65f498ea39814f8f,2026-10-30,rejected,claude-2026-11-06,g2 H27: sister-site duplicate
+2a57c25ebfc8dd89,2026-10-26,rejected,claude-2026-11-06,g2 H28: sister-site duplicate; swapped fields
+d420af3a82d43d1a,2026-10-11,approved,claude-2026-11-06,g2 H29: shared with unrelated; unique to this site
+8b8205e951f89bfd,2026-10-11,approved,claude-2026-11-06,g2 H30: shared with unrelated; unique to this site
+d731f8835abff881,2026-10-10,rejected,claude-2026-11-06,"g2 H31: single prior observation, -47%"
+83bc45dd08ecd98c,2026-10-18,rejected,claude-2026-11-06,g2 H32: sister-site duplicate
+8253861151b87945,2026-10-29,approved,claude-2026-11-06,g2 H33: shared with 2 unrelated
+7aac06822be6c58d,2026-11-04,approved,claude-2026-11-06,g2 H34: shared with 2 unrelated
+f66253ca9610f5b5,2026-06-06,rejected,claude-2026-11-06,g2 H35: shared with index-card fragments
+1304d9fbf4c921e0,2026-06-19,rejected,claude-2026-11-06,g2 H36: shared with index-card fragments
+8307c271212e0503,2026-09-27,rejected,claude-2026-11-06,g2 H37: shared with index-card fragments
+81b3aaa50342ea5e,2026-10-09,rejected,claude-2026-11-06,g2 H38: shared with fragments; single after observation
+fe983a399f76384e,2026-09-27,rejected,claude-2026-11-06,g2 H39: shared with index-card fragments
+48d0102eaa343840,2026-07-01,approved,claude-2026-11-06,"g2 H40: shared with real, unrelated titles"
+f1420088d76f0fd1,2026-05-15,approved,claude-2026-11-06,g2 H41: shared with unrelated
+f1420088d76f0fd1,2026-10-16,approved,claude-2026-11-06,g2 H42: shared with unrelated
+64eb627707fdace2,2026-08-29,approved,claude-2026-11-06,g2 H43: shared with unrelated
+bf2942e0cb70d232,2026-10-24,approved,claude-2026-11-06,g2 H44: shared with 1 unrelated
+2c980867664e03e0,2026-10-30,approved,claude-2026-11-06,g2 H45: shared with unrelated; kept over restaurantforsales duplicate
+257e86b6567dd2bc,2026-10-26,approved,claude-2026-11-06,g2 H46: shared with unrelated; kept over restaurantforsales duplicate
+55c620ed69f9bb02,2026-10-18,approved,claude-2026-11-06,g2 H47: shared with unrelated; kept over restaurantforsales duplicate
+c75aadd197f4b288,2026-10-08,approved,claude-2026-11-06,g2 H48: shared with unrelated
+e19cf174a6e52a9a,2026-10-09,approved,claude-2026-11-06,g2 H49: shared with unrelated
+a178345da4509ad1,2026-09-02,approved,claude-2026-11-06,g2 H50: small practices share price points
+8ca6902b1794b403,2026-09-02,approved,claude-2026-11-06,g2 H51: small practices share price points
+bdffe1b7675133f6,2026-09-02,approved,claude-2026-11-06,g2 H52: small practices share price points
+bcdbff5732fb4772,2026-11-04,approved,claude-2026-11-06,g2 H53: shared with 2 unrelated
+96e7a730e32440fa,2026-09-25,rejected,claude-2026-11-06,g2 H54: blog posts share the value
+3300f407c3e694e8,2026-09-25,rejected,claude-2026-11-06,g2 H55: blog posts share the value
+40ecfe8f01e84bf1,2026-09-25,rejected,claude-2026-11-06,g2 H56: blog posts share the value
+1d9f50b5fbdcd046,2026-09-25,rejected,claude-2026-11-06,g2 H57: blog posts share the value
+1c3be67c3468c07a,2026-09-25,rejected,claude-2026-11-06,g2 H58: blog post
+1d31abdecae0126b,2026-09-25,rejected,claude-2026-11-06,g2 H59: blog posts share the value
+2e4a2191d0d13bac,2026-09-25,rejected,claude-2026-11-06,g2 H60: blog posts share the value
+f7ef0d56db8070b8,2026-09-25,rejected,claude-2026-11-06,g2 H61: blog posts share the value
+2052d6889a3f202e,2026-09-25,rejected,claude-2026-11-06,g2 H62: blog posts share the value
+bf9a72a6aff2a216,2026-09-25,rejected,claude-2026-11-06,g2 H63: blog posts share the value
+5a9258a982cde9d8,2026-06-19,approved,claude-2026-11-06,g2 H64: shared with 2 unrelated

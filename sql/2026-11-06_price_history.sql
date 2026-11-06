@@ -86,7 +86,7 @@ create table if not exists private.price_change (
   pct_change        numeric not null,
   prev_source       text not null,                     -- file@commit#row
   next_source       text not null,
-  screen_result     text not null check (screen_result in ('pass','anomaly','identity')),
+  screen_result     text not null check (screen_result in ('pass','review','hard')),  -- rules v6 tiers
   screen_reasons    text not null default '',
   rules_version     text not null,
   review_status     text not null check (review_status in ('approved','rejected','pending','not_eligible')),
@@ -175,14 +175,16 @@ begin
   select p.identity_id, i.listing_id, p.prev_price, p.prev_first_seen, p.prev_last_seen, p.next_price,
          p.next_first_seen, p.next_last_seen, round((p.next_price - p.prev_price) / p.prev_price * 100, 1),
          p.prev_source, p.next_source,
-         case when r.reasons = '' then 'pass' else 'anomaly' end, r.reasons, 'crawl.2026-11-06.v1',
-         case when r.reasons = '' then 'pending' else 'not_eligible' end, 'crawl'
+         case when r.hard <> '' then 'hard' when r.reasons <> '' then 'review' else 'pass' end,
+         concat_ws('; ', nullif(r.hard, ''), nullif(r.reasons, '')), 'crawl.2026-11-06.v6',
+         case when r.hard <> '' then 'not_eligible' else 'pending' end, 'crawl'
   from pairs p
   join private.price_identity i on i.identity_id = p.identity_id
   cross join lateral (select concat_ws('; ',
       case when p.next_price / p.prev_price < 0.2 or p.next_price / p.prev_price > 5 then 'ratio outside 0.2-5x' end,
       case when greatest(p.prev_price, p.next_price) >= 1e8 then 'placeholder or implausible value' end,
-      case when p.flip then 'price returns to an earlier value (flip-flop)' end,
+      case when p.flip then 'price returns to an earlier value (flip-flop)' end) as hard,
+    concat_ws('; ',
       case when abs(p.next_price - p.prev_price) / p.prev_price < 0.005 then 'change under 0.5%' end,
       case when abs(p.next_price - p.prev_price) / p.prev_price > 0.6 then 'change over 60% (needs external evidence)' end,
       case when p.next_price in (p.first_cf, p.first_rev) then 'price equals revenue or cash flow on the same row' end
@@ -195,7 +197,7 @@ begin
   return v_rows;
 end $$;
 
--- 7. What would be public: approved after review, passed the screen, and the
+-- 7. What would be public: approved after review, not a hard screen failure, and the
 --    listing has a public page (in the registry) and is not quarantined.
 create or replace view private.v_price_history_public as
 select l.listing_number, c.prev_price, c.prev_last_seen, c.next_price, c.next_first_seen,
@@ -204,8 +206,9 @@ from private.price_change c
 join public.listings_direct d on d.id = c.listing_id
 join public.listings l on l.source = 'broker_direct'
  and l.listing_number = 900000000 + (('x' || substr(md5(c.listing_id), 1, 7))::bit(28)::bigint)
-where c.review_status = 'approved' and c.screen_result = 'pass'
-  and d.status not like 'quarantined%' and d.status <> 'parse_error';
+where c.review_status = 'approved' and c.screen_result in ('pass', 'review')
+  and d.status not like 'quarantined%' and d.status <> 'parse_error'
+  and not (d.status = 'active' and d.published is not true);   -- publication restriction: active rows must have passed the publish gate
 
 -- 8. Backfill loader, called by scripts/price_history_load.py with the service key.
 --    In public only because PostgREST serves only that schema; EXECUTE is

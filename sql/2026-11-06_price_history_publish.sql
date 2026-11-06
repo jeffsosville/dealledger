@@ -1,5 +1,5 @@
 -- 2026-11-06: publish approved historical price changes. SEPARATE APPROVAL REQUIRED.
--- Exposes only private.v_price_history_public (approved + passed screen + published
+-- Exposes only private.v_price_history_public (approved + not a hard screen failure + public
 -- listing), as public.price_history, read-only, to anon/authenticated.
 -- Rollback: drop view public.price_history (also in _rollback.sql).
 
