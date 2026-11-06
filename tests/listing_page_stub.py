@@ -43,13 +43,24 @@ BROKER_DIRECTORY = [
     {"slug": "examplebroker-test", "firm_name": "Example Broker", "domain": "examplebroker.test"},
 ]
 
+# Reviewed price changes for the active fixture, newest first (as the page orders them).
+PRICE_HISTORY = [
+    {"listing_number": ACTIVE, "prev_price": 425000, "prev_last_seen": "2026-06-10",
+     "next_price": 395000, "next_first_seen": "2026-06-14", "pct_change": -7.1, "window_days": 4},
+    {"listing_number": ACTIVE, "prev_price": 450000, "prev_last_seen": "2025-12-30",
+     "next_price": 425000, "next_first_seen": "2026-01-03", "pct_change": -5.6, "window_days": 4},
+]
+
 TABLES = {
     "listings": LISTINGS,
+    "price_history": PRICE_HISTORY,
     "mv_listings_page": MV_LISTINGS_PAGE,
     "broker_directory": BROKER_DIRECTORY,
 }
 # Tables the anon key is refused on in production.
 DENIED = {"listing_history", "bizquest_listings"}
+# price_history errors for this listing number, as if the view were not published yet.
+FAIL_FOR = {("price_history", RELISTED)}
 
 requests_seen = []  # (table, query) for assertions
 
@@ -78,6 +89,8 @@ class Handler(BaseHTTPRequestHandler):
         q = urllib.parse.parse_qsl(parsed.query)
         requests_seen.append((table, parsed.query))
         if table in DENIED:
+            return table, None
+        if any(t == table and f"eq.{n}" in parsed.query for t, n in FAIL_FOR):
             return table, None
         rows = TABLES.get(table, [])
         for k, v in q:

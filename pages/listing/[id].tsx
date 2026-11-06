@@ -36,8 +36,20 @@ type Listing = {
   dom_basis?: string | null;
 };
 
+// One broker-direct price change, as an observation window. The exact day of the
+// change is unknown: it happened after prev_last_seen and on or before next_first_seen.
+type PriceChange = {
+  prev_price: number;
+  prev_last_seen: string;
+  next_price: number;
+  next_first_seen: string;
+  pct_change: number;
+  window_days: number;
+};
+
 type PageProps = {
   listing: Listing | null;
+  priceChanges: PriceChange[];
   registryBroker: { slug: string; name: string } | null;
   domPercentile: number | null;
 };
@@ -121,10 +133,33 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     }
   }
 
+  // Reviewed historical price changes (public.price_history: approved, broker-direct only).
+  // Absent or failing -> no price-change section; the page never infers one.
+  let priceChanges: PriceChange[] = [];
+  {
+    const { data: ph, error: phErr } = await sb
+      .from('price_history')
+      .select('prev_price, prev_last_seen, next_price, next_first_seen, pct_change, window_days')
+      .eq('listing_number', listingNumber)
+      .order('next_first_seen', { ascending: false });
+    if (!phErr && Array.isArray(ph)) {
+      priceChanges = ph
+        .map((c: any) => ({
+          prev_price: Number(c.prev_price),
+          prev_last_seen: String(c.prev_last_seen).slice(0, 10),
+          next_price: Number(c.next_price),
+          next_first_seen: String(c.next_first_seen).slice(0, 10),
+          pct_change: Number(c.pct_change),
+          window_days: Number(c.window_days),
+        }))
+        .filter((c) => c.prev_price > 0 && c.next_price > 0 && c.next_first_seen > c.prev_last_seen);
+    }
+  }
+
   console.log('[listing] === SUCCESS ===');
 
   return {
-    props: { listing, registryBroker, domPercentile },
+    props: { listing, priceChanges, registryBroker, domPercentile },
     revalidate: 60 * 60 * 6,
   };
 };
@@ -151,9 +186,24 @@ const fmtMonthYear = (s: string | null | undefined) => {
 
 const padDLId = (id: number) => `DL-${String(id).padStart(8, '0')}`;
 
+// 'YYYY-MM-DD' -> 'Jun 14, 2026', read as a calendar date (no time-zone shift).
+const fmtDay = (iso: string, withYear = true) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', ...(withYear ? { year: 'numeric' } : {}), timeZone: 'UTC',
+  });
+
+// The observation window of a change: 'Jun 10 – Jun 14, 2026'.
+const fmtWindow = (from: string, to: string) =>
+  from.slice(0, 4) === to.slice(0, 4)
+    ? `${fmtDay(from, false)} – ${fmtDay(to)}`
+    : `${fmtDay(from)} – ${fmtDay(to)}`;
+
+const fmtPct = (p: number) => `${p < 0 ? '−' : '+'}${Math.abs(p).toFixed(1)}%`;
+
 // ─── PAGE ──────────────────────────────────────────────────────────────────
 export default function ListingPage({
   listing,
+  priceChanges,
   registryBroker,
   domPercentile,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -174,12 +224,23 @@ export default function ListingPage({
     listing.days_on_market != null &&
     listing.days_on_market > INDUSTRY_MEDIAN_DOM * 1.5;
 
-  type ChangeLogEntry = { date: string; description: string };
+  type ChangeLogEntry = { date: string; description: string; sortKey: string };
   const changeLog: ChangeLogEntry[] = [];
+
+  const changes = priceChanges || [];
+  const latestChange = changes.length > 0 ? changes[0] : null;
+  changes.forEach((c) => {
+    changeLog.push({
+      date: fmtWindow(c.prev_last_seen, c.next_first_seen),
+      description: `Asking price ${c.next_price < c.prev_price ? 'reduced' : 'raised'} from ${fmtPriceFull(c.prev_price)} to ${fmtPriceFull(c.next_price)} (${fmtPct(c.pct_change)})`,
+      sortKey: c.next_first_seen,
+    });
+  });
 
   const isFloor = listing.dom_basis === 'floor';
   if (listing.estimated_listed_date) {
     changeLog.push({
+      sortKey: listing.estimated_listed_date.slice(0, 10),
       date: listing.estimated_listed_date.slice(0, 10),
       description: isFloor
         ? 'Already listed when we started tracking this broker — listed on or before this date'
@@ -188,6 +249,7 @@ export default function ListingPage({
         : 'Estimated original listing date',
     });
   }
+  changeLog.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
 
   const today = new Date().toLocaleDateString('en-US', {
     month: 'long',
@@ -376,7 +438,13 @@ export default function ListingPage({
             <Stat
               label="Asking Price"
               value={fmtPrice(currentPrice)}
-              sub={currentPrice == null ? 'Not disclosed' : 'Latest recorded'}
+              sub={
+                currentPrice == null
+                  ? 'Not disclosed'
+                  : latestChange
+                  ? `${latestChange.next_price < latestChange.prev_price ? 'Reduced' : 'Raised'} ${Math.abs(latestChange.pct_change).toFixed(1)}% · ${fmtWindow(latestChange.prev_last_seen, latestChange.next_first_seen)}`
+                  : 'Latest recorded'
+              }
             />
             <Stat
               label="Days on Market"
@@ -403,6 +471,27 @@ export default function ListingPage({
                 listedDate={listing.estimated_listed_date}
                 floor={isFloor}
               />
+            </Section>
+          )}
+
+          {changes.length > 0 && (
+            <Section title="PRICE CHANGES" subtitle="From the broker&rsquo;s own listing">
+              <div className="changelog">
+                {changes.map((c, i) => (
+                  <div key={i} className="changelog-row">
+                    <div className="changelog-date">{fmtWindow(c.prev_last_seen, c.next_first_seen)}</div>
+                    <div className="changelog-desc">
+                      {fmtPriceFull(c.prev_price)} → {fmtPriceFull(c.next_price)}{' '}
+                      <strong>{fmtPct(c.pct_change)}</strong>
+                      <br />
+                      <span className="pc-note">
+                        Last seen at {fmtPriceFull(c.prev_price)} on {fmtDay(c.prev_last_seen)}; first seen at{' '}
+                        {fmtPriceFull(c.next_price)} on {fmtDay(c.next_first_seen)}.
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Section>
           )}
 
@@ -444,11 +533,20 @@ export default function ListingPage({
 
           <Section title="METHODOLOGY" subtitle="What we observe">
             <div className="prose">
-              <p>
-                DealLedger displays the latest recorded asking price from the
-                broker&rsquo;s listing. Historical price changes are not
-                currently tracked.
-              </p>
+              {changes.length > 0 ? (
+                <p>
+                  DealLedger records the asking price each time it observes the
+                  broker&rsquo;s listing. A price change is shown as a window:
+                  after the last observation at the old price and on or before the
+                  first observation at the new one. The exact day isn&rsquo;t known.
+                </p>
+              ) : (
+                <p>
+                  DealLedger displays the latest recorded asking price from the
+                  broker&rsquo;s listing. Historical price changes are not
+                  currently tracked.
+                </p>
+              )}
               {listing.quality_tier && listing.quality_tier !== 'Verified' && (
                 <p>
                   Listing quality:{' '}
@@ -579,6 +677,10 @@ export default function ListingPage({
         }
         .changelog-desc { color: var(--ink-soft); }
 
+        .pc-note {
+          font-size: 12px;
+          color: var(--ink-mute);
+        }
         .broker-card {
           background: var(--bg-card);
           border: 1px solid var(--rule);

@@ -14,13 +14,19 @@ FORBIDDEN = {
     r"\bdateModified\s*:": "no reliable modification timestamp yet",
     r"Times Listed": "removed: not backed by data",
     r"label:\s*'Today'": "invented price-change date",
-    r"Reduced \$\{": "price reduction badge with no dated history",
-    r"PriceChart|PRICE HISTORY": "price history is not tracked",
+    r"toISOString": "dates must come from observations, not the clock",
+    r"(reduced|raised|changed) on \{": "a change is a window, never a single date",
+    r"PriceChart": "old marketplace-snapshot chart",
 }
 
 METHODOLOGY = (
     "DealLedger displays the latest recorded asking price from the broker&rsquo;s listing. "
     "Historical price changes are not currently tracked."
+)
+METHODOLOGY_WITH_HISTORY = (
+    "DealLedger records the asking price each time it observes the broker&rsquo;s listing. "
+    "A price change is shown as a window: after the last observation at the old price and on or "
+    "before the first observation at the new one. The exact day isn&rsquo;t known."
 )
 
 
@@ -37,7 +43,16 @@ def test_no_forbidden_patterns():
 
 def test_methodology_copy():
     flat = re.sub(r"\s+", " ", _source())
-    assert METHODOLOGY in flat, "methodology copy changed or missing"
+    assert METHODOLOGY in flat, "methodology copy (no history) changed or missing"
+    assert METHODOLOGY_WITH_HISTORY in flat, "methodology copy (with history) changed or missing"
+
+
+def test_price_history_source():
+    src = _source()
+    # Reviewed public view only; never the private tables or raw evidence.
+    assert ".from('price_history')" in src
+    for bad in ("price_change", "price_evidence", "price_identity", "v_price_history_public"):
+        assert f".from('{bad}')" not in src, f"page reads {bad}"
 
 
 def test_registry_and_mv_kept():
@@ -52,4 +67,5 @@ if __name__ == "__main__":
     test_no_forbidden_patterns()
     test_methodology_copy()
     test_registry_and_mv_kept()
+    test_price_history_source()
     print("listing page source: ok")

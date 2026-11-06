@@ -1,0 +1,189 @@
+listing_id,next_first_seen,verdict,reviewer,ref
+003e26291c0d7e46,2026-10-06,approved,claude-2026-11-06,remaining R61
+005d146a85d9e8e5,2026-11-05,approved,claude-2026-11-06,sample2 #10
+007ecd34618e1b1c,2026-05-15,approved,claude-2026-11-06,remaining R12
+00bc808079af6838,2026-10-21,approved,claude-2026-11-06,sample2 #1
+04924f1c9bf7ca2d,2026-11-03,approved,claude-2026-11-06,remaining R96
+049550b87092c3bb,2026-06-09,approved,claude-2026-11-06,remaining R25
+05a2fca9badad214,2026-09-26,rejected,claude-2026-11-06,batch3 P20: quietlight: revenue changed with price
+05a2fca9badad214,2026-11-03,rejected,claude-2026-11-06,batch3 P21: quietlight
+05f2c87d0852028b,2026-10-17,approved,claude-2026-11-06,remaining R34
+0abdb322b0cf1e14,2026-11-05,approved,claude-2026-11-06,batch3 P14
+0b9acff467b6a01f,2026-09-27,approved,claude-2026-11-06,batch3 P2
+0c0e3daa03f9313f,2026-11-01,approved,claude-2026-11-06,remaining R77
+0ce0cedf845550ef,2026-10-27,approved,claude-2026-11-06,sample1 #3
+0e08eff743b418a9,2026-09-19,approved,claude-2026-11-06,remaining R67
+0e1fd505e28d3170,2026-10-20,approved,claude-2026-11-06,batch3 P33
+0eb4a39191f15c8d,2026-10-23,approved,claude-2026-11-06,remaining R89
+1477d4c559530367,2026-09-02,approved,claude-2026-11-06,sample2 #5
+1564566b442c5414,2026-05-29,approved,claude-2026-11-06,remaining R19
+15645d0939f84f25,2026-10-18,approved,claude-2026-11-06,sample2 #34
+172ea04022afe514,2026-09-25,approved,claude-2026-11-06,sample2 #6
+1be0c484a8128418,2026-10-30,approved,claude-2026-11-06,remaining R60
+1cdaf40c8c9b9c8b,2026-07-01,approved,claude-2026-11-06,sample2 #22
+1f20379fb30beb91,2026-09-26,approved,claude-2026-11-06,sample1 #24
+20f8779a36478cd3,2026-09-02,approved,claude-2026-11-06,sample2 #31
+2238144437eb1df2,2026-11-04,approved,claude-2026-11-06,sample1 #2
+259c3a7f0ac90c7d,2026-08-29,approved,claude-2026-11-06,sample2 #2
+27ada244005f24d7,2026-10-20,approved,claude-2026-11-06,remaining R36
+28e9c9a21b8efcec,2026-08-29,approved,claude-2026-11-06,batch3 P10
+2a45967d5af61a54,2026-07-02,approved,claude-2026-11-06,sample2 #8
+2a9e83f9d6f0504a,2026-09-25,approved,claude-2026-11-06,remaining R37
+2afe300bbe48dfb5,2026-09-26,rejected,claude-2026-11-06,batch3 P28: flip within 2 weeks
+2afe300bbe48dfb5,2026-10-03,rejected,claude-2026-11-06,batch3 P29: flip within 2 weeks
+2bfe36d6d86c8ef0,2026-10-23,approved,claude-2026-11-06,remaining R49
+2c6b32ba26e31008,2026-10-17,approved,claude-2026-11-06,sample2 #14
+2d9c2535d1b54a2d,2026-10-27,approved,claude-2026-11-06,batch3 P41
+2db198937210b661,2026-10-28,approved,claude-2026-11-06,sample2 #35
+2fc09388ade692c8,2026-11-04,rejected,claude-2026-11-06,batch3 P37: duplicate of P32 on sister site
+302ae2068904bfff,2026-08-29,approved,claude-2026-11-06,batch3 P15
+32506dedf65ab9b1,2026-10-26,approved,claude-2026-11-06,batch3 P7
+32fba378634c60c2,2026-06-10,approved,claude-2026-11-06,remaining R7
+35e46c3046bed5b7,2026-09-23,approved,claude-2026-11-06,sample2 #4
+36456d64f201c126,2026-10-08,approved,claude-2026-11-06,remaining R92
+3885a668eee70fdc,2026-10-29,approved,claude-2026-11-06,remaining R53
+3cdf023543d92721,2026-10-15,approved,claude-2026-11-06,remaining R87
+3ed948f23b5ea163,2026-11-06,approved,claude-2026-11-06,sample2 #26
+402319840624337a,2026-09-25,rejected,claude-2026-11-06,remaining R70
+404e1fb1bb890f04,2026-10-26,approved,claude-2026-11-06,batch3 P8
+40918e650b45311b,2026-10-17,approved,claude-2026-11-06,remaining R84
+45552b7dcffa6fa1,2026-05-16,approved,claude-2026-11-06,sample1 #21
+45729b8e3cedfb42,2026-10-15,approved,claude-2026-11-06,sample2 #37
+459862862fc0ad8d,2026-06-03,approved,claude-2026-11-06,batch3 P34
+4612c40c237716f5,2026-09-26,rejected,claude-2026-11-06,batch3 P26: quietlight: revenue changed
+4655753753e4a888,2026-05-19,approved,claude-2026-11-06,sample2 #18
+4655753753e4a888,2026-10-23,approved,claude-2026-11-06,sample2 #18
+479c41b788ea0af0,2026-10-27,rejected,claude-2026-11-06,remaining R23
+49c62b97769c23f3,2026-09-25,approved,claude-2026-11-06,remaining R41
+5167874dede39e7c,2026-05-16,rejected,claude-2026-11-06,remaining R5
+5461846d435247a0,2026-09-08,rejected,claude-2026-11-06,remaining R54
+554ea6a610661eeb,2026-10-14,approved,claude-2026-11-06,remaining R73
+55aca51788b76894,2026-10-09,approved,claude-2026-11-06,sample1 #8
+55df54379b1fcef4,2026-10-27,approved,claude-2026-11-06,sample2 #9
+55e287b24df70c0b,2026-10-27,approved,claude-2026-11-06,remaining R71
+59b0b280586cf6a9,2026-06-11,rejected,claude-2026-11-06,remaining R10
+5a102b017c84c9e8,2026-10-31,approved,claude-2026-11-06,remaining R75
+5cb18a42d241ffbb,2026-10-08,approved,claude-2026-11-06,remaining R85
+607e282c4eb334fd,2026-10-09,approved,claude-2026-11-06,remaining R65
+6326a6110f55fa1c,2026-09-25,approved,claude-2026-11-06,remaining R42
+6375a2100fc7bd7c,2026-04-22,approved,claude-2026-11-06,remaining R15
+642d114161527d68,2026-10-16,rejected,claude-2026-11-06,remaining R78
+6b35d2e96da57bc8,2026-10-17,approved,claude-2026-11-06,remaining R4
+6ba3d1c2d41d5aad,2026-09-27,rejected,claude-2026-11-06,remaining R32
+6cf4859e157f32ef,2026-10-20,approved,claude-2026-11-06,remaining R50
+6dae88c6d062fc1d,2026-06-06,approved,claude-2026-11-06,remaining R21
+71a6b2d8811f7a19,2026-09-02,rejected,claude-2026-11-06,remaining R56
+71a6b2d8811f7a19,2026-10-22,approved,claude-2026-11-06,remaining R57
+748f24fa4f849e88,2026-08-23,approved,claude-2026-11-06,remaining R46
+74c25462d7ca108e,2026-10-16,approved,claude-2026-11-06,sample2 #19
+76fed5fc210a4b08,2026-10-20,approved,claude-2026-11-06,batch3 P19
+78afb25fe5e3776a,2026-05-28,approved,claude-2026-11-06,remaining R9
+79f7d15d04fd59b1,2026-09-11,approved,claude-2026-11-06,sample2 #39
+7ad13d09d4b02dbd,2026-11-06,approved,claude-2026-11-06,remaining R81
+7b1cc7fc0a81ddcf,2026-10-27,approved,claude-2026-11-06,sample2 #44
+7b6c0052af45df09,2026-05-26,approved,claude-2026-11-06,sample1 #20
+7f95dff64e67316d,2026-09-25,approved,claude-2026-11-06,remaining R40
+807497e74d2c1bb9,2026-08-29,approved,claude-2026-11-06,sample2 #43
+8105aa3855222924,2026-10-10,approved,claude-2026-11-06,remaining R28
+81495a5e7a0cbb05,2026-08-29,approved,claude-2026-11-06,remaining R27
+81b99ba1fb296e3a,2026-09-23,rejected,claude-2026-11-06,batch3 P40: 4x claim in title
+820ef362dbc28a69,2026-09-27,approved,claude-2026-11-06,batch3 P35
+84f6a85fd227ca9e,2026-08-29,approved,claude-2026-11-06,remaining R22
+852ddaae4fda108e,2026-10-15,approved,claude-2026-11-06,batch3 P39
+864abf56816a8fd1,2026-10-15,approved,claude-2026-11-06,batch3 P11
+8830d02efb51873a,2026-05-15,approved,claude-2026-11-06,sample1 #11
+8cc4d914a8470f8d,2026-09-27,approved,claude-2026-11-06,remaining R79
+8d5985b8453fb5de,2026-10-10,approved,claude-2026-11-06,sample2 #20
+8f17c97a8df6b206,2026-09-26,approved,claude-2026-11-06,batch3 P27
+8f274de92be9b4cf,2026-09-26,approved,claude-2026-11-06,remaining R83
+8fac77139ef57956,2026-02-21,rejected,claude-2026-11-06,remaining R1
+901cff7f0a826a34,2026-10-26,approved,claude-2026-11-06,batch3 P6
+91c98c7ce23e1ba4,2026-05-15,approved,claude-2026-11-06,sample2 #32
+9240562c3f0045dc,2026-09-23,approved,claude-2026-11-06,remaining R62
+92ca9eb9e97e4610,2026-10-06,approved,claude-2026-11-06,remaining R86
+93761a87dfe17490,2026-10-15,approved,claude-2026-11-06,batch3 P12
+93aac3fa58663c58,2026-09-29,approved,claude-2026-11-06,sample2 #45
+93bb7c7b16eb6913,2026-08-29,approved,claude-2026-11-06,remaining R8
+94689fd4dd59cc75,2026-09-26,rejected,claude-2026-11-06,batch3 P24: quietlight: revenue changed
+9777db66d02ba277,2026-05-21,rejected,claude-2026-11-06,remaining R6
+9cda8c258b8a6d4c,2026-07-09,approved,claude-2026-11-06,sample2 #23
+9e5f7433d2769d47,2026-09-05,rejected,claude-2026-11-06,remaining R26
+9fcd43ae952a8994,2026-09-02,rejected,claude-2026-11-06,"batch3 P18: location-only title, implausible cf"
+a03c0feb885b593a,2026-09-25,approved,claude-2026-11-06,remaining R38
+a2d2581b5da3981d,2026-09-05,approved,claude-2026-11-06,sample2 #16
+a2da923de1e26ab9,2026-05-22,approved,claude-2026-11-06,remaining R16
+a2df39f95e13b3bc,2026-11-04,rejected,claude-2026-11-06,batch3 P32: same listing on 2 domains; keep one (restaurantforsales vs sellingrestaurants)
+a38b84f23cb18df1,2026-11-06,approved,claude-2026-11-06,sample2 #11
+a4222056a3cdc8aa,2026-11-03,approved,claude-2026-11-06,remaining R80
+a45909950adfaab6,2026-10-13,approved,claude-2026-11-06,remaining R74
+a48051bc35611e1c,2026-08-29,approved,claude-2026-11-06,remaining R35
+a4955875914d3a96,2026-11-01,approved,claude-2026-11-06,remaining R72
+a6feb9e08e8f9f13,2026-10-26,rejected,claude-2026-11-06,remaining R98
+a8078e3b81f17647,2026-07-09,approved,claude-2026-11-06,sample2 #21
+a8df61f7d56666cc,2026-10-26,approved,claude-2026-11-06,remaining R33
+aabd29b5a6024d2a,2026-10-21,rejected,claude-2026-11-06,remaining R99
+abca27288536f296,2026-10-27,approved,claude-2026-11-06,sample2 #13
+acfb42bd457a0cbd,2026-10-21,approved,claude-2026-11-06,batch3 P38
+afbf244a96b77d95,2026-10-24,approved,claude-2026-11-06,remaining R76
+b0eeb2a4e458da91,2026-09-29,approved,claude-2026-11-06,batch3 P3
+b87ed1116154d309,2026-10-08,approved,claude-2026-11-06,remaining R91
+b90017ea51d5807f,2026-10-13,rejected,claude-2026-11-06,"batch3 P31: title changed, implausible cf"
+b9fde0fb55068b0b,2026-04-23,rejected,claude-2026-11-06,remaining R11
+ba0ecf1c9dcdd5dc,2026-10-29,approved,claude-2026-11-06,sample2 #29
+ba72a01fa47c89e1,2026-09-29,approved,claude-2026-11-06,remaining R69
+bb9db63bd1f24886,2026-05-15,approved,claude-2026-11-06,sample2 #30
+be5683dfe4cede21,2026-06-05,approved,claude-2026-11-06,remaining R20
+c234295fc736b371,2026-06-23,approved,claude-2026-11-06,remaining R18
+c2b15dbb102d8df1,2026-10-13,approved,claude-2026-11-06,sample2 #15
+c4eedfdfde1aff74,2026-09-16,approved,claude-2026-11-06,remaining R31
+c6f519bdf5191e32,2026-09-08,approved,claude-2026-11-06,remaining R68
+c7f564969b1d8bf2,2026-10-06,approved,claude-2026-11-06,remaining R44
+c85c3384aee9ab8a,2026-10-09,rejected,claude-2026-11-06,remaining R95
+cab2b4c69ed4fef0,2026-07-09,approved,claude-2026-11-06,remaining R2
+cafc6c45cff6ffe4,2026-10-22,approved,claude-2026-11-06,batch3 P1
+cb2903286f1e2bbc,2026-10-08,approved,claude-2026-11-06,remaining R59
+cc0854e8ccf6c834,2026-09-05,rejected,claude-2026-11-06,remaining R63
+cc0854e8ccf6c834,2026-09-23,approved,claude-2026-11-06,remaining R64
+cd28b397c234cbca,2026-06-23,rejected,claude-2026-11-06,remaining R30
+cf73587883c2f691,2026-10-24,approved,claude-2026-11-06,sample2 #36
+cfde79030d6a2600,2026-10-21,rejected,claude-2026-11-06,remaining R88
+d07a8ca3ebc24577,2026-08-29,approved,claude-2026-11-06,batch3 P5
+d28754dc5e4e5eb5,2026-09-25,approved,claude-2026-11-06,remaining R47
+d3ca22b88e7c8d2a,2026-10-06,approved,claude-2026-11-06,remaining R39
+d3e84866dc54b404,2026-11-01,approved,claude-2026-11-06,remaining R48
+d46a22706d8073ab,2026-10-09,approved,claude-2026-11-06,remaining R90
+d80624f6cb50a58a,2026-11-03,approved,claude-2026-11-06,remaining R51
+d899e9ccb54cf510,2026-10-10,approved,claude-2026-11-06,sample2 #28
+da02515c04d9a609,2026-09-26,rejected,claude-2026-11-06,batch3 P22: quietlight: revenue changed
+db36d5d50fa72022,2026-10-24,approved,claude-2026-11-06,batch3 P30
+dcc8f04962d37fd4,2026-06-11,approved,claude-2026-11-06,sample2 #7
+dd1d03275a169a3e,2026-09-05,approved,claude-2026-11-06,remaining R52
+de99daca380e5ade,2026-09-19,approved,claude-2026-11-06,remaining R66
+de9da6ae65eb2e3a,2026-10-03,approved,claude-2026-11-06,remaining R45
+dee58bc77a8c6e5f,2026-09-25,approved,claude-2026-11-06,remaining R43
+e0020f208f414c43,2026-10-10,approved,claude-2026-11-06,sample2 #17
+e0f45b5a325f3327,2026-04-21,approved,claude-2026-11-06,remaining R13
+e26bc905d0741271,2026-11-06,approved,claude-2026-11-06,remaining R3
+e4188e34698de9d8,2026-11-05,approved,claude-2026-11-06,batch3 P13
+e462742663c0ab23,2026-10-31,approved,claude-2026-11-06,batch3 P36
+e584fa1a34d0459d,2026-05-25,rejected,claude-2026-11-06,"batch3 P4: generic title, revenue changed"
+e5f6ba503176e5c5,2026-09-02,rejected,claude-2026-11-06,batch3 P17: location-only title
+e69fd3c6984ee0b4,2026-11-03,approved,claude-2026-11-06,sample1 #13
+e8f57379f17c213d,2026-10-24,approved,claude-2026-11-06,remaining R82
+e91f1f8a6891d6a3,2026-09-26,rejected,claude-2026-11-06,batch3 P23: quietlight: revenue changed
+e9ed7573df33fd65,2026-09-02,approved,claude-2026-11-06,remaining R14
+eacdf3dd9c9cd28d,2026-09-02,approved,claude-2026-11-06,batch3 P9
+ebb619ba5df4eaab,2026-10-15,approved,claude-2026-11-06,sample1 #16
+ec07eac70ef287e5,2026-10-27,approved,claude-2026-11-06,remaining R94
+ef55e359094167db,2026-10-18,approved,claude-2026-11-06,remaining R93
+f06569f958423bb4,2026-09-26,approved,claude-2026-11-06,sample2 #38
+f172a36def297bb5,2026-11-03,rejected,claude-2026-11-06,batch3 P25: quietlight: revenue changed
+f20c00423ae1dfe1,2026-09-05,approved,claude-2026-11-06,remaining R55
+f6d3f5f150777310,2026-10-26,rejected,claude-2026-11-06,remaining R29
+f9a13ada94556d79,2026-10-22,rejected,claude-2026-11-06,"batch3 P16: search page, generic title"
+fb0799e4ed9208c7,2026-10-20,approved,claude-2026-11-06,remaining R97
+fbed815e370d68f5,2026-09-26,approved,claude-2026-11-06,sample2 #3
+fc8533a5f501e7de,2026-06-25,approved,claude-2026-11-06,remaining R17
+fdff87f6c8324d73,2026-10-08,approved,claude-2026-11-06,remaining R58
+fe6f0be530758dd5,2026-06-13,approved,claude-2026-11-06,remaining R24
+fe895fce98e6f6e6,2026-10-14,approved,claude-2026-11-06,sample2 #12

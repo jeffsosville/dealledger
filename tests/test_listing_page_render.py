@@ -22,6 +22,10 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 NO_PROXY = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 METHODOLOGY = ("DealLedger displays the latest recorded asking price from the broker’s listing. "
                "Historical price changes are not currently tracked.")
+METHODOLOGY_WITH_HISTORY = ("DealLedger records the asking price each time it observes the broker’s listing. "
+                            "A price change is shown as a window: after the last observation at the old price "
+                            "and on or before the first observation at the new one. The exact day isn’t known.")
+SINGLE_DATE_CLAIM = re.compile(r"\b(reduced|raised|changed|cut|dropped)\s+on\b|\bon\s+\w{3}\s+\d{1,2},\s+\d{4}\s*:", re.I)
 
 
 def _free_port():
@@ -53,19 +57,25 @@ def _text(html):
     body = re.sub(r"<[^>]+>", " ", body)
     for a, b in (("&rsquo;", "’"), ("&#x27;", "'"), ("&amp;", "&"), ("&quot;", '"')):
         body = body.replace(a, b)
-    return re.sub(r"\s+", " ", body)
+    body = re.sub(r"\s+", " ", body)
+    return re.sub(r" ([;,.:)])", r"\1", body)   # React text-node boundaries become spaces
 
 
-def check_common(html, n):
+def check_common(html, n, history=False):
     text = _text(html)
     ld = _json_ld(html)
-    for bad in ("Times Listed", "PRICE HISTORY", "Reduced ", "Closes (12mo)", "Lifetime Sold",
-                "No price change observed"):
+    for bad in ("Times Listed", "PRICE HISTORY", "Closes (12mo)", "Lifetime Sold", "No price change observed", "Today"):
         assert bad not in text, f"{n}: page shows {bad!r}"
     assert "SoldOut" not in html, f"{n}: SoldOut in page"
     assert "dateModified" not in json.dumps(ld), f"{n}: dateModified in JSON-LD"
-    assert METHODOLOGY in text, f"{n}: methodology copy missing"
-    assert "Latest recorded" in text, f"{n}: price stat label missing"
+    assert not SINGLE_DATE_CLAIM.search(text), f"{n}: single-date change claim: {SINGLE_DATE_CLAIM.search(text).group(0)!r}"
+    if history:
+        assert METHODOLOGY_WITH_HISTORY in text, f"{n}: history methodology copy missing"
+        assert METHODOLOGY not in text, f"{n}: 'not tracked' copy shown alongside history"
+    else:
+        assert METHODOLOGY in text, f"{n}: methodology copy missing"
+        assert "Latest recorded" in text, f"{n}: price stat label missing"
+        assert "PRICE CHANGES" not in text, f"{n}: price-change section without history"
     offer = _graph(ld, "Product")["offers"]
     assert offer["price"] == 425000, f"{n}: offer price {offer.get('price')}"
     assert "price changes" not in json.dumps(_graph(ld, "Dataset")), f"{n}: Dataset claims price changes"
@@ -93,10 +103,18 @@ def main():
         else:
             raise SystemExit("next dev did not start")
 
-        # Active: in stock, broker-direct registry card shown.
+        # Active, with two reviewed price changes.
         status, html = _get(f"{base}/listing/{stub.ACTIVE}")
         assert status == 200, f"active: HTTP {status}"
-        text, offer = check_common(html, "active")
+        text, offer = check_common(html, "active", history=True)
+        assert "PRICE CHANGES" in text, "active: price-change section missing"
+        assert "$425,000 → $395,000" in text and "−7.1%" in text, "active: latest change not shown"
+        assert "Jun 10 – Jun 14, 2026" in text, "active: observation window not shown"
+        assert "Dec 30, 2025 – Jan 3, 2026" in text, "active: cross-year window wrong"
+        assert "Last seen at $425,000 on Jun 10, 2026; first seen at $395,000 on Jun 14, 2026." in text
+        assert "Reduced 7.1% · Jun 10 – Jun 14, 2026" in text, "active: price stat should show latest change"
+        assert text.index("Jun 10 – Jun 14, 2026") < text.index("Dec 30, 2025 – Jan 3, 2026"), "active: newest first"
+        assert "Asking price reduced from $425,000 to $395,000 (−7.1%)" in text, "active: change log entry missing"
         assert offer.get("availability") == "https://schema.org/InStock", "active: availability"
         assert "Example Broker" in text, "active: registry broker card missing"
         assert "218 " in text or "218<" in html, "active: days shown"
@@ -107,7 +125,7 @@ def main():
         _, offer = check_common(html, "inactive")
         assert "availability" not in offer, f"inactive: availability {offer.get('availability')}"
 
-        # Relisted: renders, floor shown as a minimum, no relist count claimed.
+        # Relisted: price_history request fails (view not published) -> page still renders, no section.
         status, html = _get(f"{base}/listing/{stub.RELISTED}")
         assert status == 200, f"relisted: HTTP {status}"
         text, offer = check_common(html, "relisted")
