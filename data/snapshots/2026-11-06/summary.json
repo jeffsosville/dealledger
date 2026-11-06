@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-06T10:25:32.122449+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 543,
+  "brokers_failed": 213,
+  "total_listings": 11241,
+  "listings_with_price": 10197,
+  "listings_with_cashflow": 4878,
+  "listings_with_state": 9155,
+  "detail_pages_fetched": 203,
+  "patterns_cached": 586,
+  "patterns_learned": 491,
+  "verticals": {
+    "retail": 1181,
+    "restaurant": 2581,
+    "automotive": 758,
+    "technology": 1766,
+    "cleaning": 150,
+    "healthcare": 646,
+    "construction": 337,
+    "plumbing": 110,
+    "manufacturing": 230,
+    "landscaping": 102,
+    "other": 2965,
+    "hvac": 176,
+    "electrical": 68,
+    "vending": 135,
+    "roofing": 27,
+    "pest_control": 9
+  },
+  "failure_types": {
+    "HTTP_403": 6,
+    "NO_PATTERN": 114,
+    "FETCH_ERROR": 36,
+    "EMBED_BBS": 44
+  },
+  "site_pages_dropped": 46,
+  "slowest_brokers": [
+    [
+      2190,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      1961,
+      "naz-business.com",
+      25
+    ],
+    [
+      1569,
+      "pacificrb.com",
+      7
+    ],
+    [
+      573,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      518,
+      "nextwavecommercial.com",
+      91
+    ],
+    [
+      512,
+      "psbroker.com",
+      36
+    ],
+    [
+      464,
+      "listyourhomesocal.com",
+      14
+    ],
+    [
+      423,
+      "tampabusinessbroker.com",
+      2
+    ],
+    [
+      421,
+      "sbpoolroutes.com",
+      3
+    ],
+    [
+      408,
+      "ctrestaurantbrokers.com",
+      1
+    ],
+    [
+      400,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      396,
+      "selectbg.com",
+      7
+    ],
+    [
+      395,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      388,
+      "sunshineagle.com",
+      12
+    ],
+    [
+      372,
+      "feldmanbrokerage.com",
+      56
+    ]
+  ],
+  "seconds_total": 41577,
+  "completed": "2026-11-06T13:50:53.790092+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
