@@ -126,17 +126,27 @@ def first_commits():
     return out
 
 
+SKIPPED = []
+
+
 def snapshot_rows(first):
     for d in sorted(x for x in os.listdir("data/snapshots") if re.match(r"^\d{4}-\d{2}-\d{2}$", x)):
         files = sorted(glob.glob(f"data/snapshots/{d}/listings*.csv")) or \
                 sorted(glob.glob(f"data/snapshots/{d}/listings*.json"))
         for path in files:
+            # Only the committed archive is evidence. A file git has never seen has no
+            # verifiable date, and an uncommitted local edit is not what was observed
+            # that day, so the working tree is never read. Files rewritten on a later
+            # day are read as first committed; all others as committed at HEAD
+            # (same-day re-runs commit the day's final snapshot).
             sha = first.get(path, "")
-            if path in REWRITTEN and sha:
+            if not sha:
+                SKIPPED.append(path)
+                continue
+            if path in REWRITTEN:
                 text, version = git("show", f"{sha}:{path}"), "first_commit"
             else:
-                with open(path, encoding="utf-8", errors="replace") as fh:
-                    text, version = fh.read(), "working_tree"
+                text, version = git("show", f"HEAD:{path}"), "head"
             if path.endswith(".csv"):
                 rows = csv.DictReader(text.splitlines(True))
             else:
@@ -448,6 +458,7 @@ def main():
     ex = collections.Counter(r["exclusion"] or "eligible" for r in rows)
     res = collections.Counter(c["screen_result"] for c in changes)
     rev = collections.Counter(c["review_status"] for c in changes)
+    print(f"skipped {len(SKIPPED)} snapshot file(s) not in git history" + (": " + ", ".join(SKIPPED[:5]) if SKIPPED else ""))
     print(f"rules {RULES_VERSION}: evidence rows {len(rows):,}  identities {len(identity):,}  changes {len(changes):,}")
     for k, v in ex.most_common():
         print(f"  {v:>8,}  {k}")
