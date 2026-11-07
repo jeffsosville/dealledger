@@ -40,6 +40,8 @@ PAGE     = 1000      # PostgREST caps a single response at 1000 rows
 STATIC_PAGES = [
     ("/",                 "daily",   "1.0"),
     ("/brokers",          "daily",   "0.9"),
+    ("/price-changes",    "daily",   "0.8"),
+    ("/writing",          "weekly",  "0.7"),
     ("/methodology.html", "monthly", "0.6"),
     ("/pulse.html",       "weekly",  "0.8"),
 ]
