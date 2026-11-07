@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-07T10:25:01.290660+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 533,
+  "brokers_failed": 222,
+  "total_listings": 11027,
+  "listings_with_price": 9975,
+  "listings_with_cashflow": 4825,
+  "listings_with_state": 9012,
+  "detail_pages_fetched": 234,
+  "patterns_cached": 581,
+  "patterns_learned": 477,
+  "verticals": {
+    "retail": 1174,
+    "restaurant": 2524,
+    "automotive": 757,
+    "technology": 1754,
+    "cleaning": 156,
+    "healthcare": 637,
+    "construction": 317,
+    "plumbing": 106,
+    "manufacturing": 224,
+    "landscaping": 102,
+    "other": 2858,
+    "hvac": 180,
+    "electrical": 66,
+    "roofing": 27,
+    "vending": 137,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 45,
+    "NO_PATTERN": 126,
+    "FETCH_ERROR": 36,
+    "HTTP_403": 5
+  },
+  "site_pages_dropped": 32,
+  "slowest_brokers": [
+    [
+      2296,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      2275,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      2198,
+      "pacificrb.com",
+      7
+    ],
+    [
+      2119,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      948,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      764,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      465,
+      "capitalbusinessbrokerage.biz",
+      26
+    ],
+    [
+      423,
+      "nedrowba.com",
+      0
+    ],
+    [
+      409,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      388,
+      "buygasstations.com",
+      3
+    ],
+    [
+      377,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      340,
+      "vrnutmeg.com",
+      0
+    ],
+    [
+      302,
+      "vrspringfield-branson.com",
+      0
+    ],
+    [
+      300,
+      "progressivepracticesales.com",
+      93
+    ],
+    [
+      295,
+      "routebrokers.com",
+      5
+    ]
+  ],
+  "seconds_total": 42720,
+  "completed": "2026-11-07T14:19:13.309394+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
