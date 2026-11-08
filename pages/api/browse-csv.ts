@@ -17,12 +17,12 @@ import {
 
 const COLS =
   'listing_number, title, city, state_code, state_source, vertical, vertical_source, price, cash_flow, revenue, ' +
-  'dom_days_eff, dom_basis, estimated_listed_date, last_seen, relisted, broker_domain, source_url';
+  'dom_days_eff, dom_days_max, dom_basis, listed_after, estimated_listed_date, last_seen, relisted, broker_domain, source_url';
 
 const HEADER = [
   'dealledger_url', 'title', 'display_title', 'city', 'state', 'state_source', 'business_type', 'type_source',
   'asking_price', 'cash_flow', 'price_to_cash_flow', 'revenue',
-  'days_on_market', 'days_on_market_basis', 'listed_on_or_before', 'last_seen', 'relisted',
+  'age_days_min', 'age_days_max', 'age_basis', 'listed_after', 'age_date', 'last_seen', 'relisted',
   'broker_domain', 'listing_url',
 ];
 
@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const lines: string[] = [HEADER.join(',')];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
-    let q = getSupabase().from('mv_seo_listings').select(COLS);
+    let q = getSupabase().from('mv_seo_listings_v2').select(COLS);
     if (code) q = q.eq('state_code', code);
     if (vertical) q = q.eq('vertical', vertical);
     const { data, error } = await q
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         pageUrl(`/listing/${r.listing_number}`), r.title, displayTitle(r), r.city, r.state_code, r.state_source,
         TYPES[r.vertical]?.label ?? r.vertical, r.vertical_source,
         r.price > 0 ? r.price : null, r.cash_flow > 0 ? r.cash_flow : null, multiple, r.revenue > 0 ? r.revenue : null,
-        r.dom_days_eff, r.dom_basis, r.estimated_listed_date, r.last_seen, r.relisted ? 'yes' : 'no',
+        r.dom_days_eff, r.dom_days_max, r.dom_basis, r.listed_after, r.estimated_listed_date, r.last_seen, r.relisted ? 'yes' : 'no',
         r.broker_domain, r.source_url,
       ].map(cell).join(','));
     }

@@ -117,7 +117,7 @@ export async function allStats(): Promise<Stats[]> {
 }
 
 export async function listingsFor(filter: { state?: string; vertical?: string }): Promise<Row[]> {
-  let q = getSupabase().from('mv_seo_listings').select(ROW_COLS);
+  let q = getSupabase().from('mv_seo_listings_v2').select(ROW_COLS);
   if (filter.state) q = q.eq('state_code', filter.state);
   if (filter.vertical) q = q.eq('vertical', filter.vertical);
   const { data } = await q

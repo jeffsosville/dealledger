@@ -8,7 +8,6 @@ import { getSupabase } from '../../lib/supabase';
 import { goListing } from '../../lib/clickout';
 import { displayName, isMarketplaceDomain } from '../../lib/brokerRegistry';
 
-const INDUSTRY_MEDIAN_DOM = 180;
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────
 type Listing = {
@@ -33,7 +32,11 @@ type Listing = {
   quality_score: number | null;
   relisted: boolean | null;
   firm_key: string | null;
-  dom_basis?: string | null;
+  dom_basis?: string | null; // window | observed | in_db | null
+  listed_after?: string | null;
+  days_max?: number | null;
+  age_label?: string | null;
+  age_source?: string | null;
 };
 
 // One broker-direct price change, as an observation window. The exact day of the
@@ -85,20 +88,23 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   if (listingErr || !listingRow) return { notFound: true };
   const listing = listingRow as Listing;
 
-  // Dates and DOM come from the public record (mv_listings_page), the same source as the homepage.
-  // Raw listings.estimated_listed_date / days_on_market are stale for broker-direct listings.
+  // Listing age comes only from the evidence hierarchy in mv_listings_page_v2 (2026-11-07):
+  // window (complete crawls) > observed (first dated sighting) > in_db (first database record).
+  // The legacy listings.first_seen / estimated_listed_date / days_on_market fields can be seeded
+  // or backdated, so they are never shown: no evidence row means no age.
   const { data: rec } = await sb
-    .from('mv_listings_page')
-    .select('estimated_listed_date, dom_days_eff, dom_basis')
+    .from('mv_listings_page_v2')
+    .select('estimated_listed_date, listed_after, dom_days_eff, dom_days_max, dom_basis, dom_display, age_source')
     .eq('listing_number', listingNumber)
     .maybeSingle();
-  if (rec) {
-    listing.estimated_listed_date = rec.estimated_listed_date ?? listing.estimated_listed_date;
-    listing.days_on_market = rec.dom_days_eff ?? listing.days_on_market;
-    listing.dom_basis = rec.dom_basis ?? null;
-  } else {
-    listing.dom_basis = null;
-  }
+  listing.estimated_listed_date = rec?.dom_basis ? rec.estimated_listed_date : null;
+  listing.days_on_market = rec?.dom_basis ? rec.dom_days_eff : null;
+  listing.dom_basis = rec?.dom_basis ?? null;
+  listing.listed_after = rec?.listed_after ?? null;
+  listing.days_max = rec?.dom_days_max ?? null;
+  listing.age_label = rec?.dom_display ?? null;
+  listing.age_source = rec?.age_source ?? null;
+  listing.first_seen = null;
 
   // Broker-direct listings: link to the broker's page in the registry, matched by website.
   let registryBroker: { slug: string; name: string } | null = null;
@@ -114,24 +120,8 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     }
   }
 
-  let domPercentile: number | null = null;
-  if (typeof listing.days_on_market === 'number') {
-    const { count: shorter } = await sb
-      .from('mv_listings_page')
-      .select('listing_number', { count: 'exact', head: true })
-      .lt('dom_days_eff', listing.days_on_market);
-    const { count: total } = await sb
-      .from('mv_listings_page')
-      .select('listing_number', { count: 'exact', head: true })
-      .not('dom_days_eff', 'is', null);
-
-    console.log('[listing] Query 5: shorter=', shorter, 'total=', total);
-
-    const shorterCount = shorter ?? 0;
-    if (total != null && total > 0) {
-      domPercentile = Math.round((shorterCount / total) * 100);
-    }
-  }
+  // No percentile or 'slowest' comparison: observed age is a minimum, not days on market.
+  const domPercentile: number | null = null;
 
   // Reviewed historical price changes (public.price_history: approved, broker-direct only).
   // Absent or failing -> no price-change section; the page never infers one.
@@ -211,18 +201,16 @@ export default function ListingPage({
 
   const currentPrice = listing.price;
 
-  let domContext = 'No DOM data';
-  if (domPercentile != null) {
-    if (domPercentile >= 50) {
-      domContext = `Top ${100 - domPercentile}% slowest`;
-    } else {
-      domContext = `Faster than ${100 - domPercentile}% of listings`;
-    }
-  }
-
-  const domFlag =
-    listing.days_on_market != null &&
-    listing.days_on_market > INDUSTRY_MEDIAN_DOM * 1.5;
+  void domPercentile;
+  const ageValue =
+    listing.days_on_market == null
+      ? '—'
+      : listing.dom_basis === 'window' && listing.days_max != null && listing.days_max !== listing.days_on_market
+      ? `${listing.days_on_market}–${listing.days_max} days`
+      : listing.dom_basis === 'window'
+      ? `${listing.days_on_market} days`
+      : `${listing.days_on_market}+ days`;
+  const ageSub = listing.age_label || 'No dated evidence yet';
 
   type ChangeLogEntry = { date: string; description: string; sortKey: string };
   const changeLog: ChangeLogEntry[] = [];
@@ -237,16 +225,17 @@ export default function ListingPage({
     });
   });
 
-  const isFloor = listing.dom_basis === 'floor';
-  if (listing.estimated_listed_date) {
+  if (listing.estimated_listed_date && listing.dom_basis) {
     changeLog.push({
       sortKey: listing.estimated_listed_date.slice(0, 10),
-      date: listing.estimated_listed_date.slice(0, 10),
-      description: isFloor
-        ? 'Already listed when we started tracking this broker — listed on or before this date'
+      date: listing.dom_basis === 'window' && listing.listed_after
+        ? fmtWindow(listing.listed_after, listing.estimated_listed_date)
+        : listing.estimated_listed_date.slice(0, 10),
+      description: listing.dom_basis === 'window'
+        ? 'Appeared on the broker’s site (complete crawls before and after)'
         : listing.dom_basis === 'observed'
-        ? 'First seen on the broker’s site'
-        : 'Estimated original listing date',
+        ? 'First observed by DealLedger on the broker’s site'
+        : 'First recorded in the DealLedger database',
     });
   }
   changeLog.sort((a, b) => b.sortKey.localeCompare(a.sortKey));
@@ -279,9 +268,7 @@ export default function ListingPage({
     if (listing.price != null) facts.push(`asking ${fmtPriceFull(listing.price)}`);
     if (listing.cash_flow != null) facts.push(`cash flow ${fmtPriceFull(listing.cash_flow)}`);
     if (listing.days_on_market != null) {
-      facts.push(listing.dom_basis === 'floor'
-        ? `listed at least ${listing.days_on_market} days`
-        : `${listing.days_on_market} days on market`);
+      if (listing.age_label) facts.push(listing.age_label.charAt(0).toLowerCase() + listing.age_label.slice(1));
     }
     const head = bits.join(' ');
     return facts.length
@@ -317,7 +304,7 @@ export default function ListingPage({
                 ...(listing.is_active
                   ? { availability: 'https://schema.org/InStock' }
                   : {}),
-                ...(listing.estimated_listed_date
+                ...(listing.dom_basis === 'window' && listing.estimated_listed_date
                   ? { availabilityStarts: listing.estimated_listed_date }
                   : {}),
                 ...(listing.city || listing.state
@@ -343,20 +330,20 @@ export default function ListingPage({
         name: `DealLedger observation record ${padDLId(listing.id)}`,
         description:
           'Dated observation record for a single US business-for-sale listing: ' +
-          'latest recorded asking price, cash flow, location, first-seen date and days on market. ' +
+          'latest recorded asking price, cash flow, location, and listing age with its evidence basis. ' +
           'Part of the DealLedger open index.',
         url: canonical,
         license: 'https://creativecommons.org/publicdomain/zero/1.0/',
         isAccessibleForFree: true,
         creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
         isPartOf: { '@type': 'Dataset', '@id': 'https://dealledger.org/#dataset' },
-        ...(listing.first_seen ? { temporalCoverage: `${listing.first_seen.slice(0, 10)}/..` } : {}),
+        ...(listing.estimated_listed_date ? { temporalCoverage: `${listing.estimated_listed_date.slice(0, 10)}/..` } : {}),
         // No `dateModified` field: nothing we store records when the listing itself
         // last changed (last_seen bumps on every crawl; first_seen and the
         // estimated listed date are not modification dates).
         ...(listing.state ? { spatialCoverage: { '@type': 'Place', name: listing.state } } : {}),
         variableMeasured: [
-          'asking price', 'cash flow', 'days on market', 'first seen date',
+          'asking price', 'cash flow', 'listing age (evidence basis)',
         ],
       },
     ],
@@ -447,10 +434,9 @@ export default function ListingPage({
               }
             />
             <Stat
-              label="Days on Market"
-              value={listing.days_on_market != null ? `${listing.days_on_market}${isFloor ? '+' : ''}` : '—'}
-              sub={domContext}
-              accent={domFlag}
+              label="Listing age"
+              value={ageValue}
+              sub={ageSub}
             />
             <Stat
               label="Cash Flow"
@@ -465,11 +451,11 @@ export default function ListingPage({
             />
           </div>
 
-          {listing.estimated_listed_date && (
+          {listing.estimated_listed_date && listing.dom_basis && (
             <Section title="TIMELINE" subtitle="Observed events">
               <Timeline
                 listedDate={listing.estimated_listed_date}
-                floor={isFloor}
+                label={listing.dom_basis === 'window' ? 'Appeared by' : listing.dom_basis === 'observed' ? 'Observed since' : 'In DealLedger since'}
               />
             </Section>
           )}
@@ -871,15 +857,15 @@ function Section({
 
 function Timeline({
   listedDate,
-  floor = false,
+  label,
 }: {
   listedDate: string | null;
-  floor?: boolean;
+  label: string;
 }) {
   const events: { label: string; date: string }[] = [];
 
   if (listedDate) {
-    events.push({ label: floor ? 'Listed by' : 'First seen', date: fmtMonthYear(listedDate) });
+    events.push({ label, date: fmtMonthYear(listedDate) });
   }
 
   if (events.length === 0) return null;

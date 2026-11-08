@@ -30,10 +30,12 @@ const place = (r: Row, showState: boolean) => {
   return parts.join(', ') || '—';
 };
 
+// Strongest age evidence (mv_listings_page_v2): window > observed > in_db. Never seeded dates.
 const domCell = (r: Row) => {
-  if (!r.dom_display) return '—';
-  if (r.dom_basis === 'floor') return r.dom_display.replace('listed on or before ', 'by ');
-  return r.dom_display;
+  if (!r.dom_display || !r.dom_basis) return '—';
+  return r.dom_display
+    .replace('Observed by DealLedger since ', 'Observed since ')
+    .replace('Listed between ', 'Listed ');
 };
 
 export default function SeoPage(p: Props) {
@@ -85,7 +87,7 @@ export default function SeoPage(p: Props) {
             creator: { '@type': 'Organization', name: 'DealLedger', url: 'https://dealledger.org' },
             ...(p.stats?.refreshed_at ? { dateModified: p.stats.refreshed_at } : {}),
             spatialCoverage: 'United States',
-            variableMeasured: ['asking price', 'cash flow', 'price to cash flow', 'revenue', 'days on market'],
+            variableMeasured: ['asking price', 'cash flow', 'price to cash flow', 'revenue', 'listing age (evidence basis)'],
             distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: pageUrl(csv) }],
           },
         ]
@@ -206,7 +208,7 @@ export default function SeoPage(p: Props) {
                   <div>Location</div>
                   <div className="num">Asking</div>
                   <div className="num">Cash flow</div>
-                  <div className="num">On market</div>
+                  <div className="num">Listing age</div>
                 </div>
                 {p.rows.map((r) => (
                   <div className="t-row" key={r.listing_number}>
@@ -285,9 +287,10 @@ export default function SeoPage(p: Props) {
             <div className="prose">
               <p>
                 DealLedger reads the public listings pages of business brokers directly and records when
-                each listing first appears and when it comes down. Days on market count from the first
-                day we saw the listing; “by” means the listing was already up when we started reading
-                that broker’s site, so it has been listed at least that long. Price ÷ cash flow is the
+                each listing first appears and when it comes down. Each listing shows the strongest age
+                evidence we have: “Listed” gives the window in which complete crawls of the broker’s site
+                saw it appear; “Observed since” is the first day our own crawl saw it; “In DealLedger since”
+                is the day our database first recorded it. The last two are minimums. Price ÷ cash flow is the
                 asking price divided by the seller’s stated cash flow (SDE), where both are published.
                 All data is public domain (CC0). <a href="/methodology.html">Full methodology</a>.
                 {p.refreshedNote ? ` ${p.refreshedNote}` : ''}

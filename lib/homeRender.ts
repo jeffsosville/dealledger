@@ -7,7 +7,7 @@ import { getSupabase } from './supabase';
 
 const PER_PAGE = 50;
 const COLUMNS =
-  'listing_number,title,state,price,source_url,estimated_listed_date,dom_days_eff,dom_basis';
+  'listing_number,title,state,price,source_url,estimated_listed_date,listed_after,dom_days_eff,dom_days_max,dom_basis';
 
 type Row = {
   listing_number: string | number;
@@ -16,8 +16,10 @@ type Row = {
   price: number | null;
   source_url: string | null;
   estimated_listed_date: string | null;
+  listed_after: string | null;
   dom_days_eff: number | null;
-  dom_basis: string | null;
+  dom_days_max: number | null;
+  dom_basis: string | null; // window | observed | in_db | null
 };
 
 let template: string | null = null;
@@ -53,22 +55,30 @@ function dayClass(d: number): string {
 
 function daysCell(r: Row): string {
   const d = r.dom_days_eff;
-  if (d === null || d === undefined) return '<span class="days">—</span>';
-  const shown = d < 60 ? d : d <= 365 ? Math.round(d / 5) * 5 : Math.round(d / 10) * 10;
-  const floor = r.dom_basis === 'floor';
-  const title = floor
-    ? 'Already listed when we started tracking this broker — at least this long'
-    : 'Days since we first saw this listing on the broker’s site';
-  return `<span class="days ${dayClass(d)}" title="${title}">${shown}${floor ? '+' : ''}</span>`;
+  if (d === null || d === undefined || !r.dom_basis) return '<span class="days">—</span>';
+  const rnd = (x: number) => (x < 60 ? x : x <= 365 ? Math.round(x / 5) * 5 : Math.round(x / 10) * 10);
+  if (r.dom_basis === 'window' && r.dom_days_max != null) {
+    const hi = r.dom_days_max;
+    return `<span class="days ${dayClass(d)}" title="Listed between these many days ago, from complete crawls of the broker’s site">${hi === d ? d : `${d}–${hi}`}</span>`;
+  }
+  const title = r.dom_basis === 'in_db'
+    ? 'In DealLedger at least this long (date the record was first written to our database)'
+    : 'Observed by DealLedger at least this long (first dated sighting in our crawl)';
+  return `<span class="days ${dayClass(d)}" title="${title}">${rnd(d)}+</span>`;
+}
+
+function fmtD(s: string): string {
+  const d = new Date(s + 'T00:00:00Z');
+  return isNaN(d.getTime())
+    ? esc(s)
+    : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 }
 
 function seenCell(r: Row): string {
-  if (!r.estimated_listed_date) return '—';
-  const d = new Date(r.estimated_listed_date + 'T00:00:00Z');
-  const s = isNaN(d.getTime())
-    ? esc(r.estimated_listed_date)
-    : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
-  return (r.dom_basis === 'floor' ? '≤ ' : '') + s;
+  if (!r.estimated_listed_date || !r.dom_basis) return '—';
+  if (r.dom_basis === 'window' && r.listed_after) return `Listed ${fmtD(r.listed_after)} – ${fmtD(r.estimated_listed_date)}`;
+  if (r.dom_basis === 'in_db') return `In DealLedger since ${fmtD(r.estimated_listed_date)}`;
+  return `Observed since ${fmtD(r.estimated_listed_date)}`;
 }
 
 function brokerLink(url: string | null): string {
@@ -133,7 +143,7 @@ function ogDescription(d: HomeData | null): string {
   const base = "An open, daily record of US businesses listed for sale on brokers' own websites. Free, CC0.";
   if (!d) return base;
   const pct = d.total ? Math.round((100 * d.over90) / d.total) : 0;
-  return `${fmt(d.total)} listings on the record; ${pct}% have been up at least 90 days. ` + base;
+  return `${fmt(d.total)} listings on the record; ${pct}% have been on our record at least 90 days. ` + base;
 }
 
 export function renderHome(d: HomeData | null): string {
@@ -171,11 +181,11 @@ export function renderHome(d: HomeData | null): string {
 export async function loadHome(): Promise<HomeData | null> {
   try {
     const sb = getSupabase();
-    const listings = () => sb.from('mv_listings_page').select('listing_number', { count: 'exact', head: true }).eq('source', 'broker_direct');
+    const listings = () => sb.from('mv_listings_page_v2').select('listing_number', { count: 'exact', head: true }).eq('source', 'broker_direct');
     const [page, all, stale, stats] = await Promise.all([
       // Same query the page script runs for its default view.
       sb
-        .from('mv_listings_page')
+        .from('mv_listings_page_v2')
         .select(COLUMNS, { count: 'exact' })
         .eq('source', 'broker_direct')
         .not('price', 'is', null)
