@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-08T10:25:03.601958+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 565,
+  "brokers_failed": 214,
+  "total_listings": 11762,
+  "listings_with_price": 10498,
+  "listings_with_cashflow": 4900,
+  "listings_with_state": 9365,
+  "detail_pages_fetched": 459,
+  "patterns_cached": 594,
+  "patterns_learned": 515,
+  "verticals": {
+    "retail": 1205,
+    "restaurant": 2499,
+    "automotive": 797,
+    "technology": 1880,
+    "cleaning": 173,
+    "healthcare": 677,
+    "construction": 325,
+    "plumbing": 125,
+    "manufacturing": 228,
+    "landscaping": 103,
+    "other": 3321,
+    "hvac": 182,
+    "electrical": 68,
+    "vending": 140,
+    "roofing": 30,
+    "pest_control": 9
+  },
+  "failure_types": {
+    "EMBED_BBS": 21,
+    "NO_PATTERN": 110,
+    "FETCH_ERROR": 41,
+    "HTTP_403": 4
+  },
+  "site_pages_dropped": 53,
+  "slowest_brokers": [
+    [
+      2301,
+      "naz-business.com",
+      25
+    ],
+    [
+      1993,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      1846,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1669,
+      "pacificrb.com",
+      7
+    ],
+    [
+      547,
+      "anglobalholdings.com",
+      25
+    ],
+    [
+      524,
+      "ecrestaurantbrokers.com",
+      3
+    ],
+    [
+      498,
+      "www.zeebiz.com",
+      82
+    ],
+    [
+      492,
+      "bma1.com",
+      1
+    ],
+    [
+      487,
+      "routeadvisors.com",
+      47
+    ],
+    [
+      463,
+      "pacificrestaurantbrokers.com",
+      12
+    ],
+    [
+      461,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      454,
+      "laundromat-broker.com",
+      104
+    ],
+    [
+      449,
+      "feldmanbrokerage.com",
+      56
+    ],
+    [
+      434,
+      "www.blueridgebrokerage.com",
+      24
+    ],
+    [
+      422,
+      "lighthousebusinessbrokers.com",
+      4
+    ]
+  ],
+  "seconds_total": 46065,
+  "completed": "2026-11-08T14:08:50.460336+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
