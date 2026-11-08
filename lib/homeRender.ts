@@ -20,6 +20,8 @@ type Row = {
   dom_days_eff: number | null;
   dom_days_max: number | null;
   dom_basis: string | null; // window | observed | in_db | null
+  last_cut_pct?: number | null; // latest approved asking-price change, when it was a cut
+  last_cut_on?: string | null;
 };
 
 let template: string | null = null;
@@ -100,6 +102,14 @@ function dedupe(rows: Row[]): Row[] {
   });
 }
 
+// Latest approved asking-price cut (public.price_history via v_listing_last_cut).
+function cutTag(r: Row): string {
+  if (r.last_cut_pct == null || !r.last_cut_on) return '';
+  const d = new Date(r.last_cut_on + 'T00:00:00Z');
+  const when = isNaN(d.getTime()) ? '' : ' · ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return `<span class="cut" title="Asking price reduced, first seen at the lower price on ${esc(r.last_cut_on)}">↓${Math.abs(Math.round(Number(r.last_cut_pct)))}%${when}</span>`;
+}
+
 function rowsHtml(all: Row[]): string {
   const rows = dedupe(all);
   if (!rows.length) return '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
@@ -116,7 +126,7 @@ function rowsHtml(all: Row[]): string {
         brokerLink(r.source_url) +
         '</td>' +
         `<td class="state">${esc(r.state || '—')}</td>` +
-        `<td class="num price">${fmtPrice(r.price)}</td>` +
+        `<td class="num price">${fmtPrice(r.price)}${cutTag(r)}</td>` +
         `<td class="num daysc">${daysCell(r)}</td>` +
         '</tr>'
       );
@@ -199,6 +209,15 @@ export async function loadHome(): Promise<HomeData | null> {
       return null;
     }
     const rows = page.data as unknown as Row[];
+    // Mark rows whose latest approved price change was a reduction.
+    if (rows.length) {
+      const { data: cuts } = await sb
+        .from('v_listing_last_cut')
+        .select('listing_number,last_cut_pct,last_cut_on')
+        .in('listing_number', rows.map((r) => r.listing_number));
+      const byNum = new Map((cuts || []).map((c: { listing_number: number }) => [String(c.listing_number), c]));
+      for (const r of rows) Object.assign(r, byNum.get(String(r.listing_number)) || {});
+    }
     const brokers = (stats.data as { broker_sites_on_site?: number } | null)?.broker_sites_on_site;
     return {
       shown: page.count ?? rows.length,

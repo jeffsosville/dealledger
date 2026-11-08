@@ -168,7 +168,8 @@ input.ctl{width:104px}
 .chip{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 11px;border:1px solid var(--border);background:#fff;color:var(--text-muted);cursor:pointer;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:var(--bg)}
 .reset{font-family:var(--mono);font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline;padding:8px 2px}
-.sort-sm{display:none}
+.sort-sm{display:block}
+.ledger td.price .cut{display:block;font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:2px;white-space:nowrap}
 .count{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin:18px 0 8px}
 .count strong{color:var(--text)}
 
@@ -308,6 +309,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
           <option value="days:-1">Oldest first</option>
           <option value="price:-1">Price, high to low</option>
           <option value="price:1">Price, low to high</option>
+          <option value="cut:-1">Recently reduced</option>
         </select>
         <label class="ctl-check"><input id="fPriced" type="checkbox" checked> Only listings with an asking price</label>
         <button id="reset" class="reset" type="button">Reset</button>
@@ -428,9 +430,32 @@ function query(){
   if (domFilter === 'fresh')  p.append('dom_days_eff','lte.30');
   if (domFilter === 'recent') p.append('dom_days_eff','lte.90');
   if (domFilter === 'stale')  p.append('dom_days_eff','gt.90');
+  if (sortField === 'cut') {
+    p.set('select', p.get('select') + ',last_cut_pct,last_cut_on');
+    p.set('order', 'last_cut_on.desc,listing_number.desc');
+    return p.toString();
+  }
   const col = sortField === 'days' ? 'dom_days_eff' : sortField;
   p.set('order', col + '.' + (sortDir === -1 ? 'desc' : 'asc') + '.nullslast');
   return p.toString();
+}
+// Latest approved asking-price cut for the rows on screen.
+async function addCuts(rows){
+  if (!rows.length || rows[0].last_cut_on !== undefined) return rows;
+  try {
+    const ids = rows.map(r => r.listing_number).join(',');
+    const res = await fetch(API + '/v_listing_last_cut?select=listing_number,last_cut_pct,last_cut_on&listing_number=in.(' + ids + ')', { headers: HEAD });
+    if (!res.ok) return rows;
+    const by = new Map((await res.json()).map(c => [String(c.listing_number), c]));
+    rows.forEach(r => Object.assign(r, by.get(String(r.listing_number)) || {}));
+  } catch (e) {}
+  return rows;
+}
+function cutTag(r){
+  if (r.last_cut_pct == null || !r.last_cut_on) return '';
+  const d = new Date(r.last_cut_on + 'T00:00:00');
+  const when = isNaN(d) ? '' : ' · ' + d.toLocaleDateString('en-US',{month:'short', day:'numeric'});
+  return '<span class="cut" title="Asking price reduced, first seen at the lower price on ' + esc(r.last_cut_on) + '">↓' + Math.abs(Math.round(Number(r.last_cut_pct))) + '%' + when + '</span>';
 }
 
 async function load(){
@@ -438,13 +463,13 @@ async function load(){
   if (cache.has(key)) { const c = cache.get(key); total = c.total; paint(c.rows); return; }
   $('rows').classList.add('is-busy');
   try {
-    const res = await fetch(API + '/mv_listings_page_v2?' + qs, {
+    const res = await fetch(API + (sortField === 'cut' ? '/v_listings_reduced?' : '/mv_listings_page_v2?') + qs, {
       headers: Object.assign({}, HEAD, { Range: from + '-' + (from+PER_PAGE-1), 'Range-Unit':'items', Prefer:'count=exact' })
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const cr = res.headers.get('content-range') || '';
     const t = cr.split('/')[1];
-    const rows = await res.json();
+    const rows = await addCuts(await res.json());
     if (me !== token) return;
     total = (t && t !== '*') ? parseInt(t,10) : rows.length;
     cache.set(key, { rows, total });
@@ -492,7 +517,7 @@ function paint(rows){
           brokerLink(r.source_url) +
         '</td>' +
         '<td class="state">' + esc(r.state || '—') + '</td>' +
-        '<td class="num price">' + price(r.price) + '</td>' +
+        '<td class="num price">' + price(r.price) + cutTag(r) + '</td>' +
         '<td class="num daysc">' + daysCell(r) + '</td>' +
       '</tr>').join('');
   }
