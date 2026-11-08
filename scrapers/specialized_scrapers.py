@@ -33,6 +33,7 @@ import time
 import random
 from html import unescape as html_unescape
 from typing import List, Dict, Optional
+from datetime import date
 
 try:
     from junk_filter import is_sold_or_pending, is_junk_title, title_from_slug
@@ -194,6 +195,20 @@ def create_chrome_driver(headless: bool = True) -> webdriver.Chrome:
     return driver
 
 
+def wp_date(v) -> Optional[str]:
+    """'2024-05-17T09:12:44' -> '2024-05-17'; None for missing or implausible dates."""
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", str(v or ""))
+    if not m:
+        return None
+    try:
+        d = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    except ValueError:
+        return None
+    if d.year < 2000 or d > date.today():
+        return None
+    return d.isoformat()
+
+
 def format_listing(
     url: str,
     broker_account: str,
@@ -207,9 +222,16 @@ def format_listing(
     business_type: str = None,
     revenue: float = None,
     cash_flow: float = None,
-    status: str = "active"
+    status: str = "active",
+    broker_published_on: str = None,
+    broker_modified_on: str = None,
+    broker_date_source: str = None,
 ) -> Dict:
-    """Create a standardized listing dict."""
+    """Create a standardized listing dict.
+
+    broker_published_on / broker_modified_on are dates as the broker's own site
+    reports them (e.g. WordPress `date` / `modified`). They are broker-reported,
+    not proof of the original listing date."""
     return {
         'listing_id': hashlib.md5(url.encode()).hexdigest(),
         'broker_account': broker_account,
@@ -226,7 +248,10 @@ def format_listing(
         'category': 'business',
         'business_type': business_type,
         'revenue': revenue,
-        'cash_flow': cash_flow
+        'cash_flow': cash_flow,
+        'broker_published_on': broker_published_on,
+        'broker_modified_on': broker_modified_on,
+        'broker_date_source': broker_date_source if broker_published_on else None,
     }
 
 
@@ -2533,7 +2558,10 @@ class WPRestScraper:
             price=price, cash_flow=cash_flow, revenue=revenue,
             business_type=(business_type.title() if business_type else None),
             city=(acf.get("city") or None), state=(state or acf.get("state") or None),
-            location=loc.title() if loc else None, status=status)
+            location=loc.title() if loc else None, status=status,
+            broker_published_on=wp_date(item.get("date")),
+            broker_modified_on=wp_date(item.get("modified")),
+            broker_date_source="wordpress_rest")
 
     def scrape(self, broker_account: str, max_pages: int = 60, verbose: bool = True) -> List[Dict]:
         if verbose:

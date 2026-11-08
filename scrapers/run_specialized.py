@@ -422,6 +422,13 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "source":        "broker_direct",
             "quality_tier":  "Unverified",
             "url_is_listing_specific": url_is_listing_specific,
+            # Broker-reported publication date (e.g. WordPress `date`). Stored as
+            # reported; never treated as the proven original listing date. Null
+            # values don't overwrite (listings_direct_keep_filled trigger).
+            "broker_published_on": l.get("broker_published_on"),
+            "broker_modified_on":  l.get("broker_modified_on"),
+            "broker_date_source":  l.get("broker_date_source"),
+            "broker_date_first_recorded": now[:10] if l.get("broker_published_on") else None,
             "first_seen":    now,
             "last_seen":     now,
             "created_at":    now,
