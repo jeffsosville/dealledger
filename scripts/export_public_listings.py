@@ -43,12 +43,11 @@ import requests
 FIELDS = [
     "id", "title", "asking_price", "cash_flow", "revenue",
     "city", "state", "vertical", "broker_name", "broker_domain",
-    "url", "first_seen", "last_seen", "listed_on_basis", "listed_after", "description",
+    "url", "first_seen", "last_seen", "listed_on_basis", "listed_after",
 ]
 SOURCE_FIELDS = [f for f in FIELDS if f not in ("listed_on_basis", "listed_after")]
 MARKETPLACE_RE = re.compile(r"(bizbuysell|bizquest|businessesforsale|loopnet)\.com", re.I)
 PAGE = 1000
-DESC_MAX = 1000
 
 
 def _paged(base, key, table, params, order_col):
@@ -121,12 +120,9 @@ def apply_dates(rows, by_row):
 
 
 def clean(row):
-    out = {k: row.get(k) for k in SOURCE_FIELDS}
-    d = out.get("description")
-    if d:
-        d = re.sub(r"\s+", " ", d).strip()
-        out["description"] = d[:DESC_MAX]
-    return out
+    # Broker-written descriptions are the brokers' copyright, not facts, so
+    # they never go into the CC0 export (2026-11-08). The url links to them.
+    return {k: row.get(k) for k in SOURCE_FIELDS}
 
 
 def main():

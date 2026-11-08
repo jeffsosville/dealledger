@@ -33,10 +33,10 @@ Earlier days are in this file's git history.
 | `last_seen` | date | Latest day a crawl saw the listing live |
 | `listed_on_basis` | text | `observed`: a complete crawl of the broker shortly before `first_seen` did not see it, so it was listed between `listed_after` and `first_seen`. `floor`: it was listed on or before `first_seen` (for example, it was already up when we first crawled the broker). Counts are in `meta.json` |
 | `listed_after` | date | For `observed` rows, the last complete crawl that did not see the listing. Empty for `floor` rows |
-| `description` | text | Start of the broker's description, whitespace collapsed, up to 1,000 characters |
 
 ## What's included and excluded
 
+- **Not included:** broker-written descriptions and photos. They belong to the brokers; `url` links to the original page.
 - **Included:** listings on brokers' own websites that are currently active and pass our listing checks.
 - **Excluded:** real estate and commercial property, for-sale-by-owner, aggregator and marketplace reposts, sold or withdrawn listings, and pages flagged for review.
 - **Not exported yet:** days on market. Listing dates are hard to observe directly, and we won't publish a figure until the method is settled.

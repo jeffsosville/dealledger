@@ -11,6 +11,7 @@ data/snapshots (i.e. shards/snapshot-shard-0/<date>/listings.json ...).
 A shard that died before _save_results() simply contributes nothing; the
 merged summary records how many shards were present.
 """
+import hashlib
 import json
 import re
 import os
@@ -46,6 +47,16 @@ def _mentions_marketplace(record) -> bool:
     return bool(MARKETPLACE_RE.search(json.dumps(record, default=str)))
 
 
+# Snapshots are public too, so broker-written descriptions (the brokers'
+# copyright) are replaced with a short hash before anything is written
+# (2026-11-08). price_history_build.py only ever compared a hash of them.
+def _strip_description(record):
+    if isinstance(record, dict) and "description" in record:
+        desc = str(record.pop("description") or "").strip().lower()
+        record["desc_hash"] = hashlib.md5(desc[:500].encode()).hexdigest()[:12] if desc else ""
+    return record
+
+
 def main(shards_root: str, out_root: str) -> int:
     by_date = defaultdict(list)          # date -> [shard snapshot dirs]
     for shard in sorted(os.listdir(shards_root)):
@@ -72,7 +83,7 @@ def main(shards_root: str, out_root: str) -> int:
                 summaries.append(s)
 
         before = len(listings)
-        listings = [r for r in listings if not _mentions_marketplace(r)]
+        listings = [_strip_description(r) for r in listings if not _mentions_marketplace(r)]
         failures = [r for r in failures if not _mentions_marketplace(r)]
         embeds = [r for r in embeds if not _mentions_marketplace(r)]
         if before != len(listings):

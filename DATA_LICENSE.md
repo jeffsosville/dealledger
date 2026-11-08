@@ -6,4 +6,8 @@ You may copy, modify, distribute, and perform the data, even for commercial purp
 
 No attribution required.
 
+Broker-written listing descriptions and photos belong to the brokers who wrote
+them. They are not included in the published data and are not covered by this
+dedication. Each record links to the broker's own page in `url`.
+
 Workflows, scrapers, agents, and source code are covered by the repository LICENSE file (MIT).

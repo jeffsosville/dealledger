@@ -163,7 +163,8 @@ def snapshot_rows(first):
                     "asking_price": num(r.get("asking_price")), "cash_flow": num(r.get("cash_flow")),
                     "revenue": num(r.get("revenue")), "city": (r.get("city") or "").strip(),
                     "state": (r.get("state") or "").strip().upper(), "title": (r.get("title") or "").strip(),
-                    "desc_hash": hashlib.md5(desc[:500].encode()).hexdigest()[:12] if desc else "",
+                    # snapshots from 2026-11-08 on carry desc_hash instead of the text
+                    "desc_hash": r.get("desc_hash") or (hashlib.md5(desc[:500].encode()).hexdigest()[:12] if desc else ""),
                 }
 
 
