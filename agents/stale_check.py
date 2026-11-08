@@ -34,6 +34,13 @@ from dealledger_scraper_v6 import _needs_proxy, build_proxy_url  # noqa: E402
 SOLD_HEAD = re.compile(r"\b(sold|under contract|sale pending|pending sale|off the market)\b", re.I)
 SOLD_BODY = re.compile(r"(this (business|listing) (has been|is) (sold|no longer available|removed|under contract)"
                        r"|listing (is )?no longer available|no longer (for sale|on the market))", re.I)
+# Listing-specific sold wording, per broker. Searched in the page's main content only
+# (not the first 4,000 characters of the whole page, where nav text dominates).
+# Sunbelt keeps sold listing pages up with "This business has been sold" in the listing body;
+# its live listings never contain "has been sold" (checked Nov 8 2026 against live controls).
+DOMAIN_SOLD = {
+    "sunbeltnetwork.com": re.compile(r"\bhas been sold\b", re.I),
+}
 PER_DOMAIN_DELAY = 1.5
 _locks = defaultdict(threading.Lock)
 
@@ -96,6 +103,12 @@ def check(row):
         (soup.find("meta", property="og:title") or {}).get("content", ""),
     ]))
     body = soup.get_text(" ", strip=True)[:4000]
+    dom_rule = DOMAIN_SOLD.get(re.sub(r"^www\.", "", (domain or "").lower()))
+    if dom_rule is not None:
+        main = soup.find("main") or soup.find(attrs={"role": "main"}) or soup.body or soup
+        m = dom_rule.search(main.get_text(" ", strip=True))
+        if m:
+            return row, "sold_text", f"broker label: {m.group(0)} | {head[:60]}"
     badge = soup.find(class_=re.compile(r"^(listing-)?status-(sold|under-contract|pending)$", re.I))
     if badge is not None:
         return row, "sold_text", f"badge:{badge.get('class')} {head[:60]}"
