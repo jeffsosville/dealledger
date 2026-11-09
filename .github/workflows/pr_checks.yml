@@ -29,6 +29,8 @@ jobs:
         run: python tests/test_listing_page_source.py
       - name: Public copy test
         run: python tests/test_public_copy.py
+      - name: Public export gate test
+        run: python tests/test_public_export.py
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
