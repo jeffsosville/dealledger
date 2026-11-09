@@ -129,7 +129,7 @@ nav a:hover{color:var(--text)}
 .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);margin-bottom:14px}
 h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spacing:-.6px;max-width:24ch;text-wrap:balance}
 .lede{font-size:16px;color:var(--text-muted);margin-top:10px;max-width:56ch}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:26px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:26px}
 .stat{background:#fff;padding:14px 16px}
 .stat-n{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.1;letter-spacing:-.5px}
 .stat-l{font-size:13px;color:var(--text-muted);margin-top:4px}
@@ -287,9 +287,8 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <div class="stats">
       <div class="stat"><div class="stat-n" id="nHero"><!--DL:TOTAL--></div><div class="stat-l">listings on the record</div></div>
       <div class="stat"><div class="stat-n"><!--DL:BROKERS--></div><div class="stat-l">broker websites on the record</div></div>
-      <div class="stat"><div class="stat-n"><!--DL:STALEPCT--></div><div class="stat-l">on our record 90+ days</div></div>
     </div>
-    <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/why">Why we keep the record →</a></p>
+    <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/methodology.html">How it works →</a></p>
 
     <div class="rule">or browse the ledger</div>
 
@@ -357,7 +356,6 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
       <a href="/brokers">Brokers</a>
       <a href="/price-changes">Price changes</a>
       <a href="/writing">Pulse</a>
-      <a href="/why">Why we keep the record</a>
       <a href="/methodology.html">Methodology</a>
       <a href="mailto:info@dealledger.org?subject=Add%20our%20listings%20to%20DealLedger">Add your listings</a>
       <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report an issue</a>
@@ -662,12 +660,13 @@ if (INITIAL && Array.isArray(INITIAL.rows)) {
 } else {
   load();
   // No server data: at least fill in the headline count.
-  fetch(API + '/mv_listings_page_v2?select=listing_number&source=eq.broker_direct', {
-    headers: Object.assign({}, HEAD, { Range: '0-0', 'Range-Unit': 'items', Prefer: 'count=exact' })
-  }).then(r => {
-    const t = (r.headers.get('content-range') || '').split('/')[1];
-    if (t && t !== '*') $('nHero').textContent = parseInt(t, 10).toLocaleString();
-  }).catch(() => {});
+  // Headline figure comes only from public_stats.
+  fetch(API + '/public_stats?select=listings_on_site&limit=1', { headers: HEAD })
+    .then(r => r.json())
+    .then(d => {
+      const n = d && d[0] && d[0].listings_on_site;
+      if (typeof n === 'number') $('nHero').textContent = n.toLocaleString();
+    }).catch(() => {});
 }
 </script>
 </body>

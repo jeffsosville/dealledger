@@ -37,7 +37,7 @@ export default function StatePage({ code, stats, rows, types, others }: InferGet
       title={`Businesses for Sale in ${name} (${fmtNum(stats.listings)} listings) — DealLedger`}
       h1={`Businesses for Sale in ${name}`}
       eyebrow={`${code} · LISTED DIRECTLY BY BROKERS`}
-      description={`${fmtNum(stats.listings)} businesses for sale in ${name} from ${fmtNum(stats.brokers)} broker websites. Median asking ${fmtMoney(stats.median_price)}. Real days on market, price-to-cash-flow, and a direct link to each broker.`}
+      description={`${fmtNum(stats.listings)} businesses for sale in ${name} from ${fmtNum(stats.brokers)} broker websites. Median asking ${fmtMoney(stats.median_price)}. Evidence-based listing age, price-to-cash-flow, and a direct link to each broker.`}
       intro={`${fmtNum(stats.listings)} businesses are listed for sale in ${name} on ${fmtNum(stats.brokers)} business broker websites that DealLedger reads directly, and ${fmtNum(stats.new_30d)} of them first appeared in the last 30 days. Each listing shows how long it has really been on the market and links straight to the broker.`}
       stats={stats}
       rows={rows}

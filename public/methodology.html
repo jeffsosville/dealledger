@@ -96,7 +96,7 @@
         <p class="lead">How DealLedger collects, normalizes, and publishes listings of businesses for sale in the United States.</p>
 
         <h2>What we observe</h2>
-        <p>DealLedger maintains a continuously updated record of business-for-sale listings published directly on business brokers' own websites. We track over 1,700 broker sites, the majority of which are not comprehensively indexed by any single marketplace. Every listing is traceable to the broker page it came from.</p>
+        <p>DealLedger maintains a continuously updated record of business-for-sale listings published directly on business brokers' own websites. The current count of broker sites on the record is on the <a href="/brokers" class="inline">brokers page</a>; many of them are not comprehensively indexed by any single marketplace. Every listing is traceable to the broker page it came from.</p>
         <p>All listings are collected from publicly accessible web pages. We do not access private or login-gated systems, and we do not ingest marketplace aggregators. How we crawl, and how a broker can opt out, is described in our <a href="https://github.com/JeffSosville/dealledger/blob/main/SCRAPING_POLICY.md" class="inline">scraping policy</a>.</p>
 
         <h2>What we publish</h2>
@@ -143,7 +143,7 @@
         </div>
 
         <h2>Relisting</h2>
-        <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A business that comes back to market later — often at a different price, after failing to sell the first time — is one of the most useful signals in the record. Automated relist matching across broker-direct listings is in development; until it ships, disappearances and reappearances are visible in the raw history but are not flagged.</p>
+        <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A listing that comes back later, sometimes at a different price, is one of the most useful signals in the record. A disappearance is not evidence that a business sold. Automated relist matching across broker-direct listings is in development; until it ships, disappearances and reappearances are visible in the raw history but are not flagged.</p>
 
         <h2>Data quality</h2>
         <p>Rows are gated before they enter the index:</p>
@@ -191,7 +191,6 @@
         <div class="footer-content">
             <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
             <div class="footer-links">
-                <a href="/why.html">Why</a>
                 <a href="/methodology.html">Methodology</a>
                 <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
             </div>

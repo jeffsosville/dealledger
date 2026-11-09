@@ -46,7 +46,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these laundromat listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -83,7 +83,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these cleaning business listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -120,7 +120,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these roofing listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -156,7 +156,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -192,7 +192,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these restaurant listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -228,7 +228,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these landscaping listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },
@@ -266,7 +266,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these HVAC listings come from?',
-        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so days on market reflect what we have actually observed, and every listing links straight to the broker.',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],
   },

@@ -51,7 +51,7 @@ export default function ComboPage(p: InferGetStaticPropsType<typeof getStaticPro
       title={`${t.label} for Sale in ${name} (${fmtNum(s.listings)}) — DealLedger`}
       h1={`${t.label} for Sale in ${name}`}
       eyebrow={`${p.code} · ${t.label.toUpperCase()}`}
-      description={`${fmtNum(s.listings)} ${t.noun} for sale in ${name}, listed by ${fmtNum(s.brokers)} brokers. Median asking ${fmtMoney(s.median_price)}${multiple}. True days on market and a direct link to each broker.`}
+      description={`${fmtNum(s.listings)} ${t.noun} for sale in ${name}, listed by ${fmtNum(s.brokers)} brokers. Median asking ${fmtMoney(s.median_price)}${multiple}. Evidence-based listing age and a direct link to each broker.`}
       intro={`${fmtNum(s.listings)} ${t.noun} are for sale in ${name} across ${fmtNum(s.brokers)} broker websites, with ${fmtNum(s.new_30d)} new in the last 30 days. Median asking price is ${fmtMoney(s.median_price)}${multiple}. Every listing below links to the broker who has it.`}
       stats={s}
       rows={p.rows}

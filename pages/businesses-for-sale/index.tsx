@@ -26,7 +26,7 @@ export default function Hub({ states, types, total }: InferGetStaticPropsType<ty
       title="Businesses for Sale by State and Type — DealLedger"
       h1="Businesses for Sale"
       eyebrow="BROWSE BY STATE & TYPE"
-      description={`Browse ${fmtNum(total)} businesses for sale by state and business type, collected directly from business broker websites. True days on market and a direct link to every broker.`}
+      description={`Browse ${fmtNum(total)} businesses for sale by state and business type, collected directly from business broker websites. Evidence-based listing age and a direct link to every broker.`}
       intro={`${fmtNum(total)} businesses for sale, collected directly from business broker websites and sorted by state and type. Every listing shows how long it has really been listed and links straight to the broker. No accounts, no gated contact forms.`}
       stats={null}
       rows={[]}

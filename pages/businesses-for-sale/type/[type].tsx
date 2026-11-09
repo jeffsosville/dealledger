@@ -41,7 +41,7 @@ export default function TypePage({ vertical, stats: s, rows, byState, otherTypes
       h1={guide?.h1 || `${t.label} for Sale`}
       guide={guide}
       eyebrow={`NATIONWIDE · ${t.label.toUpperCase()}`}
-      description={`${fmtNum(s.listings)} ${t.noun} for sale across the US from ${fmtNum(s.brokers)} broker websites. Median asking ${fmtMoney(s.median_price)}. True days on market and a direct link to each broker.`}
+      description={`${fmtNum(s.listings)} ${t.noun} for sale across the US from ${fmtNum(s.brokers)} broker websites. Median asking ${fmtMoney(s.median_price)}. Evidence-based listing age and a direct link to each broker.`}
       intro={`${fmtNum(s.listings)} ${t.noun} are for sale on ${fmtNum(s.brokers)} broker websites that DealLedger reads directly, with ${fmtNum(s.new_30d)} new in the last 30 days, a median asking price of ${fmtMoney(s.median_price)}${multiple}.`}
       stats={s}
       rows={rows}

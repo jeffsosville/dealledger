@@ -5,16 +5,8 @@
       "destination": "/removed.html"
     },
     {
-      "source": "/pulse",
-      "destination": "/pulse.html"
-    },
-    {
       "source": "/methodology",
       "destination": "/methodology.html"
-    },
-    {
-      "source": "/why",
-      "destination": "/why.html"
     },
     {
       "source": "/writing",
@@ -23,6 +15,38 @@
     {
       "source": "/writing/:slug",
       "destination": "/writing/:slug.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/why",
+      "destination": "/methodology",
+      "permanent": false
+    },
+    {
+      "source": "/why.html",
+      "destination": "/methodology",
+      "permanent": false
+    },
+    {
+      "source": "/writing/no-reason-to-fix",
+      "destination": "/writing",
+      "permanent": false
+    },
+    {
+      "source": "/writing/no-reason-to-fix.html",
+      "destination": "/writing",
+      "permanent": false
+    },
+    {
+      "source": "/pulse",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/pulse.html",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
