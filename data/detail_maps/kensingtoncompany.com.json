@@ -1,0 +1,40 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": "div.price h2",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Revenue:",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Cash Flow:",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Asking price is inside div.price > h2. Revenue and Cash Flow appear as inline text spans inside div.price-revenue-flow with consistent labels 'Revenue:' and 'Cash Flow:'. City is never shown on any of the three pages; location is only described at a region or state level (e.g. 'Connecticut', 'Long Island', 'The South') within the body text, not in a structured field. State is similarly not disclosed in a structured field on any page.",
+  "domain": "kensingtoncompany.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "price_from_map": true
+}

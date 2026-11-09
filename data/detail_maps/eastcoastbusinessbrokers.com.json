@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": ".mn-detail-price",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Gross sales",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Net cash flow",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "css",
+      "css": ".mn-detail-location",
+      "label": null,
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "css",
+      "css": ".mn-detail-location",
+      "label": null,
+      "not_disclosed": false
+    }
+  },
+  "notes": "asking_price: .mn-detail-price contains the price value (e.g. '$75,000'). revenue: found inside .mn-detail-stats as a .mn-detail-stat block whose .mn-detail-stat-label text is 'Gross sales'; the value is in the sibling .mn-detail-stat-value. cash_flow: same pattern with label 'Net cash flow'. Both may show 'Contact broker' when not disclosed on a given listing, but the field is present on the page structure on all pages. city and state: .mn-detail-location contains a combined 'City, State' string (e.g. 'Nassau, New York') \u2014 parse by splitting on the comma.",
+  "domain": "eastcoastbusinessbrokers.com",
+  "model": "claude-sonnet-4-6",
+  "status": "partial",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "state"
+  ]
+}

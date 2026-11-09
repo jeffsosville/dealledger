@@ -1,0 +1,42 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": "div.metric-box:has(p.metric-label:-soup-contains(\"Asking\")) p.metric-value",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "css",
+      "css": "div.metric-box:has(p.metric-label:-soup-contains(\"Gross Revenue\")) p.metric-value",
+      "label": null,
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "css",
+      "css": "div.metric-box:has(p.metric-label:-soup-contains(\"Adjusted Net Income\")) p.metric-value",
+      "label": null,
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "General Location:",
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "label",
+      "css": null,
+      "label": "General Location:",
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking price and gross revenue are reliably present in the .listing-metrics section inside .listing-new-block, each in a .metric-box with a .metric-label and .metric-value. Cash flow is labeled 'Adjusted Net Income:' in the same metrics block on pages that show it; some listings show 'Asset Sale' instead with no value (not_disclosed=false since it appears on other pages). City and state are both embedded in the 'General Location:' list item inside the .info-list under the 'General Info:' section \u2014 they appear as a combined string (e.g. 'Nashville, TN' or 'Southeast United States') and must be parsed from that single field. The ct-inner-content section contains stale/template data from other listings and should be ignored; the authoritative data is in the .listing-new-block ct-code-block section.",
+  "domain": "nashbb.com",
+  "model": "claude-sonnet-4-6",
+  "status": "partial",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "cash_flow"
+  ]
+}

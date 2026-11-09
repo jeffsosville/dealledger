@@ -1,0 +1,43 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "css",
+      "css": "span#hs_cos_wrapper_bedrooms",
+      "label": null,
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "css",
+      "css": "span#hs_cos_wrapper_acres",
+      "label": null,
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "css",
+      "css": "span#hs_cos_wrapper_est_mortgage",
+      "label": null,
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "css",
+      "css": "span#hs_cos_wrapper_city_state",
+      "label": null,
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking price is in the highlight block with id 'hs_cos_wrapper_bedrooms' and label 'Asking Price'. Revenue (Gross Sales) is in the highlight block with id 'hs_cos_wrapper_acres' and label 'Gross Sales'. Cash Flow is in the highlight block with id 'hs_cos_wrapper_est_mortgage' and label 'Cash Flow'. These IDs are stable across all three pages. The city is never disclosed \u2014 only a state/region label (e.g. 'Minnesota') is shown in hs_cos_wrapper_city_state; no city is published on any page. State is reliably found in span#hs_cos_wrapper_city_state. Cash flow may be blank on some listings (e.g. the liquor store St Paul page) but the field itself exists on the site.",
+  "domain": "oibmn.com",
+  "model": "claude-sonnet-4-6",
+  "status": "partial",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "asking_price",
+    "state"
+  ]
+}

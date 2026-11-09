@@ -1,0 +1,43 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Revenue:",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Cash Flow:",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "label",
+      "css": null,
+      "label": "Location:",
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking price is in the h3.listing-price element labeled 'Price:'. Revenue and Cash Flow are bold-labeled paragraphs inside div.fields-wrap. Location only shows county and state (e.g. 'Bergen, New Jersey' or 'Union County, New Jersey'), never a specific city, so city is not_disclosed. State can be parsed from the Location label value. All three pages follow this identical structure consistently.",
+  "domain": "regalconsultants.com",
+  "model": "claude-sonnet-4-6",
+  "status": "partial",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "asking_price",
+    "state"
+  ]
+}

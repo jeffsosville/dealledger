@@ -1,0 +1,39 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Listed Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "css",
+      "css": "#ctl00_ContentPlaceHolder2_dtRouteList_ctl00_lblTotalSales",
+      "label": null,
+      "not_disclosed": true
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Net Income:",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "Location:",
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Asking price uses label 'Listed Price:' and is in span#ctl00_ContentPlaceHolder2_dtRouteList_ctl00_lblListedPrice. Cash flow uses label 'Net Income:' (weekly net after expenses) in span#ctl00_ContentPlaceHolder2_dtRouteList_ctl00_lblNetIncome. Revenue has a 'Total Sales:' label and corresponding span#ctl00_ContentPlaceHolder2_dtRouteList_ctl00_lblTotalSales but it is empty on all three pages \u2014 revenue figures appear only in the free-text description, so not_disclosed=true. City uses label 'Location:' in span#ctl00_ContentPlaceHolder2_dtRouteList_ctl00_lblCity. State is never shown as a structured field anywhere on the detail pages, only implied by city names in the description text, so not_disclosed=true.",
+  "domain": "commercialroutesforsale.com",
+  "model": "claude-sonnet-4-6",
+  "status": "validated",
+  "generated_at": "2026-11-09T14:22:09Z"
+}

@@ -1,0 +1,43 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "label",
+      "css": null,
+      "label": "Asking Price:",
+      "not_disclosed": false
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Gross Revenue:",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "Adj. Cash Flow*:",
+      "not_disclosed": true
+    },
+    "city": {
+      "method": "label",
+      "css": null,
+      "label": "Location:",
+      "not_disclosed": false
+    },
+    "state": {
+      "method": "label",
+      "css": null,
+      "label": "Location:",
+      "not_disclosed": false
+    }
+  },
+  "notes": "Asking Price and Gross Revenue are present on all pages via their labels in the noborder table. Adj. Cash Flow is labeled 'Adj. Cash Flow*:' but is empty on all three pages \u2014 the broker never publishes this value, so not_disclosed=true. City and state are not in separate fields; they appear together after the 'Location:' label inside the Executive Summary table (e.g. 'Peoria, Illinois Area' or 'Central Illinois'). Both city and state must be parsed from that single Location label value. Revenue shows '$1' as a placeholder on all pages, indicating the broker intentionally omits real revenue figures, but the field/label is structurally present.",
+  "domain": "americanbusinessbrokers.com",
+  "model": "claude-sonnet-4-6",
+  "status": "partial",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "revenue",
+    "state"
+  ]
+}

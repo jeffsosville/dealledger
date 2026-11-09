@@ -1,0 +1,43 @@
+{
+  "fields": {
+    "asking_price": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "revenue": {
+      "method": "label",
+      "css": null,
+      "label": "Revenue",
+      "not_disclosed": false
+    },
+    "cash_flow": {
+      "method": "label",
+      "css": null,
+      "label": "EBITDA",
+      "not_disclosed": false
+    },
+    "city": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    },
+    "state": {
+      "method": "none",
+      "css": null,
+      "label": null,
+      "not_disclosed": true
+    }
+  },
+  "notes": "Only one of the three pages loaded successfully (S-3997-1 CMH); the other two returned HTTP 502 errors. Based on the available page, the site presents financial data in an HTML table inside a text-editor widget. There is no asking price, city, or state shown on any listing page \u2014 location is only vaguely described in prose (e.g. 'Southeast region'). Revenue is labeled 'Revenue' and cash flow is labeled 'EBITDA' in the Financial Summary table. The site does not publish asking price or precise city/state fields.",
+  "domain": "gottesman-company.com",
+  "model": "claude-sonnet-4-6",
+  "status": "needs_review",
+  "generated_at": "2026-11-09T14:22:09Z",
+  "weak_fields": [
+    "revenue",
+    "cash_flow"
+  ]
+}
