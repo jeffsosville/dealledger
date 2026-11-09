@@ -3368,5 +3368,11 @@
     "count": 14,
     "score": 23,
     "sample_text": "Businesses For Sale"
+  },
+  "thomashospitality.com": {
+    "container_selector": "tr",
+    "count": 18,
+    "score": 30,
+    "sample_text": "Awesome Pizza Business Sold Ann Arbor,MI 48103 $22,500 View Details>>>>"
   }
 }

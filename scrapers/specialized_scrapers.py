@@ -2549,6 +2549,19 @@ class WPRestScraper:
                     break
 
         acf = item.get("acf") or {}
+        # Some themes expose listing fields in REST `meta` instead of ACF, prefixed
+        # by post type (thomashospitality.com: business_price, business_availability).
+        meta = item.get("meta")
+        if isinstance(meta, dict) and meta:
+            folded = {re.sub(r"^(?:business|listing|property)_", "", k): v
+                      for k, v in meta.items() if not isinstance(v, (dict, list))}
+            acf = {**folded, **(acf if isinstance(acf, dict) else {})}
+        avail = str(acf.get("availability") or "").strip().lower()
+        if avail:
+            if re.search(r"\blease\b|\brent\b", avail):
+                return None
+            if re.search(r"sold|contract|pending|off[\s-]?market", avail):
+                status = "sold"
         price = self._num(acf.get("asking_price") or acf.get("price") or acf.get("list_price"))
         cash_flow = self._num(acf.get("cash_flow") or acf.get("cashflow") or acf.get("sde"))
         revenue = self._num(acf.get("revenue") or acf.get("gross_revenue"))
