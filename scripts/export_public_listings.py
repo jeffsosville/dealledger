@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 export_public_listings.py — the public download: every published, active,
-broker-direct listing, written to data/public/ as CSV and JSON.
+broker-direct listing, written to data/public/ as CSV and JSON, plus
+listings_left_observation.csv (listings absent from 3 complete crawls of their
+broker's site, with the date they left observation — never labelled sold).
 
 Stable URLs (overwritten daily):
     https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings.csv
@@ -80,12 +82,12 @@ def fetch_all(base, key):
     }, "id")
 
 
-def fetch_dates(base, key):
+def fetch_dates(base, key, published_only=True):
     """{row_id: dates} from listing_dates. Needs the service key (table is private)."""
-    recs = _paged(base, key, "listing_dates", {
-        "select": "listing_key,row_ids,first_seen,last_seen,listed_on_basis,listed_after",
-        "published": "is.true",
-    }, "listing_key")
+    params = {"select": "listing_key,row_ids,first_seen,last_seen,listed_on_basis,listed_after"}
+    if published_only:
+        params["published"] = "is.true"
+    recs = _paged(base, key, "listing_dates", params, "listing_key")
     by_row = {}
     for rec in recs:
         for rid in rec.get("row_ids") or []:
@@ -117,6 +119,33 @@ def apply_dates(rows, by_row):
             r["listed_after"] = None
         out.append(r)
     return out
+
+
+LEFT_FIELDS = [
+    "id", "title", "asking_price", "cash_flow", "revenue",
+    "city", "state", "vertical", "broker_name", "broker_domain",
+    "url", "first_seen", "last_seen", "left_observation_on", "left_observation_reason",
+]
+
+
+def export_left_observation(base, key, out):
+    """Listings that left observation (absent from 3 complete crawls of the
+    broker's site). Kept in the open record so durations can be studied; this
+    is not a claim the business sold. first_seen comes from listing_dates
+    (sightings), never the seeded first_seen column."""
+    rows = _paged(base, key, "v_listings_left_observation", {"select": "*"}, "id")
+    by_row = fetch_dates(base, key, published_only=False)
+    for r in rows:
+        rec = by_row.get(r["id"])
+        r["first_seen"] = rec["first_seen"] if rec else None
+    rows = [{k: r.get(k) for k in LEFT_FIELDS} for r in rows
+            if r.get("url") and not MARKETPLACE_RE.search(r["url"])]
+    rows.sort(key=lambda r: (r.get("left_observation_on") or "", r["id"]))
+    with open(out / "listings_left_observation.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=LEFT_FIELDS)
+        w.writeheader()
+        w.writerows(rows)
+    return len(rows)
 
 
 def clean(row):
@@ -161,6 +190,8 @@ def main():
     def pct(field):
         return round(100 * sum(1 for r in rows if r.get(field) not in (None, "")) / len(rows))
 
+    left_rows = export_left_observation(base, key, out)
+
     meta = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "rows": len(rows),
@@ -169,6 +200,7 @@ def main():
                          ["asking_price", "cash_flow", "revenue", "city", "state", "vertical"]},
         "listed_on_basis": {b: sum(1 for r in rows if r.get("listed_on_basis") == b)
                             for b in ("observed", "floor")},
+        "left_observation_rows": left_rows,
         "license": "CC0-1.0",
         "dictionary": "DATA_DICTIONARY.md",
     }

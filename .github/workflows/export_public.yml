@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name "dealledger-bot"
           git config user.email "bot@dealledger.org"
-          git add data/public/listings.csv data/public/listings.json data/public/meta.json
+          git add data/public/listings.csv data/public/listings.json data/public/meta.json data/public/listings_left_observation.csv
           if git diff --staged --quiet; then
             echo "No changes."
             exit 0

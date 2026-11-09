@@ -38,7 +38,7 @@ Earlier days are in this file's git history.
 
 - **Not included:** broker-written descriptions and photos. They belong to the brokers; `url` links to the original page.
 - **Included:** listings on brokers' own websites that are currently active and pass our listing checks.
-- **Excluded:** real estate and commercial property, for-sale-by-owner, aggregator and marketplace reposts, sold or withdrawn listings, and pages flagged for review.
+- **Excluded:** real estate and commercial property, for-sale-by-owner, aggregator and marketplace reposts, and pages flagged for review. Listings that are no longer on the broker's site are in `listings_left_observation.csv` (below), not this file.
 - **Not exported yet:** days on market. Listing dates are hard to observe directly, and we won't publish a figure until the method is settled.
 
 ## Known gaps
@@ -46,3 +46,15 @@ Earlier days are in this file's git history.
 Coverage per field is in `meta.json`. Revenue and city are the thinnest. Fixes are tracked as GitHub issues, and corrections are welcome.
 
 Methodology: [`docs/METHODOLOGY.md`](../../docs/METHODOLOGY.md). Bad row? Open an issue or email info@dealledger.org.
+
+## listings_left_observation.csv
+
+Listings that were on a broker's own website and then **left observation**: they were absent from three consecutive complete crawls of that broker's site (a complete crawl succeeded and saw at least 80% of the broker's usual listing count). This file is how the record keeps what happened to a listing after it stopped being advertised. Leaving observation is **not** evidence that a business sold; a broker may withdraw, pause or relist it. If a listing reappears, it returns to `listings.csv` and drops out of this file.
+
+| Field | Meaning |
+|---|---|
+| id … url | Same as `listings.csv` |
+| first_seen | First day a DealLedger crawl saw the listing |
+| last_seen | Last day a DealLedger crawl saw the listing |
+| left_observation_on | Day the listing was recorded as having left observation |
+| left_observation_reason | Why (currently always: absent from 3 complete crawls of the broker's site) |
