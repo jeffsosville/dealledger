@@ -1,0 +1,65 @@
+name: Held-broker audit
+
+# agents/held_audit.py — settles listings the removal rule holds (broker over the
+# 30% guard) by checking each listing's own page and the broker's site links.
+# Manual for now: run one broker, review, then the whole held list. Once Jeff
+# approves, add the workflow_run trigger below so it runs after the stale check.
+#
+# on:
+#   workflow_run:
+#     workflows: ["Nightly stale check"]
+#     types: [completed]
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: "Only this broker (blank = every held broker)"
+        default: ""
+      write:
+        description: "1 = write verdicts; 0 = dry run"
+        default: "0"
+
+permissions:
+  contents: read
+
+jobs:
+  held-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install pandas requests beautifulsoup4 "curl_cffi==0.16.3" supabase python-dotenv playwright
+          python -m playwright install --with-deps chromium
+      - name: Check credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: python3 scripts/check_credentials.py --need supabase,proxy
+      - name: Run held audit
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+        run: |
+          ARGS="--json held_audit.json"
+          if [ -n "${{ inputs.domain }}" ]; then ARGS="$ARGS --domain ${{ inputs.domain }}"; fi
+          if [ "${{ inputs.write }}" = "1" ]; then ARGS="$ARGS --write"; fi
+          python3 agents/held_audit.py $ARGS 2>&1 | tee held_audit.log
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 held_audit.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: held-audit
+          path: |
+            held_audit.log
+            held_audit.json
+          retention-days: 14
