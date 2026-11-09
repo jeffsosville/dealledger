@@ -7,6 +7,7 @@ Detail-page field maps — Claude writes them once per domain, Python runs them 
     python3 agents/detail_maps.py backfill --domain eatz-associates.com --limit 25          # dry run
     python3 agents/detail_maps.py backfill --domain eatz-associates.com --limit 25 --write  # real
     python3 agents/detail_maps.py submit --targets repair                                  # only REPAIR_TARGETS
+    python3 agents/detail_maps.py validate                                                 # re-score saved maps, no API call
     python3 agents/detail_maps.py backfill --domain kensingtoncompany.com --repair         # fix wrong values (dry run)
 
 Maps land in data/detail_maps/<domain>.json. V6 calls apply_detail_map() before its regex.
@@ -194,10 +195,13 @@ def apply_detail_map(domain, html):
     if not path.exists():
         return {}
     m = json.loads(path.read_text())
-    if m.get("status") != "validated":
+    if m.get("status") not in ("validated", "partial"):
         return {}
+    skip = set(m.get("weak_fields", []))
     soup, out = BeautifulSoup(html, "html.parser"), {}
     for f, spec in m["fields"].items():
+        if f in skip or spec.get("not_disclosed"):
+            continue
         raw = None
         try:
             if spec["method"] == "css" and spec.get("css"):
@@ -250,21 +254,35 @@ def collect():
                  generated_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
         path = MAP_DIR / f"{domain}.json"
         path.write_text(json.dumps(m, indent=2))
-        # Validate against the saved samples: each non-"none" field must hit on ≥2 of them.
-        samples = sorted((SAMPLE_DIR / domain).glob("*.html"))
-        hits = {f: 0 for f in FIELDS}
-        for s in samples:
-            for f in apply_detail_map(domain, s.read_text()):
-                hits[f] += 1
-        needed = [f for f, spec in m["fields"].items() if spec["method"] != "none"]
-        weak = [f for f in needed if hits[f] < min(2, len(samples))]
-        if weak:
-            m["status"] = "needs_review"
-            m["weak_fields"] = weak
-            path.write_text(json.dumps(m, indent=2))
-        nd = [f for f, s in m["fields"].items() if s["not_disclosed"]]
-        print(f"{'✓' if not weak else '~'} {domain}: hits {hits}"
-              + (f"  weak={weak}" if weak else "") + (f"  not_disclosed={nd}" if nd else ""))
+        validate(domain)
+
+
+def validate(domain):
+    """Score a map against its saved samples; each field the broker publishes must hit on
+    >= 2 samples. Weak fields are switched off (not used), strong ones stay live:
+    status validated = all strong, partial = some money field strong, needs_review = none."""
+    path = MAP_DIR / f"{domain}.json"
+    m = json.loads(path.read_text())
+    m["status"] = "validated"
+    m.pop("weak_fields", None)
+    path.write_text(json.dumps(m, indent=2))
+    samples = sorted((SAMPLE_DIR / domain).glob("*.html"))
+    hits = {f: 0 for f in FIELDS}
+    for smp in samples:
+        for f in apply_detail_map(domain, smp.read_text()):
+            hits[f] += 1
+    needed = [f for f, spec in m["fields"].items()
+              if spec["method"] != "none" and not spec.get("not_disclosed")]
+    weak = [f for f in needed if hits[f] < min(2, len(samples))]
+    strong_money = [f for f in MONEY if f in needed and f not in weak]
+    if weak:
+        m["status"] = "partial" if strong_money else "needs_review"
+        m["weak_fields"] = weak
+    path.write_text(json.dumps(m, indent=2))
+    nd = [f for f, sp in m["fields"].items() if sp.get("not_disclosed")]
+    mark = {"validated": "✓", "partial": "~", "needs_review": "✗"}[m["status"]]
+    print(f"{mark} {domain}: {m['status']}  live={[f for f in needed if f not in weak]}"
+          + (f"  off={weak}" if weak else "") + (f"  not_disclosed={nd}" if nd else ""))
 
 
 # ---------------------------------------------------------------- backfill
@@ -276,7 +294,9 @@ def backfill(domain, limit, write, repair=False):
         rows = [r for r in q.limit(1000).execute().data if _impossible(r)][:limit]
     else:
         rows = q.or_("revenue.is.null,cash_flow.is.null,state.is.null").limit(limit).execute().data
-    filled, price_diffs = 0, []
+    filled, price_diffs, to_clear = 0, [], []
+    mp = MAP_DIR / f"{domain}.json"
+    nd = {f for f, sp in json.loads(mp.read_text())["fields"].items() if sp.get("not_disclosed")} if mp.exists() else set()
     for r in rows:
         try:
             html, _ = fetcher.fetch(r["url"], use_proxy=_needs_proxy(domain))
@@ -285,6 +305,9 @@ def backfill(domain, limit, write, repair=False):
             continue
         found = apply_detail_map(domain, html)
         if repair:
+            for k in ("revenue", "cash_flow"):
+                if k in nd and r.get(k):
+                    to_clear.append((r["id"], k, r[k]))
             if found.get("asking_price") and r.get("asking_price") and found["asking_price"] != float(r["asking_price"]):
                 price_diffs.append((r["id"], r["url"], r["asking_price"], found["asking_price"]))
             patch = {k: v for k, v in found.items()
@@ -302,6 +325,13 @@ def backfill(domain, limit, write, repair=False):
     fetcher.close()
     print(f"\n{domain}: {filled}/{len(rows)} listings {'repaired' if repair else 'gained fields'}"
           + ("" if write else "  (dry run — add --write)"))
+    if to_clear:
+        print(f"\n{len(to_clear)} stored values the broker does not publish (clear via SQL, NOT written):")
+        print("  ids: " + ",".join(sorted({i for i, _, _ in to_clear})))
+        for k in ("revenue", "cash_flow"):
+            n = sum(1 for _, f, _ in to_clear if f == k)
+            if n:
+                print(f"  {k}: {n}")
     if price_diffs:
         print(f"\nAsking price on the page differs from the stored price on {len(price_diffs)} rows "
               "(NOT written — needs Jeff):")
@@ -311,7 +341,7 @@ def backfill(domain, limit, write, repair=False):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["submit", "collect", "backfill"])
+    p.add_argument("cmd", choices=["submit", "collect", "validate", "backfill"])
     p.add_argument("--domain")
     p.add_argument("--limit", type=int, default=25)
     p.add_argument("--write", action="store_true")
@@ -323,6 +353,10 @@ if __name__ == "__main__":
         submit(a.targets)
     elif a.cmd == "collect":
         collect()
+    elif a.cmd == "validate":
+        for d in ([a.domain] if a.domain else REPAIR_TARGETS + TARGETS):
+            if (MAP_DIR / f"{d}.json").exists():
+                validate(d)
     else:
         if not a.domain:
             sys.exit("--domain required")

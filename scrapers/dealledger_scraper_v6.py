@@ -3588,8 +3588,15 @@ def main():
     if args.broker and not args.write:
         use_supabase = False
 
+    # A one-broker run must never overwrite the daily crawl's snapshot files
+    # (data/snapshots/<date>/ is committed by CI; a 1-broker test replaced three
+    # 800-broker snapshots on 2026-11-09).
+    output_dir = args.output
+    if args.broker and output_dir == "data/snapshots":
+        output_dir = "data/snapshots_test"
+
     scraper = DealLedgerScraper(
-        output_dir=args.output,
+        output_dir=output_dir,
         use_supabase=use_supabase,
     )
 

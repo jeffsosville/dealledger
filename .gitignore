@@ -53,3 +53,4 @@ private/
 data/detail_maps/samples/
 *.tsbuildinfo
 *.log
+data/snapshots_test/
