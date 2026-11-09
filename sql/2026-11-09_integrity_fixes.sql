@@ -293,3 +293,29 @@ begin
   return jsonb_build_object('run_id', v_run, 'cutoff', v_cutoff, 'candidates', v_cand,
                             'inserted', v_ins, 'updated', v_upd, 'withdrawn', v_wd);
 end $function$;
+
+------------------------------------------------------------------------------------------
+-- PART 6  [P4] Exclude "revenue read as asking price" observations from price history
+--   Run AFTER `detail_maps.py backfill --domain <d> --repair --fix-price --write` for a
+--   domain. Those rows' stored price was the revenue figure on every crawl until now;
+--   without this, the corrected price would read as a fake reduction (e.g. Kensington
+--   woodworking shop $1.6M -> $499K). Edit the domain list to the ones actually fixed.
+------------------------------------------------------------------------------------------
+-- dry run
+select regexp_replace(lower(d.broker_domain), '^www\.', '') dom, count(*) evidence_rows, count(distinct e.identity_id) listings
+from private.price_evidence e
+join private.price_identity i on i.identity_id = e.identity_id
+join public.listings_direct d on d.id = i.listing_id
+where regexp_replace(lower(d.broker_domain), '^www\.', '') in ('kensingtoncompany.com')
+  and e.asking_price = e.revenue and e.exclusion = ''
+group by 1;
+
+begin;
+update private.price_evidence e
+   set exclusion = 'misread: revenue read as asking price (fixed 2026-11-09)'
+  from private.price_identity i
+  join public.listings_direct d on d.id = i.listing_id
+ where e.identity_id = i.identity_id
+   and regexp_replace(lower(d.broker_domain), '^www\.', '') in ('kensingtoncompany.com')
+   and e.asking_price = e.revenue and e.exclusion = '';
+commit;

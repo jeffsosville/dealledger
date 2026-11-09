@@ -14,8 +14,10 @@ Maps land in data/detail_maps/<domain>.json. V6 calls apply_detail_map() before 
 Only fills EMPTY fields. Never overwrites a value already in listings_direct —
 except `backfill --repair`, which replaces revenue / cash_flow on rows whose stored
 financials are impossible (revenue = asking price, cash flow = asking price or >= revenue).
---repair never writes asking_price: a corrected price would read as a price change, so a
-differing price is printed for Jeff instead.
+--repair writes asking_price only with --fix-price, and only where the stored price equals
+the stored revenue (the "revenue read as price" misread). It then sets price_from_map on the
+map so V6 reads the price the same way; run PART 6 of sql/2026-11-09_integrity_fixes.sql to
+exclude the misread observations from price history.
 """
 import argparse, json, os, re, sys, time
 from pathlib import Path
@@ -286,7 +288,7 @@ def validate(domain):
 
 
 # ---------------------------------------------------------------- backfill
-def backfill(domain, limit, write, repair=False):
+def backfill(domain, limit, write, repair=False, fix_price=False):
     db, fetcher = sb(), PageFetcher()
     q = (db.table("listings_direct").select("id,url," + ",".join(FIELDS))
          .eq("broker_domain", domain).eq("status", "active").eq("public", True))
@@ -308,12 +310,17 @@ def backfill(domain, limit, write, repair=False):
             for k in ("revenue", "cash_flow"):
                 if k in nd and r.get(k):
                     to_clear.append((r["id"], k, r[k]))
-            if found.get("asking_price") and r.get("asking_price") and found["asking_price"] != float(r["asking_price"]):
-                price_diffs.append((r["id"], r["url"], r["asking_price"], found["asking_price"]))
+            stored_p = float(r["asking_price"]) if r.get("asking_price") not in (None, "") else None
+            stored_r = float(r["revenue"]) if r.get("revenue") not in (None, "") else None
+            if found.get("asking_price") and stored_p and found["asking_price"] != stored_p:
+                misread = stored_r is not None and stored_r == stored_p
+                price_diffs.append((r["id"], r["url"], r["asking_price"], found["asking_price"], misread))
             patch = {k: v for k, v in found.items()
                      if k in ("revenue", "cash_flow") and v
                      and v != (float(r[k]) if r.get(k) not in (None, "") else None)}
             patch.update({k: v for k, v in found.items() if k in TEXT and not r.get(k)})
+            if fix_price and price_diffs and price_diffs[-1][0] == r["id"] and price_diffs[-1][4]:
+                patch["asking_price"] = found["asking_price"]
         else:
             patch = {k: v for k, v in found.items() if not r.get(k)}  # empty fields only
         if patch:
@@ -333,10 +340,26 @@ def backfill(domain, limit, write, repair=False):
             if n:
                 print(f"  {k}: {n}")
     if price_diffs:
-        print(f"\nAsking price on the page differs from the stored price on {len(price_diffs)} rows "
-              "(NOT written — needs Jeff):")
-        for pid, url, old, new in price_diffs:
-            print(f"  {pid}  stored {old}  page {new}  {url}")
+        mis = [d for d in price_diffs if d[4]]
+        other = [d for d in price_diffs if not d[4]]
+        done = "written" if (fix_price and write) else ("would write with --write" if fix_price else "NOT written")
+        if mis:
+            print(f"\nMisread prices (stored price = stored revenue) on {len(mis)} rows — {done}:")
+            for pid, url, old, new, _ in mis:
+                print(f"  {pid}  stored {old}  page {new}  {url}")
+        if other:
+            print(f"\nPage price differs but stored price is not the revenue on {len(other)} rows "
+                  "(never written — needs Jeff):")
+            for pid, url, old, new, _ in other:
+                print(f"  {pid}  stored {old}  page {new}  {url}")
+        if fix_price and write and mis:
+            mp = MAP_DIR / f"{domain}.json"
+            m = json.loads(mp.read_text())
+            m["price_from_map"] = True
+            mp.write_text(json.dumps(m, indent=2))
+            print(f"\n{domain}: price_from_map=true — the crawler now reads asking price from this map. "
+                  "Commit data/detail_maps/ and run PART 6 of the SQL so the misread prices are "
+                  "excluded from price history.")
 
 
 if __name__ == "__main__":
@@ -346,6 +369,8 @@ if __name__ == "__main__":
     p.add_argument("--limit", type=int, default=25)
     p.add_argument("--write", action="store_true")
     p.add_argument("--repair", action="store_true")
+    p.add_argument("--fix-price", action="store_true",
+                   help="with --repair: also correct asking_price where stored price = stored revenue")
     p.add_argument("--targets", choices=["all", "gaps", "repair"], default="all")
     a = p.parse_args()
     MAP_DIR.mkdir(parents=True, exist_ok=True)
@@ -360,4 +385,4 @@ if __name__ == "__main__":
     else:
         if not a.domain:
             sys.exit("--domain required")
-        backfill(a.domain, a.limit, a.write, a.repair)
+        backfill(a.domain, a.limit, a.write, a.repair, a.fix_price)

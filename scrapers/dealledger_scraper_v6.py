@@ -80,6 +80,7 @@ import sys
 import time
 import traceback
 from collections import Counter, defaultdict
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
 
@@ -1465,6 +1466,86 @@ def _sane_financials(price, cash_flow, revenue):
         cash_flow = None
     return price, cash_flow, revenue
 
+
+
+
+# ============================================================
+# DETAIL-PAGE FIELD MAPS (agents/detail_maps.py writes them)
+# ============================================================
+# Some brokers' cards carry several dollar figures and extract_price() takes
+# the largest, so the REVENUE lands in asking_price (kensingtoncompany.com:
+# "$1.6M" stored for a $499K woodworking shop, 2026-11-09). For a domain whose
+# map has a live asking_price, the detail page's mapped figures win, and a
+# listing that isn't re-fetched keeps its STORED financials instead of the
+# card's guess — otherwise every crawl would flip the price and the price
+# detector would record fake changes. Self-contained: CI doesn't install the
+# anthropic package that agents/detail_maps.py imports.
+_DETAIL_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "detail_maps"
+_FIN_MAP_CACHE: dict = {}
+
+
+def _fin_map(netloc: str):
+    """The map for this domain if it can supply asking_price, else None."""
+    key = (netloc or "").lower()
+    if key in _FIN_MAP_CACHE:
+        return _FIN_MAP_CACHE[key]
+    m = None
+    for cand in (key, key[4:] if key.startswith("www.") else "www." + key):
+        path = _DETAIL_MAP_DIR / f"{cand}.json"
+        if path.exists():
+            try:
+                m = json.loads(path.read_text())
+            except Exception:
+                m = None
+            break
+    # Opt-in only: `detail_maps.py backfill --repair --fix-price --write` sets
+    # price_from_map when it corrects stored prices from this map, so the
+    # crawler and the database switch source together (no flip-flopping).
+    ok = (m and m.get("price_from_map") is True
+          and m.get("status") in ("validated", "partial")
+          and "asking_price" not in m.get("weak_fields", [])
+          and m["fields"].get("asking_price", {}).get("method") in ("css", "label")
+          and not m["fields"]["asking_price"].get("not_disclosed"))
+    _FIN_MAP_CACHE[key] = m if ok else None
+    return _FIN_MAP_CACHE[key]
+
+
+def _map_label_value(soup, label):
+    pat = re.compile(re.escape(label.rstrip(": ").strip()), re.I)
+    for s in soup.find_all(string=pat):
+        node = s.parent
+        after = node.get_text(" ", strip=True)
+        mm = pat.search(after)
+        tail = after[mm.end():] if mm else ""
+        if tail.strip(" :-"):
+            return tail.strip(" :-")
+        sib = node.find_next_sibling() or (node.parent and node.parent.find_next_sibling())
+        if sib:
+            return sib.get_text(" ", strip=True)
+    return None
+
+
+def _apply_fin_map(m, html: str) -> dict:
+    """{asking_price, revenue, cash_flow} the map finds on this detail page."""
+    soup, out = BeautifulSoup(html, "html.parser"), {}
+    skip = set(m.get("weak_fields", []))
+    for f in ("asking_price", "revenue", "cash_flow"):
+        spec = m["fields"].get(f) or {}
+        if f in skip or spec.get("not_disclosed"):
+            continue
+        raw = None
+        try:
+            if spec.get("method") == "css" and spec.get("css"):
+                el = soup.select_one(spec["css"])
+                raw = el.get_text(" ", strip=True) if el else None
+            elif spec.get("method") == "label" and spec.get("label"):
+                raw = _map_label_value(soup, spec["label"])
+        except Exception:
+            raw = None
+        vals = [v for v in parse_all_prices(raw or "") if v >= 1_000]
+        if vals:
+            out[f] = vals[0]
+    return out
 
 
 # Residential / IDX property feeds. Blocking these by DOMAIN only ever catches
@@ -3219,6 +3300,7 @@ class DealLedgerScraper:
             # Listings already enriched on an earlier run: carry the stored
             # detail fields forward instead of fetching the page again.
             stored = self._stored_listings([c["id"] for c in with_detail])
+            fin_map = _fin_map(urlparse(url).netloc)
             reused = 0
             fresh = []
             for c in with_detail:
@@ -3232,6 +3314,10 @@ class DealLedgerScraper:
                     for f in ("asking_price", "cash_flow", "revenue", "state"):
                         if not c.get(f) and prev.get(f):
                             c[f] = prev[f]
+                    if fin_map:
+                        for f in ("asking_price", "cash_flow", "revenue"):
+                            if prev.get(f):
+                                c[f] = prev[f]
                     if not c.get("city") and prev.get("city"):
                         c["city"] = prev["city"]
                     c["url"] = c.pop("_detail_url")
@@ -3266,6 +3352,12 @@ class DealLedgerScraper:
                         detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
                     had_state = bool(listing.get("state"))
                     listing = ListingExtractor.enrich_from_detail(listing, detail_html)
+                    if fin_map:
+                        found = _apply_fin_map(fin_map, detail_html)
+                        for f, v in found.items():
+                            listing[f] = v
+                        if found.get("asking_price"):
+                            listing["_fin_from_map"] = True
                     listing["url"] = detail_url
                     enriched += 1
                     self.stats["detail_pages_fetched"] += 1
@@ -3274,9 +3366,20 @@ class DealLedgerScraper:
                 except Exception:
                     listing.pop("_detail_url", None)
 
+            # Mapped domain: a card whose detail page wasn't read this run keeps
+            # its stored financials rather than the card's largest-$ guess.
+            if fin_map:
+                for c in with_detail:
+                    prev = stored.get(c["id"])
+                    if prev and not c.get("_fin_from_map"):
+                        for f in ("asking_price", "cash_flow", "revenue"):
+                            if prev.get(f):
+                                c[f] = prev[f]
+
             # Strip remaining internal fields
             for l in unique_cards:
                 l.pop("_detail_url", None)
+                l.pop("_fin_from_map", None)
 
             # Guard: url_is_listing_specific must mean "unique to this
             # listing", not just "differs from the list-page URL". A card

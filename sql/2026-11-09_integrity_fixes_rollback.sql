@@ -41,3 +41,8 @@ commit;
 -- PART 5 — price auto-publish hold
 -- Re-run the detect_price_changes() definition from claude/price-detector-v7-2026-11-07.sql, then:
 drop table if exists private.price_auto_hold;
+
+-- PART 6 — misread-price exclusions
+update private.price_evidence set exclusion = ''
+ where exclusion = 'misread: revenue read as asking price (fixed 2026-11-09)';
+-- stored prices written by --fix-price: the old values are in the backfill output; restore by id if needed.
