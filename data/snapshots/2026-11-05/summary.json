@@ -1,27 +1,124 @@
 {
-  "started": "2026-11-05T19:18:39.047955+00:00",
-  "brokers_attempted": 1,
-  "brokers_success": 1,
-  "brokers_failed": 0,
-  "total_listings": 16,
-  "listings_with_price": 16,
-  "listings_with_cashflow": 2,
-  "listings_with_state": 15,
-  "detail_pages_fetched": 15,
-  "patterns_cached": 483,
-  "patterns_learned": 1,
+  "started": "2026-11-05T10:25:37.940789+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 540,
+  "brokers_failed": 217,
+  "total_listings": 11589,
+  "listings_with_price": 10578,
+  "listings_with_cashflow": 4998,
+  "listings_with_state": 9469,
+  "detail_pages_fetched": 262,
+  "patterns_cached": 592,
+  "patterns_learned": 489,
   "verticals": {
-    "other": 15,
-    "technology": 1
+    "retail": 1202,
+    "healthcare": 674,
+    "technology": 1768,
+    "other": 3199,
+    "automotive": 765,
+    "construction": 352,
+    "restaurant": 2583,
+    "plumbing": 109,
+    "landscaping": 101,
+    "cleaning": 170,
+    "hvac": 180,
+    "vending": 136,
+    "manufacturing": 235,
+    "electrical": 72,
+    "roofing": 31,
+    "pest_control": 12
   },
-  "failure_types": {},
+  "failure_types": {
+    "EMBED_BBS": 43,
+    "NO_PATTERN": 112,
+    "FETCH_ERROR": 40,
+    "HTTP_403": 6
+  },
+  "site_pages_dropped": 42,
   "slowest_brokers": [
     [
-      24,
-      "poegroupadvisors.com",
+      2304,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      2224,
+      "metrocbb.com",
+      7
+    ],
+    [
+      2174,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1785,
+      "pacificrb.com",
+      7
+    ],
+    [
+      1510,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1386,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      1270,
+      "bwbrokerage.com",
       16
+    ],
+    [
+      512,
+      "bcbusinessbroker.ca",
+      22
+    ],
+    [
+      493,
+      "lighthousebusinessbrokers.com",
+      4
+    ],
+    [
+      481,
+      "seilertucker.com",
+      5
+    ],
+    [
+      481,
+      "greenandco.biz",
+      21
+    ],
+    [
+      471,
+      "sunshineagle.com",
+      12
+    ],
+    [
+      465,
+      "premierbb.com",
+      62
+    ],
+    [
+      461,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      418,
+      "capitalroutesales.com",
+      6
     ]
   ],
-  "seconds_total": 24,
-  "completed": "2026-11-05T19:19:04.671825+00:00"
+  "seconds_total": 49712,
+  "completed": "2026-11-05T14:31:40.390108+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
 }
