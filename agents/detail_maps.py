@@ -6,9 +6,15 @@ Detail-page field maps — Claude writes them once per domain, Python runs them 
     python3 agents/detail_maps.py collect             # pull results, validate, write maps
     python3 agents/detail_maps.py backfill --domain eatz-associates.com --limit 25          # dry run
     python3 agents/detail_maps.py backfill --domain eatz-associates.com --limit 25 --write  # real
+    python3 agents/detail_maps.py submit --targets repair                                  # only REPAIR_TARGETS
+    python3 agents/detail_maps.py backfill --domain kensingtoncompany.com --repair         # fix wrong values (dry run)
 
 Maps land in data/detail_maps/<domain>.json. V6 calls apply_detail_map() before its regex.
-Only fills EMPTY fields. Never overwrites a value already in listings_direct.
+Only fills EMPTY fields. Never overwrites a value already in listings_direct —
+except `backfill --repair`, which replaces revenue / cash_flow on rows whose stored
+financials are impossible (revenue = asking price, cash flow = asking price or >= revenue).
+--repair never writes asking_price: a corrected price would read as a price change, so a
+differing price is printed for Jeff instead.
 """
 import argparse, json, os, re, sys, time
 from pathlib import Path
@@ -37,6 +43,15 @@ TARGETS = [
     "vikingmergers.com", "quietlight.com", "salehgroup.com", "www.websiteclosers.com",
     "www.reputedbrokerage.com", "listings.routeconsultant.com",
     "corbettrestaurantgroup.com", "sellingrestaurants.com",
+]
+# quietlight.com and websiteclosers.com removed 2026-11-09: digital/ecommerce is out of scope.
+
+# Domains whose STORED financials are impossible (integrity check 2026-11-09). Samples are
+# drawn from the corrupt rows so the map learns the real labels.
+REPAIR_TARGETS = [
+    "commercialroutesforsale.com", "americanbusinessbrokers.com",   # majority-corrupt
+    "kensingtoncompany.com", "eastcoastbusinessbrokers.com", "gottesman-company.com",
+    "www.calhouncompanies.com", "nashbb.com", "regalconsultants.com", "oibmn.com",
 ]
 MONEY = ("asking_price", "revenue", "cash_flow")
 TEXT = ("city", "state")
@@ -95,6 +110,20 @@ def cid(domain):
     return re.sub(r"[^a-zA-Z0-9_-]", "_", domain)[:64]
 
 
+def _impossible(r):
+    f = lambda v: float(v) if v not in (None, "") else None
+    p, cf, rv = f(r.get("asking_price")), f(r.get("cash_flow")), f(r.get("revenue"))
+    return bool((rv and p and rv == p) or (cf and p and cf == p)
+                or (cf and rv and rv > 0 and cf >= rv))
+
+
+def bad_urls(db, domain, n):
+    rows = (db.table("listings_direct").select("url,asking_price,cash_flow,revenue")
+            .eq("broker_domain", domain).eq("status", "active").eq("public", True)
+            .limit(500).execute().data)
+    return [r["url"] for r in rows if r.get("url") and _impossible(r)][:n * 2]
+
+
 def gap_urls(db, domain, n):
     rows = (db.table("listings_direct").select("url")
             .eq("broker_domain", domain).eq("status", "active").eq("public", True)
@@ -103,12 +132,14 @@ def gap_urls(db, domain, n):
 
 
 # ---------------------------------------------------------------- submit
-def submit():
+def submit(which="all"):
     db, fetcher, requests = sb(), PageFetcher(), []
-    for domain in TARGETS:
+    targets = {"all": TARGETS + REPAIR_TARGETS, "gaps": TARGETS, "repair": REPAIR_TARGETS}[which]
+    for domain in targets:
         pages, out = [], SAMPLE_DIR / domain
         out.mkdir(parents=True, exist_ok=True)
-        for url in gap_urls(db, domain, SAMPLES_PER_DOMAIN):
+        pick = bad_urls if domain in REPAIR_TARGETS else gap_urls
+        for url in pick(db, domain, SAMPLES_PER_DOMAIN):
             if len(pages) == SAMPLES_PER_DOMAIN:
                 break
             try:
@@ -132,7 +163,7 @@ def submit():
     if not requests:
         sys.exit("nothing to submit")
     batch = anthropic.Anthropic().messages.batches.create(requests=requests)
-    BATCH_FILE.write_text(json.dumps({"id": batch.id, "domains": {cid(d): d for d in TARGETS}}))
+    BATCH_FILE.write_text(json.dumps({"id": batch.id, "domains": {cid(d): d for d in targets}}))
     print(f"\nBatch {batch.id} submitted ({len(requests)} domains). Run `collect` once it ends (<24h).")
 
 
@@ -237,12 +268,15 @@ def collect():
 
 
 # ---------------------------------------------------------------- backfill
-def backfill(domain, limit, write):
+def backfill(domain, limit, write, repair=False):
     db, fetcher = sb(), PageFetcher()
-    rows = (db.table("listings_direct").select("id,url," + ",".join(FIELDS))
-            .eq("broker_domain", domain).eq("status", "active").eq("public", True)
-            .or_("revenue.is.null,cash_flow.is.null,state.is.null").limit(limit).execute().data)
-    filled = 0
+    q = (db.table("listings_direct").select("id,url," + ",".join(FIELDS))
+         .eq("broker_domain", domain).eq("status", "active").eq("public", True))
+    if repair:
+        rows = [r for r in q.limit(1000).execute().data if _impossible(r)][:limit]
+    else:
+        rows = q.or_("revenue.is.null,cash_flow.is.null,state.is.null").limit(limit).execute().data
+    filled, price_diffs = 0, []
     for r in rows:
         try:
             html, _ = fetcher.fetch(r["url"], use_proxy=_needs_proxy(domain))
@@ -250,7 +284,15 @@ def backfill(domain, limit, write):
             print(f"  fetch failed {r['url']} ({e})")
             continue
         found = apply_detail_map(domain, html)
-        patch = {k: v for k, v in found.items() if not r.get(k)}  # empty fields only
+        if repair:
+            if found.get("asking_price") and r.get("asking_price") and found["asking_price"] != float(r["asking_price"]):
+                price_diffs.append((r["id"], r["url"], r["asking_price"], found["asking_price"]))
+            patch = {k: v for k, v in found.items()
+                     if k in ("revenue", "cash_flow") and v
+                     and v != (float(r[k]) if r.get(k) not in (None, "") else None)}
+            patch.update({k: v for k, v in found.items() if k in TEXT and not r.get(k)})
+        else:
+            patch = {k: v for k, v in found.items() if not r.get(k)}  # empty fields only
         if patch:
             filled += 1
             print(f"  {r['id']}: {patch}")
@@ -258,8 +300,13 @@ def backfill(domain, limit, write):
                 db.table("listings_direct").update(patch).eq("id", r["id"]).execute()
         time.sleep(1)
     fetcher.close()
-    print(f"\n{domain}: {filled}/{len(rows)} listings gained fields"
+    print(f"\n{domain}: {filled}/{len(rows)} listings {'repaired' if repair else 'gained fields'}"
           + ("" if write else "  (dry run — add --write)"))
+    if price_diffs:
+        print(f"\nAsking price on the page differs from the stored price on {len(price_diffs)} rows "
+              "(NOT written — needs Jeff):")
+        for pid, url, old, new in price_diffs:
+            print(f"  {pid}  stored {old}  page {new}  {url}")
 
 
 if __name__ == "__main__":
@@ -268,13 +315,15 @@ if __name__ == "__main__":
     p.add_argument("--domain")
     p.add_argument("--limit", type=int, default=25)
     p.add_argument("--write", action="store_true")
+    p.add_argument("--repair", action="store_true")
+    p.add_argument("--targets", choices=["all", "gaps", "repair"], default="all")
     a = p.parse_args()
     MAP_DIR.mkdir(parents=True, exist_ok=True)
     if a.cmd == "submit":
-        submit()
+        submit(a.targets)
     elif a.cmd == "collect":
         collect()
     else:
         if not a.domain:
             sys.exit("--domain required")
-        backfill(a.domain, a.limit, a.write)
+        backfill(a.domain, a.limit, a.write, a.repair)
