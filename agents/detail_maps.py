@@ -51,7 +51,7 @@ TARGETS = [
 REPAIR_TARGETS = [
     "commercialroutesforsale.com", "americanbusinessbrokers.com",   # majority-corrupt
     "kensingtoncompany.com", "eastcoastbusinessbrokers.com", "gottesman-company.com",
-    "www.calhouncompanies.com", "nashbb.com", "regalconsultants.com", "oibmn.com",
+    "calhouncompanies.com", "nashbb.com", "regalconsultants.com", "oibmn.com",
 ]
 MONEY = ("asking_price", "revenue", "cash_flow")
 TEXT = ("city", "state")

@@ -47,11 +47,10 @@
     "last_used": "2026-02-21T19:05:32.419541"
   },
   "calhouncompanies.com": {
-    "pattern": "div|children:div|has_link|text:medium",
-    "success_count": 3,
-    "total_listings": 6,
-    "first_seen": "2026-02-18T14:04:12.013162",
-    "last_used": "2026-02-21T19:07:58.135605"
+    "container_selector": "div.block",
+    "count": 27,
+    "score": 30,
+    "sample_text": "Charlotte, NC - Subway for Sale Category : Subway AB7598 Listing Id Charlotte, NC Location $149,000 List Price"
   },
   "goldstarbbaz.com": {
     "container_selector": "tr",
