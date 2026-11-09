@@ -1472,6 +1472,13 @@ def _sane_financials(price, cash_flow, revenue):
     if (cash_flow is not None and revenue is not None
             and revenue > 0 and cash_flow >= revenue):
         cash_flow = None
+    # Revenue under 5% of the asking price is a weekly or monthly figure read
+    # as annual revenue (commercialroutesforsale.com: "Net $1,100 a week"
+    # stored as revenue on a $175,000 route, 2026-11-09). No Main Street
+    # business asks 20x its annual sales.
+    if (revenue is not None and price is not None and price > 0
+            and revenue < 0.05 * price):
+        revenue = None
     return price, cash_flow, revenue
 
 
