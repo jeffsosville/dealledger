@@ -2479,7 +2479,7 @@ class WPRestScraper:
     def _api_url(self, page: int) -> str:
         return (f"https://{self.domain}/wp-json/wp/v2/{self.rest_base}"
                 f"?per_page=100&page={page}"
-                f"&_fields=title,link,slug,date,modified,class_list,acf")
+                f"&_fields=title,link,slug,date,modified,class_list,acf,meta")
 
     @staticmethod
     def _clean_title(raw: str) -> str:
