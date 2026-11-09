@@ -1,0 +1,124 @@
+{
+  "started": "2026-11-09T10:25:08.327990+00:00",
+  "brokers_attempted": 786,
+  "brokers_success": 538,
+  "brokers_failed": 201,
+  "total_listings": 11412,
+  "listings_with_price": 10364,
+  "listings_with_cashflow": 4556,
+  "listings_with_state": 9091,
+  "detail_pages_fetched": 165,
+  "patterns_cached": 589,
+  "patterns_learned": 486,
+  "verticals": {
+    "retail": 1203,
+    "restaurant": 2640,
+    "automotive": 780,
+    "technology": 1386,
+    "cleaning": 168,
+    "healthcare": 709,
+    "construction": 315,
+    "plumbing": 110,
+    "manufacturing": 226,
+    "landscaping": 106,
+    "other": 3350,
+    "vending": 137,
+    "hvac": 177,
+    "electrical": 66,
+    "roofing": 31,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 46,
+    "NO_PATTERN": 107,
+    "FETCH_ERROR": 29,
+    "HTTP_403": 6
+  },
+  "site_pages_dropped": 50,
+  "slowest_brokers": [
+    [
+      2303,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      2196,
+      "naz-business.com",
+      25
+    ],
+    [
+      2128,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      1731,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1626,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      526,
+      "nextwavecommercial.com",
+      91
+    ],
+    [
+      490,
+      "veldma.com",
+      5
+    ],
+    [
+      477,
+      "theveldgroup.com",
+      52
+    ],
+    [
+      460,
+      "buygasstations.com",
+      3
+    ],
+    [
+      460,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      436,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      422,
+      "sbpoolroutes.com",
+      3
+    ],
+    [
+      413,
+      "premierbb.com",
+      62
+    ],
+    [
+      382,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      379,
+      "platanoadvisors.com",
+      1
+    ]
+  ],
+  "seconds_total": 42796,
+  "completed": "2026-11-09T15:10:37.841988+00:00",
+  "interrupted": true,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
