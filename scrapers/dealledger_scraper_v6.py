@@ -850,6 +850,14 @@ def positive_or_none(v):
 
 # Max detail pages per broker to avoid hammering servers
 MAX_DETAIL_PAGES = 50
+
+# Incomplete certificate chain on the broker's server (curl error 60).
+INSECURE_TLS_DOMAINS = {"goldstarbbaz.com"}
+
+
+def _bare(netloc):
+    n = (netloc or "").lower()
+    return n[4:] if n.startswith("www.") else n
 DETAIL_DELAY     = (0.5, 1.5)   # seconds between detail fetches
 
 # SPEED (2026-09-16). Runs since 12 Sep stopped hitting 100 brokers in the
@@ -2037,6 +2045,7 @@ class PageFetcher:
         domain = urlparse(url).netloc
         if domain in self._proxy_domains_runtime:
             use_proxy = True
+        tls_kw = {"verify": False} if _bare(domain) in INSECURE_TLS_DOMAINS else {}
         resp = None
         for attempt in range(MAX_403_RETRIES + 1):
             try:
@@ -2044,6 +2053,7 @@ class PageFetcher:
                     url, headers=self._headers(), timeout=timeout,
                     allow_redirects=True,
                     proxies=self._proxy_dict() if use_proxy else None,
+                    **tls_kw,
                 )
             except Exception:
                 # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
