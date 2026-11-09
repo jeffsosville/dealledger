@@ -212,6 +212,20 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 .foot a{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);text-decoration:none}
 .foot a:hover{color:var(--text)}
 
+
+/* Evidence-first discovery: public, broker-direct pages only. */
+.evidence{margin-top:28px;border-top:1px solid var(--border);padding-top:22px}
+.evidence-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.evidence-head h2{font-size:19px;letter-spacing:-.25px}
+.evidence-head a{font-family:var(--mono);font-size:12px}
+.evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.evidence-card{display:block;padding:18px;background:#fff;border:1px solid var(--border);text-decoration:none;color:var(--text)}
+.evidence-card:hover,.evidence-card:focus-visible{border-color:var(--link)}
+.evidence-kicker{font:500 11px var(--mono);letter-spacing:.4px;text-transform:uppercase;color:var(--accent)}
+.evidence-card strong{display:block;font-size:17px;margin:7px 0 5px}
+.evidence-card span:last-child{display:block;font-size:13px;color:var(--text-muted)}
+@media(max-width:640px){.evidence-grid{grid-template-columns:1fr}}
+
 /* phones: table becomes a stacked list */
 @media (max-width:640px){
   :root{--gutter:16px}
@@ -290,6 +304,25 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
       <div class="stat"><div class="stat-n"><!--DL:STALEPCT--></div><div class="stat-l">on our record 90+ days</div></div>
     </div>
     <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/why">Why we keep the record →</a></p>
+
+    <section class="evidence" aria-labelledby="evidence-title">
+      <div class="evidence-head">
+        <h2 id="evidence-title">What the record reveals</h2>
+        <a href="/price-changes">Explore price changes →</a>
+      </div>
+      <div class="evidence-grid">
+        <a class="evidence-card" href="/price-changes">
+          <span class="evidence-kicker">Asking-price history</span>
+          <strong>See what changed, and when we observed it.</strong>
+          <span>Reviewed price revisions from brokers’ own pages, with dated observation windows. Asking prices are not sale prices.</span>
+        </a>
+        <a class="evidence-card" href="#ledger">
+          <span class="evidence-kicker">Listing-age evidence</span>
+          <strong>How long has a business been advertised?</strong>
+          <span>Explore dated observations and appearance windows. First observed is not necessarily first listed.</span>
+        </a>
+      </div>
+    </section>
 
     <div class="rule">or browse the ledger</div>
 
