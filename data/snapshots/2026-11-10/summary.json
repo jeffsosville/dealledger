@@ -1,0 +1,125 @@
+{
+  "started": "2026-11-10T10:25:15.057671+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 561,
+  "brokers_failed": 218,
+  "total_listings": 11699,
+  "listings_with_price": 10557,
+  "listings_with_cashflow": 4005,
+  "listings_with_state": 9170,
+  "detail_pages_fetched": 558,
+  "patterns_cached": 593,
+  "patterns_learned": 505,
+  "verticals": {
+    "retail": 1229,
+    "technology": 1370,
+    "automotive": 836,
+    "restaurant": 2722,
+    "landscaping": 101,
+    "healthcare": 813,
+    "other": 3360,
+    "plumbing": 108,
+    "cleaning": 177,
+    "hvac": 172,
+    "vending": 143,
+    "electrical": 71,
+    "roofing": 36,
+    "construction": 328,
+    "manufacturing": 225,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 21,
+    "NO_PATTERN": 117,
+    "FETCH_ERROR": 38,
+    "HTTP_403": 6,
+    "VALIDATION_REJECT": 1
+  },
+  "site_pages_dropped": 62,
+  "slowest_brokers": [
+    [
+      2145,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      685,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      469,
+      "capitalroutesales.com",
+      6
+    ],
+    [
+      468,
+      "gabusinessbrokers.com",
+      22
+    ],
+    [
+      465,
+      "pacificrestaurantbrokers.com",
+      12
+    ],
+    [
+      460,
+      "listyourhomesocal.com",
+      6
+    ],
+    [
+      454,
+      "psbroker.com",
+      34
+    ],
+    [
+      447,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      440,
+      "capitalbusinessbrokerage.biz",
+      26
+    ],
+    [
+      431,
+      "sunshineagle.com",
+      12
+    ],
+    [
+      429,
+      "premierbb.com",
+      62
+    ],
+    [
+      407,
+      "crestonebusinessgroup.com",
+      9
+    ],
+    [
+      389,
+      "sbpoolroutes.com",
+      3
+    ],
+    [
+      382,
+      "tampabusinessbroker.com",
+      2
+    ],
+    [
+      338,
+      "carwashbrokers.com",
+      0
+    ]
+  ],
+  "seconds_total": 38906,
+  "completed": "2026-11-10T13:27:20.574960+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
