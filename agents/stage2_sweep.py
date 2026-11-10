@@ -69,6 +69,10 @@ VERDICTS = {"LISTINGS_PRICED", "LISTINGS_NO_PRICE", "FEW", "WRONG_PAGE",
 # Not classifiable from here: 403/429/503, bot wall, captcha, timeout. Never
 # applied - a fetch failure is not evidence the site is dead (captcha = manual).
 UNREACHABLE = "UNREACHABLE"
+# A listings verdict whose own reason or domain says real estate is a contradiction:
+# hold it for a human instead of promoting it (420property.com, Nov 10).
+RE_WORDS = re.compile(r"real[- ]?estate|realty|realtor|propert|warehouse|industrial|"
+                      r"\bCRE\b|commercial lease|land\b|acreage|residential|IDX", re.I)
 
 LISTING_WORDS = re.compile(
     r"(businesses?[-_ ]for[-_ ]sale|listings?|for-sale|opportunit|available|"
@@ -189,7 +193,7 @@ def classify(domain, url, text, links):
     client = anthropic.Anthropic()
     link_txt = "\n".join(f"{l} | {u}" for l, u in links[:80])
     msg = client.messages.create(
-        model=MODEL, max_tokens=300,
+        model=MODEL, max_tokens=300, temperature=0,
         messages=[{"role": "user", "content": PROMPT.format(
             domain=domain, url=url, text=text[:9000], links=link_txt)}])
     raw = msg.content[0].text.strip()
@@ -341,6 +345,10 @@ def apply(path, verdicts):
         base = {"decided_at": ts, "decided_by": "human", "decision_reason": reason,
                 "updated_at": ts}
         if v in ("LISTINGS_PRICED", "LISTINGS_NO_PRICE"):
+            approved = (r.get("approve") or "").strip().lower() in ("y", "yes")
+            if not approved and RE_WORDS.search(f"{r.get('reason','')} {d}"):
+                print(f"  hold {d}: reason/domain reads like real estate - approve=y to promote")
+                continue
             if not r.get("crawl_url"):
                 print(f"  skip {d}: no crawl_url")
                 continue
