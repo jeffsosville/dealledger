@@ -1,0 +1,50 @@
+name: Team sheet sync
+
+# Applies found_listings_url (column N) from the team's broker review sheet to
+# broker_sources, ahead of the daily broker_scrape run (10:23 UTC), so pages the
+# team found are crawled the same day. See agents/sheet_sync.py for the rules.
+# Scheduled by Supabase pg_cron job 'gh-sheet-sync' (09:47 UTC) via dispatch_workflow().
+
+on:
+  workflow_dispatch:
+    inputs:
+      write:
+        description: "1 = apply, 0 = dry run (report only)"
+        default: "1"
+      gids:
+        description: "Sheet tab gids, comma-separated"
+        default: "1410634222"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sheet-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Sync team sheet
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SHEET_GIDS: ${{ inputs.gids || '1410634222' }}
+        run: |
+          if [ "${{ inputs.write || '1' }}" = "1" ]; then
+            python3 agents/sheet_sync.py --write
+          else
+            python3 agents/sheet_sync.py
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sheet-sync-report
+          path: sheet_sync_*.csv

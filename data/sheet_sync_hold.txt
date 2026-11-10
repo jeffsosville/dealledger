@@ -1,0 +1,15 @@
+# Domains the team sheet sync never changes automatically (Jeff decides by hand).
+# One domain per line. Added 2026-11-10 from the team review.
+vrbusinessbrokers.com        # specialized VR scraper
+ubcutah.com                  # listings all say sold; stale_check the active rows
+carmelbusinesssales.com      # listings live on ubibiz.com
+staxre.com                   # realty-named, team found listings
+teneshakeproperties.com
+traddcommercial.com
+tuscanyrealtygroup.com
+thekcorealty.net
+thehopkinsgroup.biz
+seniorlivingbrokerage.com
+taylor-smalley.com           # stage2_sweep says residential real estate
+vpveterinaryadvisors.com     # 0_blocked with no reason recorded
+transitionconsultants.com
