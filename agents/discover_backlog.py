@@ -187,8 +187,10 @@ def candidates_from_sources():
                 "priority_score": b.get("priority_score"),
                 "consecutive_failures": b.get("consecutive_failures") or 0,
                 # 'recheck' = an earlier failure due for another look
-                # (v_discovery_queue, 2026-10-12). Always probed.
-                "recheck": b.get("queue_reason") == "recheck",
+                # (v_discovery_queue, 2026-10-12). 'restage' = a stage-2
+                # broker parked for review, re-probed every 14 days
+                # (2026-11-10). Both are always probed.
+                "recheck": b.get("queue_reason") in ("recheck", "restage"),
             })
         if len(batch) < page:
             break
@@ -513,6 +515,13 @@ def suspicious(listings_url, method, platform, result):
     return None
 
 
+# last_error_type written on broker_sources for each stage-2 outcome.
+STAGE2_REASON = {
+    "proposed": "GATE_PROPOSED",   # failed a discovery gate; see last_error_message
+    "weak":     "WEAK_YIELD",      # page found, too few listings extracted
+}
+
+
 _DECISION_COLS = ("decided_at", "decided_by", "decision_reason",
                   "last_discovery_probe_at")
 
@@ -557,6 +566,17 @@ def update_source(row, status, listings_url=None, error=None, decided_by=None,
         body["last_failure_at"] = now
         if error:
             body["last_error_message"] = error[:300]
+    elif stage == "2_listings_url_known":
+        # 2026-11-10: stage-2 rows used to park with no reason at all (404 of
+        # 709 had no last_error_type), so nobody could triage them. Every
+        # stage-2 outcome now says why it stopped short of 3_crawlable.
+        body["last_error_type"] = STAGE2_REASON.get(status, status.upper())
+        why2 = reason or error
+        body["last_error_message"] = why2[:300] if why2 else None
+    elif stage == "3_crawlable":
+        # A broker that now passes clears the reason it was parked for.
+        body["last_error_type"] = None
+        body["last_error_message"] = None
     if listings_url:
         body["listing_url"] = listings_url
     if decided_by:
@@ -734,17 +754,20 @@ def main():
         #
         # Mark those weak rather than ok. A weak row still records what we
         # learned, but it does not go into the crawl list pretending to work.
+        weak_why = None
         if status == "ok":
             got = int(found or 0)
             if got == 0:
                 status = "weak"
-                print(f"    weak: method returned no items")
+                weak_why = "method returned no items"
             elif listed >= 20 and got < max(5, listed * 0.10):
                 status = "weak"
-                print(f"    weak: got {got} items, broker claims {listed}")
+                weak_why = f"got {got} items, broker claims {listed}"
             elif got < 3:
                 status = "weak"
-                print(f"    weak: only {got} items found")
+                weak_why = f"only {got} items found"
+            if weak_why:
+                print(f"    weak: {weak_why}")
 
         evidence = None
         gate_why = None
@@ -754,6 +777,7 @@ def main():
             # scraper does its own extraction, so judge the URL on the page's
             # evidence through the same gate (2026-10-12).
             print(f"    fingerprint said {status}; judging the page on evidence")
+            weak_why = f"fingerprint {status}"
             status = "weak"
         if SOURCE == "broker_sources" and status in ("ok", "weak"):
             path = urlparse(listings_url).path.lower()
@@ -796,13 +820,14 @@ def main():
                              result if isinstance(result, dict) else {})
             if why:
                 status = "weak"
+                weak_why = why
                 print(f"    weak: {why}")
 
         save(domain, base, listings_url, status, method, platform,
              selector, found, notes=row.get("company"), evidence=evidence)
         update_source(row, status, listings_url,
                       decided_by="auto" if status == "ok" and SOURCE == "broker_sources" else None,
-                      reason=gate_why)
+                      reason=gate_why or weak_why)
         tally[status] = tally.get(status, 0) + 1
         if status == "ok":
             crawlable.append((domain, listings_url, listed))

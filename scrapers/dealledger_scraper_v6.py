@@ -2808,6 +2808,19 @@ class DealLedgerScraper:
                     if k not in seen:
                         seen.add(k)
                         ordered.append(b)
+
+                # WEEKLY BACKOFF (2026-11-10). 27% of a week's V6 runs went to
+                # brokers that never once succeeded, retried every night by the
+                # fill-the-budget step above. v6_backoff_domains() names those
+                # tried in the last 6 days with 3+ failures, no ok run in 14
+                # days and nothing published; they wait for next week instead.
+                # Brokers with live listings on the site are never skipped.
+                backoff = self._backoff_domains()
+                if backoff:
+                    before = len(ordered)
+                    ordered = [b for b in ordered if _bare(b["domain"]) not in backoff]
+                    print(f"⏸️  Weekly backoff — skipping {before - len(ordered)} "
+                          f"repeatedly failing brokers tonight")
                 return ordered
 
             if order_mode == "yield":
@@ -2881,6 +2894,22 @@ class DealLedgerScraper:
             print(f"   ⚠️  stored-listing lookup failed ({e}) — fetching all details")
             return {}
         return out
+
+    def _backoff_domains(self) -> set:
+        """Bare domains v6_backoff_domains() says to skip tonight.
+
+        Read-only. Off with V6_BACKOFF=0. Any error (function not deployed
+        yet, network) returns an empty set so the run crawls as before.
+        """
+        if os.environ.get("V6_BACKOFF", "1") == "0" or not self.supabase_writer:
+            return set()
+        try:
+            rows = (self.supabase_writer.client
+                    .rpc("v6_backoff_domains", {}).execute().data) or []
+            return {(r.get("bare_domain") or "").lower() for r in rows if r.get("bare_domain")}
+        except Exception as e:
+            print(f"⚠️  v6_backoff_domains unavailable ({type(e).__name__}); no backoff tonight")
+            return set()
 
     def _recently_failed_domains(self, days: int = 7) -> set:
         """Bare domains with a crawl_failures row in the last `days` days.
