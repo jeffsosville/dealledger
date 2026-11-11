@@ -1,0 +1,125 @@
+{
+  "started": "2026-11-11T10:25:18.729651+00:00",
+  "brokers_attempted": 735,
+  "brokers_success": 591,
+  "brokers_failed": 136,
+  "total_listings": 14368,
+  "listings_with_price": 13136,
+  "listings_with_cashflow": 4456,
+  "listings_with_state": 11131,
+  "detail_pages_fetched": 1179,
+  "patterns_cached": 595,
+  "patterns_learned": 517,
+  "verticals": {
+    "restaurant": 2981,
+    "automotive": 962,
+    "technology": 1784,
+    "other": 4560,
+    "manufacturing": 366,
+    "landscaping": 125,
+    "retail": 1456,
+    "healthcare": 960,
+    "construction": 355,
+    "roofing": 42,
+    "cleaning": 200,
+    "plumbing": 121,
+    "hvac": 200,
+    "electrical": 92,
+    "vending": 155,
+    "pest_control": 9
+  },
+  "failure_types": {
+    "EMBED_BBS": 8,
+    "FETCH_ERROR": 29,
+    "HTTP_403": 4,
+    "NO_PATTERN": 67,
+    "VALIDATION_REJECT": 1
+  },
+  "site_pages_dropped": 42,
+  "slowest_brokers": [
+    [
+      2304,
+      "pacificrb.com",
+      8
+    ],
+    [
+      2296,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      2291,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      1963,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      1815,
+      "konablueplantations.com",
+      3
+    ],
+    [
+      1713,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      1212,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1163,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      981,
+      "metrocbb.com",
+      7
+    ],
+    [
+      519,
+      "nextwavecommercial.com",
+      91
+    ],
+    [
+      515,
+      "sbpoolroutes.com",
+      3
+    ],
+    [
+      503,
+      "premierbb.com",
+      61
+    ],
+    [
+      488,
+      "greenandco.biz",
+      22
+    ],
+    [
+      487,
+      "alliantbrokers.com",
+      17
+    ],
+    [
+      471,
+      "baallc.biz",
+      5
+    ]
+  ],
+  "seconds_total": 48791,
+  "completed": "2026-11-11T14:40:04.951363+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}

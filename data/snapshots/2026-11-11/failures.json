@@ -1,0 +1,956 @@
+[
+  {
+    "broker": "bill bromley",
+    "url": "https://ibbdallas.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "curtis cochran ph.d., d.m., m.sc., mba, pbc",
+    "url": "https://ccochranconsulting.com/business-listings-1.html",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "alpine business brokers",
+    "url": "https://alpinebusinessbrokers.com/utah-businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 216667
+  },
+  {
+    "broker": "Business Research Group",
+    "url": "https://brgbrokers.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 10961
+  },
+  {
+    "broker": "liliane tietjen",
+    "url": "https://patriotbusinessadvisors.com/Listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 30249
+  },
+  {
+    "broker": "Practice Opportunities (Martin)",
+    "url": "https://www.practiceop.com/practicesforsale.html",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "Chiro Equity (Dr. Greg Kingsbury)",
+    "url": "https://chiroequity.com/practicesforsale.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 26135
+  },
+  {
+    "broker": "New Clients Inc - Accounting Practice Listings",
+    "url": "https://www.newclientsinc.com/products-services/accounting-practice-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 104990
+  },
+  {
+    "broker": "randy bernard",
+    "url": "https://proformapartners.com/current-listings/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.e-con-inner"
+  },
+  {
+    "broker": "matthew gorman",
+    "url": "https://districtbusinessbrokers.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div._15gGoQK1"
+  },
+  {
+    "broker": "michael nuanes",
+    "url": "https://denverbbs.com/buy-a-business",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 406550
+  },
+  {
+    "broker": "carlos cardenas",
+    "url": "https://tcgbusiness.com/featured-listings",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ne 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "fred canada",
+    "url": "https://thequincygroup.net/businesses_for_sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "michelle jones",
+    "url": "https://oregonrestaurantrealty.com/restaurant-listings-2",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content ul li"
+  },
+  {
+    "broker": "Claudio Vilas",
+    "url": "https://theroofingbizbroker.com/all-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 399684
+  },
+  {
+    "broker": "valori mejia",
+    "url": "https://desertbusinessbrokers.com/index.php/listings",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "michael nolan",
+    "url": "https://empirebizbroker.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 4017
+  },
+  {
+    "broker": "dana p. cole, cbi, cbb",
+    "url": "https://tucsonbusinessbroker.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "eric feldman",
+    "url": "https://feldmanbrokerage.com/buy-a-laundromat.html",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "adriana cowart",
+    "url": "https://chiscagroup.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 895
+  },
+  {
+    "broker": "bob young",
+    "url": "https://acquisitionsdirect.com/buy",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 148
+  },
+  {
+    "broker": "sarah grossman",
+    "url": "https://baystatebusinessbrokers.com/businesses-for-sale-in-ma-nh-ct-ri",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 148
+  },
+  {
+    "broker": "ps broker",
+    "url": "https://psbroker.com/property-category/all-veterinary-practices-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "MKL Agency Broker",
+    "url": "https://agency-broker.com/available-agencies-book-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 413340
+  },
+  {
+    "broker": "adam armstrong",
+    "url": "https://capitalroutesales.com/available-routes",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "VR Business Brokers",
+    "url": "https://vrnutmeg.com",
+    "error": "Failed to perform, curl: (35) BoringSSL SSL_connect: Connection closed abruptly (SSL_ERROR_SYSCALL; error queue empty) in connection to vrnutmeg.com:443. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": " self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) BoringSSL SSL_connect: Connection closed abruptly (SSL_ERROR_SYSCALL; error queue empty) in connection to vrnutmeg.com:443. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Illinois Car Wash Broker",
+    "url": "https://illinoiscarwashbroker.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8425
+  },
+  {
+    "broker": "Media Services Group",
+    "url": "https://mediaservicesgroup.com/?post_type=classified",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content"
+  },
+  {
+    "broker": "Nolan Scott",
+    "url": "https://www.nolanscottteam.com/post/use-401k-ira-to-buy-a-business-robs",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.card"
+  },
+  {
+    "broker": "Priscilla Dakin",
+    "url": "https://dakinbusinessgroup.com/listings-deals-done/",
+    "error": "validation: no data + 100% category-like titles",
+    "type": "VALIDATION_REJECT"
+  },
+  {
+    "broker": "Rhonda Distel",
+    "url": "https://ignitedbusinessbrokers.com/search-listings.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 6079
+  },
+  {
+    "broker": "Venture 7 Advisors LLC",
+    "url": "https://www.venture7advisors.com/northeastern-electrical-services-company-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 661101
+  },
+  {
+    "broker": "Dream Business Brokers",
+    "url": "https://dreambusinessbrokers.com/dead-inventory-to-value-strategies-for-distributors/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div[class*=\"elementor\"]"
+  },
+  {
+    "broker": "gino rodrigues",
+    "url": "https://acomacapitalpartners.com/commercial-properties",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9340
+  },
+  {
+    "broker": "jamie klingman",
+    "url": "https://theexitstrategyco.com/sell",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.card"
+  },
+  {
+    "broker": "clint cm&ap, m&ami",
+    "url": "https://bisonbusiness.com/marketplace",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 80361
+  },
+  {
+    "broker": "sam griffin, cbi",
+    "url": "https://gilezanglobal.com/listings",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ne 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "erten musa",
+    "url": "https://prolevelbusiness.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 52
+  },
+  {
+    "broker": "kevin waide",
+    "url": "https://aprio.com/services/business-acquisitions-by-aprio/view-business-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 1186412
+  },
+  {
+    "broker": "scott sogard",
+    "url": "https://sogardproperties.com/restaurants.html",
+    "error": "Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'sogardproperties.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "equest\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.CertificateVerifyError: Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'sogardproperties.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "CBI Team",
+    "url": "https://cbiteam.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9061
+  },
+  {
+    "broker": "dean kantis",
+    "url": "https://thejetnetwork.com/aircraft-listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 7070
+  },
+  {
+    "broker": "Integrity Pharmacy Consultants",
+    "url": "https://www.integrity-rx.com/buying",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 957459
+  },
+  {
+    "broker": "Route World Brokers Inc",
+    "url": "https://routeworldbrokers.com/listings-page/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "joan loch",
+    "url": "https://rbbnc.com/current-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-block"
+  },
+  {
+    "broker": "diane ho, cbb",
+    "url": "https://sellbuybrokers.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.elementor-container.elementor-column-gap-default"
+  },
+  {
+    "broker": "stillwell rx",
+    "url": "https://stillwellrx.com/listing/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5713
+  },
+  {
+    "broker": "lisa tyler devecchis 860.966.9217",
+    "url": "https://bhhsneproperties.com/listings/bhhsexclusivelistings/dsort-p",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5803
+  },
+  {
+    "broker": "Empire Global Business Brokers",
+    "url": "https://empiregbb.com/search",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.ssmoxNY"
+  },
+  {
+    "broker": "eric espinoza",
+    "url": "https://greenlifebusiness.com/search-result?sortby=d_date",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "christina lazuric",
+    "url": "https://californiabusinessbrokers.com/for-sale-2",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "hank beresin",
+    "url": "https://firststreetbusinessbrokers.com/opportunities",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "savas ozuolmez",
+    "url": "https://ctrestaurantbrokers.com",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "ron stumpf",
+    "url": "https://stumpfandcompany.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 148
+  },
+  {
+    "broker": "The Valley Business Broker",
+    "url": "https://thevalleybusinessbroker.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 8037
+  },
+  {
+    "broker": "kevin shin",
+    "url": "https://fortunerealtyadvisors.com/properties",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 52
+  },
+  {
+    "broker": "john goodish",
+    "url": "https://eebb.ca/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.column.column-4.wow.fadeInUp"
+  },
+  {
+    "broker": "calhoun companies",
+    "url": "https://calhouncompanies.com/find-a-business",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "VR BUSINESS SALES - Spfd/Branson Office",
+    "url": "https://vrspringfield-branson.com",
+    "error": "Failed to perform, curl: (35) BoringSSL SSL_connect: Connection closed abruptly (SSL_ERROR_SYSCALL; error queue empty) in connection to vrspringfield-branson.com:443. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "t_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) BoringSSL SSL_connect: Connection closed abruptly (SSL_ERROR_SYSCALL; error queue empty) in connection to vrspringfield-branson.com:443. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Gas Station Trader",
+    "url": "https://www.gasstationtrader.com/gas-stations-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 5422
+  },
+  {
+    "broker": "Florida",
+    "url": "https://www.oneinternationalworld.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 42331
+  },
+  {
+    "broker": "David Carlson",
+    "url": "https://www.searidgeadvisory.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 225172
+  },
+  {
+    "broker": "James Covian",
+    "url": "https://covianadvisors.com/listings/pool-companies-marine-related-businesses/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 229278
+  },
+  {
+    "broker": "Tusk Practice Sales",
+    "url": "https://tuskpracticesales.com/the-legal-blueprint-for-medical-aesthetic-practices/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 205554
+  },
+  {
+    "broker": "Goldcrest Commercial Business Consultant",
+    "url": "https://sellorlandobusiness.com/questions-about-selling/questions-about-buying-businesses/businesses-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 146889
+  },
+  {
+    "broker": "reebroker.com",
+    "url": "https://reebroker.com/referrer/agents-earning",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.col"
+  },
+  {
+    "broker": "john sosville",
+    "url": "https://platformbrokerage.com/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9362
+  },
+  {
+    "broker": "luke sawyer",
+    "url": "https://millenia-partners.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.card"
+  },
+  {
+    "broker": "david lane",
+    "url": "https://burrtemkin.com/listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 43243
+  },
+  {
+    "broker": "dick obendorf ma, ojt",
+    "url": "https://bxbbrokers.com/home/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 342442
+  },
+  {
+    "broker": "david cutler",
+    "url": "https://woodbridgeinvestmentsinc.net/active-listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 30568
+  },
+  {
+    "broker": "central coast business brokers",
+    "url": "https://ccbusinessbrokers.com",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g"
+  },
+  {
+    "broker": "terry espy",
+    "url": "https://momentumprojects.com/for-sale-lease/business",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row.fl-post-image-beside-wrap"
+  },
+  {
+    "broker": "Dream Business Brokers",
+    "url": "https://vinilramchandran.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 10402
+  },
+  {
+    "broker": "marc williams",
+    "url": "https://charlestonbusinessbrokers.com/businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.container"
+  },
+  {
+    "broker": "Epstein Practice Brokerage Inc",
+    "url": "https://practice-broker.com/new-york-practices/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 75326
+  },
+  {
+    "broker": "jim boyd",
+    "url": "https://ninbb.com/business-listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11969
+  },
+  {
+    "broker": "Lonestar Business Advisor",
+    "url": "https://lonestarba.com/businesses-for-sale.html",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.listing-card"
+  },
+  {
+    "broker": "tina zeng, mba, chinese speaking",
+    "url": "https://zealbusinessbrokers.com/business-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 3201
+  },
+  {
+    "broker": "katrina faber",
+    "url": "https://gilecre.com/business-brokerage-active-listings",
+    "error": "Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'gilecre.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.CertificateVerifyError: Failed to perform, curl: (60) SSL: no alternative certificate subject name matches target hostname 'gilecre.com'. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "LuxMed Transition Strategies",
+    "url": "https://luxmedtransition.com/practices-for-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 44476
+  },
+  {
+    "broker": "shams siddiqui",
+    "url": "https://jpar.com/properties?page=1",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content ul li"
+  },
+  {
+    "broker": "clarence griggs",
+    "url": "https://griggsbusinessbrokers.com/featured-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 496
+  },
+  {
+    "broker": "paul mcnally",
+    "url": "https://cfbb.biz/our-featured-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 13407
+  },
+  {
+    "broker": "Trustwave Brokers",
+    "url": "https://truewavebrokers.com/locations/maine",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content ul li"
+  },
+  {
+    "broker": "michelle seiler tucker m&ami, csba, cbb",
+    "url": "https://seilertucker.com/buy-a-business/for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "matt coyne",
+    "url": "https://bma1.com/business-listing",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Jeannie Randolph",
+    "url": "https://briobrokers.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 9087
+  },
+  {
+    "broker": "shaun rudgear, mcbi, m&ami, cbi, cbb",
+    "url": "https://strategicmedicalbrokers.com/listing",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Monarch Business Consulting",
+    "url": "https://www.monarchpracticetransitions.com/vet-practices/",
+    "error": "HTTP 403 after 3 proxy retries",
+    "type": "HTTP_403"
+  },
+  {
+    "broker": "ROI Advisors, Inc.",
+    "url": "https://roibusinessbrokers.dealrelations.com",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 11201
+  },
+  {
+    "broker": "joe liang",
+    "url": "https://gabusinessbrokers.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "alessandro antezza",
+    "url": "https://sunshineagle.com/premium-listings",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Jonathan DeLine",
+    "url": "https://scout-advisors.ai/businesses-for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 20070
+  },
+  {
+    "broker": "ron cervelli",
+    "url": "https://regalconsultants.com/businesses-for-sale-2",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 151
+  },
+  {
+    "broker": "VR Business Brokers",
+    "url": "https://vrheartland.com",
+    "error": "Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "ne 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.SSLError: Failed to perform, curl: (35) TLS connect error: error:10000410:SSL routines:OPENSSL_internal:SSLV3_ALERT_HANDSHAKE_FAILURE. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Kerrigan Advisors",
+    "url": "https://www.kerriganadvisors.com/in-the-news/survey-finds-automakers-expectations-for-sales-fall-while-profit-projections-rise",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 53339
+  },
+  {
+    "broker": "Boca Raton",
+    "url": "https://buysellcorps.com/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 142310
+  },
+  {
+    "broker": "George Wellmer",
+    "url": "https://www.tupelosmb.com/marketplace/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.block"
+  },
+  {
+    "broker": "Ralana Abraham-Miller",
+    "url": "https://munciebusinessbrokers.com/business-for-sale-sign-promo-and-graphics/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 110193
+  },
+  {
+    "broker": "wmapartners.com",
+    "url": "http://wmapartners.com/healthcare-business-listings?category=4",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 21655
+  },
+  {
+    "broker": "bizresource.biz",
+    "url": "https://bizresource.biz/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 82854
+  },
+  {
+    "broker": "Keystone Advisors",
+    "url": "https://www.keystonebsa.com/businesses-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "pebbles minyen",
+    "url": "https://listings.pebblesrealestateranch.com/idx/featured",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.col-sm-4"
+  },
+  {
+    "broker": "david glickman",
+    "url": "https://keystoneadvisors.co/property-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content ul li"
+  },
+  {
+    "broker": "school investment properties, inc.",
+    "url": "https://childcaresales.com/active-listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.flex.flex-col.gap-3.p-6.flex-1"
+  },
+  {
+    "broker": "fred beck",
+    "url": "https://fredjbeck.com/business.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 150
+  },
+  {
+    "broker": "jim aiello",
+    "url": "https://aiellobrokers.com/pcategory/businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.row"
+  },
+  {
+    "broker": "Diversified Business Advisors",
+    "url": "https://businessadvisors.us/buy",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "article.bde-loop-item.ee-post"
+  },
+  {
+    "broker": "shane torres",
+    "url": "https://krbb.com/listings",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.ejYUwA.t1Z_7C"
+  },
+  {
+    "broker": "Acquisitions Unlimited Inc",
+    "url": "https://www.acquisitions-unlimited.com/b2b-florida-sign-manufacturer-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 89096
+  },
+  {
+    "broker": "Suncoast Business Brokers Inc",
+    "url": "https://suncoastbusinessbrokers.com/businesses-for-sale-florida.asp",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 6490
+  },
+  {
+    "broker": "mike riccardi",
+    "url": "https://riccardiagency.com/business",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.small-12.medium-4.columns.responsive-column"
+  },
+  {
+    "broker": "heather krebs 801-201-6866",
+    "url": "https://bsalesgroup.com/mergers-and-acquisitions-businesses-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "tr"
+  },
+  {
+    "broker": "kevin wentworth",
+    "url": "https://amgrealty.net/for-sale",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 151
+  },
+  {
+    "broker": "roger a. pencek",
+    "url": "https://carwashbrokers.com",
+    "error": "Failed to perform, curl: (7) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": ".11/site-packages/curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ConnectionError: Failed to perform, curl: (7) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Michelle Regner",
+    "url": "https://businessbrokersofamerica.com",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.entry-content ul li"
+  },
+  {
+    "broker": "Certified Marketing Consultants",
+    "url": "https://certifiedmarketing.com/current-listings/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 66566
+  },
+  {
+    "broker": "vlad rascanu",
+    "url": "https://thefriendlybrokers.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "david greene",
+    "url": "https://practicebrokers.com/practices-for-sale",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.et_pb_text_inner"
+  },
+  {
+    "broker": "john m. bedosky",
+    "url": "https://laundromat-broker.com/listings.html",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "bob crandall",
+    "url": "https://bcbusinessbroker.ca/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "victor buendia",
+    "url": "https://progressiverep.com/iconic-western-themed-retail-center-in-socals-inland-empire-listed-for-sale/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.p-2"
+  },
+  {
+    "broker": "ryan clark - cm&aa, cepa",
+    "url": "https://veldma.com/listing",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "george (marty) bombenger",
+    "url": "https://ecrestaurantbrokers.com/businesses-for-sale",
+    "error": "Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": "curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.HTTPError: Failed to perform, curl: (92) HTTP/2 stream 3 reset by server (error 0x1 PROTOCOL_ERROR). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "doug neufeld",
+    "url": "https://gottesman-company.com/opportunities/grid",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div[class*=\"listing-status-available\"]"
+  },
+  {
+    "broker": "Titan Business Brokers",
+    "url": "https://titanbusinessbrokers.com/buy-a-business-in-new-jersey/",
+    "error": "Pattern matched, extraction failed",
+    "type": "NO_PATTERN",
+    "pattern": "div.eael-entry-wrapper"
+  },
+  {
+    "broker": "Laundromat For Sale",
+    "url": "https://www.laundromatforsale.com/",
+    "error": "Failed to perform, curl: (7) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
+    "type": "FETCH_ERROR",
+    "traceback": ".11/site-packages/curl_cffi/requests/session.py\", line 900, in request\n    return self._request_once(\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/curl_cffi/requests/session.py\", line 834, in _request_once\n    raise error(str(e), e.code, rsp) from e\ncurl_cffi.requests.exceptions.ConnectionError: Failed to perform, curl: (7) CONNECT tunnel failed, response 502. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.\n"
+  },
+  {
+    "broker": "Dailey Resources, Inc.",
+    "url": "https://daileyresources.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 122484
+  },
+  {
+    "broker": "Ryan Winter",
+    "url": "https://ryancwinter.com/how-inventory-counted-paid-business-sale/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 206939
+  },
+  {
+    "broker": "Luke Sawyer",
+    "url": "https://lukesawyer.net/buy-a-business/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 90047
+  },
+  {
+    "broker": "procisionbb.com",
+    "url": "https://procisionbb.com/businesses-for-sale-2/",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 86596
+  },
+  {
+    "broker": "atk-ventures.com",
+    "url": "https://atk-ventures.com/buy",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 136723
+  },
+  {
+    "broker": "The Restaurant Brokers",
+    "url": "https://therestaurantbrokers.com/listings.html",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 41018
+  },
+  {
+    "broker": "mark alexander",
+    "url": "https://www.alexandercovington.com/active-listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 60386
+  },
+  {
+    "broker": "ray massa",
+    "url": "https://nationalinvestment.net",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 397452
+  },
+  {
+    "broker": "john ovrom",
+    "url": "https://exitconsultinggroup.com/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 57790
+  }
+]
