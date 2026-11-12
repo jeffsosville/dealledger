@@ -1,0 +1,125 @@
+{
+  "started": "2026-11-12T10:25:20.263108+00:00",
+  "brokers_attempted": 717,
+  "brokers_success": 581,
+  "brokers_failed": 128,
+  "total_listings": 12017,
+  "listings_with_price": 11039,
+  "listings_with_cashflow": 4493,
+  "listings_with_state": 10224,
+  "detail_pages_fetched": 325,
+  "patterns_cached": 601,
+  "patterns_learned": 508,
+  "verticals": {
+    "restaurant": 2912,
+    "automotive": 908,
+    "technology": 1511,
+    "other": 2925,
+    "manufacturing": 318,
+    "landscaping": 105,
+    "retail": 1490,
+    "cleaning": 180,
+    "healthcare": 774,
+    "construction": 328,
+    "plumbing": 112,
+    "vending": 154,
+    "hvac": 183,
+    "roofing": 30,
+    "electrical": 79,
+    "pest_control": 8
+  },
+  "failure_types": {
+    "EMBED_BBS": 8,
+    "FETCH_ERROR": 26,
+    "HTTP_403": 5,
+    "NO_PATTERN": 62,
+    "VALIDATION_REJECT": 2
+  },
+  "site_pages_dropped": 41,
+  "slowest_brokers": [
+    [
+      2320,
+      "winbusinessadvisors.com",
+      2
+    ],
+    [
+      2313,
+      "www.olmsteadassoc.com",
+      2
+    ],
+    [
+      2300,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      2298,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      2297,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      2163,
+      "pacificrb.com",
+      7
+    ],
+    [
+      1415,
+      "lacountyrealestate.us",
+      1
+    ],
+    [
+      636,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      530,
+      "nextwavecommercial.com",
+      91
+    ],
+    [
+      508,
+      "greenlifebusiness.com",
+      330
+    ],
+    [
+      504,
+      "seilertucker.com",
+      5
+    ],
+    [
+      490,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      471,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      442,
+      "www.blueridgebrokerage.com",
+      24
+    ],
+    [
+      421,
+      "greenandco.biz",
+      22
+    ]
+  ],
+  "seconds_total": 46448,
+  "completed": "2026-11-12T14:05:40.705395+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
