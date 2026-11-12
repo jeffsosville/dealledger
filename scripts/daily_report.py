@@ -20,7 +20,24 @@ def health():
     r.raise_for_status()
     return r.json()
 
-def fmt(h):
+def count_mismatch():
+    """Brokers whose active URLs differ from their own displayed count by more
+    than 10%, biggest gap first (public.count_mismatch_report, 2026-11-11).
+    Returns (rows, None) or (None, reason): a missing or failing RPC shows up
+    in the issue as a line, not as a silently empty section (principle 17)."""
+    try:
+        url, key = os.environ["SUPABASE_URL"].rstrip("/"), os.environ["SUPABASE_SERVICE_KEY"]
+        r = requests.post(f"{url}/rest/v1/rpc/count_mismatch_report",
+                          headers={"apikey": key, "Authorization": f"Bearer {key}",
+                                   "Content-Type": "application/json"},
+                          json={"p_days": 2, "p_tol": 0.10}, timeout=120)
+        if not r.ok:
+            return None, f"HTTP {r.status_code}: {r.text[:150]}"
+        return r.json(), None
+    except Exception as e:
+        return None, f"{type(e).__name__}: {e}"
+
+def fmt(h, mismatch=None):
     b, f = h["scoreboard"], h["flags"]
     out = [f"_Generated {h['generated_at'][:16]} UTC by daily_report.yml. Flags report only — nothing was changed._", "",
            "## Scoreboard", "",
@@ -53,6 +70,20 @@ def fmt(h):
             f["no_financials"], [("Domain", "domain"), ("Active", "active"), ("No price/CF", "priceless")])
     section("Database job failures (24h)", "pg_cron jobs that failed (bridge, homepage refresh…).",
             f["cron_failures_24h"], [("Job", "job"), ("At", "at"), ("Message", "msg")])
+    if mismatch is not None:
+        rows, err = mismatch
+        why = ("Active listing URLs vs the count the broker's own page shows, latest crawl in 2 days, "
+               "off by more than 10%, biggest gap first. Under = we miss listings (or the crawl stops early); "
+               "over = dead or duplicate rows still active. 'stated' = the page says it; 'counted' = our card count.")
+        if err:
+            out.append("## Our count vs the broker's count (unavailable)")
+            out.append(f"_{why}_")
+            out.append(f"⚠️ count_mismatch_report() failed: {err}"); out.append("")
+        else:
+            section("Our count vs the broker's count", why, rows,
+                    [("Domain", "domain"), ("Broker shows", "displayed"), ("How", "source"),
+                     ("Active URLs", "active_urls"), ("Seen last crawl", "seen_last_crawl"),
+                     ("Gap", "gap"), ("%", "pct"), ("Run", "status"), ("Note", "note")])
     return "\n".join(out)
 
 def post(body):
@@ -73,5 +104,5 @@ def post(body):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--post", action="store_true")
-    body = fmt(health())
+    body = fmt(health(), count_mismatch())
     post(body) if ap.parse_args().post else print(body)

@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")" || exit 1
 set -a
-source .env
+source "$HOME/.dealledger.env"
 set +a
 mkdir -p logs
 LOG="logs/specialized_$(date +%Y%m%d).log"

@@ -619,6 +619,106 @@ class HedgestoneScraper:
 
 
 # ============================================================================
+# FEED / TITLE STATUS (2026-11-12, decisions 5 + 6) — Transworld, We Sell Restaurants
+# ============================================================================
+# One status policy for every writer: scrapers/listing_status.py. These two
+# helpers only find WHERE a scraper's status text is; the module decides what
+# it means. Defensive import, with a minimal local fallback so the scrapers
+# still run when the module is not installed (principle 15: same vocabulary).
+#   sold                           -> 'sold' (explicit; the writer sends it)
+#   under contract / pending / LOI -> 'active' + broker_status_text verbatim
+#   coming soon / for lease        -> STATUS_DROP: the caller does not emit it
+#   no signal / unknown text       -> 'active', no label (unchanged behaviour)
+STATUS_DROP = "DROP"
+try:
+    from listing_status import (lookup_status as _st_lookup, DROP as _ST_DROP,
+                                SOLD_PHRASES as _ST_SOLD,
+                                UNDER_CONTRACT_PHRASES as _ST_UC,
+                                COMING_SOON_PHRASES as _ST_CS,
+                                OUT_OF_SCOPE_PHRASES as _ST_OOS,
+                                INACTIVE_PHRASES as _ST_INACTIVE)
+    if _ST_DROP != STATUS_DROP:                   # never mix two sentinels
+        raise ImportError("listing_status.DROP differs")
+    _ST_MARKER_PHRASES = frozenset(_ST_SOLD | _ST_UC | _ST_CS | _ST_OOS | _ST_INACTIVE)
+except Exception:                    # module not present (j3 not applied)
+    _st_lookup = None
+    _ST_FALLBACK = {
+        "sold": "sold", "just sold": "sold", "under contract": "active",
+        "pending": "active", "sale pending": "active", "under loi": "active",
+        "loi": "active", "under offer": "active", "accepted offer": "active",
+        "coming soon": STATUS_DROP, "for lease": STATUS_DROP,
+    }
+    _ST_MARKER_PHRASES = frozenset(_ST_FALLBACK)
+
+
+def lookup_status_text(text, domain=None) -> Optional[tuple]:
+    """(status, label) for a known status phrase, else None. The shared
+    module when importable; otherwise the small local table above."""
+    if not text or not str(text).strip():
+        return None
+    if _st_lookup is not None:
+        return _st_lookup(text, domain)
+    norm = re.sub(r"\s+", " ", re.sub(r"[!:*()\[\]\"'.]|[-_/]", " ", str(text).lower())).strip()
+    st = _ST_FALLBACK.get(norm)
+    if st is None:
+        return None
+    return st, re.sub(r"\s+", " ", str(text)).strip()
+
+
+# A status phrase as a regex: words joined by space / hyphen / underscore,
+# longest first so "sale pending" wins over "pending".
+_ST_MARKER = "|".join(
+    r"[\s_-]*".join(re.escape(w) for w in p.split())
+    for p in sorted(_ST_MARKER_PHRASES, key=len, reverse=True))
+_SEP = r"(?:\s*[:|!]+\s*|\s+[-–—]+\s*|\s*[–—]+\s*)"
+# Title MARKERS only, never free text ("Sold With Real Estate" mid-title,
+# "Closed QSR for Sale" and "Pending Patent ..." are not statuses):
+#   (UNDER CONTRACT) Foo      [Sold] Foo  *Under LOI* Foo -> bracketed, any case
+#   UNDER CONTRACT: Foo       Pending - Foo       -> marker + separator, any case
+#   UNDER CONTRACT-Foo                            -> bare hyphen: multi-word marker only
+#   UNDER CONTRACT Foo                            -> no separator: marker all caps, title not
+#   Foo - UNDER CONTRACT      Foo | Under LOI     -> separator + marker at the end
+#   Foo (Sold)                                    -> bracketed at the end
+_TITLE_PREFIX_BRACKET = re.compile(rf"^\s*(?:[\(\[]|\*+)\s*({_ST_MARKER})\s*!*\s*(?:[\)\]]|\*+)", re.I)
+_TITLE_PREFIX_SEP = re.compile(rf"^\s*({_ST_MARKER}){_SEP}(?=\S)", re.I)
+_TITLE_PREFIX_HYPHEN = re.compile(rf"^\s*((?:{_ST_MARKER}))-(?=\w)", re.I)
+_TITLE_PREFIX_CAPS = re.compile(rf"^\s*({_ST_MARKER})\s+(?=\S)", re.I)
+_TITLE_SUFFIX_BRACKET = re.compile(rf"(?:[\(\[]|\*+)\s*({_ST_MARKER})\s*!*\s*(?:[\)\]]|\*+)[\s.!]*$", re.I)
+_TITLE_SUFFIX_SEP = re.compile(rf"(?:\s*[:|]+\s*|\s+[-–—]+\s*|\s*[–—]+\s*)({_ST_MARKER})[\s.!]*$", re.I)
+
+
+def title_status_marker(title, domain=None) -> Optional[tuple]:
+    """(status, label) from a status MARKER at the start or end of a title,
+    else None. The label is the marker as the broker wrote it ("UNDER
+    CONTRACT", "Under LOI"); the title itself is not changed."""
+    t = (title or "").strip()
+    if not t:
+        return None
+    cands = []
+    for rx in (_TITLE_PREFIX_BRACKET, _TITLE_PREFIX_SEP, _TITLE_SUFFIX_BRACKET, _TITLE_SUFFIX_SEP):
+        m = rx.search(t)
+        if m:
+            cands.append(m.group(1))
+    m = _TITLE_PREFIX_HYPHEN.match(t)
+    if m and re.search(r"[\s_-]", m.group(1).strip()):
+        cands.append(m.group(1))
+    m = _TITLE_PREFIX_CAPS.match(t)
+    if m and m.group(1).isupper() and not t[m.end():].isupper():
+        cands.append(m.group(1))
+    for c in cands:
+        hit = lookup_status_text(c.strip(), domain)
+        if hit and hit[1] is not None:
+            return hit
+    return None
+
+
+def _drop_log(tag: str, dropped: Dict[str, int]) -> None:
+    if dropped:
+        print(f"[{tag}] status DROP: {sum(dropped.values())} rows not emitted "
+              f"({', '.join(f'{k}: {v}' for k, v in sorted(dropped.items()))})")
+
+
+# ============================================================================
 # TRANSWORLD BUSINESS ADVISORS SCRAPER
 # Uses their internal API endpoint
 # ============================================================================
@@ -758,6 +858,7 @@ class TransworldScraper:
 
         # Convert to standard format
         listings = []
+        dropped: Dict[str, int] = {}
         for item in all_items:
             location = item.get("location")
             city, state = extract_city_state(location or "")
@@ -793,7 +894,16 @@ class TransworldScraper:
             business_type = (cats[0] if isinstance(cats, list) and cats else None) \
                 or item.get("industry")
 
-            listings.append(format_listing(
+            # Status (2026-11-12): /api/listings has no status field (nor does
+            # the detail page's listing JSON); the only signal is a marker the
+            # franchise office writes into the heading ("UNDER CONTRACT: ...",
+            # "... - UNDER CONTRACT", "... | Under LOI"). No marker -> active.
+            status, status_text = self.heading_status(item.get("heading"))
+            if status == STATUS_DROP:
+                dropped[status_text or "?"] = dropped.get(status_text or "?", 0) + 1
+                continue
+
+            rec = format_listing(
                 url=url,
                 broker_account=broker_account,
                 title=item.get("heading"),
@@ -803,14 +913,33 @@ class TransworldScraper:
                 location=location,
                 city=city,
                 state=state,
-                cash_flow=float(cash_flow) if cash_flow else None
-            ))
+                cash_flow=float(cash_flow) if cash_flow else None,
+                status=status,
+            )
+            if status_text:
+                rec["broker_status_text"] = status_text
+                rec["status_source"] = "title_marker"
+            listings.append(rec)
 
         if verbose:
+            _drop_log("Transworld", dropped)
             with_price = sum(1 for l in listings if l.get('price'))
-            print(f"\n✓ {len(listings)} Transworld listings ({with_price} with price)")
+            by = {}
+            for l in listings:
+                k = l["status"] + (" (labelled)" if l.get("broker_status_text") else "")
+                by[k] = by.get(k, 0) + 1
+            print(f"\n✓ {len(listings)} Transworld listings ({with_price} with price) status={by}")
 
         return listings
+
+    DOMAIN = "tworld.com"
+
+    @classmethod
+    def heading_status(cls, heading) -> tuple:
+        """(status, broker_status_text) from a heading marker; ('active', None)
+        when the heading carries none."""
+        hit = title_status_marker(heading, cls.DOMAIN)
+        return hit if hit else ("active", None)
 
     # ── Revenue from detail pages ────────────────────────────────────────
     # /api/listings has no revenue field. Each detail page shows it as
@@ -1654,6 +1783,56 @@ class WeSellRestaurantsScraper:
     BASE = "https://www.wesellrestaurants.com"
     API_BASE = "https://api.wesellrestaurants.com/wsr-rebuild-prod/api"
     SEARCH_URL = f"{API_BASE}/searchFilter"
+    DOMAIN = "wesellrestaurants.com"
+
+    # ── Status (2026-11-12, decisions 5 + 6) ─────────────────────────────
+    # Every feed record carries `bstatuslist` (11 Nov: Available 1,171 · In
+    # Contract 124 · Available not Advertised 96 · LOI 26 of 1,417). The
+    # feed's own word for under contract, "In Contract", is not in the shared
+    # phrase set, so it is aliased here (label kept verbatim). "Available not
+    # Advertised" is not a phrase either -> active, no label (it marks the
+    # lease-space listings, not a status).
+    STATUS_ALIASES = {"in contract": "under contract"}
+    # For Lease is out of scope (decision 6 / OUT_OF_SCOPE_PHRASES): the
+    # record's primary category is "Restaurant for Lease" (id 96), or its
+    # headline says "for lease" and never "sale" ("Restaurant for Sale or
+    # Lease!" and "... Sale with Long Lease" stay). Title and category only
+    # (principle 5) — btype id 96 alone is ALSO set on real sales (a $399K
+    # Naples bar), so it is not used. "Closed QSR for Sale" is not a status.
+    LEASE_CATEGORY_ID = 96
+    _FOR_LEASE = re.compile(r"\bfor\s+lease\b", re.I)
+    _SALE = re.compile(r"\bsale\b", re.I)
+
+    @classmethod
+    def lease_label(cls, rec: Dict) -> Optional[str]:
+        """The broker's own words when the record is a space for lease, else None."""
+        cat = rec.get("listing_category") or {}
+        if isinstance(cat, dict) and str(cat.get("id")) == str(cls.LEASE_CATEGORY_ID):
+            return (cat.get("name") or "Restaurant for Lease").strip()
+        head = rec.get("bheadlinead") or rec.get("bname") or ""
+        m = cls._FOR_LEASE.search(head)
+        if m and not cls._SALE.search(head):
+            return m.group(0)
+        return None
+
+    @classmethod
+    def record_status(cls, rec: Dict) -> tuple:
+        """(status, broker_status_text) for one feed record; status may be
+        STATUS_DROP (For Lease) — the caller does not emit it."""
+        lease = cls.lease_label(rec)
+        if lease:
+            hit = lookup_status_text("for lease", cls.DOMAIN) or (STATUS_DROP, None)
+            return hit[0], lease
+        raw = re.sub(r"\s+", " ", str(rec.get("bstatuslist") or "")).strip()
+        if not raw:
+            return "active", None
+        hit = lookup_status_text(raw, cls.DOMAIN)
+        if hit is None:
+            alias = cls.STATUS_ALIASES.get(raw.lower())
+            if alias:
+                hit = lookup_status_text(alias, cls.DOMAIN)
+                hit = (hit[0], raw) if hit else None
+        return hit if hit else ("active", None)
 
     def __init__(self):
         self.session = requests.Session(impersonate="chrome131")
@@ -1713,6 +1892,7 @@ class WeSellRestaurantsScraper:
         all_items = []
         seen_ids = set()
         last_page = None
+        total = None
 
         page_num = 1
         while page_num <= max_pages:
@@ -1723,6 +1903,7 @@ class WeSellRestaurantsScraper:
             records = data.get("data", []) or []
             if last_page is None:
                 last_page = data.get("last_page")
+                total = data.get("total")
                 if verbose:
                     print(f"[WeSell] {data.get('total', '?')} total listings "
                           f"across {last_page} pages (per_page={data.get('per_page')})")
@@ -1745,9 +1926,14 @@ class WeSellRestaurantsScraper:
             time.sleep(random.uniform(0.4, 0.9))
 
         listings = []
+        dropped: Dict[str, int] = {}
         for rec in all_items:
             url = self._detail_url(rec)
             if not url:
+                continue
+            status, status_text = self.record_status(rec)
+            if status == STATUS_DROP:
+                dropped[status_text or "?"] = dropped.get(status_text or "?", 0) + 1
                 continue
             bat = rec.get("listing_bat") or {}
             city = (rec.get("bcity") or "").strip() or None
@@ -1756,7 +1942,7 @@ class WeSellRestaurantsScraper:
             title = (rec.get("bheadlinead") or rec.get("bname")
                      or rec.get("burldes") or "").strip() or None
 
-            listings.append(format_listing(
+            out = format_listing(
                 url=url,
                 broker_account=broker_account,
                 title=title,
@@ -1767,11 +1953,22 @@ class WeSellRestaurantsScraper:
                 description=rec.get("bmetadescription") or rec.get("burldes"),
                 revenue=self._to_number(bat.get("grossSales")),
                 cash_flow=self._to_number(bat.get("owner_benefits")),
-            ))
+                status=status,
+            )
+            if status_text:
+                out["broker_status_text"] = status_text
+                out["status_source"] = "feed_bstatuslist"
+            listings.append(out)
 
         if verbose:
+            _drop_log("WeSell", dropped)
             with_price = sum(1 for l in listings if l.get("price"))
-            print(f"\n✓ {len(listings)} We Sell Restaurants listings ({with_price} with price)")
+            by = {}
+            for l in listings:
+                k = l["status"] + (" (labelled)" if l.get("broker_status_text") else "")
+                by[k] = by.get(k, 0) + 1
+            print(f"\n✓ {len(listings)} We Sell Restaurants listings ({with_price} with price) "
+                  f"status={by} feed_total={total}")
 
         return listings
 
@@ -2154,6 +2351,42 @@ class RoutesForSaleScraper:
 # The only way to filter by STATUS on FacetWP sites.
 # ============================================================================
 
+def facet_card_status(title, card):
+    """(status, broker_status_text) for a FacetWP listing card (eatz, synergy).
+
+    Shared phrase set (scrapers/listing_status.py, decisions 5 + 6) when
+    importable: a short badge-like text node on the card ("Under Contract",
+    "SOLD", "Coming Soon!") decides, most final wins; under contract /
+    pending stay 'active' with the badge verbatim; Coming Soon / For Lease
+    return 'DROP' (the caller does not emit the card). Then the title
+    marker (is_sold_or_pending: SOLD -> sold, Under Contract / Pending ->
+    active + label). Before 2026-11-12 an under-contract title was written
+    'sold' here, while the facet itself lists under-contract as for sale.
+    A bare all-caps SOLD anywhere on the card still means sold (unchanged).
+    """
+    try:
+        from listing_status import lookup_status, STATUS_RANK
+    except Exception:                 # module not present: previous behaviour
+        lookup_status = None
+    text = card.get_text(" ", strip=True) if card is not None else ""
+    best = None
+    if lookup_status is not None and card is not None:
+        for s in card.stripped_strings:
+            hit = lookup_status(s)
+            if hit and hit[1] is not None and (
+                    best is None or STATUS_RANK[hit[0]] > STATUS_RANK[best[0]]):
+                best = hit
+    if best is None and is_sold_or_pending(title):
+        m = re.search(r"under[\s-]*contract|sale[\s-]*pending|pending", title, re.I)
+        if m and not re.search(r"\bsold\b", title, re.I):
+            best = ("active", m.group(0)) if lookup_status is not None else ("sold", None)
+        else:
+            best = ("sold", None)
+    if (best is None or best[0] == "active") and re.search(r"\bSOLD\b", text):
+        best = ("sold", "SOLD")
+    return best if best else ("active", None)
+
+
 class FacetWPScraper:
     """
     Generic FacetWP AJAX scraper — one class, many brokers.
@@ -2195,6 +2428,8 @@ class FacetWPScraper:
         self.link_match = link_match
         self.cookies = cookies or dict(self.DEFAULT_COOKIES)
         self.use_proxy_fallback = use_proxy_fallback
+        # Cards not emitted by status (Coming Soon / For Lease), by label.
+        self.dropped_status: List[str] = []
         # seconds between page POSTs; eatz 429s back-to-back requests
         self.page_delay = 20
         self.base = f"https://{self.domain}"
@@ -2349,12 +2584,18 @@ class FacetWPScraper:
                 if lm.group(1) in US_STATE_CODES:
                     state = lm.group(1)
                     break
-            out.append(format_listing(
+            status, status_text = facet_card_status(title, card)
+            if status == "DROP":                  # Coming Soon / For Lease
+                self.__dict__.setdefault("dropped_status", []).append(status_text)
+                continue
+            rec = format_listing(
                 url=href, broker_account=broker_account, title=title,
                 price=price, price_text=f"${price:,.0f}" if price else None,
                 revenue=revenue, cash_flow=cash_flow, city=city, state=state,
-                status="sold" if is_sold_or_pending(title) or
-                       re.search(r'\bSOLD\b', text) else "active"))
+                status=status)
+            if status_text:
+                rec["broker_status_text"] = status_text
+            out.append(rec)
         return out
 
     def scrape(self, broker_account: str, max_pages: int = 40, verbose: bool = True) -> List[Dict]:
@@ -2422,7 +2663,293 @@ class FacetWPScraper:
         if verbose:
             wp = sum(1 for l in listings if l.get("price"))
             print(f"\n✓ {len(listings)} {self.domain} listings ({wp} with price)")
+        if self.dropped_status:
+            by = {}
+            for k in self.dropped_status:
+                by[k or "?"] = by.get(k or "?", 0) + 1
+            print(f"[FacetWP:{self.domain}] status DROP: {len(self.dropped_status)} cards not emitted "
+                  f"({', '.join(f'{k}: {v}' for k, v in sorted(by.items()))})")
         return listings
+
+
+# ── WordPress-REST listing status (2026-11-11) ──────────────────────────────
+# A WP post type holds every listing the broker ever published — sold, pulled
+# and parked ones included (vikingmergers: 411 posts, 62 on its live index).
+# Nothing in REST says "this is no longer for sale" unless the theme carries a
+# status field, so WPRestScraper reads status from, in order of strength:
+#   1. a status field — class_list taxonomy term (status-sold,
+#      listing_status-past, property_status-for-sale ...), an acf/meta key
+#      (availability / listing_status / status), a 'sold-' slug, a SOLD title;
+#   2. the live index page (index_url): a card badge ("Coming Soon!",
+#      "SOLD FOR", "Under Contract") and whether the post is on the page at all.
+# The most final signal wins: sold > inactive > active.
+#
+# Mapping — Jeff's decisions 5 + 6 (2026-11-11 23:50 UTC). The shared
+# constant set is scrapers/listing_status.py (job 3); when it is importable
+# every lookup below goes through it, so WP-REST, businessusa, ninbb and the
+# displayed-count rule read one vocabulary (principle 15). The local sets are
+# the fallback and hold the same vocabulary:
+#   sold     — the deal closed: sold, sold-out, closed, past, recently-sold.
+#   active + label — still on the broker's list, under contract / pending /
+#              sale pending / under LOI / under offer / accepted offer / off
+#              market: status stays 'active' and the broker's words go in
+#              broker_status_text verbatim.
+#   DROP     — coming soon: not a listing yet, NOT emitted (counted and
+#              logged by scrape()); earlier active rows retire through the
+#              absence rule.
+#   inactive — exists but is not for sale: hold/paused, withdrawn, expired,
+#              not available — and any post that is NOT on the broker's live
+#              index (a different signal from a label: see _apply_index).
+#   active   — positive evidence only: for-sale, active, current, available,
+#              new-listing, reduced, "No Banner".
+# 'sold' and 'inactive' are both explicit statuses: upsert_listings() writes
+# them through its _status_explicit path (principle 14). Both values already
+# exist in listings_direct (sql/2026-11-09_held_audit.sql).
+WP_SOLD_VALUES = frozenset({
+    "sold", "soldout", "sold-out", "closed", "past", "recently-sold",
+    "sold-closed", "sold-settled", "just-closed"})
+WP_UNDER_CONTRACT_VALUES = frozenset({
+    "under-contract", "undercontract", "contract-pending", "pending",
+    "sale-pending", "pending-sale", "under-loi", "loi", "loi-accepted",
+    "under-offer", "accepted-offer", "has-accepted-offer", "offer-accepted",
+    "under-agreement", "off-market", "offmarket"})
+# DROP also covers a for-lease status value (out of scope, as _parse's
+# availability rule already treats it).
+WP_DROP_VALUES = frozenset({"coming-soon", "comingsoon", "coming-soon-listing",
+                            "for-lease", "for-rent", "lease", "leased", "for-lease-only"})
+WP_INACTIVE_VALUES = frozenset({
+    "hold", "on-hold", "paused", "withdrawn", "expired", "inactive",
+    "not-available", "no-longer-available", "temporarily-unavailable"})
+WP_ACTIVE_VALUES = frozenset({
+    "for-sale", "active", "current", "available", "new-listing", "new",
+    "reduced", "price-reduced", "listing", "business-for-sale",
+    "businesses-for-sale", "no-banner"})
+# Taxonomy prefixes that carry a listing status. The bare WP post-type class
+# (type-listing) and post status (status-publish) are deliberately not
+# matched as values: 'publish' is not in the vocabulary, and 'type-' alone is
+# not a status prefix.
+_WP_STATUS_TAX = re.compile(
+    r"^(?:(?:listing[_-]?)?(?:status|availability|category)|property[_-]status|"
+    r"listing[_-]type|portfolio[_-]type)[-_](.+)$", re.I)
+_WP_STATUS_KEY = re.compile(r"(?:^|_)(?:availability|status|sold)$", re.I)
+# Not-emitted sentinel; the same value as listing_status.DROP.
+WP_DROP = "DROP"
+_WP_STATUS_RANK = {"active": 0, "inactive": 1, WP_DROP: 2, "sold": 3}
+try:
+    from listing_status import (lookup_status as _ls_lookup,
+                                classify_class_term as _ls_term,
+                                DROP as _LS_DROP)
+    if _LS_DROP != WP_DROP:                       # never mix two sentinels
+        raise ImportError("listing_status.DROP differs")
+except Exception:                    # module not present (job 3 not applied)
+    _ls_lookup = _ls_term = None
+# Card badges on the live index. Matched against single short text nodes, not
+# free text, so "patent pending" in a description is not a badge.
+_WP_BADGE_SOLD = re.compile(
+    r"^\(?\s*(?:sold(?:\s+for)?|recently\s+sold|just\s+closed|closed)\s*!?\s*\)?:?$", re.I)
+_WP_BADGE_UNDER_CONTRACT = re.compile(
+    r"^\(?\s*(?:under\s+contract|contract\s+pending|sale\s+pending|pending(?:\s+sale)?|"
+    r"under\s+(?:loi|offer|agreement)|(?:has\s+)?accepted\s+offer|offer\s+accepted|"
+    r"off[\s-]market)\s*!?\s*\)?$", re.I)
+_WP_BADGE_DROP = re.compile(r"^\(?\s*(?:coming\s+soon|for\s+lease)\s*!?\s*\)?$", re.I)
+_WP_BADGE_INACTIVE = re.compile(
+    r"^\(?\s*(?:on\s+hold|withdrawn|expired|(?:no\s+longer|not)\s+available)\s*!?\s*\)?$",
+    re.I)
+# Price shown but not as a number. "$40k Down" is a down payment, not a price.
+# Fallback only. The shared rule is scrapers/price_disclosure.py (W14): both
+# writers use it, so when it is importable WPRestScraper uses it too
+# (principle 15). This fallback keeps the patch runnable without W14 and, like
+# the shared list, does not treat a bare "call" or "N/A" as a broker statement.
+try:
+    from price_disclosure import (withheld_price_phrase as _pd_phrase,
+                                  find_labelled_withheld_price as _pd_labelled)
+except Exception:                    # module not present (W14 not applied)
+    _pd_phrase = _pd_labelled = None
+_WP_PRICE_HIDDEN = re.compile(
+    r"\b(?:market\s+price|call\s+for\s+(?:price|pricing)|contact\s+(?:us|broker)|"
+    r"tbd|confidential|negotiable|inquire|upon\s+request|undisclosed|"
+    r"not\s+disclosed)\b", re.I)
+_WP_DOWN_PAYMENT = re.compile(r"\$\s?[\d,.]+\s*[kKmM]?\s+down\b", re.I)
+_WP_LABELLED_MONEY = r"\s*[:\-]?\s*(\$\s?\d[\d,]*(?:\.\d+)?\s*(?:[kK]|[mM]{1,2}|million)?)"
+
+
+def wp_status(raw) -> Optional[tuple]:
+    """(status, keep_label) for a status value; None outside the vocabulary
+    (never a guess). 'Sold' -> ('sold', True); 'Under Contract' ->
+    ('active', True); 'Coming Soon' -> (WP_DROP, True); 'For Sale' ->
+    ('active', False)."""
+    if isinstance(raw, bool) or raw is None:
+        return None
+    if _ls_term is not None:
+        hit = _ls_term(str(raw).strip())
+        return (hit[0], hit[1] is not None) if hit else None
+    v = re.sub(r"[\s_]+", "-", str(raw).strip().lower()).strip("-")
+    if v in WP_SOLD_VALUES:
+        return "sold", True
+    if v in WP_UNDER_CONTRACT_VALUES:
+        return "active", True
+    if v in WP_DROP_VALUES:
+        return WP_DROP, True
+    if v in WP_INACTIVE_VALUES:
+        return "inactive", True
+    if v in WP_ACTIVE_VALUES:
+        return "active", False
+    return None
+
+
+def wp_status_value(raw) -> Optional[str]:
+    """'Sold' / 'sold-out' / 'Under Contract' / 'Coming Soon' / 'For Sale' ->
+    sold | active | DROP | active; None outside the vocabulary."""
+    hit = wp_status(raw)
+    return hit[0] if hit else None
+
+
+def wp_slug_sold(slug: str) -> bool:
+    """'sold-hvac-company-1234' / 'hvac-company-sold' -> True."""
+    s = (slug or "").lower()
+    return bool(re.match(r"sold[-_]", s) or re.search(r"[-_]sold(?:[-_]\d+)?$", s))
+
+
+def wp_badge_status(text: str) -> Optional[str]:
+    """A card badge -> 'sold' | 'active' (under contract family, label kept)
+    | WP_DROP (Coming Soon / For Lease) | 'inactive'; None for anything else,
+    including a plain 'For Sale' (no label to carry)."""
+    t = (text or "").strip()
+    if len(t) > 40:
+        return None
+    if _ls_lookup is not None:
+        hit = _ls_lookup(t)
+        return hit[0] if hit and hit[1] is not None else None
+    if _WP_BADGE_SOLD.match(t):
+        return "sold"
+    if _WP_BADGE_UNDER_CONTRACT.match(t):
+        return "active"
+    if _WP_BADGE_DROP.match(t):
+        return WP_DROP
+    if _WP_BADGE_INACTIVE.match(t):
+        return "inactive"
+    return None
+
+
+def wp_money(v) -> Optional[float]:
+    """First money amount in a value: 1250000, '$1,250,000', '$4.99M',
+    '$1,750,000 (Business) + $3,450,000 (Real Estate)' -> 1750000.0.
+    0, '', 'TBD', 'Market Price' -> None."""
+    if v in (None, "", False, True):
+        return None
+    if isinstance(v, (int, float)):
+        return float(v) or None
+    m = re.search(r"(\d[\d,]*(?:\.\d+)?)\s*(k|mm|m|million)?\b", str(v), re.I)
+    if not m:
+        return None
+    try:
+        n = float(m.group(1).replace(",", ""))
+    except ValueError:
+        return None
+    mult = {"k": 1e3, "m": 1e6, "mm": 1e6, "million": 1e6}.get((m.group(2) or "").lower(), 1)
+    return (n * mult) or None
+
+
+def wp_price_text(text) -> Optional[str]:
+    """The broker's own words when a price field withholds the price
+    ('Market Price', 'Call for price', 'TBD', '$40k Down' with no total),
+    verbatim; else None. Shared rule when price_disclosure is importable."""
+    t = re.sub(r"\s+", " ", str(text or "")).strip()
+    if not t:
+        return None
+    if _pd_phrase is not None:
+        return _pd_phrase(t)
+    if len(t) > 120 or (re.search(r"\$\s?\d", t) and not _WP_DOWN_PAYMENT.search(t)):
+        return None
+    return t if (_WP_PRICE_HIDDEN.search(t) or _WP_DOWN_PAYMENT.search(t)) else None
+
+
+def wp_price_hidden(text) -> bool:
+    """True when a price slot says it is not disclosed (see wp_price_text)."""
+    return wp_price_text(text) is not None
+
+
+def wp_card_financials(text: str) -> Dict:
+    """Labelled money on an index card: 'Price: $1,250,000', 'Price: Market
+    Price', 'Revenues: $64,939,613', 'Cash Flow: $2,799,477', 'Asking: $225,000'
+    / 'Owner Benefit: $120,000' (truforte), 'Listing Price: $X' / 'Total Revenue: $Y'
+    (routeconsultant). A bare '$40k
+    Down' is never a price."""
+    out = {"price": None, "price_not_disclosed": None, "price_text": None,
+           "revenue": None, "cash_flow": None}
+    t = re.sub(r"\s+", " ", text or "")
+    m = re.search(r"\b(?:asking(?:\s+price)?|list(?:ing)?\s+price|price)" + _WP_LABELLED_MONEY, t, re.I)
+    if m and not _WP_DOWN_PAYMENT.match(t[m.start(1):m.start(1) + 40]):
+        out["price"] = wp_money(m.group(1))
+    if out["price"]:
+        out["price_not_disclosed"] = False
+    else:
+        # The broker's words go on the row as price_text (verbatim): the
+        # writers set price_not_disclosed only from an explicit phrase.
+        phrase = None
+        if _pd_labelled is not None:
+            phrase = _pd_labelled(t)
+        else:
+            m = re.search(r"\b(?:asking(?:\s+price)?|list(?:ing)?\s+price|price)\s*[:\-]\s*([^$\d|]{2,30})",
+                          t, re.I)
+            if m and wp_price_text(m.group(1)):
+                phrase = re.sub(r"\s+", " ", m.group(0)).strip()
+        if not phrase:
+            d = _WP_DOWN_PAYMENT.search(t)      # "$100k Down" in prose (strategicdc)
+            if d:
+                phrase = wp_price_text(d.group(0))
+        if phrase:
+            out["price_not_disclosed"], out["price_text"] = True, phrase
+    m = re.search(r"\b(?:(?:gross|total|annual)\s+)?revenues?" + _WP_LABELLED_MONEY, t, re.I)
+    if m:
+        out["revenue"] = wp_money(m.group(1))
+    m = re.search(r"\b(?:cash\s*flow|sde|owner\s+benefit)" + _WP_LABELLED_MONEY, t, re.I)
+    if m:
+        out["cash_flow"] = wp_money(m.group(1))
+    return out
+
+
+# Card-built titles. listings.routeconsultant.com titles are a bare region
+# ("Central Georgia", x17), which public.is_publishable() rejects by design
+# (region-grid rule). The card carries region / route type / count; the title
+# is rebuilt from them. Identity stays the post URL — never the title.
+_WP_COUNT_RE = re.compile(r"^\d[\d,]*\+?\s+(?:routes?|runs?|accounts?|stops?|trucks?|"
+                          r"territor(?:y|ies)|units?)$", re.I)
+
+
+def wp_route_title(region: str, route_type: Optional[str], count: Optional[str] = None) -> str:
+    """'Central Georgia', 'Bread', '15 Accounts' -> 'Central Georgia Bread Route, 15 Accounts'."""
+    region = (region or "").strip()
+    rt = (route_type or "").strip()
+    if rt and not re.search(r"\broutes?\b", rt, re.I):
+        rt += " Route"
+    title = " ".join(x for x in (region, rt) if x)
+    return f"{title}, {count.strip()}" if count else title
+
+
+def _rc_card_title(rec: Dict, strings: List[str]) -> Optional[str]:
+    """routeconsultant card: [region, route type, count?, 'Total Revenue: ..', ...]."""
+    region = rec.get("title") or (strings[0] if strings else "")
+    rest = [x for x in strings if x.strip().lower() != region.strip().lower()]
+    rtype = next((x for x in rest if not _WP_COUNT_RE.match(x) and ":" not in x
+                  and not re.search(r"view more|\$", x, re.I)), None)
+    count = next((x for x in rest if _WP_COUNT_RE.match(x)), None)
+    return wp_route_title(region, rtype, count) if rtype else None
+
+
+WP_CARD_TITLE_BUILDERS = {"listings.routeconsultant.com": _rc_card_title}
+
+
+def _wp_norm_title(t: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", html_unescape(t or "").lower()).strip()
+
+
+def _wp_path(url: str) -> str:
+    from urllib.parse import urlparse
+    try:
+        return (urlparse(url).path or "/").rstrip("/").lower()
+    except Exception:
+        return ""
 
 
 # ============================================================================
@@ -2443,10 +2970,32 @@ class WPRestScraper:
         WPRestScraper("eatz-associates.com", "listing").scrape(account)
     """
 
-    def __init__(self, domain: str, rest_base: str, fetch_financials: bool = False):
+    # Extra status resolvers, each (item, title, fields) -> None or
+    # (status, source, verbatim_text). Appended to by other handlers (e.g. a
+    # broker-specific status taxonomy); combined with the built-in ones under
+    # the same most-final-wins rule.
+    status_handlers: list = []
+
+    def __init__(self, domain: str, rest_base: str, fetch_financials: bool = False,
+                 index_url: Optional[str] = None, off_index: str = "inactive"):
         self.domain = domain.strip().strip("/")
         self.rest_base = rest_base.strip().strip("/")
         self.fetch_financials = fetch_financials
+        # The broker's live "for sale" page (data/wp_rest_brokers.csv
+        # index_url; several separated by '|'). When set, a REST post that is
+        # not on it is emitted as status='inactive' (see _apply_index).
+        self.index_urls = [u.strip() for u in (index_url or "").split("|") if u.strip()]
+        # What to do with a REST post that is not on the index:
+        #   'inactive' (default) — emit it with status='inactive' so an earlier
+        #       active row is retired;
+        #   'drop' — leave it out of the result (counted and logged). For a
+        #       broker whose off-index rows were already quarantined by hand
+        #       (trufortebusinessgroup.com, 2026-11-11): emitting 'inactive'
+        #       would overwrite that manual state (principle 14).
+        if off_index not in ("inactive", "drop"):
+            raise ValueError(f"off_index must be 'inactive' or 'drop', not {off_index!r}")
+        self.off_index = off_index
+        self.index_stats: Dict = {}
         self.session = self._make_session()
         self._proxies = self._build_proxies()   # used only if REST is blocked
         self._use_proxy = False
@@ -2498,12 +3047,56 @@ class WPRestScraper:
 
     @staticmethod
     def _num(v):
-        if v in (None, "", False):
-            return None
-        try:
-            return float(re.sub(r"[^\d.]", "", str(v)) or 0) or None
-        except Exception:
-            return None
+        # First amount only: '$1,750,000 (Business) + $3,450,000 (Real Estate)'
+        # used to strip to 17500003450000.
+        return wp_money(v)
+
+    def _resolve_status(self, item, title, fields):
+        """(status, source, verbatim_text) from the post itself; status is
+        'active' with source None when nothing says otherwise. See the
+        mapping above WP_SOLD_VALUES."""
+        found = []
+        for c in item.get("class_list") or []:
+            m = _WP_STATUS_TAX.match(c.strip())
+            hit = wp_status(m.group(1)) if m else None
+            if hit is None and c.strip().lower() == "sold":
+                hit = ("sold", True)
+            if hit:
+                found.append((hit[0], "class_list", c.strip() if hit[1] else None))
+        for k, raw in fields.items():
+            if not _WP_STATUS_KEY.search(k) or isinstance(raw, (dict, list)):
+                continue
+            if k.lower().endswith("sold") and raw is True:
+                found.append(("sold", f"field:{k}", "true"))
+                continue
+            hit = wp_status(raw)
+            if hit:
+                found.append((hit[0], f"field:{k}", str(raw).strip() if hit[1] else None))
+        slug = item.get("slug") or ""
+        if wp_slug_sold(slug):
+            found.append(("sold", "slug", slug))
+        if is_sold_or_pending(title):
+            m = re.search(r"\(?\s*(?:sold\b[^)]*|under[\s-]*contract|sale[\s-]*pending|"
+                          r"pending|just[\s-]*closed|recently[\s-]*sold)\s*\)?", title, re.I)
+            text = m.group(0).strip() if m else title
+            # under contract / pending in a title: still listed (decision 6)
+            v = ("active" if re.search(r"contract|pending", text, re.I)
+                 and not re.search(r"\bsold\b", text, re.I) else "sold")
+            found.append((v, "title", text))
+        for h in self.status_handlers:
+            try:
+                r = h(item, title, fields)
+            except Exception as e:
+                print(f"[WP:{self.domain}] status handler {getattr(h, '__name__', h)} failed: {e}")
+                r = None
+            if r:
+                found.append(r)
+        if not found:
+            return "active", None, None
+        # Most final wins; between two 'active' hits the one with a label
+        # (Under Contract) beats a plain For Sale term.
+        st, src, text = max(found, key=lambda f: (_WP_STATUS_RANK[f[0]], f[2] is not None))
+        return st, src, text
 
     def _parse(self, item, broker_account):
         link = item.get("link") or ""
@@ -2528,25 +3121,10 @@ class WPRestScraper:
 
         # Real industry taxonomy (industry-boutiques), NOT the post-type slug
         # (type-business_listing) — exclude "type".
-        business_type = self._taxonomy(cl, "industry", "category", "sector")
+        business_type = self._taxonomy(cl, "industry", "category", "sector", "route_type")
         loc = self._taxonomy(cl, "location", "region")
         st = self._taxonomy(cl, "state")
         state = st.upper() if st and re.fullmatch(r"[a-z]{2}", st.strip(), re.I) else None
-
-        # Sold/under-contract → status='sold' (class_list carries the WP post
-        # status / a listing-status taxonomy, e.g. status-sold, availability-sold).
-        _sold_slug = re.compile(
-            r'(?:status|availability|listing[_-]?st\w*)[-_]'
-            r'(?:sold|under[_-]?contract|sale[_-]?pending|off[_-]?market)', re.I)
-        status = "active"
-        if is_sold_or_pending(title):
-            status = "sold"
-        else:
-            for c in cl:
-                if _sold_slug.search(c) or c.strip().lower() in (
-                        "sold", "under-contract", "sale-pending"):
-                    status = "sold"
-                    break
 
         acf = item.get("acf") or {}
         # Some themes expose listing fields in REST `meta` instead of ACF, prefixed
@@ -2557,24 +3135,36 @@ class WPRestScraper:
                       for k, v in meta.items() if not isinstance(v, (dict, list))}
             acf = {**folded, **(acf if isinstance(acf, dict) else {})}
         avail = str(acf.get("availability") or "").strip().lower()
-        if avail:
-            if re.search(r"\blease\b|\brent\b", avail):
-                return None
-            if re.search(r"sold|contract|pending|off[\s-]?market", avail):
-                status = "sold"
-        price = self._num(acf.get("asking_price") or acf.get("price") or acf.get("list_price"))
+        if avail and re.search(r"\blease\b|\brent\b", avail):
+            return None
+        status, status_source, status_text = self._resolve_status(
+            item, title, acf if isinstance(acf, dict) else {})
+        raw_price = acf.get("asking_price") or acf.get("price") or acf.get("list_price")
+        price = self._num(raw_price)
+        price_text = None if price else wp_price_text(raw_price)
+        price_not_disclosed = False if price else (True if price_text else None)
         cash_flow = self._num(acf.get("cash_flow") or acf.get("cashflow") or acf.get("sde"))
         revenue = self._num(acf.get("revenue") or acf.get("gross_revenue"))
 
-        return format_listing(
+        rec = format_listing(
             url=link, broker_account=broker_account, title=title,
             price=price, cash_flow=cash_flow, revenue=revenue,
             business_type=(business_type.title() if business_type else None),
             city=(acf.get("city") or None), state=(state or acf.get("state") or None),
-            location=loc.title() if loc else None, status=status,
+            location=loc.title() if loc else None, status=status, price_text=price_text,
             broker_published_on=wp_date(item.get("date")),
             broker_modified_on=wp_date(item.get("modified")),
             broker_date_source="wordpress_rest")
+        # Carried on the row for logs/snapshots. upsert_listings() builds its
+        # row from named keys, so none of these reach listings_direct today
+        # (there is no column for them); status itself does. price_text (set
+        # through format_listing) is the broker's verbatim withheld-price
+        # phrase: the W14 writers derive price_not_disclosed from it.
+        rec["status_source"] = status_source
+        rec["broker_status_text"] = status_text
+        rec["price_not_disclosed"] = price_not_disclosed
+        rec["wp_slug"] = item.get("slug") or None
+        return rec
 
     def scrape(self, broker_account: str, max_pages: int = 60, verbose: bool = True) -> List[Dict]:
         if verbose:
@@ -2626,28 +3216,357 @@ class WPRestScraper:
                 break
             time.sleep(0.2)
 
+        if self.index_urls and listings:
+            self._apply_index(listings, verbose)
+        elif listings and verbose:
+            print(f"[WP:{self.domain}] no index_url — status from REST fields only; "
+                  f"posts the broker has taken down cannot be detected")
+        self._drop_not_emitted(listings, verbose)
+
         if self.fetch_financials:
             self._enrich_financials(listings, verbose)
 
         if verbose:
             wp = sum(1 for l in listings if l.get("price"))
-            print(f"\n✓ {len(listings)} listings from {self.domain} ({wp} with price)")
+            by = {}
+            for l in listings:
+                by[l["status"]] = by.get(l["status"], 0) + 1
+            print(f"\n✓ {len(listings)} listings from {self.domain} ({wp} with price) "
+                  f"status={by}")
         return listings
 
-    def _enrich_financials(self, listings, verbose=True):
-        """Follow each listing's detail page for price/cash flow (opt-in — slow)."""
-        for i, rec in enumerate(listings):
-            if rec.get("price"):
+    def _drop_not_emitted(self, listings, verbose=True):
+        """Remove status=DROP rows (Coming Soon — decision 5) in place; the
+        count goes in index_stats['dropped_status'] and the log. Never
+        silent: a broker whose whole feed is Coming Soon shows up here."""
+        dropped = [l for l in listings if l.get("status") == WP_DROP]
+        if not dropped:
+            return
+        by = {}
+        for l in dropped:
+            k = l.get("broker_status_text") or "?"
+            by[k] = by.get(k, 0) + 1
+        listings[:] = [l for l in listings if l.get("status") != WP_DROP]
+        self.index_stats = {**(self.index_stats or {}), "dropped_status": len(dropped)}
+        print(f"[WP:{self.domain}] status DROP: {len(dropped)} rows not emitted "
+              f"({', '.join(f'{k}: {v}' for k, v in sorted(by.items()))})")
+
+    # ── live index intersection ────────────────────────────────────────────
+    def _fetch_index_pages(self, verbose=True, max_pages=25):
+        """GET each index_url and follow its plain pagination (/page/N/,
+        ?paged=N, rel=next). Returns [(url, html)]; raises if the first page
+        of any index_url cannot be read.
+
+        'POST <url>' instead fetches a theme endpoint that returns the rendered
+        result grid as JSON {"data": "<html>"} for an empty filter — the
+        request the site's own JS makes (listings.routeconsultant.com:
+        wp-json/routeconsultant/v1/filter-routes). No pagination."""
+        from urllib.parse import urljoin
+        pages, seen = [], set()
+        for start in self.index_urls:
+            if start.upper().startswith("POST "):
+                url = start[5:].strip()
+                r = self.session.post(url, json={}, timeout=60,
+                                      proxies=self._proxies if self._use_proxy else None)
+                if r.status_code != 200:
+                    raise RuntimeError(f"index POST {url} HTTP {r.status_code}")
+                try:
+                    data = r.json()
+                except Exception:
+                    raise RuntimeError(f"index POST {url} returned non-JSON")
+                body = data.get("data") if isinstance(data, dict) else None
+                if not isinstance(body, str) or not body.strip():
+                    raise RuntimeError(f"index POST {url}: no 'data' html in response")
+                pages.append((url, body))
                 continue
+            queue = [start]
+            while queue and len(pages) < max_pages:
+                url = queue.pop(0)
+                if url in seen or re.search(r"/page/1/?$|[?&](?:paged|page|pg)=1$", url):
+                    continue
+                seen.add(url)
+                r = self._get(url)
+                if r.status_code != 200:
+                    if url == start:
+                        raise RuntimeError(f"index {url} HTTP {r.status_code}")
+                    continue
+                body = r.text or ""
+                if re.search(r"cf-chl|cf_chl_opt|<title>Just a moment", body):
+                    raise RuntimeError(f"index {url} returned a Cloudflare challenge")
+                pages.append((url, body))
+                base = start.split("?")[0].rstrip("/")
+                for h in re.findall(r'href="([^"#]+)"', body):
+                    u = html_unescape(urljoin(url, h))
+                    if (u.split("?")[0].rstrip("/").startswith(base)
+                            and re.search(r"/page/\d+/?$|[?&](?:paged|page|pg)=\d+$", u)
+                            and u not in seen):
+                        queue.append(u)
+                time.sleep(0.5)
+        return pages
+
+    @staticmethod
+    def _card_for(tag, max_up=8):
+        """The listing card around an anchor: the nearest ancestor whose
+        parent repeats it (>=3 siblings with the same tag and class) — the
+        grid item. Falls back to the anchor itself."""
+        node = tag
+        for _ in range(max_up):
+            parent = node.parent
+            if parent is None or parent.name in ("body", "html", "[document]"):
+                break
+            sig = (node.name, tuple(node.get("class") or ()))
+            same = sum(1 for c in parent.find_all(node.name, recursive=False)
+                       if (c.name, tuple(c.get("class") or ())) == sig)
+            if same >= 3:
+                return node
+            node = parent
+        return tag
+
+    @staticmethod
+    def _partial_index_reason(pages) -> Optional[str]:
+        """An index that loads the rest of its cards by AJAX (JetEngine
+        'Load More', FacetWP pager) shows only page one in the HTML; taking it
+        as the whole inventory would retire every listing past page one."""
+        for url, body in pages:
+            jet = max((int(x) for x in re.findall(r'data-pages="(\d+)"', body)), default=0)
+            if jet > 1:
+                return f"{url}: JetEngine grid with data-pages={jet} (AJAX pagination)"
+            m = re.search(r'"total_rows":(\d+)[^}]*?"per_page":(\d+)|"per_page":(\d+)[^}]*?"total_rows":(\d+)', body)
+            if m:
+                rows = int(m.group(1) or m.group(4)); per = int(m.group(2) or m.group(3))
+                if rows > per:
+                    return f"{url}: FacetWP pager total_rows={rows} per_page={per} (AJAX pagination)"
+        return None
+
+    @staticmethod
+    def _card_for_key(tag, key, key_of, max_text=4000):
+        node = tag
+        while node.parent is not None and node.parent.name not in ("body", "html", "[document]"):
+            parent = node.parent
+            keys = {key_of(x) for x in parent.find_all("a", href=True)} - {None}
+            if keys - {key} or len(parent.get_text(" ", strip=True)) > max_text:
+                break
+            node = parent
+        return node
+
+    def _parse_index(self, pages, rest_paths, rest_slugs):
+        """{path: card} for cards linking a REST post, plus badge cards that
+        link elsewhere (strategicdc's sold cards all point at one
+        /recently-sold.../ page) as [(normalised text set, status, badge)]."""
+        from urllib.parse import urljoin
+        on_index, unlinked = {}, []
+        for url, body in pages:
+            soup = BeautifulSoup(body, "html.parser")
+            for s in soup(["script", "style", "noscript"]):
+                s.decompose()
+            def key_of(tag):
+                path = _wp_path(urljoin(url, tag.get("href") or ""))
+                last = path.rsplit("/", 1)[-1]
+                return path if path in rest_paths else (last if last in rest_slugs else None)
+
+            done = set()
+            for a in soup.find_all("a", href=True):
+                key = key_of(a)
+                # A card linking a REST post: the widest ancestor that links
+                # no other post. Any other card: the repeated grid item.
+                card = self._card_for_key(a, key, key_of) if key else self._card_for(a)
+                if id(card) in done:
+                    continue
+                strings = [s.strip() for s in card.stripped_strings]
+                badge = next(((wp_badge_status(s), s) for s in strings if wp_badge_status(s)),
+                             (None, None))
+                if key:
+                    done.add(id(card))
+                    info = on_index.setdefault(key, {"badge": None, "badge_text": None,
+                                                     "label": None, "text": ""})
+                    lab = next((m.group(1).strip() for m in
+                                (re.match(r"^status\s*:\s*(.{2,40})$", x, re.I) for x in strings)
+                                if m), None)
+                    if lab and not info["label"]:
+                        info["label"] = lab
+                    if badge[0] and (info["badge"] is None or
+                                     _WP_STATUS_RANK[badge[0]] > _WP_STATUS_RANK[info["badge"]]):
+                        info["badge"], info["badge_text"] = badge
+                    if len(" ".join(strings)) > len(info["text"]):
+                        info["text"] = " ".join(strings)
+                        info["strings"] = strings
+                elif badge[0] and card is not a:
+                    done.add(id(card))
+                    unlinked.append(({_wp_norm_title(s) for s in strings if len(s) >= 8},
+                                     badge[0], badge[1]))
+                elif badge[0] and card is a and len(strings) >= 2:
+                    done.add(id(card))
+                    unlinked.append(({_wp_norm_title(s) for s in strings if len(s) >= 8},
+                                     badge[0], badge[1]))
+        return on_index, unlinked
+
+    def _apply_index(self, listings, verbose=True):
+        """Keep as active only the REST posts that are on the live index.
+        A post that is not there is emitted with status='inactive'
+        (status_source='not_on_index') — never dropped, never written active.
+        If the index cannot be read, or matches nothing, fail loud: every row
+        keeps its REST status and is flagged index_check='failed'."""
+        rest_paths = {_wp_path(l["listing_url"]) for l in listings}
+        rest_slugs = {l.get("wp_slug") for l in listings if l.get("wp_slug")}
+        err = None
+        try:
+            pages = self._fetch_index_pages(verbose)
+            on_index, unlinked = self._parse_index(pages, rest_paths, rest_slugs)
+        except Exception as e:
+            err, on_index, unlinked, pages = f"{type(e).__name__}: {e}", {}, [], []
+        n_rest = len(listings)
+        if not err:
+            err = self._partial_index_reason(pages)
+        if not err and not on_index:
+            err = f"0 of {n_rest} REST posts found on {len(pages)} index page(s)"
+        # A partial page (AJAX "load more", a JS grid) looks like a broker
+        # that delisted most of its inventory. If REST's own status field
+        # says many more are active than the index shows, trust neither.
+        rest_active = sum(1 for l in listings
+                          if l["status"] == "active" and l.get("status_source"))
+        if not err and rest_active >= 5 and len(on_index) < 0.5 * rest_active:
+            err = (f"index shows {len(on_index)} posts but REST status fields "
+                   f"mark {rest_active} active — index likely partial")
+        if err:
+            self.index_stats = {"rest": n_rest, "index_error": err}
+            if self.off_index == "drop":
+                # The index IS the inventory for this broker; without it the
+                # REST set is mostly archive. Return nothing (the runner closes
+                # the crawl as failed/EMPTY) rather than 700 archived posts.
+                print(f"[WP:{self.domain}] INDEX CHECK FAILED ({err}) — off_index=drop, "
+                      f"returning 0 of {n_rest} REST posts")
+                listings[:] = []
+                return
+            for l in listings:
+                l["index_check"] = "failed"
+            print(f"[WP:{self.domain}] INDEX CHECK FAILED ({err}) — returning REST "
+                  f"statuses unchanged for {n_rest} posts; flagged index_check=failed")
+            return
+
+        sold_titles = {}
+        for texts, st, badge in unlinked:
+            for t in texts:
+                if t not in sold_titles or _WP_STATUS_RANK[st] > _WP_STATUS_RANK[sold_titles[t][0]]:
+                    sold_titles[t] = (st, badge)
+        counts = {"rest": n_rest, "index_pages": len(pages), "on_index": 0,
+                  "badge_inactive": 0, "badge_sold": 0, "badge_active": 0,
+                  "badge_drop": 0, "title_matched": 0, "not_on_index": 0}
+        for l in listings:
+            key = _wp_path(l["listing_url"])
+            card = on_index.get(key) or on_index.get(l.get("wp_slug") or "")
+            if card:
+                counts["on_index"] += 1
+                l["index_check"] = "on_index"
+                if card["badge"] and _WP_STATUS_RANK[card["badge"]] >= _WP_STATUS_RANK[l["status"]]:
+                    l["status"], l["status_source"] = card["badge"], "index_badge"
+                    l["broker_status_text"] = card["badge_text"]
+                    counts["badge_" + card["badge"].lower()] += 1
+                elif card.get("label") and not l.get("broker_status_text"):
+                    # "Status: Under Contract" (routeconsultant): carried
+                    # verbatim; an under-contract route is still on the
+                    # broker's live list (decision 6), so status stays. A
+                    # label the shared set calls sold / Coming Soon does
+                    # change it.
+                    l["broker_status_text"] = card["label"]
+                    counts["labelled"] = counts.get("labelled", 0) + 1
+                    lst = wp_badge_status(card["label"])
+                    if lst and _WP_STATUS_RANK[lst] > _WP_STATUS_RANK[l["status"]]:
+                        l["status"], l["status_source"] = lst, "index_label"
+                builder = WP_CARD_TITLE_BUILDERS.get(self.domain)
+                if builder:
+                    t = builder(l, card.get("strings") or [])
+                    if t:
+                        l["title"] = t
+                fin = wp_card_financials(card["text"])
+                if not l.get("price") and fin["price"]:
+                    l["price"] = fin["price"]
+                if l.get("price"):
+                    l["price_not_disclosed"] = False
+                elif fin["price_not_disclosed"]:
+                    l["price_not_disclosed"] = True
+                    l["price_text"] = fin["price_text"]
+                for k in ("revenue", "cash_flow"):
+                    if not l.get(k) and fin[k]:
+                        l[k] = fin[k]
+                continue
+            l["index_check"] = "not_on_index"
+            if self.domain in WP_CARD_TITLE_BUILDERS and l.get("business_type"):
+                l["title"] = wp_route_title(l.get("title"), l["business_type"])
+            hit = sold_titles.get(_wp_norm_title(l.get("title")))
+            if hit:
+                counts["title_matched"] += 1
+                if _WP_STATUS_RANK[hit[0]] >= _WP_STATUS_RANK[l["status"]]:
+                    l["status"], l["status_source"], l["broker_status_text"] = (
+                        hit[0], "index_badge_title", hit[1])
+                continue
+            counts["not_on_index"] += 1
+            if self.off_index == "drop":
+                l["_drop_off_index"] = True
+                continue
+            if l["status"] == "active":
+                l["status"], l["status_source"], l["broker_status_text"] = (
+                    "inactive", "not_on_index", None)
+        if self.off_index == "drop":
+            keep = [l for l in listings if not l.pop("_drop_off_index", False)]
+            counts["dropped_off_index"] = len(listings) - len(keep)
+            listings[:] = keep
+        self.index_stats = counts
+        if verbose:
+            print(f"[WP:{self.domain}] index check: rest={n_rest} "
+                  f"on_index={counts['on_index']} (badged inactive={counts['badge_inactive']}, "
+                  f"sold={counts['badge_sold']}, under-contract active={counts['badge_active']}, "
+                  f"coming-soon drop={counts['badge_drop']}) title-matched badge cards="
+                  f"{counts['title_matched']} not_on_index={counts['not_on_index']} "
+                  + (f"(DROPPED {counts['dropped_off_index']} — off_index=drop)"
+                     if self.off_index == "drop" else "(emitted non-active, not dropped)"))
+
+    @staticmethod
+    def _detail_financials(html_text: str) -> Dict:
+        """Price / revenue / cash flow from a listing's own detail page.
+        Reads only the block around the FIRST price label, never the whole
+        page: synergybb's detail pages carry 'Asking Price: $X' cards for
+        other listings in a sidebar further down."""
+        soup = BeautifulSoup(html_text or "", "html.parser")
+        for t in soup(["script", "style", "noscript", "nav", "header", "footer"]):
+            t.decompose()
+        label = soup.find(string=re.compile(
+            r"^\s*(?:asking\s+price|list(?:ing)?\s+price|price)\s*:?\s*$", re.I))
+        if label is None:
+            return {"price": None, "price_not_disclosed": None, "revenue": None, "cash_flow": None}
+        block = label.parent
+        for _ in range(3):
+            up = block.parent
+            if up is None or len(up.get_text(" ", strip=True)) > 600:
+                break
+            block = up
+        return wp_card_financials(block.get_text(" ", strip=True))
+
+    def _enrich_financials(self, listings, verbose=True):
+        """Follow each ACTIVE listing's detail page for price / revenue / cash
+        flow when REST and the index card gave none (opt-in per broker:
+        data/wp_rest_brokers.csv fetch_financials=yes — slow, one GET each)."""
+        todo = [r for r in listings if r.get("status") == "active" and not r.get("price")]
+        got = failed = 0
+        for i, rec in enumerate(todo):
             try:
-                html_text = self.session.get(rec["listing_url"], timeout=20).text
-                prices = re.findall(r'\$\s?[\d,]{4,}', html_text)
-                if prices:
-                    rec["price"] = parse_money(prices[0])
+                r = self.session.get(rec["listing_url"], timeout=20)
+                fin = self._detail_financials(r.text if r.status_code == 200 else "")
             except Exception:
-                pass
-            if verbose and i and i % 100 == 0:
-                print(f"[WP:{self.domain}] enriched {i}/{len(listings)}")
+                fin, failed = None, failed + 1
+            if fin:
+                if fin["price"]:
+                    rec["price"], rec["price_not_disclosed"] = fin["price"], False
+                    got += 1
+                elif fin["price_not_disclosed"]:
+                    rec["price_not_disclosed"] = True
+                    rec["price_text"] = fin["price_text"]
+                for k in ("revenue", "cash_flow"):
+                    if not rec.get(k) and fin[k]:
+                        rec[k] = fin[k]
+            time.sleep(0.5)
+        if verbose:
+            print(f"[WP:{self.domain}] detail financials: {len(todo)} active without price, "
+                  f"{got} priced from detail page, {failed} fetch errors")
 
 
 def scrape_specialized_broker(broker: Dict, verbose: bool = True) -> Optional[List[Dict]]:

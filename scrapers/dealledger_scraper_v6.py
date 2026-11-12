@@ -79,6 +79,7 @@ import re
 import sys
 import time
 import traceback
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
@@ -100,6 +101,8 @@ except Exception:
 # reads SUPABASE_* at call time rather than import time, so ordering here is
 # not load-bearing either way.
 from crawl_run_log import start_run, finish_run
+# Broker's own displayed count per crawl (2026-11-11). Pure module, no I/O.
+from displayed_count import DisplayedCountTracker, verdict_label
 
 # curl_cffi impersonates a real Chrome TLS/JA3 fingerprint — the same fix that
 # unblocked the collector (plain requests gets 403'd). Falls back to
@@ -111,6 +114,66 @@ except ImportError:
     HAS_CURL_CFFI = False
     print("⚠️  curl_cffi not installed — falling back to plain requests (403-prone).")
     print("   pip3 install curl_cffi")
+
+# ── TLS/HTTP2 fingerprint (2026-11-12, decision 10) ─────────────────────────
+# Default curl_cffi impersonation target for every PageFetcher request.
+# chrome131 → chrome145: laundromat-broker.com (nginx) resets any request whose
+# UA says Chrome <= 136 (curl 92), and chrome124 went stale ~30 Jun 2026 the
+# same way — an old fingerprint fails quietly, one server at a time.
+# DL_IMPERSONATE overrides it for a whole run with no code change, e.g.
+#   DL_IMPERSONATE=chrome131  (the pre-2026-11-12 default — rollback)
+# An unknown value is NOT silently accepted: the run logs it and uses the
+# default, and the startup line names the fingerprint actually in use.
+DEFAULT_IMPERSONATE = "chrome145"
+_IMPERSONATE_ENV = os.environ.get("DL_IMPERSONATE", "").strip()
+
+
+def _known_impersonate(name):
+    """True if the installed curl_cffi knows this impersonation target."""
+    if not HAS_CURL_CFFI:
+        return False
+    try:
+        from curl_cffi.requests import BrowserType
+        return name in BrowserType.__members__ or name in {
+            m.value for m in BrowserType}
+    except Exception:
+        return True   # can't introspect — let curl_cffi decide at request time
+
+
+def _resolve_impersonate(env_value):
+    """(target, source) for the run: the env override if valid, else default."""
+    if env_value:
+        if _known_impersonate(env_value):
+            return env_value, "DL_IMPERSONATE"
+        print(f"⚠️  DL_IMPERSONATE={env_value!r} is not a curl_cffi target — "
+              f"using default {DEFAULT_IMPERSONATE}")
+        return DEFAULT_IMPERSONATE, "default (DL_IMPERSONATE invalid)"
+    return DEFAULT_IMPERSONATE, "default"
+
+
+def _reset_fallback_for(primary):
+    """Fingerprint for the one-shot retry after an HTTP/2 stream reset: the
+    NEXT family, so the retry never repeats the fingerprint that was reset.
+    Chrome/Edge primary → Safari 26; anything else → chrome145."""
+    if primary.startswith(("chrome", "edge")):
+        return "safari2601"
+    return "chrome145"
+
+
+IMPERSONATE, IMPERSONATE_SOURCE = _resolve_impersonate(_IMPERSONATE_ENV)
+
+# Per-domain pin when the default regresses a specific broker (bare host →
+# curl_cffi target). Empty on 2026-11-12: no regression in the check set.
+IMPERSONATE_DOMAIN_OVERRIDES = {}
+
+
+def fingerprint_banner():
+    """One-line description of the fetch fingerprint in use (startup log)."""
+    if not HAS_CURL_CFFI:
+        return "plain requests (curl_cffi missing)"
+    pins = f", {len(IMPERSONATE_DOMAIN_OVERRIDES)} domain pin(s)" if IMPERSONATE_DOMAIN_OVERRIDES else ""
+    return (f"{IMPERSONATE} (curl_cffi, {IMPERSONATE_SOURCE}; "
+            f"h2-reset fallback {_reset_fallback_for(IMPERSONATE)}{pins})")
 
 try:
     from playwright.sync_api import sync_playwright
@@ -131,12 +194,14 @@ except ImportError:
 # CONFIGURATION
 # ============================================================
 
+# Playwright / plain-requests User-Agents. Chrome 145-era (updated 2026-11-12
+# from Chrome/120 — servers that gate on Chrome <= 136 reset those). Same OS mix.
 USER_AGENTS = [
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0.1 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0",
 ]
 
 LISTING_KEYWORDS = [
@@ -216,7 +281,56 @@ GENERIC_LINK_TEXT = {
     "more details", "view more details", "see full details", "details here",
     "view business", "view business details", "learn more about this business",
     "click for details", "get more info", "request details", "view now",
+    "full listing", "view full listing", "see full listing",
 }
+
+# A dangling separator left by a page-title template with an empty site name
+# ("Medical Clinic for Sale in Collier, FL |" on healthcarebizsales.com, 2026-11-10).
+# Only a trailing '|' with nothing after it; titles with real text after the
+# pipe, and every other trailing character, are unchanged.
+_DANGLING_PIPE_RE = re.compile(r"\s*\|+\s*$")
+
+
+def strip_dangling_sep(t):
+    return _DANGLING_PIPE_RE.sub("", t) if t else t
+
+
+# Status marker a broker puts at the START of a title ("SOLD! Dental GP",
+# "SOLD-GP/Pediatric MD Practice", "UNDER CONTRACT: Pharmacy"). Uppercase, or
+# any case when punctuation follows ("Sold! pharmacy", "Sold – home healthcare
+# company"), so "Sold With Real Estate" is not a marker.
+# Applied ONLY to TITLE_STATUS_MARKER_DOMAINS (owner decision 11, 2026-11-11):
+# the 11-10 snapshot has 22 not-yet-sold titles at other brokers that carry
+# such a marker, and those keep whatever the generic path gives them.
+TITLE_STATUS_MARKER_DOMAINS = {"healthcarebizsales.com"}
+_STATUS_WORD = r"(?:sold|under[\s-]*contract|sale[\s-]*pending|pending)"
+_TITLE_STATUS_PREFIX_RE = re.compile(
+    r"^\s*((?:SOLD|UNDER[\s-]*CONTRACT|SALE[\s-]*PENDING|PENDING)(?:\s*[!:\-–—…]+)?(?=\W|$)"
+    r"|(?i:" + _STATUS_WORD + r")\s*[!:\-–—…]+)")
+
+
+def title_status_marker(t):
+    """The verbatim leading status marker of a title, or None."""
+    m = _TITLE_STATUS_PREFIX_RE.match(t or "")
+    return m.group(1).strip() if m else None
+
+
+# Owner decision 6: UNDER CONTRACT / PENDING / SALE PENDING mean the listing is
+# still ACTIVE (broker_status_text keeps the label); only SOLD means sold.
+# Local until the shared status-constants module lands (scrapers/listing_status.py).
+_MARKER_SOLD_RE = re.compile(r"^\s*sold\b", re.IGNORECASE)
+
+
+def title_marker_status(marker):
+    """'sold' for a SOLD marker, 'active' for any other title status marker."""
+    return "sold" if _MARKER_SOLD_RE.match(marker or "") else "active"
+
+
+def domain_title_status_marker(domain, t):
+    """title_status_marker(t), but only for a TITLE_STATUS_MARKER_DOMAINS broker."""
+    if (domain or "").lower().removeprefix("www.") not in TITLE_STATUS_MARKER_DOMAINS:
+        return None
+    return title_status_marker(t)
 
 # href path tokens that strongly indicate a listing DETAIL page.
 _DETAIL_HREF_TOKENS = (
@@ -244,6 +358,8 @@ CRE_LEASE_DOMAINS = {
 # Signature of a commercial-RE / lease listing (rate-per-SF pricing, cap rate,
 # NNN, "for lease"). Used to drop lease rows that slip through on other sites
 # without excluding real businesses that merely mention square footage.
+# This is the pre-2026-11-12 single-signal rule, kept verbatim: with
+# CRE_GATE_MODE = "legacy" any match rejects the card, exactly as before.
 _LEASE_CRE_RE = re.compile(
     r'for\s+lease|for\s+sublease|annual\s*/\s*sf|\$\s*[\d.,]+\s*/\s*sf|'
     r'\bpsf\b|per\s+sf\b|price\s*/\s*sf|cap\s*rate|\bnnn\b|triple\s*net|'
@@ -251,11 +367,133 @@ _LEASE_CRE_RE = re.compile(
     re.IGNORECASE,
 )
 
+# CRE gate, two-signal (2026-11-12, principle 8). The only caller is
+# ListingExtractor.from_card(); API handlers and specialized scrapers never
+# ran this gate and still do not.
+#
+# Why: the single-signal rule above rejected operating businesses that state
+# their premises lease on the card. peakbusinessbrokersllc.com's Torrance
+# staffing agency ($180,000) died on "Monthly Lease Rate: $4,200";
+# laundromat-broker.com lost 6 of its laundromat/restaurant cards to "NNN"
+# ("$3145 rent includes all NNN"). A business's rent, lease rate, lease term
+# or NNN figure is a fact ABOUT the business, not evidence the card is a
+# property. Measured 2026-11-12 over 6 brokers' index pages: 7 listing cards
+# rejected, 7 false rejects, 0 true rejects (j3-cre-gate-notes.md, job 3).
+#
+# The rule now:
+#   * STRONG phrases say the listing IS a lease / property-only offering.
+#     One is enough (unchanged from legacy for "for lease" / "for sublease" /
+#     "$/yr per SF" pricing; listing_status.py drops a "For Lease" status
+#     label for the same reason, decision 5).
+#   * PROPERTY vocabulary (lease figures, NNN, $/SF, cap rate, tenant, office
+#     or retail space, land/lot/building for sale, investment property ...)
+#     rejects ONLY when the card also carries NO operating-business evidence
+#     (cash flow / SDE / EBITDA / revenue / sales / profit / inventory / FF&E
+#     / employees / customers / equipment / "business for sale" ...). An
+#     asking price is not business evidence: properties have prices too.
+#     A bare "tenant", "strip mall" or "zoned" is NOT property vocabulary:
+#     laundromat-broker.com's cards say "shared with one other tenant" and
+#     "Strip mall has plenty of parking" about the business's own premises
+#     (3 false rejects in the first draft of this rule). Nor is a bare
+#     "shopping center" (dental practices and pizzerias sit in them) or
+#     "ground lease" (a waterfront restaurant on a ground lease is a business).
+#
+# CRE_GATE_MODE picks the rule; the old behaviour is one constant flip away:
+#   "legacy"      the pre-2026-11-12 rule: any _LEASE_CRE_RE match rejects.
+#   "narrow"      legacy vocabulary only, but the lease-FIGURE terms (NNN,
+#                 lease rate, $/SF, PSF, cap rate, triple net) need the
+#                 two-signal test. Fixes the measured false rejects and adds
+#                 no new rejects.
+#   "two_signal"  "narrow" plus the property vocabulary below and the
+#                 "<building|land|...> only" phrases. Rejects property rows
+#                 that used to pass (offices, condos, land, multi-tenant,
+#                 investment property, multifamily); see the notes for the
+#                 48 snapshot rows this would newly drop.
+# Shipped "narrow" (coordinator, 2026-11-12): two_signal waits for the owner
+# to review the 59 snapshot rows it would newly drop (j3-cre-gate-notes.md).
+CRE_GATE_MODE = "narrow"              # "narrow" | "two_signal" | "legacy"
+
+# One phrase is enough: the listing IS a lease / per-SF rental offering.
+_CRE_STRONG_LEGACY_RE = re.compile(
+    r'\bfor\s+(?:sub)?lease\b|annual\s*/\s*sf|/\s*sf\s*/\s*(?:yr|year)|'
+    r'rentable\s+(?:sf|area)',
+    re.IGNORECASE,
+)
+# One phrase is enough (two_signal only): the listing says it is property only.
+_CRE_STRONG_ONLY_RE = re.compile(
+    r'\b(?:building|real\s+estate|property|land|space)\s+only\b|'
+    r'\bno\s+business\s+(?:included|for\s+sale)\b',
+    re.IGNORECASE,
+)
+# Lease FIGURES: a business quotes its own rent this way ("Monthly Lease Rate:
+# $4,200", "$3145 rent includes all NNN"). Property evidence only when the card
+# has no operating-business evidence.
+_CRE_LEASE_FIGURE_RE = re.compile(
+    r'\$\s*[\d.,]+\s*/\s*sf|\bpsf\b|per\s+sf\b|price\s*/\s*sf|cap\s*rate|'
+    r'\bnnn\b|triple\s*net|lease\s*rate',
+    re.IGNORECASE,
+)
+# Property vocabulary (two_signal only; these used to pass the gate entirely).
+_CRE_PROPERTY_RE = re.compile(
+    r'\b(?:office|retail|warehouse|industrial|flex|medical\s+office|'
+    r'commercial)\s+(?:space|suites?|condo)\b|'
+    r'\b(?:sq\.?\s*ft\.?|square\s+feet|sf)\s+(?:available|for\s+lease)\b|'
+    r'\bspace\s+(?:available|for\s+rent)\b|'
+    r'\b(?:land|lot|lots|acreage|parcels?|building)\s+for\s+sale\b|'
+    r'\bvacant\s+(?:land|lot|building|space|unit)\b|\bbuildable\b|'
+    r'\binvestment\s+property\b|\b(?:multi|single)[-\s]tenant\b|'
+    r'\btenants?\s+in\s+place\b|\brent\s+roll\b|\boccupancy\s+rate\b|'
+    r'\bnet[-\s]leased?\b|\bnoi\b|\bshopping\s+(?:center|centre)\s+for\s+sale\b|'
+    r'\b(?:100|\d{2})\s*%\s*(?:leased|occupied)\b|\bfully\s+leased\b|'
+    r'\bavailable\s+(?:square\s+feet|sq\.?\s*ft\.?|sf)\b|\bbuilding\s+type\b|'
+    r'\bmulti-?family\b|\bapartment\s+(?:complex|building|portfolio)\b|'
+    r'\b(?:approved|raw|vacant|undeveloped)\s+land\b|\bland\s+approved\b|'
+    r'\bsale\s*(?:or|/)\s*lease\b',
+    re.IGNORECASE,
+)
+_CRE_BUSINESS_RE = re.compile(
+    r'cash\s*flow|\bsde\b|\bebitda\b|seller\W?s?\s+discretionary|'
+    r'owner\W?s?\s+(?:benefit|earnings|compensation|income)|'
+    r'net\s+(?:income|profit)|gross\s+(?:revenue|sales|profit)|\brevenues?\b|'
+    r'\b(?:annual|monthly|weekly|yearly|total|gross)\s+sales\b|\bsales\s*:|'
+    r'\bprofit(?:s|able)?\b|\bp\s*&\s*l\b|\binventory\b|\bff\s*&\s*e\b|'
+    r'\bemploye\w*|\bstaff(?:ed|ing)?\b|\bcustomers\b|\bclients?\b|'
+    r'\bbusiness\s+(?:for\s+sale|opportunity)\b|\b(?:asset|stock)\s+sale\b|'
+    r'seller\s+financ|\bturn[-\s]?key\b|\bfranchise\b|\bgoodwill\b|'
+    r'years?\s+in\s+business|\bestablished\s+(?:in\s+)?(?:\d|since)|'
+    r'\bequipment\b|\bmachines\b|\battendants?\b|\boperator\b|'
+    r'\b(?:semi[-\s])?absentee\b|\bwash\s*(?:&|and)\s*fold\b|'
+    r'\brun\s+(?:the\s+)?business\b|\bpractice\b|\bcompany\b|'
+    r'\bgallons?\b|\b(?:inside|fuel|gas|store|merchandise)\s+sales?\b|'
+    r'\b(?:space|property|properties|real\s+estate|building|land)\s+included\b',
+    re.IGNORECASE,
+)
+
+
+def cre_gate_reason(text):
+    """Why a card reads as commercial real estate / a lease, or None.
+
+    Returns "strong:<match>" (one phrase is enough), "property:<match>"
+    (lease figure / property vocabulary and no operating-business evidence)
+    or, in legacy mode, "legacy:<match>". None means not CRE by this gate."""
+    text = text or ""
+    if CRE_GATE_MODE == "legacy":
+        m = _LEASE_CRE_RE.search(text)
+        return f"legacy:{m.group(0)}" if m else None
+    wide = CRE_GATE_MODE == "two_signal"
+    m = _CRE_STRONG_LEGACY_RE.search(text) or (wide and _CRE_STRONG_ONLY_RE.search(text))
+    if m:
+        return f"strong:{m.group(0)}"
+    m = _CRE_LEASE_FIGURE_RE.search(text) or (wide and _CRE_PROPERTY_RE.search(text))
+    if m and not _CRE_BUSINESS_RE.search(text):
+        return f"property:{m.group(0)}"
+    return None
+
 
 def looks_like_cre_or_lease(text):
-    """True for commercial-RE / lease listings (rate-per-SF, cap rate, NNN,
-    for-lease). Does NOT fire on a business that merely states square footage."""
-    return bool(_LEASE_CRE_RE.search(text))
+    """True for commercial-RE / lease listings. A business that states its own
+    rent / lease rate / NNN / square footage is NOT CRE (see cre_gate_reason)."""
+    return cre_gate_reason(text) is not None
 
 
 def _find_listing_iframes(html, base_url):
@@ -347,6 +585,7 @@ def best_card_title(element, base_url="", firm_name=None):
         if len(s) > len(longest):
             longest = s
     if len(longest) >= 15 and longest.lower() not in GENERIC_LINK_TEXT \
+            and not is_cta_text(longest) \
             and not is_junk_listing(longest):
         return longest[:500]
     # Fallback C: card text up to the first financial marker (isolates the name).
@@ -394,6 +633,28 @@ _NON_DETAIL_HREF_TOKENS = (
     "addtofavorites", "favorites","/author/", "/category/", "/tag/", "portfolio_category",
                            "/wp-content/", "javascript:", "mailto:", "tel:")
 
+# Taxonomy archive links that sit INSIDE a listing card, before the card's own
+# detail link (real-links, job 3, 2026-11-12). A substring token in
+# _DETAIL_HREF_TOKENS ("/listing", "/business") also matches the archive, so
+# the archive won:
+#   indianabusinessadvisors.com (Advanced Classifieds & Directory Pro): the
+#     card's category chip /listing-category-2/manufacturing/ outranked
+#     /acadp_listings/<slug>/ - 124 listings stored as 4 category URLs.
+#   clandbiz.com (Houzez theme): 8 cards whose first link is the status chip
+#     /status/business/ collapsed into one row; the rest lead with /label/<x>/.
+# 30 days of snapshot URLs (16,541 distinct): every URL matching this pattern
+# is an archive page (18 on 12 domains), none is a listing.
+_TAXONOMY_HREF_RE = re.compile(
+    r"/(?:status|label|labels|agent|agents|agency|type|city|area|feature|features"
+    r"|(?:listing|property|business)[-_](?:category|categories|type|types|tag|tags"
+    r"|status|label|location|region|city|area|feature)[^/]*)/",
+    re.I)
+
+
+def _is_taxonomy_href(href):
+    path = urlparse(href or "").path
+    return bool(_TAXONOMY_HREF_RE.search(path))
+
 
 _ONCLICK_HREF_RE = re.compile(r"""(?:location\.href|window\.location(?:\.href)?)\s*=\s*["']([^"']+)["']""", re.I)
 
@@ -413,7 +674,14 @@ def _best_detail_link(element, base_url=""):
     first live link so behavior is unchanged when nothing better is found.
     """
     candidates = []
-    for a in element.find_all("a", href=True):
+    # The card element itself can be the link: <a class="bfs-row"
+    # href="/businesses-for-sale/10023/"> around the whole card
+    # (companysellers.com - 67 cards, every one stored under the index URL,
+    # because find_all() never returns the element it is called on).
+    anchors = element.find_all("a", href=True)
+    if element.name == "a" and element.get("href"):
+        anchors = [element] + anchors
+    for a in anchors:
         href = (a.get("href") or "").strip()
         if not href or href.startswith("#"):
             continue
@@ -423,13 +691,51 @@ def _best_detail_link(element, base_url=""):
         candidates.append(href)
     if not candidates:
         return None
-    for href in candidates:
-        if any(tok in href.lower() for tok in _DETAIL_HREF_TOKENS):
+    # An image file is a lightbox/thumbnail link, not a detail page, even when
+    # its path matches a detail token: benchmarkbusinessgroup.com's card links
+    # /businesses/<id>/image1/.../Photo_A.jpg BEFORE /business-for-sale/<slug>
+    # (job 3, 2026-11-12). Only demoted: a card whose ONLY link is an image
+    # keeps it (atlantarestaurantsbroker, childcaredirect - unchanged).
+    # Taxonomy archive chips (_is_taxonomy_href) are demoted the same way.
+    pages = [h for h in candidates if not _IMAGE_HREF_RE.search(h)]
+    for href in pages:
+        if (any(tok in href.lower() for tok in _DETAIL_HREF_TOKENS)
+                and not _is_taxonomy_href(href)):
             return href
-    for href in candidates:
-        if not any(tok in href.lower() for tok in _NON_DETAIL_HREF_TOKENS):
+    for href in pages:
+        if (not any(tok in href.lower() for tok in _NON_DETAIL_HREF_TOKENS)
+                and not _is_taxonomy_href(href)):
             return href
     return candidates[0]
+
+
+def _enclosing_link(element, max_up=4):
+    """The <a href> the card sits inside, when the card has no link of its own.
+
+    Cards built as <a href="/detail"><div>...</div></a> are matched by a
+    selector on an inner div (jobahcri.com: div.flex.flex-1.flex-col.p-6
+    inside <a href="/listings/<slug>">; baltimorebusinessbrokers.com:
+    div.row inside <a href="/business-detail/<id>">), so every card was
+    stored under the index URL. The enclosing anchor is the card's own click
+    target - unambiguous, unlike the sibling/wrapper search in
+    _wrapper_detail_link, which stays opt-in per domain. Only called when the
+    card itself holds no usable <a href>."""
+    node = element
+    for _ in range(max_up):
+        node = node.parent
+        if node is None or node.name in ("body", "html", "[document]"):
+            return None
+        if node.name == "a":
+            href = (node.get("href") or "").strip()
+            low = href.lower()
+            if (not href or href.startswith("#")
+                    or low.startswith(("javascript:", "mailto:", "tel:"))):
+                return None
+            return href
+    return None
+
+
+_IMAGE_HREF_RE = re.compile(r"\.(?:jpe?g|png|gif|webp|svg|bmp|tiff?)(?:[?#]|$)", re.I)
 
 
 # Brokers whose list-page card carries no <a href> of its own: the link sits on
@@ -438,7 +744,10 @@ def _best_detail_link(element, base_url=""):
 # search-page URL, the insert guard quarantined them, and the real rows were
 # never refreshed (restaurantrealty.com: 189 published rows unseen since
 # 2026-09-13). Opt-in per domain so no other broker's link choice changes.
-WRAPPER_LINK_DOMAINS = {"restaurantrealty.com"}
+# calhouncompanies.com (2026-11-11): the whole card is <a class="node business
+# teaser" href="/business/..."> around div.business-info.group, so every row
+# was saved under find-a-business?page=N (11 www URLs, ~96 rows keyed on title).
+WRAPPER_LINK_DOMAINS = {"restaurantrealty.com", "calhouncompanies.com"}
 _ATTR_LISTING_HREF_RE = re.compile(r"""((?:https?://[^\s"'<>]+)?/listing/\?listing=[^\s"'<>]+)""", re.I)
 
 
@@ -518,11 +827,11 @@ def has_detail_link(element, base_url=""):
 try:
     from junk_filter import (is_listing_junk as is_junk_listing, is_sold_or_pending,
                              is_junk_title, title_from_slug, is_site_page,
-                             listing_url_pattern_filter)
+                             listing_url_pattern_filter, is_cta_text)
 except ImportError:  # allow import as a package (scrapers.dealledger_scraper_v6)
     from scrapers.junk_filter import (is_listing_junk as is_junk_listing,
                                       is_sold_or_pending, is_junk_title, title_from_slug,
-                                      is_site_page, listing_url_pattern_filter)
+                                      is_site_page, listing_url_pattern_filter, is_cta_text)
 
 
 def css_selector(tag, classes):
@@ -564,6 +873,326 @@ def looks_sold(element):
     return False
 
 
+# Labelled card status field (job 3, 2026-11-12). Some brokers print the deal's
+# status as a labelled field on the card - lbaweb.com: <span class="tag">Status:
+# <em>Sold</em></span> on 382 of 593 cards - which looks_sold() never sees (the
+# span's class is "tag", the value's "text-secondary") and is_sold_or_pending()
+# cannot see (it reads the title). The value is classified by the shared phrase
+# set (scrapers/listing_status.py, decisions 5 + 6, principle 15).
+#
+# Precision rules (principle 8 - measured over ~1,000 cached broker pages, see
+# claude/staging/2026-11-12/j3-lbaweb-notes.md):
+#  - the label is its own text node at the start of a line: "Status:",
+#    "Listing Status:", "Availability:" ... with the COLON required; the value
+#    is the rest of that node or the next text node. A bare "Status" heading
+#    is a filter widget on several sites, and "status" in prose is never read.
+#  - the value must be an exact phrase of the shared set (lookup_status);
+#    anything else ("Withdraw", "Owner retiring") is not evidence -> None.
+#  - a plain active value ("Available", "For Sale") is returned but never
+#    overrides the generic sold rules (see from_card): it adds nothing.
+_STATUS_FIELD_LABEL_RE = re.compile(
+    r"^(?:(?:listing|business|deal|sale|property)\s+)?(?:status|availability)"
+    r"\s*:\s*(.*)$", re.I)
+try:
+    from listing_status import lookup_status as _sf_lookup, more_final as _sf_more_final
+except Exception:                    # module not present (j3 not applied): rule is inert
+    _sf_lookup = _sf_more_final = None
+_SF_DROP = "DROP"                    # == listing_status.DROP
+# domain -> label -> {(title, detail url)} of cards not emitted (Coming Soon /
+# For Lease field); a set, because a page's cards can be extracted more than
+# once. Printed per broker by the crawl loop so a drop is never silent.
+_STATUS_FIELD_DROPS = defaultdict(lambda: defaultdict(set))
+
+
+def card_status_field(element, domain=None):
+    """(status, label) from a labelled Status / Availability field on a card,
+    or None when the card has no such field or its value is not a known
+    status phrase. status is 'sold' / 'active' / 'inactive' / listing_status.DROP;
+    label is the broker's verbatim value (None for a plain active value).
+    Several fields on one card: the most final status wins."""
+    if _sf_lookup is None or element is None:
+        return None
+    lines = [ln for ln in (t.strip() for t in element.get_text("\n").split("\n")) if ln]
+    best = None
+    for i, ln in enumerate(lines):
+        m = _STATUS_FIELD_LABEL_RE.match(ln)
+        if not m:
+            continue
+        value = m.group(1).strip() or (lines[i + 1] if i + 1 < len(lines) else "")
+        hit = _sf_lookup(value, domain) if value else None
+        if hit is None:
+            continue
+        if best is None or _sf_more_final(hit[0], best[0]) != best[0]:
+            best = hit
+    return best
+
+
+# Status COLUMN of a listing table (job 3, table rows, 2026-11-12). A <tr> card
+# carries its status as a plain cell under a "Status" column header -
+# kendallcapitalgroup.com: Sold / Active / Under LOI as the first cell of 12
+# rows; accountingfirmsold.com: "Available" / "Sold" / "Sale Pending" /
+# "On Hold" in a data-th="Status" cell of 214 rows. Neither is a badge, a class
+# or a "Status:" label, so every row was written status='active'.
+# Precision (principle 8): only a cell whose OWN column header is a status
+# header (the table's <th> row, or the cell's data-th / data-title /
+# data-label attribute) is read, and its value must be an exact phrase of the
+# shared set (listing_status.lookup_status) - the whole cell, or one line of
+# it ("Available<br>Request Info" -> "Available"). Prose cells are never read.
+_STATUS_COLUMN_HEADERS = {"status", "listing status", "availability", "sale status",
+                          "deal status", "business status"}
+_CELL_HEADER_ATTRS = ("data-th", "data-title", "data-label", "data-colname")
+
+
+def _norm_header(text):
+    return re.sub(r"[^a-z]+", " ", (text or "").lower()).strip()
+
+
+def _status_column_cell(row):
+    """The <td>/<th> of this <tr> under a status column header, or None."""
+    cells = row.find_all(["td", "th"], recursive=False)
+    for c in cells:
+        for attr in _CELL_HEADER_ATTRS:
+            if c.get(attr) and _norm_header(c.get(attr)) in _STATUS_COLUMN_HEADERS:
+                return c
+    table = row.find_parent("table")
+    if table is None:
+        return None
+    header = None
+    for tr in table.find_all("tr"):
+        if tr.find_parent("table") is not table:
+            continue
+        if tr.find_all("th", recursive=False) and not tr.find_all("td", recursive=False):
+            header = tr
+        break                               # only the table's FIRST row can be its header
+    if header is None or header is row:
+        return None
+    heads = header.find_all("th", recursive=False)
+    if len(heads) != len(cells) or any(h.get("colspan") for h in heads) \
+            or any(c.get("colspan") for c in cells):
+        return None                         # columns would not line up
+    for h, c in zip(heads, cells):
+        if _norm_header(h.get_text(" ", strip=True)) in _STATUS_COLUMN_HEADERS:
+            return c
+    return None
+
+
+def table_status_cell(element, domain=None):
+    """(status, label) from a listing table's Status column, or None - same
+    contract as card_status_field(): status 'sold' / 'active' / 'inactive' /
+    listing_status.DROP, label = the broker's verbatim cell text (None for a
+    plain active value). Only for <tr> cards."""
+    if _sf_lookup is None or element is None or getattr(element, "name", None) != "tr":
+        return None
+    cell = _status_column_cell(element)
+    if cell is None:
+        return None
+    lines = [ln for ln in (t.strip() for t in cell.get_text("\n").split("\n")) if ln]
+    for value in [" ".join(lines)] + lines:
+        hit = _sf_lookup(value, domain) if value else None
+        if hit is not None:
+            return hit
+    return None
+
+
+
+# ── Generic card status through the shared policy (job 3, decision 6) ──────
+# Before: sold = looks_sold(element) or is_sold_or_pending(title), so an
+# "Under Contract" / "Sale Pending" / "Off Market" badge or title was written
+# status='sold'. Decision 6: that family is still ACTIVE and the broker's words
+# are kept verbatim (broker_status_text); only SOLD is sold; Coming Soon and
+# For Lease are not emitted (decision 5). The phrase -> status mapping is
+# scrapers/listing_status.py; without it (j3 not applied) the old rule stands.
+# Detection is unchanged in scope: the same badge/class/ribbon/img places
+# looks_sold() reads, and title markers in the shapes is_sold_or_pending()
+# already accepts, plus a leading/trailing marker in any case when
+# punctuation sets it off ("Sold! Pizzeria", "ATM Route – $29,000 – Sold!").
+try:
+    from listing_status import (lookup_status as _ls_lookup, more_final as _ls_more_final,
+                                DROP as _LS_DROP)
+except Exception:          # module absent: legacy rule (principle 15 fallback)
+    _ls_lookup = None
+    _LS_DROP = "DROP"
+
+# Title marker phrases (case-insensitive). Deliberately narrower than the
+# module's table: free-text words such as "closed", "lease", "hold", "new"
+# are statuses in a status field but ordinary words in a title
+# ("Closed Gas Station Opportunity", "… - New Lease").
+_TM_PHRASE = (r"(?:just[\s-]*sold|recently[\s-]*sold|just[\s-]*closed|sold"
+              r"|under[\s-]*contract|contract[\s-]*pending|sale[\s-]*pending|pending[\s-]*sale"
+              r"|pending|under[\s-]*loi|loi[\s-]*accepted|loi|under[\s-]*offer"
+              r"|has[\s-]*accepted[\s-]*offer|accepted[\s-]*offer|offer[\s-]*accepted"
+              r"|under[\s-]*agreement|(?:temporarily[\s-]+)?off[\s-]*market"
+              r"|coming[\s-]*soon|for[\s-]*lease|leased)")
+_TM_PUNCT = r"[!:\-–—…|.,·/]"
+# "SOLD! Pizzeria", "Sold: Pharmacy", "Sold…Law firm", "UNDER LOI -- Home Care"
+_TM_LEAD_RE = re.compile(r"^[\s*\"'“]*(" + _TM_PHRASE + r")[\s*]*" + _TM_PUNCT, re.I)
+# "Route – $29,000 – Sold!", "Car Wash | Coming Soon", "… / Off Market", "… *SOLD*"
+_TM_TRAIL_RE = re.compile(r"(?:" + _TM_PUNCT + r"|\s\*)\s*\*?\s*(" + _TM_PHRASE
+                          + r"|sold\s+(?:for|at)\s*\$?\s*[\d][\d,.\s$]*(?:k|m|mm|million)?)[\s*!.]*$",
+                          re.I)
+# "(SOLD)", "(Under Contract)", "(LOI)", "[Pending]" anywhere
+_TM_PAREN_RE = re.compile(r"[(\[]\s*([^()\[\]]{2,40}?)\s*[)\]]")
+# unambiguous status phrases anywhere, any case ("PENNSYLVANIA SKC-1562 UNDER
+# CONTRACT", "… Temporarily Off Market IN THE HEART …") - the same set
+# is_sold_or_pending() reads anywhere, plus the rest of the contract family
+_TM_ANY_RE = re.compile(r"\b(under[\s-]*contract|contract[\s-]*pending|sale[\s-]*pending"
+                        r"|under[\s-]*loi|has[\s-]*accepted[\s-]*offer|accepted[\s-]*offer"
+                        r"|(?:temporarily[\s-]+)?off[\s-]*market|just[\s-]*closed"
+                        r"|recently[\s-]*sold)\b", re.I)
+_TM_CAPS_SOLD_RE = re.compile(r"\bSOLD\b")          # all-caps SOLD anywhere (today's rule)
+_TM_TEMPORARILY = re.compile(r"^temporarily[\s-]+", re.I)
+# Owner decision 11: an any-case SOLD marker ("Sold! Pizzeria", "Sold:
+# Pharmacy", "Route – Sold!") decides status only at TITLE_STATUS_MARKER_DOMAINS.
+# Elsewhere a title is sold only where HEAD's is_sold_or_pending() says so
+# (all-caps SOLD, "(sold …)", "– Sold" suffix, just closed, recently sold).
+# True = extend the any-case rule to every broker (27 rows at 5 brokers on
+# the 2026-11-11 snapshot, j3-v6status-measure.csv) - an owner decision.
+ANYCASE_SOLD_MARKERS = False
+# A "title" that is only a status phrase plus a generic word is a section
+# heading scraped as a card ("Under Contract Listings", "OFF-Market Listing"),
+# not a listing: it keeps today's status rather than becoming active.
+_TM_HEADING_RESIDUE = {"", "listing", "listings", "business", "businesses", "deals", "properties"}
+# "Sold With Real Estate", "Sold As-Is" are descriptions, not markers (same
+# spare as junk_filter.is_sold_or_pending)
+_TM_SPARE = re.compile(r"\bsold\s+(?:with|as[\s-]?is)\b", re.I)
+
+
+def _tm_lookup(phrase, domain):
+    """lookup_status for a title marker; 'temporarily off market' -> the
+    'off market' entry, label kept verbatim."""
+    hit = _ls_lookup(phrase, domain)
+    if hit is None and _TM_TEMPORARILY.match(phrase or ""):
+        core = _ls_lookup(_TM_TEMPORARILY.sub("", phrase), domain)
+        if core:
+            hit = (core[0], re.sub(r"\s+", " ", phrase).strip())
+    if hit is None and re.match(r"\s*sold\b", phrase or "", re.I):
+        hit = ("sold", re.sub(r"\s+", " ", phrase).strip())     # "(SOLD & SETTLED)"
+    return hit
+
+
+def title_status(title, domain=None):
+    """(status, verbatim marker) for a status marker in a card title, or None.
+
+    status is 'sold' | 'active' (under-contract family, label kept) | DROP
+    (Coming Soon / For Lease). The most final marker wins: "(SOLD) Under
+    Contract" is sold. Requires listing_status; None without it.
+    """
+    t = (title or "").strip()
+    if not t or _ls_lookup is None or _TM_SPARE.search(t):
+        return None
+    hits = []
+    for rx in (_TM_LEAD_RE, _TM_TRAIL_RE):
+        m = rx.search(t)
+        if m:
+            hits.append(_tm_lookup(m.group(1).strip(), domain))
+    for m in _TM_PAREN_RE.finditer(t):
+        h = _tm_lookup(m.group(1), domain)
+        if h and h[0] != "inactive" and h[1] is not None:   # a status, not "(Sundays)"
+            hits.append(h)
+    for m in _TM_ANY_RE.finditer(t):
+        hits.append(_tm_lookup(m.group(1), domain))
+    if _TM_CAPS_SOLD_RE.search(t):
+        hits.append(("sold", "SOLD"))
+    hits = [h for h in hits if h and h[0] in ("sold", "active", _LS_DROP)]
+    if not (ANYCASE_SOLD_MARKERS or is_sold_or_pending(t)
+            or (domain or "").lower().removeprefix("www.") in TITLE_STATUS_MARKER_DOMAINS):
+        hits = [h for h in hits if h[0] != "sold"]           # decision 11
+    if not hits:
+        return None
+    return max(hits, key=lambda h: {"active": 0, _LS_DROP: 2, "sold": 3}[h[0]])
+
+
+def badge_status(element, domain=None):
+    """looks_sold()'s detection, returning (status, verbatim badge text) via
+    listing_status instead of a bool; None when no badge/class/img marker."""
+    if _ls_lookup is None:
+        return ("sold", None) if looks_sold(element) else None
+    hits = []
+    for el in [element, *element.find_all(True)]:
+        for c in el.get("class", []) or []:
+            m = _SOLD_CLASS_RE.search(c)
+            if m:
+                hits.append(_ls_lookup(m.group(1), domain) or ("sold", c))
+    for el in element.select("[class*='badge'], [class*='ribbon'], [class*='status'], "
+                             "[class*='label'], [class*='flag'], [class*='overlay']"):
+        txt = el.get_text(" ", strip=True)
+        m = _SOLD_TEXT_RE.search(txt)
+        if m:
+            hits.append(_ls_lookup(txt, domain) or _ls_lookup(m.group(1), domain)
+                        or ("sold", m.group(1)))
+    for img in element.find_all("img"):
+        alt = f"{img.get('alt','')} {img.get('title','')}".strip()
+        m = _SOLD_TEXT_RE.search(alt)
+        if m:
+            hits.append(_ls_lookup(alt, domain) or _ls_lookup(m.group(1), domain)
+                        or ("sold", m.group(1)))
+    hits = [h for h in hits if h and h[0] in ("sold", "active", _LS_DROP)]
+    if not hits:
+        return None
+    return max(hits, key=lambda h: {"active": 0, _LS_DROP: 2, "sold": 3}[h[0]])
+
+
+def card_status(element, title, domain):
+    """(status, broker_status_text-or-None) for a generic V6 card.
+
+    Order: a per-domain rule (TITLE_STATUS_MARKER_DOMAINS, decision 11 - and
+    any STATUS_FIELD_DOMAINS rule, which belongs in this same slot) decides
+    alone; otherwise the most final of the badge and the title marker, mapped
+    through listing_status. status DROP = do not emit. Without the module:
+    today's rule (looks_sold or is_sold_or_pending -> sold), no label.
+    """
+    marker = domain_title_status_marker(domain, title)
+    if marker:
+        return title_marker_status(marker), marker
+    if _ls_lookup is None:
+        return ("sold" if (looks_sold(element) or is_sold_or_pending(title))
+                else "active"), None
+    hits = [h for h in (badge_status(element, domain), title_status(title, domain)) if h]
+    if not hits:
+        # never lose a sold that today's rule finds and the shapes above miss
+        return ("sold", None) if is_sold_or_pending(title) else ("active", None)
+    status, label = max(hits, key=lambda h: {"active": 0, _LS_DROP: 2, "sold": 3}[h[0]])
+    if status == "active" and label and _is_status_heading(title):
+        return ("sold" if (looks_sold(element) or is_sold_or_pending(title))
+                else "active"), None
+    return status, label
+
+
+def _is_status_heading(title):
+    """'Under Contract Listings' -> True: nothing but status words + a generic noun."""
+    rest = _TM_ANY_RE.sub(" ", title or "")
+    rest = re.sub(_TM_PHRASE, " ", rest, flags=re.I)
+    rest = re.sub(r"[^a-z]+", " ", rest.lower()).strip()
+    return rest in _TM_HEADING_RESIDUE
+
+
+def restatus_from_title(listing):
+    """After the title was REPLACED (stored-row reuse, detail <h1>): read the
+    final title's status marker. Only ever raises the status (active -> sold),
+    or adds the label to an unlabelled active row - never reopens a sold row,
+    never drops a row here. mnresortsalesnorth.com: card "Red Wing Resort",
+    detail h1 "Red Wing Resort (SOLD)" - status had been decided on the card
+    title, so 16 (SOLD) rows stayed active for 40 nightly runs."""
+    if listing.get("_status_from_field"):
+        return listing          # a labelled "Status:" field decided it (card_status_field)
+    t = listing.get("title")
+    if _ls_lookup is None:
+        if listing.get("status", "active") == "active" and is_sold_or_pending(t):
+            listing["status"] = "sold"
+        return listing
+    hit = title_status(t, listing.get("broker_domain"))
+    if not hit or hit[0] == _LS_DROP:
+        return listing
+    cur = listing.get("status") or "active"
+    if hit[0] == "sold" and cur == "active":
+        listing["status"] = "sold"
+        if hit[1]:
+            listing["broker_status_text"] = hit[1]
+    elif hit[0] == "active" and cur == "active" and hit[1] and not listing.get("broker_status_text"):
+        listing["broker_status_text"] = hit[1]
+    return listing
+
+
 # Category/browse-grid words that masquerade as listing titles. A grid whose
 # "titles" are mostly these is a navigation grid, not businesses for sale.
 _CATEGORY_TITLE_WORDS = {
@@ -599,6 +1228,119 @@ def _is_nav_selector(selector):
                   "sub-menu", "submenu", "menu-link", "dropdown", "breadcrumb",
                   "footer", "widget", "sidebar")
     return any(tok in s for tok in NAV_TOKENS)
+
+
+_SIMPLE_TR_SELECTOR_RE = re.compile(r"^tr(?:\.[A-Za-z0-9_-]+)+$")
+
+
+def widen_striped_rows(html, selector, base_url=""):
+    """
+    A zebra-striped table emits two row classes - `tr.odd` / `tr.even`, or an
+    ASP.NET GridView's RowStyle / AlternatingRowStyle - and the detector groups
+    rows by exact class, so it picks ONE of them and every other listing in
+    the table is never read. commercialroutesforsale.com: 61 rows split
+    31 `even` / 30 `odd`, the cache held `tr.even`, and every crawl saw half
+    the table (2026-11-11).
+
+    Given a single-class-set `tr` selector, add the other classed `tr`
+    siblings under the same parent(s) whose rows are mostly real listings
+    (is_listing_element). Returns a comma selector (document order is kept by
+    select()), or the selector unchanged. Rows only: a div/li grid's other
+    sibling classes are usually featured/sold variants, which is a different
+    decision. Each matched row still goes through from_card()'s own gates.
+    """
+    if not selector or not _SIMPLE_TR_SELECTOR_RE.match(selector):
+        return selector
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+        rows = soup.select(selector)
+    except Exception:
+        return selector
+    if len(rows) < PatternDetector.MIN_LISTING_ELEMENTS:
+        return selector
+    parents = {id(r.parent): r.parent for r in rows if r.parent is not None}
+    groups = defaultdict(list)
+    for parent in parents.values():
+        for sib in parent.find_all("tr", recursive=False):
+            classes = sib.get("class", [])
+            if not classes:
+                continue
+            sel = css_selector("tr", classes)
+            if sel != selector:
+                groups[sel].append(sib)
+    extra = []
+    for sel, sibs in groups.items():
+        if _is_nav_selector(sel):
+            continue
+        n_ok = sum(1 for el in sibs if is_listing_element(el, base_url))
+        if n_ok >= 1 and n_ok * 2 >= len(sibs):
+            extra.append(sel)
+    if not extra:
+        return selector
+    return ", ".join([selector] + sorted(extra))
+
+
+_SOLD_SECTION_RE = re.compile(r"\b(?:sold|closed|completed)\b", re.I)
+_FOR_SALE_RE = re.compile(r"\bfor\s+sale\b|\bavailable\b", re.I)
+
+
+def _table_heading(table):
+    h = table.find_previous(["h1", "h2", "h3", "h4", "h5", "h6"])
+    return h.get_text(" ", strip=True) if h else ""
+
+
+def _is_sold_section(table):
+    """'Recent Businesses Sold', 'Recently Closed Transactions' - and not
+    'Businesses For Sale' / 'Available'."""
+    head = _table_heading(table)
+    return bool(head and _SOLD_SECTION_RE.search(head) and not _FOR_SALE_RE.search(head))
+
+
+def _table_row_candidates(soup):
+    """[(selector, data rows)] for PatternDetector Strategy 1c: one entry per
+    distinct listing-table selector whose tables are all plain data tables
+    (see the Strategy 1c comment). The selector names the table by id (else
+    its classes) and takes its OWN rows only (child combinators), so a table
+    pasted into a description cell is not read as rows of the listing table."""
+    out, seen = [], set()
+    for table in soup.find_all("table"):
+        tid = table.get("id") or ""
+        if re.fullmatch(r"[A-Za-z][\w-]*", tid):
+            tsel = f"table#{tid}"
+        elif table.get("class"):
+            tsel = css_selector("table", table["class"])
+        else:
+            continue
+        if tsel in seen:
+            continue
+        seen.add(tsel)
+        try:
+            tables = soup.select(tsel)
+        except Exception:
+            continue
+        rows, layout = [], False
+        for t in tables:
+            if (t.find_parent("table") or _in_site_chrome(t) or _is_nav_selector(tsel)
+                    or _is_sold_section(t)):
+                layout = True
+                break
+            own = [r for r in t.find_all("tr") if r.find_parent("table") is t
+                   and r.find_all("td", recursive=False)]
+            # a layout table: most of its rows hold another table
+            if own and sum(1 for r in own if r.find("table")) * 2 >= len(own):
+                layout = True
+                break
+            # a data row names something: a fee schedule or a figures-only
+            # table ("$1,000,000 | $80,000 | $120,000") is not a listing table
+            rows += [r for r in own
+                     if len(_WORD3_RE.findall(r.get_text(" ", strip=True))) >= 3]
+        if layout or len(rows) < PatternDetector.MIN_LISTING_ELEMENTS:
+            continue
+        out.append((f"{tsel} > tr, {tsel} > tbody > tr", rows))
+    return out
+
+
+_WORD3_RE = re.compile(r"[A-Za-z]{3,}")
 
 
 def validate_listing_set(cards, url=""):
@@ -729,7 +1471,8 @@ def title_repetition_gate(cards, threshold=TITLE_REPETITION_THRESHOLD):
 _NAV_WORDS = re.compile(
     r"\b(toggle|child menu|submenu|expand|collapse|skip to|main menu|"
     r"navigation|breadcrumb|search this|filter by|sort by|sign in|log in|"
-    r"my account|newsletter|cookie|privacy policy|terms of)\b",
+    r"my account|newsletter|cookie (?:policy|settings|preferences|consent|notice)|"
+    r"privacy policy|terms of)\b",
     re.I,
 )
 
@@ -789,6 +1532,11 @@ def is_listing_element(element, base_url=""):
     text = element.get_text(" ", strip=True)
     if len(text) < 20:
         return False
+    # A table's header row (<th> cells only) is never a listing - kendall's
+    # header links its column sorts (?sort=view_status), which read as detail
+    # links (job 3, table rows).
+    if element.name == "tr" and not element.find_all("td", recursive=False):
+        return False
 
     # Only the opening of the text - a card whose FIRST words are nav
     # vocabulary is a menu. One of these words appearing later in a long
@@ -807,8 +1555,148 @@ def is_listing_element(element, base_url=""):
         return False
 
     has_price = any(v >= 1_000 for v in parse_all_prices(text))
-    return has_price or has_detail_link(element, base_url)
+    if has_price or has_detail_link(element, base_url):
+        return True
+    # WRAPPER_LINK_DOMAINS: the card's link sits on a wrapper, so a card with
+    # no parseable price ("Make Offer", "79,000", "$120,00O") was dropped -
+    # 8 of restaurantrealty.com's 124 listings on every crawl (2026-11-11).
+    # The wrapper also holds the agent / email / status-badge blocks, so the
+    # link counts only for the block whose title is the one the URL names,
+    # and only for the outermost such block (not a title-only copy nested in
+    # an identical container, which would add a second card per listing).
+    if any(p.name == element.name and p.get("class") == element.get("class")
+           for p in element.parents):
+        return False
+    wrapped = _wrapper_detail_link(element, base_url)
+    return bool(wrapped) and _title_matches_link(title, wrapped)
 
+
+class WrapperSkipLog:
+    """Collects drop_wrapper_matches() skips over one broker run so the
+    '🧺 wrapper skipped' line prints once per broker, not once per page parse
+    (peak printed it on every parse: page 1, pagination probes, re-reads).
+    The figure is the most skipped in any one parse — the same page parsed
+    three times is still one wrapper, so the counts are not summed."""
+
+    def __init__(self):
+        self.max_per_parse = 0
+        self.parses = 0
+
+    def add(self, n):
+        if n:
+            self.parses += 1
+            self.max_per_parse = max(self.max_per_parse, n)
+
+    def summary(self):
+        if not self.parses:
+            return None
+        return (f"   🧺 {self.max_per_parse} wrapper match(es) holding other cards skipped"
+                f" (seen in {self.parses} page parse(s))")
+
+
+def drop_wrapper_matches(els, is_card=None, min_inner=3):
+    """Drop selector matches that hold several other matches which are cards.
+
+    An element holding several matched listing cards is the list wrapper, not
+    a card. peakbusinessbrokersllc.com's selector (div.elementor-container...)
+    matches the page section that holds all 33 listings as well as each
+    listing. Until 2026-11-12 that wrapper died in from_card() only by
+    accident: its text included the Torrance card's "Monthly Lease Rate",
+    which the old CRE gate rejected. With the gate narrowed, the wrapper
+    emitted a 34th row (a 24,508-character "card" titled from the first
+    listing inside it).
+
+    Deliberately narrow (principle 8): dropping every match that merely
+    contains other matches lost real listings on paradigmbb.com (17),
+    buffalobusinessbrokers.com (4) and buysellgeo.com (2), whose cards hold
+    nested same-selector blocks. A match is dropped only when it holds at
+    least `min_inner` SIDE-BY-SIDE matches that are themselves cards
+    (is_card(e) true, and no other such card is their ancestor).
+    Returns (kept, dropped_count)."""
+    ids = {id(e): e for e in els}
+    inner = defaultdict(list)
+    for e in els:
+        for p in e.parents:
+            if id(p) in ids:
+                inner[id(p)].append(e)
+    drop = set()
+    for pid, kids in inner.items():
+        if len(kids) < min_inner:
+            continue
+        cards = [k for k in kids if (is_card(k) if is_card else True)]
+        # only side-by-side cards count: a chain of nested matches that all
+        # read as the same card (buysellgeo's div[class*="elementor"]) is one
+        card_ids = {id(k) for k in cards}
+        top = [k for k in cards if not any(id(p) in card_ids for p in k.parents)]
+        if len(top) >= min_inner:
+            drop.add(pid)
+    kept = [e for e in els if id(e) not in drop]
+    return kept, len(els) - len(kept)
+
+
+def _cta_site_link(element, title, text, detail_url, base_url):
+    """True if a card that is_site_page() rejects only because of its LINK
+    is a real listing: the link is a same-site page (contact, homepage, ...),
+    no anchor carries the card's title (the link is a button, not the
+    listing's name), the title itself is neither a site-page title nor a
+    price fragment, and the card states a price. Anything short of that
+    keeps the site-page drop."""
+    if not detail_url or not title or is_site_page(title, ""):
+        return False
+    if parse_all_prices(title):      # a price fragment picked as the title
+        return False
+    bare = lambda h: (h or "").lower().split(":")[0].removeprefix("www.")
+    if bare(urlparse(detail_url).netloc) != bare(urlparse(base_url).netloc):
+        return False
+    tnorm = re.sub(r"\W+", " ", title).strip().lower()
+    for a in element.find_all("a", href=True):
+        at = re.sub(r"\W+", " ", a.get_text(" ", strip=True)).strip().lower()
+        if at and tnorm and (tnorm in at or at in tnorm) and len(at) >= 6:
+            return False
+    return any(v >= 1_000 for v in parse_all_prices(text))
+
+
+def _title_matches_link(title, href):
+    """True if the listing URL's slug (the text after '<number>-' in its last
+    path segment or query value) is the start of the title, or vice versa.
+    Slugs are often cut short at an apostrophe ("5421-Phil")."""
+    import html as html_lib
+    from urllib.parse import unquote
+    pu = urlparse(href or "")
+    # everything after the first '=': titles in these URLs contain '&'
+    raw = unquote(pu.query.split("=", 1)[-1] if pu.query
+                  else pu.path.rstrip("/").split("/")[-1])
+    slug = re.sub(r"[^a-z0-9]", "", re.sub(r"^\s*\d+-", "", html_lib.unescape(raw)).lower())
+    norm = re.sub(r"[^a-z0-9]", "", html_lib.unescape(title or "").lower())
+    if len(slug) < 4 or len(norm) < 4:
+        return False
+    return norm.startswith(slug[:40]) or slug.startswith(norm[:40])
+
+
+
+# Identity key for brokers whose detail URL embeds mutable text.
+# restaurantrealty.com links /listing/?listing=<number>-<full title>, and the
+# title carries the price ("$750k Down"), so a broker's price edit produced a
+# new URL and a new id: 682 superseded rows on 156 URLs (2026-11-11). The
+# BBCRM backend resolves a listing on the number alone (the title part is
+# ignored), so the number is the identity. Only the id key changes; the
+# stored url stays the link the site itself publishes. Opt-in per domain.
+ID_KEY_RULES = {
+    "restaurantrealty.com": (re.compile(r"[?&]listing=(\d+)"),
+                             "https://restaurantrealty.com/listing/?listing={}"),
+}
+
+
+def listing_id_key(url):
+    """url reduced to its stable identity form for ID_KEY_RULES domains."""
+    if not url:
+        return url
+    host = urlparse(url).netloc.lower()
+    rule = ID_KEY_RULES.get(host[4:] if host.startswith("www.") else host)
+    if not rule:
+        return url
+    m = rule[0].search(url)
+    return rule[1].format(m.group(1)) if m else url
 
 
 def stable_listing_id(title: str, url: str, base_url: str, broker_domain: str) -> str:
@@ -826,10 +1714,381 @@ def stable_listing_id(title: str, url: str, base_url: str, broker_domain: str) -
     or every listing on a page collapses into one identity.
     """
     if url and url != base_url:
-        key = url
+        key = listing_id_key(url)
     else:
         key = f"{broker_domain}|{(title or '').strip().lower()}"
     return hashlib.sha256(key.encode()).hexdigest()[:16]
+
+
+# ── Synthetic URLs for cards with no detail link (2026-11-11, rev 2026-11-12) ─
+# ~100 brokers render every listing inline with no per-listing page, so every
+# card used to be stored with url = the index URL (peakbusinessbrokersllc.com:
+# 33 cards on the page, 1 distinct URL in listings_direct).
+#
+# GATED (owner decision 4, 2026-11-12): only the brokers in
+# SYNTHETIC_URL_DOMAINS (bucket (b) of collapse/link_classification.csv) get
+# synthetic URLs and the identity below; BROKER_REF_ONLY_DOMAINS get the
+# broker-ref rule and nothing else. Every other broker is unchanged:
+# url = index URL, id = sha256(domain|title.lower()).
+#
+# For an allowlisted card with no detail link (decisions 1-2):
+#   - the card prints a broker reference number (Listing # 1088, ID: 875354,
+#     FL0914, CDT 123, ES-01, ...):
+#         url = <index_url>#dl-<slug(ref)>        id = sha256(url)[:16]
+#     (stable_listing_id() keyed on that url, as for any detail URL)
+#   - no ref, location parsed:
+#         url = <index_url>#dl-<slug(title)>-<slug(city-state)>
+#         id  = sha256(domain|title.lower()|slug(city-state))[:16]
+#   - no ref, no location: id = sha256(domain|title.lower())[:16] - today's id,
+#     so an allowlisted broker that prints no locations keeps its ids; the URL
+#     is <index_url>#dl-<slug(title)>.
+# Built only from what the card prints (ref, title, city, state): no price
+# (decision 3 - a price is not identity, principle 4), no row order, dates or
+# counters. A slug collision between two different ids is logged and left.
+#
+# url_is_listing_specific stays False: a fragment is not a per-listing page,
+# and DB triggers / listing_dates read that flag as "a real page".
+#
+# The URL (and, for a ref card, the final id) is assigned at ONE point -
+# assign_synthetic_urls() at the END of _scrape_broker_inner and of the API
+# branch - so the site-page / listing-URL-pattern gates and the pagination
+# guard still see the plain index URL. The card's id is set in from_card /
+# _make_api_listing (same helper for both writers, principle 15) so the page
+# loop and the same-id dedupe already see the new identity.
+SYNTHETIC_SLUG_MAX = 80
+SYNTHETIC_FRAGMENT = "dl-"
+_SYNTH_FLAG = "_no_detail_link"
+
+# Bucket (b), link_classification.csv (2026-11-11): every listing inline, no
+# per-listing link. Bare hosts; matched with and without "www.".
+SYNTHETIC_URL_DOMAINS = frozenset({
+    "accountingfirmsold.com", "americandentallabsales.com",
+    "blackbookadvisers.com", "bostonrestaurantgroup.com", "bsalesgroup.com",
+    "buffalobusinessbrokers.com", "buysellgeo.com",
+    "cannabisbusinessbrokers.net", "coinlaundrysales.com",
+    "commercialindustrialconsultants.com", "corpinvestnm.com",
+    "dental360advisors.com", "dentalbroker.com", "elitesalonsales.com",
+    "feldmanbrokerage.com", "focal5.com", "goodmanonline.com",
+    "laundromat-broker.com", "listyourhomesocal.com",
+    "medicalpracticesusa.com", "onesbs.com", "patriotbusinessadvisors.com",
+    "peakbusinessbrokersllc.com", "philsellsbiz.com",
+    "pinnaclepartnerservice.com", "practicebrokers.com", "reedtindal.com",
+    "richbizbrokers.com", "selahdirective.com", "shermangroup.net",
+    "thesynergybroker.com", "vermontbusinessbrokers.com",
+    "vistapoolroutes.com",
+})
+# Bucket (c): the broker-ref rule only. naz-business.com prints a 4-digit ref
+# on all 81 cards; 16 link out to BizBuySell (never stored - marketplace gate),
+# the rest have no link. A card with no ref keeps today's behaviour.
+BROKER_REF_ONLY_DOMAINS = frozenset({"naz-business.com"})
+
+# Refs printed WITHOUT a label, per broker (the generic rule below never
+# guesses at a bare number). Each one checked against the live page 2026-11-12.
+BROKER_REF_PATTERNS = {
+    # table row opens with the Listing Number column: "CA2633 Los Angeles ...",
+    # also printed "OH 2083" and "WI1084a"
+    "accountingfirmsold.com": re.compile(r"^\s*([A-Z]{2}\s?\d{3,5}[A-Za-z]?)\b"),
+    # GoDaddy card "2246 Asking Price: $ 200,000": the ref is the field
+    # immediately before the price label
+    "naz-business.com": re.compile(r"(?:^|\s)(\d{4})\s+Asking\s+Price\s*:", re.I),
+    # "CDT 123" practice codes
+    "dentalbroker.com": re.compile(r"\b(CDT\s*#?\s*\d{2,5})\b"),
+    # confidential codes "ES-01", "HF-02", "TA-03"
+    "selahdirective.com": re.compile(r"\b([A-Z]{2}-\d{2})\b"),
+}
+# Labelled refs, any enabled broker: a label, then one short alnum token.
+# "Listing #1088", "Listing No. 12", "Listing ID DS8887", "ID: 875354",
+# "Ref # 44", "#3070". Never a price ($ / thousands separators), a phone
+# number (digits continue after - . or space), a licence/suite number or a
+# year (1950-2035).
+_REF_TOKEN = r"([A-Z]{0,4}-?\d{2,7}[A-Z]?)(?![\w,]|[-.\s]?\d)"
+_BROKER_REF_LABELLED = re.compile(
+    r"(?:\blisting\s*(?:#|no\b\.?|number\b|id\b)|\bref(?:erence)?\s*(?:#|no\b\.?|number\b|:)"
+    r"|\bID\s*[:#])\s*[:#.]?\s*" + _REF_TOKEN, re.I)
+_BROKER_REF_HASH = re.compile(r"(?<![\w$#&])#\s?(\d{3,6})(?![\w,]|[-.\s]?\d)")
+_REF_NOT_AFTER = re.compile(
+    r"\b(?:dre|bre|lic(?:ense|\.)?|licen[cs]e|suite|ste\.?|unit|apt\.?|lot|"
+    r"room|box|route|hwy|highway|no\.?)\s*$", re.I)
+
+
+def _bare_host(domain) -> str:
+    d = (domain or "").lower()
+    return d[4:] if d.startswith("www.") else d
+
+
+def synthetic_urls_enabled(domain) -> bool:
+    return _bare_host(domain) in SYNTHETIC_URL_DOMAINS
+
+
+def broker_ref_enabled(domain) -> bool:
+    h = _bare_host(domain)
+    return h in SYNTHETIC_URL_DOMAINS or h in BROKER_REF_ONLY_DOMAINS
+
+
+def _is_yearlike(tok: str) -> bool:
+    return tok.isdigit() and len(tok) == 4 and 1950 <= int(tok) <= 2035
+
+
+def extract_broker_ref(text, domain) -> str | None:
+    """The broker's own reference number printed on the card, or None.
+    Only for ref-enabled brokers. Per-broker unlabelled pattern first, then a
+    labelled token. First match wins (the card's own ref leads its text).
+    Whitespace inside the ref is dropped ("OH 2083" == "OH2083"), so a
+    spacing change on the page does not change the URL or id."""
+    if not text or not broker_ref_enabled(domain):
+        return None
+    pat = BROKER_REF_PATTERNS.get(_bare_host(domain))
+    if pat:
+        m = pat.search(text)
+        if m and not _is_yearlike(m.group(1)):
+            return re.sub(r"\s+", "", m.group(1))
+    for rx in (_BROKER_REF_LABELLED, _BROKER_REF_HASH):
+        for m in rx.finditer(text):
+            tok = m.group(1)
+            before = text[max(0, m.start() - 12):m.start()]
+            if _is_yearlike(tok) or _REF_NOT_AFTER.search(before):
+                continue
+            if text[max(0, m.start(1) - 1):m.start(1)] == "$":
+                continue
+            return tok
+    return None
+
+
+def synthetic_slug(*parts, max_len: int = SYNTHETIC_SLUG_MAX) -> str:
+    """lowercase, ascii-folded, non-alphanumerics collapsed to one '-',
+    trimmed, capped at max_len (re-trimmed so it never ends in '-')."""
+    raw = "-".join(str(p) for p in parts if p not in (None, ""))
+    folded = unicodedata.normalize("NFKD", raw).encode("ascii", "ignore").decode("ascii")
+    slug = re.sub(r"[^a-z0-9]+", "-", folded.lower()).strip("-")
+    return slug[:max_len].strip("-")
+
+
+def synthetic_listing_url(index_url: str, title, city=None, state=None) -> str:
+    """index_url + '#dl-' + slug(title)[-slug(city-state)]. Any fragment
+    already on index_url is replaced. The length cap applies to the TITLE part
+    only: peakbusinessbrokersllc.com puts a whole description in the title
+    slot, and capping the joined string cut the location off."""
+    base = (index_url or "").split("#", 1)[0]
+    slug = "-".join(p for p in (synthetic_slug(title), synthetic_slug(city, state)) if p)
+    return f"{base}#{SYNTHETIC_FRAGMENT}{slug}" if slug else base
+
+
+def broker_ref_url(index_url: str, ref) -> str:
+    """index_url + '#dl-' + slug(ref)."""
+    base = (index_url or "").split("#", 1)[0]
+    return f"{base}#{SYNTHETIC_FRAGMENT}{synthetic_slug(ref)}"
+
+
+def no_link_identity(base_url, title, city=None, state=None, text=None) -> dict | None:
+    """Identity for a card with NO detail link, or None when the broker is not
+    gated in (caller then keeps today's stable_listing_id(), unchanged).
+    Returns {"id", "ref"}; the URL is assigned later by assign_synthetic_urls().
+    For a ref card the id here is already sha256(base_url#dl-<ref>), and is
+    recomputed there on the broker's index URL (same value on page 1)."""
+    netloc = urlparse(base_url).netloc
+    ref = extract_broker_ref(text or "", netloc)
+    if ref and synthetic_slug(ref):
+        url = broker_ref_url(base_url, ref)
+        return {"id": stable_listing_id(title, url, base_url, netloc),
+                "ref": synthetic_slug(ref)}
+    if not synthetic_urls_enabled(netloc):
+        return None
+    loc = synthetic_slug(city, state)
+    if not loc:
+        return {"id": stable_listing_id(title, base_url, base_url, netloc), "ref": None}
+    key = f"{netloc}|{(title or '').strip().lower()}|{loc}"
+    return {"id": hashlib.sha256(key.encode()).hexdigest()[:16], "ref": None}
+
+
+def assign_synthetic_urls(cards: list[dict], index_url: str) -> dict:
+    """The single late assignment point. Every card carrying the internal
+    _no_detail_link marker (set only for gated brokers) gets its synthetic URL
+    on index_url; a ref card's id is re-keyed on that final URL. Pops the
+    marker. Never sets url_is_listing_specific True. Two cards with the same
+    URL but different ids are a collision: logged, both left as they are
+    (no price tiebreak - decision 3). Returns counts for logging/tests."""
+    synth = [(c, m) for c in cards if (m := c.pop(_SYNTH_FLAG, None))]
+    for c, m in synth:
+        if m.get("ref"):
+            c["url"] = broker_ref_url(index_url, m["ref"])
+            c["id"] = stable_listing_id(c.get("title"), c["url"], index_url,
+                                        urlparse(index_url).netloc)
+        else:
+            c["url"] = synthetic_listing_url(index_url, c.get("title"),
+                                             c.get("city"), c.get("state"))
+        c["url_is_listing_specific"] = False
+    synth = [c for c, _ in synth]
+    groups: dict[str, set] = {}
+    for c in synth:
+        groups.setdefault(c["url"], set()).add(c["id"])
+    for url_, ids in groups.items():
+        if len(ids) > 1:
+            print(f"   ⚠️  synthetic URL collision ({len(ids)} ids, left as is): {url_}")
+    tiebroken = 0   # price tiebreak removed (decision 3, 2026-11-12); always 0
+    still = Counter(c["url"] for c in synth)
+    unresolved = sum(n for n in still.values() if n > 1)
+    return {"synthetic": len(synth), "price_tiebreaks": tiebroken,
+            "unresolved_collisions": unresolved}
+
+
+# One host per broker for listing URLs. stable_listing_id() keys on the URL,
+# so a site reachable as both example.com and www.example.com yields two ids
+# for one listing. Map bare domain -> the host the site itself declares
+# (301 target + <link rel=canonical>). calhouncompanies.com: bare 301s to
+# www and detail pages carry rel=canonical https://www.calhouncompanies.com/...;
+# the DB held 36 bare + 11 www URLs for the same inventory (2026-11-11).
+CANONICAL_HOSTS = {"calhouncompanies.com": "www.calhouncompanies.com"}
+
+
+def canonical_host(netloc: str) -> str:
+    n = (netloc or "").lower()
+    return CANONICAL_HOSTS.get(n[4:] if n.startswith("www.") else n, netloc or "")
+
+
+# Query parameters that say where a listing sat on the index, not what it is
+# (principle 4). marlingroup.com links page-2 listings as ?pid=459&pageno=2
+# and page-1 ones as ?pid=459, so a listing that moved a page when a new one
+# was added got a new URL and a new id (pid 458, 459 each stored twice,
+# 2026-11 snapshots). Opt-in per domain; the pid alone opens the listing.
+VOLATILE_URL_PARAMS = {"marlingroup.com": ("pageno",)}
+
+
+def drop_volatile_params(url):
+    if not url:
+        return url
+    pu = urlparse(url)
+    host = pu.netloc.lower()
+    drop = VOLATILE_URL_PARAMS.get(host[4:] if host.startswith("www.") else host)
+    if not drop or not pu.query:
+        return url
+    from urllib.parse import parse_qsl, urlencode
+    q = [(k, v) for k, v in parse_qsl(pu.query, keep_blank_values=True) if k not in drop]
+    return urlunparse(pu._replace(query=urlencode(q)))
+
+
+def canonical_url(url):
+    """url with its host replaced by CANONICAL_HOSTS' choice; else unchanged."""
+    if not url:
+        return url
+    pu = urlparse(url)
+    host = canonical_host(pu.netloc)
+    if not pu.netloc or host == pu.netloc:
+        return url
+    return urlunparse(pu._replace(netloc=host))
+
+
+# Card shows several labelled figures and the largest is the revenue
+# (calhouncompanies.com: "Price $450,000 Gross Sales $926,280" stored as a
+# $926,280 asking price). For these domains the asking price is ONLY a figure
+# sitting directly on a price label; a card with no Price field (2 of 106 on
+# calhoun) has no asking price, rather than its gross sales.
+# Opt-in per domain: on other brokers a corrected price would be recorded as
+# a price change once, so widen only after measuring.
+# jennessey.com (2026-11-12, j3-nopattern): Wix cards print "Asking Price:
+# $700,000" beside sales figures, and the largest-figure rule stored $1.3M.
+# It had no rows yet (NO_PATTERN every night), so no price change is recorded.
+LABELLED_PRICE_DOMAINS = {"calhouncompanies.com", "jennessey.com"}
+_LABELLED_PRICE_RE = re.compile(
+    r"(?<![a-z])(?:asking\s+price|list\s+price|price)\s*:?\s*\$\s*([\d,]+(?:\.\d+)?)",
+    re.I)
+
+
+# "Equipment Price $1,000,000" on a calhoun detail page is not the ask. Only
+# checked on detail pages: on a card the word before "Price" is the Category
+# value ("Category Power Equipment Price $1,500,000"), which is the real ask.
+_PRICE_QUALIFIERS = {"equipment", "inventory", "estate", "building", "property",
+                     "land", "lease", "ff&e", "furniture", "stock", "purchase"}
+
+
+def labelled_asking_price(text, skip_qualified=False):
+    text = text or ""
+    for m in _LABELLED_PRICE_RE.finditer(text):
+        prev = text[max(0, m.start() - 20):m.start()].split()
+        if skip_qualified and prev and prev[-1].lower().strip(":|-") in _PRICE_QUALIFIERS:
+            continue
+        try:
+            v = float(m.group(1).replace(",", ""))
+        except ValueError:
+            continue
+        if 1_000 <= v <= 100_000_000:
+            return v
+    return None
+
+
+# Same opt-in shape as LABELLED_PRICE_DOMAINS above, but by element, not
+# by regex over card text. Brokers whose auto-detected "card" is not one whole listing, and whose
+# cards label each figure in its own element. Opt-in per domain: "card" is used
+# instead of the pattern cache and detection; "fields" read each figure from
+# its own element and never fall back to the card's largest dollar amount (a
+# card with no Price element has no asking price, not its gross sales).
+# healthcarebizsales.com: each <article class="... type-business ..."> holds two
+# <div class="col-full"> halves — heading + "More Details" -> /business/<slug>/,
+# and the figures + "Inquire Here" -> /inquiry/?sub=<title>. Detection picked
+# the halves (2026-11-10: 125 rows, 62 titled "Inquire Here", one listing per
+# two rows), or one category's articles only (2026-11-11: 63 of 135, every
+# article carries its own business-category-* class). Largest-$ took Gross
+# Sales as the price on every card where sales exceed the asking price.
+# therouteexchange.com (WordPress Participants Database, 2026-11-12): detection
+# picked the "Full Listing" link field (one <div> inside each record), so the
+# card never saw its own Status / Asking Price fields. The record is
+# <section id="record-N">; the page holds three lists - Available, Pending and
+# Sold Routes - and its pager (?listpage=N&instance=3) pages the SOLD list only.
+# "status" is read from the record's own status field (SOLD -> sold).
+CARD_LAYOUT_DOMAINS = {
+    "therouteexchange.com": {
+        "card": "section[id^='record-']",
+        "fields": {"asking_price": ".pdb-field-asking_price .pdb-field-data",
+                   "cash_flow": ".pdb-field-gross_annual_income .pdb-field-data"},
+        "status": ".pdb-field-status .pdb-field-data",
+        "title": "slug",
+    },
+    # practiceconcepts.com (BusinessBroker.net "will_paginate" site, 2026-11-12):
+    # detection picked the figures cell (Revenue / State / Reference) of each
+    # <li class="element_rowNNNN"> record - no title, no link, no status - so
+    # all 15 cards became one "REFERENCE" row and page 2 "repeated" page 1.
+    # The record carries the title, the /listings/<slug> link and a status
+    # cell ("Sold", 12 of 19 on 2026-11-12).
+    "practiceconcepts.com": {
+        "card": "li[class^='element_row']",
+        "fields": {"revenue": ".details li:first-child p"},
+        "status": ".listing-status",
+        "title": ".link-title",
+    },
+    "healthcarebizsales.com": {
+        "card": "article.type-business",
+        "fields": {"asking_price": "span.price", "cash_flow": "span.aae",
+                   "revenue": "span.gar"},
+    },
+    # baltimorebusinessbrokers.com (real-links, job 3, 2026-11-12): each card
+    # is <a class="card business-listing-card--list" href="/business-detail/
+    # <id>">. The cached selector div.row matched the two rows inside every
+    # card (no link of their own -> index URL), the page wrapper (holding all
+    # ten cards -> the first card's URL with the wrapper's first price) and
+    # the header row (the ?data=10 page-size link). Card only; figures stay on
+    # the generic path.
+    "baltimorebusinessbrokers.com": {
+        "card": "a.business-listing-card--list",
+    },
+}
+
+
+def card_layout(domain):
+    return CARD_LAYOUT_DOMAINS.get((domain or "").lower().removeprefix("www."))
+
+
+def card_selector_override(domain):
+    return (card_layout(domain) or {}).get("card")
+
+
+def card_fields_from_layout(element, fields):
+    """{field: value} read from each field's own element; None when absent."""
+    out = {}
+    for f, sel in fields.items():
+        el = element.select_one(sel)
+        vals = [v for v in parse_all_prices(el.get_text(" ", strip=True))
+                if v >= 1_000] if el else []
+        out[f] = vals[0] if vals else None
+    return out
 
 
 def positive_or_none(v):
@@ -859,6 +2118,9 @@ def _bare(netloc):
     n = (netloc or "").lower()
     return n[4:] if n.startswith("www.") else n
 DETAIL_DELAY     = (0.5, 1.5)   # seconds between detail fetches
+# Infinite-scroll rounds per Playwright render (stops early once the page
+# height is unchanged for two rounds; never fewer than four rounds).
+SCROLL_MAX_ROUNDS = int(os.environ.get("SCROLL_MAX_ROUNDS", "30"))
 
 # SPEED (2026-09-16). Runs since 12 Sep stopped hitting 100 brokers in the
 # 285-minute window (run #162: 34 brokers), so every run ended on the timeout,
@@ -872,6 +2134,9 @@ DETAIL_DELAY     = (0.5, 1.5)   # seconds between detail fetches
 #   instead (the upsert writes every column, so they must be carried or they
 #   would be overwritten with card-only values).
 BROKER_TIME_BUDGET = int(os.environ.get("BROKER_TIME_BUDGET", "480"))
+# Index pages in a row that the site's own pager linked to but that added
+# nothing, before the walk stops (unionbaygroup.com: 2). Guessed URLs get none.
+PAGER_STALL_MAX = int(os.environ.get("PAGER_STALL_MAX", "2"))
 SKIP_KNOWN_DETAILS = os.environ.get("SKIP_KNOWN_DETAILS", "1") != "0"
 
 US_STATES = {
@@ -1038,6 +2303,8 @@ SPECIALIZED_DOMAINS = {
                                      # commercialroutesforsale.com and
                                      # deliveryroutesforsale.com are DIFFERENT
                                      # companies; V6 must keep scraping those)
+    "reputedbrokerage.com",          # EREPropertyScraper (run_specialized key
+                                     # 'reputedbrokerage'; property-status archives)
 }
 
 
@@ -1276,6 +2543,26 @@ class PatternCache:
         self.patterns[domain] = pattern
         self.save()
 
+    def replace(self, domain, pattern):
+        """Overwrite an entry that was proven dead on this run (its selector
+        extracted 0 cards from the live page). store()'s keep-the-better rule
+        compares historical yield, and a dead entry's history is exactly what
+        must not win: ninbb.com's Brilliant Directories selector and
+        momentumprojects.com's Beaver Builder one held their slots for weeks
+        that way (2026-11-12)."""
+        self.patterns[domain] = pattern
+        self.save()
+
+    def other_spelling(self, domain):
+        """The entry stored under the www / bare twin of `domain`, if any.
+        Only a last resort when detection found nothing: 49 producing brokers
+        have an entry only under the other spelling and detect fine without
+        it, so it must never pre-empt detection (calhouncompanies.com's twin
+        key held a stale selector that matched one card per page)."""
+        d = (domain or "").lower()
+        twin = d[4:] if d.startswith("www.") else "www." + d
+        return self.get(twin)
+
     def predict(self, html, url):
         if not self.patterns:
             return None
@@ -1293,6 +2580,98 @@ class PatternCache:
             except Exception:
                 pass
         return best_match
+
+
+def predicted_beats_detected(predicted, detected, html=None, url=None, broker_name=None):
+    """Should another broker's cached selector (PatternCache.predict) replace
+    this page's own detection? Today's rule (the stored score of the other
+    broker's entry beats this page's detected score, nav selectors excluded),
+    plus: never a BARE TAG.
+
+    predict() picks the cached selector that matches the most elements on
+    this page, and accountingfirmsold.com's cached bare `tr` (stored score 30,
+    the maximum) matches any page with a few table rows. It won on
+    benchmarkbusinessgroup.com's search-filter table (1 junk row - a Google
+    Maps link - instead of 5 linked cards a page), dfwbc.com's page-layout row,
+    kendallcapitalgroup.com's header row and ctacquisitions.com's article
+    tables (job 3, 2026-11-12). A bare `tr` / `div` says nothing about what it
+    selects. (Re-scoring every prediction on the page was measured too: it
+    moved 15 of 82 saved broker pages, several for the worse - not done.)"""
+    if not predicted:
+        return False
+    sel = (predicted.get("container_selector") or "").strip()
+    if not sel or re.fullmatch(r"[a-z][a-z0-9]*", sel) or _is_nav_selector(sel):
+        return False
+    if not predicted.get("score", 0) > (detected or {}).get("score", 0):
+        return False
+    # Yield guard (job 3 NOPATTERN, 2026-11-12): a winning prediction that
+    # extracts NOTHING from this page, or fewer cards than the detected
+    # pattern, is dropped. Generic wrappers won on stored score and extracted
+    # 0 cards: aiellobrokers (div.row), calcurbs (div.col), doababrokers,
+    # jpar (div.entry-content ul li); krbrokers.com's div.col-sm-12 extracted
+    # 2 junk cards over the detected div.fwre-list-item's 10. Only the
+    # winning prediction is counted (not a re-score of every prediction), and
+    # a tie keeps today's choice.
+    dsel = (detected or {}).get("container_selector")
+    if html and url and dsel and dsel != sel:
+        firm = broker_name or urlparse(url).netloc
+        n_pred = pattern_card_count(html, url, sel, firm)
+        n_det = pattern_card_count(html, url, dsel, firm)
+        if n_pred == 0 or n_pred < n_det:
+            print(f"   🧠 ML prediction {sel} rejected: {n_pred} cards vs {n_det} detected")
+            # the detected pattern was hidden behind the prediction until
+            # now: the caller gates it like a re-detection (no history)
+            if isinstance(detected, dict):
+                detected["_exposed_by_yield_guard"] = True
+            return False
+    return True
+
+
+def pattern_card_count(html, url, selector, broker_name, stop_at=None):
+    """Cards ListingExtractor.from_card() accepts from `html` under `selector`
+    (stops early at `stop_at`). Selector counts and detection scores are not
+    yield: a cached or predicted selector can match elements and still
+    extract nothing. Never raises."""
+    try:
+        els = BeautifulSoup(html, "html.parser").select(selector)
+    except Exception:
+        return 0
+    n = 0
+    for el in els:
+        try:
+            if ListingExtractor.from_card(el, url, broker_name):
+                n += 1
+                if stop_at and n >= stop_at:
+                    break
+        except Exception:
+            continue
+    return n
+
+
+def healed_pattern_problem(html, url, selector, broker_name):
+    """Why a pattern re-detected after a dead cache entry must not be used,
+    or None. Page 1 must give at least 3 distinct listings, and at least 3 of
+    them must carry their own detail URL or a price."""
+    try:
+        els = BeautifulSoup(html, "html.parser").select(selector)
+    except Exception:
+        return "selector does not parse"
+    cards = []
+    for el in els:
+        try:
+            c = ListingExtractor.from_card(el, url, broker_name)
+        except Exception:
+            c = None
+        if c:
+            cards.append(c)
+    ids = {c["id"] for c in cards}
+    if len(ids) < 3:
+        return f"{len(ids)} distinct listing(s) on page 1"
+    linked = {c["url"] for c in cards if c.get("url_is_listing_specific")}
+    priced = {c["id"] for c in cards if c.get("asking_price")}
+    if len(linked) < 3 and len(priced) < 3:
+        return f"only {len(linked)} detail URL(s) and {len(priced)} priced card(s)"
+    return None
 
 
 # ============================================================
@@ -1342,6 +2721,84 @@ class PatternDetector:
                            int(cls.MIN_LINKED_FRAC * n_listing)):
             return n_listing, n_priced
         return None
+
+    @classmethod
+    def _fallback_candidates(cls, soup, url):
+        """Shapes strategies 1-2 cannot express. Consulted ONLY when they
+        found no candidate that survives the nav filter (i.e. detect() would
+        return None today), so a broker that detects today keeps exactly the
+        pattern it gets today (principle 8). (Class-less table rows, the
+        other shape found in this class - alpinebusinessbrokers.com,
+        lightandraphael.com - are j3-table_rows' Strategy 1c, not here.)
+
+        Cards whose class list carries one per-card token. Wix Studio
+        stamps every card `comp-<id>` beside its shared classes
+        (districtbusinessbrokers.com: `_root_1w52m_1 … builder-root
+        comp-mux2zidb`), so no two cards share a class string, and the id
+        part is not a hex suffix for strategy 1b to strip. Group on the
+        classes the element shares with at least MIN_LISTING_ELEMENTS
+        elements of its tag and select on those.
+        """
+        candidates = []
+
+        def _add(selector, group, bonus=0):
+            scored = cls._score_group(group, url)
+            if scored:
+                n_listing, n_priced = scored
+                candidates.append({
+                    "container_selector": selector,
+                    "count": len(group),
+                    "score": n_listing + n_priced + bonus,
+                    "sample_text": group[0].get_text(separator=" ", strip=True)[:200],
+                })
+
+        # shared classes once per-card tokens are dropped
+        for tag in ["div", "article", "li", "section"]:
+            els = [el for el in soup.find_all(tag) if el.get("class")]
+            freq = Counter(c for el in els for c in set(el["class"]))
+            groups = defaultdict(list)
+            for el in els:
+                own = list(dict.fromkeys(el["class"]))
+                shared = [c for c in own if freq[c] >= cls.MIN_LISTING_ELEMENTS]
+                if shared and len(shared) < len(own):
+                    groups[tuple(shared)].append(el)
+            for shared, group in groups.items():
+                if len(group) < cls.MIN_LISTING_ELEMENTS:
+                    continue
+                sel = css_selector(tag, list(shared))
+                try:
+                    matched = soup.select(sel)
+                except Exception:
+                    continue
+                _add(sel, matched)
+
+        # Rank by what each selector really extracts, not by score: on a Wix
+        # Studio page the row wrapper (three cards per row) out-scores the
+        # card, and extracting it keeps only the first card of every row
+        # (districtbusinessbrokers.com: 10 of 12). Most distinct listings
+        # wins; then most cards carrying their own detail URL (the text
+        # block inside a card extracts every title but not the card's
+        # "View Listing" link); then fewer duplicate cards (a selector
+        # matching both a wrapper and its cards emits the wrapper's copy
+        # with the wrong title); then score.
+        firm = urlparse(url).netloc
+        for c in candidates:
+            ids, urls = [], set()
+            try:
+                for el in soup.select(c["container_selector"]):
+                    card = ListingExtractor.from_card(el, url, firm)
+                    if card:
+                        ids.append(card["id"])
+                        if card.get("url_is_listing_specific"):
+                            urls.add(card["url"])
+            except Exception:
+                pass
+            c["_rank"] = (len(set(ids)), len(urls), -(len(ids) - len(set(ids))), c["score"])
+        candidates = [c for c in candidates if c["_rank"][0] > 0]
+        candidates.sort(key=lambda c: c["_rank"], reverse=True)
+        for c in candidates:
+            c.pop("_rank", None)
+        return candidates[:1]
 
     @classmethod
     def detect(cls, html, url):
@@ -1404,6 +2861,28 @@ class PatternDetector:
                         "sample_text": group[0].get_text(separator=" ", strip=True)[:200],
                     })
 
+        # Strategy 1c: the rows of a listing <table>, addressed through the
+        # table (job 3, 2026-11-12). Rows with no class (accountingfirmsold,
+        # prohorizons) or a per-row class Strategy 1b cannot group (TablePress
+        # row-2, row-3 ...; Ninja Tables ninja_table_row_0 ...) were never a
+        # candidate: keatepartners.com was NO_PATTERN, prohorizons.com only
+        # worked because another broker's cached bare `tr` was predicted.
+        # Selector = the table's own class (else id) + " tr"; header rows are
+        # rejected by is_listing_element. Not a candidate: layout tables
+        # (holding, or held by, another table), tables in site chrome, and a
+        # table under a "sold" heading ("Recent Businesses Sold") - its rows
+        # carry no per-row status, so they would be written as live listings.
+        for sel, rows in _table_row_candidates(soup):
+            scored = cls._score_group(rows, url)
+            if scored:
+                n_listing, n_priced = scored
+                candidates.append({
+                    "container_selector": sel,
+                    "count": len(rows),
+                    "score": n_listing + n_priced,
+                    "sample_text": rows[0].get_text(separator=" ", strip=True)[:200],
+                })
+
         # Strategy 2: known selectors (small boost for being a known shape)
         for selector in [
             "div.listing", "div.listing-item", "div.property-listing",
@@ -1427,14 +2906,16 @@ class PatternDetector:
             except Exception:
                 pass
 
-        if not candidates:
-            return None
         # Drop navigation/menu/footer/widget containers: WordPress nav bars
         # repeat and link out, so they otherwise win as "listings" (myersba's
         # 61 menu links, svnmarinas' 53 'Advisory Services'). Better NO_PATTERN
         # than writing a site's nav bar as inventory.
         candidates = [c for c in candidates
                       if not _is_nav_selector(c.get("container_selector", ""))]
+        if not candidates:
+            # Nothing but nav survived: only now try the fallback shapes.
+            candidates = [c for c in cls._fallback_candidates(soup, url)
+                          if not _is_nav_selector(c.get("container_selector", ""))]
         if not candidates:
             return None
         candidates.sort(key=lambda x: x["score"], reverse=True)
@@ -1645,15 +3126,15 @@ class ListingExtractor:
     def best_title_from_detail(soup) -> str | None:
         h1 = soup.find("h1")
         if h1:
-            t = h1.get_text(strip=True)
+            t = strip_dangling_sep(h1.get_text(strip=True))
             if len(t) > 5:
                 return t[:500]
         og = soup.find("meta", property="og:title")
         if og and og.get("content"):
-            return og["content"][:500]
+            return strip_dangling_sep(og["content"])[:500] or None
         tag = soup.find("title")
         if tag:
-            return tag.get_text(strip=True)[:500]
+            return strip_dangling_sep(tag.get_text(strip=True))[:500] or None
         return None
 
     @staticmethod
@@ -1679,6 +3160,10 @@ class ListingExtractor:
                 best = text
         return best[:2000] if best else None
 
+    # (title, label) of cards not emitted because their title/badge status is
+    # DROP (Coming Soon / For Lease). The broker loop reads and resets it.
+    status_drops: list = []
+
     @classmethod
     def from_card(cls, element, base_url: str, broker_name: str) -> dict | None:
         """Extract a listing stub from a list-page card."""
@@ -1701,7 +3186,8 @@ class ListingExtractor:
         if not is_listing_element(element, base_url):
             return None
 
-        best_href = _onclick_detail_link(element) or _best_detail_link(element, base_url)
+        best_href = (_onclick_detail_link(element) or _best_detail_link(element, base_url)
+                     or _enclosing_link(element))
         detail_url = urljoin(base_url, best_href) if best_href else None
 
         # Don't treat pagination/anchor links as detail URLs
@@ -1714,6 +3200,8 @@ class ListingExtractor:
             wrapped = _wrapper_detail_link(element, base_url)
             if wrapped:
                 detail_url = urljoin(base_url, wrapped)
+        detail_url = canonical_url(detail_url)
+        detail_url = drop_volatile_params(detail_url)
 
         # Marketplace gate (2026-10-08): some brokers list a deal on their own
         # page but link the card out to its marketplace copy (bizbuysell.com,
@@ -1721,14 +3209,42 @@ class ListingExtractor:
         # broker's: never record it, and never fetch it as a detail page.
         # Found as 76 active public rows with bizbuysell.com URLs from
         # springfieldstrategies.com, papadop.com, lonestarba.com and others.
+        # Broker-ref brokers (2026-11-12): a card that links out to the
+        # marketplace but prints the broker's own ref (naz-business.com) is
+        # the broker's listing - keep it as a no-link card keyed on the ref,
+        # and never store the marketplace link. No ref -> dropped as before.
+        if (detail_url and is_marketplace_url(detail_url)
+                and extract_broker_ref(text, domain)):
+            detail_url = None
         if detail_url and is_marketplace_url(detail_url):
             return None
 
-        title = best_card_title(element, base_url, firm_name=broker_name) or text[:100]
+        title = strip_dangling_sep(
+            best_card_title(element, base_url, firm_name=broker_name) or text[:100])
         # ONE RULE: a junk/blank title falls back to the listing URL slug, which
         # is where the real business name survives on CTA-titled cards.
         if is_junk_title(title, broker_name):
             title = title_from_slug(detail_url) or title
+        # A layout whose records carry no title text, only field labels
+        # ("Route Type", "City"): the detail URL's slug is the name.
+        # No detail link = no name and no identity: not emitted.
+        # Any other "title" value is the selector of the record's own title
+        # element (used when it holds a real name).
+        title_rule = (card_layout(domain) or {}).get("title")
+        if title_rule == "slug":
+            slug_title = title_from_slug(detail_url) if detail_url else None
+            if not slug_title:
+                return None
+            title = slug_title
+        elif title_rule:
+            t_el = element.select_one(title_rule)
+            t_txt = strip_dangling_sep(t_el.get_text(" ", strip=True)) if t_el else ""
+            if t_txt and not is_junk_title(t_txt, broker_name):
+                # A name that reads like a price fragment to the junk gate
+                # ("$500K Gross Coastal Orange County, CA Optometry") falls
+                # back to the URL slug rather than dropping the listing.
+                title = (t_txt if not is_junk_listing(t_txt, detail_url or base_url)
+                         else (title_from_slug(detail_url) or t_txt))
 
         # Junk gate — nav fragment, price fragment, status badge, CTA, legal
         # page, CRE/land: never emit these as a listing.
@@ -1739,26 +3255,93 @@ class ListingExtractor:
         # valuation/blog/social pages are not listings. Checked against the
         # card's own detail URL only — the list-page URL says nothing.
         if is_site_page(title, detail_url or ""):
-            return None
+            if not _cta_site_link(element, title, text, detail_url, base_url):
+                return None
+            # The card is a listing whose only link is a button to the
+            # broker's contact page or homepage ("Learn More" -> /contact on
+            # nextstep-capital.com, "Contact Us for More Info" -> / on
+            # jennessey.com). Dropping it dropped every card on the page,
+            # every night. Keep it as a no-link card; never store the link.
+            detail_url = None
 
         # Residential/IDX row gate — see looks_residential() above.
         if looks_residential(title, text):
             return None
 
-        asking_price = positive_or_none(cls.extract_price(text))
-        cash_flow    = positive_or_none(cls.extract_cash_flow(text))
-        revenue      = positive_or_none(cls.extract_revenue(text))
+        fields = (card_layout(domain) or {}).get("fields")
+        if fields:
+            got = card_fields_from_layout(element, fields)
+            asking_price = positive_or_none(got.get("asking_price"))
+            cash_flow    = positive_or_none(got.get("cash_flow"))
+            revenue      = positive_or_none(got.get("revenue"))
+        else:
+            asking_price = positive_or_none(cls.extract_price(text))
+            cash_flow    = positive_or_none(cls.extract_cash_flow(text))
+            revenue      = positive_or_none(cls.extract_revenue(text))
+        if not fields and _bare(domain) in LABELLED_PRICE_DOMAINS:
+            labelled = labelled_asking_price(text)
+            if labelled:
+                asking_price = labelled
+            elif asking_price and asking_price == revenue:
+                asking_price = None      # no Price field: undisclosed, not revenue
         asking_price, cash_flow, revenue = _sane_financials(
             asking_price, cash_flow, revenue)
         location     = LocationExtractor.extract(text)
         vertical     = cls.classify_vertical(text)
 
         _url = detail_url or base_url
-        listing_id = stable_listing_id(
+        # No detail link on a gated broker: ref / title+location identity
+        # (no_link_identity); everyone else, today's stable_listing_id().
+        synth = (no_link_identity(base_url, title,
+                                  location["city"] if location else None,
+                                  location["state"] if location else None, text)
+                 if not (detail_url and detail_url != base_url) else None)
+        listing_id = synth["id"] if synth else stable_listing_id(
             title, _url, base_url, urlparse(base_url).netloc
         )
 
         now = datetime.now(timezone.utc).isoformat()
+        # Status, most specific evidence first:
+        #  1. an allowlisted broker's own title marker (TITLE_STATUS_MARKER_DOMAINS);
+        #  2. a labelled "Status: <value>" field on the card (card_status_field),
+        #     else a table row's Status column (table_status_cell) - the
+        #     broker's own statement, so it beats a title marker or badge,
+        #     except that a plain active value ("Available") adds nothing;
+        #  3. card_status(): the most final of badge/class and title marker,
+        #     mapped through listing_status (decision 6: the under-contract
+        #     family stays active with the broker's words).
+        # Coming Soon / For Lease are not emitted (decision 5), counted per broker.
+        status, status_marker = card_status(element, title, domain)
+        from_field = False
+        field = ((card_status_field(element, domain) or table_status_cell(element, domain))
+                 if not domain_title_status_marker(domain, title) else None)
+        if field and (field[1] is not None or field[0] != "active"):
+            if field[0] == _SF_DROP:
+                _STATUS_FIELD_DROPS[_bare(domain)][field[1]].add((title, detail_url))
+                return None
+            status, status_marker, from_field = field[0], field[1], True
+        # A layout broker's own status element (CARD_LAYOUT_DOMAINS "status"):
+        # the value of that one element, judged by the shared phrase set.
+        # Unknown values ("Avail") add nothing; SOLD -> sold; Pending -> active
+        # with the broker's words (decision 6).
+        st_sel = (card_layout(domain) or {}).get("status")
+        st_el = element.select_one(st_sel) if st_sel else None
+        st_hit = (_sf_lookup(st_el.get_text(" ", strip=True), domain)
+                  if (st_el is not None and _sf_lookup) else None)
+        if st_hit and (st_hit[1] is not None or st_hit[0] != "active"):
+            if st_hit[0] == _SF_DROP:
+                _STATUS_FIELD_DROPS[_bare(domain)][st_hit[1]].add((title, detail_url))
+                return None
+            status, status_marker, from_field = st_hit[0], st_hit[1], True
+        if status == _LS_DROP:
+            cls.status_drops.append((title[:80], status_marker))
+            return None
+
+        # "Price: Market Price" / "Asking Price: Call for price" on the card:
+        # the broker's verbatim phrase, judged by the shared rule. Labelled
+        # values only — never prose — and only when no price parsed.
+        broker_price_text = (None if asking_price
+                             else find_labelled_withheld_price(text))
 
         return {
             "id":            listing_id,
@@ -1769,19 +3352,29 @@ class ListingExtractor:
             "city":          location["city"]  if location else None,
             "state":         location["state"] if location else None,
             "vertical":      vertical,
+            "broker_price_text": broker_price_text,
             "url":           _url,
             "url_is_listing_specific": bool(detail_url) and detail_url != base_url,
             "broker_name":   broker_name,
             "broker_domain": urlparse(base_url).netloc,
             "description":   text[:1000],
-            # Sold/under-contract deals are imported as status='sold' (from a
-            # badge/class/ribbon OR a title marker) so they don't inflate the
-            # active count or get DOM'd as live inventory.
-            "status":        "sold" if (looks_sold(element)
-                                        or is_sold_or_pending(title)) else "active",
+            # Sold deals (badge/class/ribbon, title marker or status field) are
+            # imported as status='sold' so they don't inflate the active count
+            # or get DOM'd as live inventory; under contract / pending / off
+            # market stay active (decision 6) with the broker's label below.
+            "status":        status,
+            # restatus_from_title() must not re-decide a field-decided row
+            **({"_status_from_field": True} if from_field else {}),
+            # the broker's own words, verbatim ("SOLD!", "UNDER CONTRACT:");
+            # title-marked rows of a TITLE_STATUS_MARKER_DOMAINS broker, or
+            # the value of a labelled card status field (card_status_field)
+            **({"broker_status_text": status_marker} if status_marker else {}),
             "first_seen":    now,
             "last_seen":     now,
             "_detail_url":   detail_url,
+            # Gated no-link card: assign_synthetic_urls() gives it
+            # <index>#dl-<slug> once the broker's whole set is known.
+            **({_SYNTH_FLAG: synth} if synth else {}),
         }
 
     @classmethod
@@ -1804,13 +3397,36 @@ class ListingExtractor:
         if desc:
             listing["description"] = desc
 
-        # Financials — full page text has much more context
-        if not listing.get("asking_price"):
-            listing["asking_price"] = positive_or_none(cls.extract_price(full_text))
-        if not listing.get("cash_flow"):
+        # Financials — full page text has much more context. Not for a
+        # CARD_LAYOUT_DOMAINS broker: its card figures are labelled, and the
+        # page's largest-$ guess is exactly what that config exists to avoid.
+        labelled = bool((card_layout(listing.get("broker_domain")) or {}).get("fields"))
+        if not labelled and not listing.get("asking_price"):
+            if _bare(listing.get("broker_domain")) in LABELLED_PRICE_DOMAINS:
+                listing["asking_price"] = positive_or_none(
+                    labelled_asking_price(full_text, skip_qualified=True))
+            else:
+                listing["asking_price"] = positive_or_none(cls.extract_price(full_text))
+        if not labelled and not listing.get("cash_flow"):
             listing["cash_flow"] = positive_or_none(cls.extract_cash_flow(full_text))
-        if not listing.get("revenue"):
+        if not labelled and not listing.get("revenue"):
             listing["revenue"] = positive_or_none(cls.extract_revenue(full_text))
+        # Two shapes a detail page produces that the card check would have
+        # caught, and nothing else: one figure read under both labels, and a
+        # weekly figure read as annual revenue. commercialroutesforsale.com's
+        # page labels the WEEKLY net "Net Income: $2,000" next to an empty
+        # "Total Sales:", so both fields read $2,000 on a $219,000 route.
+        # Deliberately not a full _sane_financials pass: that also drops
+        # revenue == asking_price, which on inbargroup.com dropped the detail
+        # page's revenue on 30 of 61 rows (the card price had taken that figure).
+        cf, rv = listing.get("cash_flow"), listing.get("revenue")
+        price = listing.get("asking_price")
+        if cf is not None and cf == rv:
+            listing["cash_flow"] = None
+            if rv == price:   # one figure under all three labels
+                listing["revenue"] = rv = None
+        if rv is not None and price and rv < 0.05 * price:
+            listing["revenue"] = None
 
         # Location — the key reason we fetch detail pages
         if not listing.get("state"):
@@ -1840,9 +3456,11 @@ def _make_api_listing(base_url, broker_name, title, detail_url=None,
                       city=None, state=None, description=None):
     now = datetime.now(timezone.utc).isoformat()
     url = detail_url or base_url
-    listing_id = stable_listing_id(
-        title, url, base_url, urlparse(base_url).netloc)
     text = f"{title or ''} {description or ''}"
+    synth = (no_link_identity(base_url, title, city, state, text)
+             if not (detail_url and detail_url != base_url) else None)
+    listing_id = synth["id"] if synth else stable_listing_id(
+        title, url, base_url, urlparse(base_url).netloc)
     return {
         "id":            listing_id,
         "title":         (title or "")[:500],
@@ -1859,6 +3477,9 @@ def _make_api_listing(base_url, broker_name, title, detail_url=None,
         "description":   (description or title or "")[:1000],
         "first_seen":    now,
         "last_seen":     now,
+        # Same rule as from_card (principle 15): gated no-link listing ->
+        # synthetic URL assigned by assign_synthetic_urls().
+        **({_SYNTH_FLAG: synth} if synth else {}),
     }
 
 
@@ -1873,22 +3494,57 @@ def _state_from_location(loc):
     return m["state"] if m else None
 
 
+def _tupelo_detail_url(index_url, listing_id):
+    """The Tupelo widget's per-listing URL: index path + ?listingId=<id>.
+    None when the feed item has no id (the row then keeps the index URL and
+    the domain|title identity, as before)."""
+    lid = str(listing_id).strip() if listing_id is not None else ""
+    if not lid:
+        return None
+    from urllib.parse import quote
+    p = urlparse(index_url)
+    page = urlunparse((p.scheme, p.netloc, p.path, "", "", ""))
+    return f"{page}?listingId={quote(lid, safe='')}"
+
+
 def _handler_tupelosmb(url, html, broker_name, fetcher):
     """
     Tupelo SMB CRM platform. The broker page loads listings from
-    crm.tupelosmb.com/api/public/listings?organizationId=<cuid>&take=&skip=
-    The org cuid is the only 'cl…' id present in the page source.
+    crm.tupelosmb.com/api/public/listings?organizationId=<cuid>&take=&page=
+    The org cuid is normally in the widget's organization-id attribute
+    (<tupelo-marketplace organization-id="cm...">). Newer cuids start with
+    'cm', not 'cl', so the bare 'cl…' scan is only a fallback.
+
+    Every feed item has a stable `id`, and the widget opens its detail view
+    with react-router's useSearchParams -> navigate("?listingId=<id>") on a
+    browser history (marketplace/index.js: `n({listingId:e.id})`, then
+    `n.get("listingId")` renders the detail component). So the per-listing
+    URL is the index page's path + "?listingId=<id>" - the widget's own
+    navigate replaces the whole query string, so the index's filter params
+    (e.g. ?statuses=ACTIVE) are dropped, as they are here. Without this every
+    listing's url was the index page and its id fell back to
+    sha256(domain|title) (CLAUDE.md principle 4).
+
+    Pagination is 1-based `page` (the widget sends take=10&page=N). The API
+    ignores `skip`: the old skip loop re-read page 1 until skip >= totalCount,
+    so a broker with 53 active + 141 sold got every active listing twice, and
+    one with more than `take` active items lost everything past the first
+    page. `statuses=ACTIVE` is the widget's own filter; the client-side status
+    check stays in case the API ever ignores it, and a page that brings no
+    new id ends the loop (principle 7: a repeated page is not more data).
     """
-    m = re.search(r'\b(cl[a-z0-9]{20,})\b', html)
+    m = (re.search(r'organization-?id\s*=\s*["\']?(c[a-z0-9]{20,})', html, re.I)
+         or re.search(r'\b(cl[a-z0-9]{20,})\b', html))
     if not m:
         return None
     org_id = m.group(1)
-    out, skip, take = [], 0, 100
+    out, seen, page, take = [], set(), 1, 100
     while True:
         try:
             r = fetcher.session.get(
                 "https://crm.tupelosmb.com/api/public/listings"
-                f"?organizationId={org_id}&take={take}&skip={skip}",
+                f"?organizationId={org_id}&statuses=ACTIVE"
+                f"&take={take}&page={page}",
                 timeout=REQ_TIMEOUT)
             if r.status_code != 200:
                 break
@@ -1897,28 +3553,262 @@ def _handler_tupelosmb(url, html, broker_name, fetcher):
             break
         items = data.get("listings", []) if isinstance(data, dict) else []
         total = data.get("totalCount", 0) if isinstance(data, dict) else 0
+        new = 0
         for it in items:
+            lid = it.get("id")
+            if lid is not None:
+                if lid in seen:
+                    continue
+                seen.add(lid)
+            new += 1
             if str(it.get("status", "")).upper() not in ("ACTIVE", ""):
                 continue
             loc = it.get("locationStringShort") or it.get("locationString") or ""
             out.append(_make_api_listing(
                 url, broker_name,
                 title=it.get("headline"),
+                detail_url=_tupelo_detail_url(url, it.get("id")),
                 asking_price=it.get("askingPrice"),
                 cash_flow=it.get("cashFlow"),
                 revenue=it.get("revenue"),
                 state=_state_from_location(loc),
                 city=(loc.split(",")[0].strip() if loc else None),
                 description=it.get("headline")))
-        skip += take
-        if not items or skip >= total:
+        if not items or not new or page * take >= total:
             break
+        page += 1
+    return out or None
+
+
+# Base44 "Listing" entity feed (ninbb.com, rebuilt as a Base44 React SPA
+# around 5 Oct 2026). The server returns an empty shell for every route; the
+# browser loads ALL listings with one call,
+#     GET /api/apps/<appId>/entities/Listing?sort=-created_date&limit=1000
+# and filters client-side to published, non-training listings whose status is
+# Active / Under LOI / Sale Pending, 12 cards per page ("1-12 of 179").
+# The endpoint is public (no auth). It also returns fields the site never
+# shows (HubSpot ids, internal notes, the asking price of listings marked
+# "Undisclosed"), so only the public fields are requested and used.
+BASE44_PUBLIC_STATUSES = ("Active", "Under LOI", "Sale Pending")
+BASE44_LISTING_FIELDS = (
+    "id,slug,listing_headline,listing_status,published,is_training,is_sample,"
+    "asking_price,asking_price_public,revenue_public,cash_flow_public,"
+    "hidden_fields,listing_region,listing_state,primary_industry,"
+    "listing_summary_public,bd_filename")
+# The site's default when a listing has no hidden_fields of its own.
+BASE44_DEFAULT_HIDDEN = ("employees", "year_established")
+
+
+def _base44_app_id(html):
+    for pat in (r'appId\s*=\s*["\']([0-9a-f]{24})["\']',
+                r'/api/apps/([0-9a-f]{24})/',
+                r'media\.base44\.com/images/public/([0-9a-f]{24})/'):
+        m = re.search(pat, html or "")
+        if m:
+            return m.group(1)
+    return None
+
+
+def _base44_public_listings(items):
+    """The site's own public filter (businesses-for-sale page)."""
+    return [it for it in items
+            if isinstance(it, dict)
+            and it.get("published") is True
+            and not it.get("is_training")
+            and not it.get("is_sample")
+            and it.get("listing_status") in BASE44_PUBLIC_STATUSES]
+
+
+def _base44_status(value):
+    """('active', label-or-None) for a public Base44 listing_status."""
+    try:
+        from listing_status import classify_status
+    except Exception:                 # module not present (job 3 not applied)
+        classify_status = None
+    text = (value or "").strip()
+    if classify_status is not None:
+        # Only BASE44_PUBLIC_STATUSES reach here, and the site lists all
+        # three as for sale: status is always active, only the label varies.
+        return "active", classify_status(text)[1]
+    return "active", (text if text in ("Under LOI", "Sale Pending") else None)
+
+
+def _base44_row(it, base_url, broker_name):
+    """One public Base44 Listing -> a V6 listing dict.
+
+    Identity (principle 4: never price, never title when ids exist):
+      - listings carried over from the old Brilliant Directories site keep
+        their bd_filename, which is the path of the URL every existing
+        ninbb.com row was keyed on (https://www.ninbb.com/<path>). Hashing
+        that keeps those rows' ids, and with them first_seen / DOM history.
+      - listings created on the new site have no bd_filename and are keyed
+        on their detail URL /listings/<slug>.
+    The stored url is always the current detail page /listings/<slug>.
+    """
+    title = (it.get("listing_headline") or "").strip()
+    slug = (it.get("slug") or "").strip()
+    if not title or not slug:
+        return None
+    p = urlparse(base_url)
+    host = _bare(p.netloc)
+    detail_url = f"{p.scheme or 'https'}://{host}/listings/{slug}"
+    hidden = it.get("hidden_fields")
+    hidden = set(hidden) if isinstance(hidden, list) else set(BASE44_DEFAULT_HIDDEN)
+
+    # The site shows "Undisclosed" unless asking_price_public and a price.
+    price = None
+    if ("asking_price" not in hidden and it.get("asking_price_public")
+            and it.get("asking_price")):
+        price = positive_or_none(it.get("asking_price"))
+    revenue = None if "revenue" in hidden else it.get("revenue_public")
+    cash_flow = None if "cash_flow" in hidden else it.get("cash_flow_public")
+    region = None if "region" in hidden else it.get("listing_region")
+    state = (it.get("listing_state") or "").strip().upper() or None
+    if state not in US_STATES:
+        state = _state_from_location(region)
+
+    row = _make_api_listing(
+        base_url, broker_name, title=title, detail_url=detail_url,
+        asking_price=price, cash_flow=cash_flow, revenue=revenue,
+        state=state, city=None,
+        description=it.get("listing_summary_public") or title)
+    bd = (it.get("bd_filename") or "").strip().strip("/")
+    if bd:
+        from urllib.parse import unquote
+        legacy = f"https://www.{host}/{unquote(bd)}"
+        row["id"] = stable_listing_id(title, legacy, base_url, p.netloc)
+    # "Undisclosed" is the broker's choice, not a parse failure. Carried on
+    # the row; the Supabase writer does not persist it (no column yet).
+    row["price_not_disclosed"] = row["asking_price"] is None
+    row["broker_status"] = it.get("listing_status")
+    # Under LOI / Sale Pending are on the public list, so the row stays
+    # active; the broker's words go in broker_status_text (decision 6, one
+    # phrase set: scrapers/listing_status.py when importable).
+    st, label = _base44_status(it.get("listing_status"))
+    row["status"] = st
+    if label:
+        row["broker_status_text"] = label
+    row["source_listing_id"] = it.get("id")
+    return row
+
+
+def _handler_base44(url, html, broker_name, fetcher):
+    app_id = _base44_app_id(html)
+    if not app_id:
+        return None
+    api = urljoin(url, f"/api/apps/{app_id}/entities/Listing")
+    # Page on the unique id. The site's own sort (-created_date) has ties -
+    # a bulk import on 17 Sep shares one created_date - and skip-paging over
+    # a tied sort returned 5 rows twice and 5 never (174 of 179).
+    items, skip, limit = [], 0, 500
+    for _ in range(10):                       # 5,000 rows max
+        r = fetcher.session.get(
+            api, params={"sort": "id", "limit": limit,
+                         "skip": skip, "fields": BASE44_LISTING_FIELDS},
+            timeout=REQ_TIMEOUT)
+        if r.status_code != 200:
+            print(f"   ⚠️  base44 feed HTTP {r.status_code}")
+            return None
+        page = r.json()
+        if not isinstance(page, list):
+            return None
+        items.extend(page)
+        if len(page) < limit:
+            break
+        skip += limit
+    ids = [it.get("id") for it in items if isinstance(it, dict)]
+    if len(set(ids)) != len(ids):
+        # Unstable paging: some rows were served twice, so others were
+        # skipped. A short set must not pass as the broker's full inventory.
+        print(f"   ⚠️  base44 feed paging unstable ({len(ids)} rows, "
+              f"{len(set(ids))} distinct) - refusing a partial set")
+        return None
+    # Not this site's schema (another Base44 app): no listing feed here.
+    if not any(isinstance(it, dict) and "listing_headline" in it for it in items):
+        return None
+    out, seen = [], set()
+    for it in _base44_public_listings(items):
+        if it.get("id") in seen:
+            continue
+        seen.add(it.get("id"))
+        row = _base44_row(it, url, broker_name)
+        if row:
+            out.append(row)
+    return out or None
+
+
+# Embedded listing index: <script type="application/json" id="lx-data">
+# (iconic.co, an Astro site; real-links, job 3, 2026-11-12). The page renders
+# 16 cards and a JS pager with no links ("Showing 1-16 of 479"); the browser
+# filters and pages the WHOLE index client-side from this one JSON block, so
+# V6 saw 16 cards and stopped (single_page). Each entry carries its detail
+# href, title, price/revenue/profit and a status:
+#   live       - for sale with an asking price ("Asking $249K")   -> emitted
+#   exploring  - an owner "testing the market privately"; the card says
+#                "Asking Not yet set" and the site's own filter separates
+#                them. Not a listing for sale - not emitted (counted in the
+#                log line), the same treatment as Coming Soon (decision 5).
+# Identity: the detail href, exactly the URL the card's <a> carried, so ids
+# keyed on the card links (stable_listing_id(url)) are unchanged.
+LX_DATA_PUBLIC_STATUSES = ("live",)
+
+
+def _handler_lx_data(url, html, broker_name, fetcher):
+    soup = BeautifulSoup(html or "", "html.parser")
+    tag = soup.find("script", id="lx-data")
+    if tag is None:
+        return None
+    try:
+        data = json.loads(tag.string or tag.get_text() or "{}")
+    except ValueError:
+        return None
+    items = data.get("listings") if isinstance(data, dict) else None
+    if not isinstance(items, list):
+        return None
+    out, seen, skipped = [], set(), {}
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        status = str(it.get("status") or "").strip().lower()
+        title = (it.get("title") or "").strip()
+        href = (it.get("href") or "").strip()
+        if not title or not href:
+            continue
+        if status not in LX_DATA_PUBLIC_STATUSES:
+            skipped[status or "-"] = skipped.get(status or "-", 0) + 1
+            continue
+        detail_url = canonical_url(urljoin(url, href))
+        if detail_url in seen:
+            continue
+        seen.add(detail_url)
+        loc = (it.get("loc") or "").strip()
+        state = (str(it.get("st") or "").strip().upper() or None)
+        if state not in US_STATES:
+            state = _state_from_location(loc)
+        city = loc.split(",")[0].strip() if ("," in loc) else None
+        row = _make_api_listing(
+            url, broker_name, title=title, detail_url=detail_url,
+            asking_price=it.get("price"), revenue=it.get("rev"),
+            cash_flow=it.get("profit"), city=city, state=state,
+            description=it.get("text") or title)
+        row["source_listing_id"] = it.get("id")
+        row["status"] = "active"
+        # 11 of 57 live cards say "Asking Not disclosed": the broker's choice,
+        # not a parse failure (same flag as the base44 handler / w14).
+        row["price_not_disclosed"] = (row["asking_price"] is None and "disclosed"
+                                      in str(it.get("priceText") or "").lower())
+        out.append(row)
+    print(f"   🗂  lx-data index: {len(items)} entries, {len(out)} live emitted"
+          + (f"; not emitted: {', '.join(f'{k} {v}' for k, v in sorted(skipped.items()))}"
+             if skipped else ""))
     return out or None
 
 
 # Registry: substring found in page source -> handler(url, html, broker_name, fetcher)
 API_HANDLERS = [
     ("tupelosmb.com", _handler_tupelosmb),
+    ("base44", _handler_base44),
+    ('id="lx-data"', _handler_lx_data),
 ]
 
 
@@ -1941,6 +3831,316 @@ def extract_via_api(url, html, broker_name, fetcher):
 
 
 # ============================================================
+# businessusa.biz — index table with a per-row broker Remarks column
+# ============================================================
+#
+# The index is one paginated table ("Showing 602 of 602 businesses", 15 rows a
+# page): Listing # | Type | County | State | Price | Annual | Remarks. Remarks is
+# the broker's own status: "SOLD" (any case), "Under Contract", or a free note.
+# The generic pattern path read this table as plain cards: every row went in
+# as status='active' (no badge/class for looks_sold to see), the largest dollar
+# figure on the row (Annual sales) was stored as asking_price, and a free-note
+# remark sometimes became the title.
+#
+# Identity (principle 4): the Listing # is the broker's stable reference. The
+# url is rebuilt as https://businessusa.biz/business/<Listing #> — the same
+# string the generic path hashed (broker_sources' bare host; the site echoes
+# whichever host it was requested on, so the www form would otherwise mint a
+# second id for every listing). id = stable_listing_id(...) = sha256(url)[:16],
+# exactly as before. Price and remark are never part of the id.
+#
+# Status (principle 14): SOLD is positive evidence from the broker, sent as an
+# explicit status='sold'. Everything else is sent 'active'; "Under Contract" is
+# carried verbatim in broker_status_text, a free note in broker_note.
+# The phrase set is scrapers/listing_status.py when importable (job 3,
+# decisions 5 + 6: one vocabulary for every writer, principle 15): the
+# under-contract family (Pending, Under LOI, Accepted Offer, Off Market) is
+# active + label, a Coming Soon / For Lease remark is not emitted (counted in
+# the handler's log line). The local regexes below are the fallback.
+try:
+    from listing_status import lookup_status as _ls_lookup, DROP as _LS_DROP
+except Exception:                    # module not present (job 3 not applied)
+    _ls_lookup, _LS_DROP = None, "DROP"
+
+BUSINESSUSA_HOST = "businessusa.biz"
+_BUSINESSUSA_MAX_PAGES = 100
+_BUSINESSUSA_SOLD_RE = re.compile(r"^\W*sold\W*$", re.I)
+_BUSINESSUSA_UC_RE = re.compile(r"^\W*under[\s-]*contract\W*$", re.I)
+_BUSINESSUSA_TOTAL_RE = re.compile(r"Showing\s+(\d[\d,]*)\s+of\s+(\d[\d,]*)", re.I)
+
+
+def businessusa_remark_status(remark):
+    """Map one Remarks cell to (status, broker_status_text, broker_note)."""
+    text = re.sub(r"\s+", " ", (remark or "").replace("\xa0", " ")).strip()
+    if not text:
+        return "active", None, None
+    if _ls_lookup is not None:
+        hit = _ls_lookup(text, BUSINESSUSA_HOST)
+        if hit and hit[1] is not None:       # sold / under-contract family / DROP / inactive
+            return hit[0], hit[1], None
+        return "active", None, text          # plain 'For Sale' or a free note
+    if _BUSINESSUSA_SOLD_RE.match(text):
+        return "sold", text, None
+    if _BUSINESSUSA_UC_RE.match(text):
+        return "active", text, None
+    return "active", None, text
+
+
+def _businessusa_state(*cells):
+    """State column holds 'VA', 'Virginia', 'Washington DC', 'Northern VA';
+    a few rows swap County and State. Try each cell, most specific first."""
+    for raw in cells:
+        t = (raw or "").strip()
+        if not t:
+            continue
+        if re.search(r"\bD\.?C\.?\b|district of columbia", t, re.I):
+            return "DC"
+        if t.upper() in US_STATES:
+            return t.upper()
+        if t.lower() in STATE_NAME_TO_ABBREV:
+            return STATE_NAME_TO_ABBREV[t.lower()]
+        last = t.split()[-1].upper()
+        if len(last) == 2 and last in US_STATES:
+            return last
+    return None
+
+
+def _businessusa_money(text):
+    digits = re.sub(r"[^\d.]", "", text or "")
+    try:
+        return positive_or_none(float(digits)) if digits else None
+    except ValueError:
+        return None
+
+
+def parse_businessusa_rows(html, base_url, broker_name, dropped=None):
+    """Parse one businessusa.biz index page into listing dicts. A row whose
+    remark says Coming Soon / For Lease is not emitted; its remark is
+    appended to `dropped` (if given) so the caller can log the count."""
+    soup = BeautifulSoup(html or "", "html.parser")
+    out = []
+    for table in soup.find_all("table"):
+        heads = [th.get_text(" ", strip=True).lower() for th in table.find_all("th")]
+        if not heads or not any(h.startswith("listing") for h in heads) \
+                or "remarks" not in heads:
+            continue
+        col = {h: i for i, h in enumerate(heads)}
+        i_num = next(i for h, i in col.items() if h.startswith("listing"))
+        for tr in table.find_all("tr"):
+            tds = tr.find_all("td")
+            if len(tds) < len(heads):
+                continue
+
+            def cell(name):
+                i = col.get(name)
+                return tds[i].get_text(" ", strip=True) if i is not None else ""
+
+            num = re.sub(r"\D", "", tds[i_num].get_text(" ", strip=True))
+            if not num:
+                continue
+            biz_type, county, state = cell("type"), cell("county"), cell("state")
+            price, annual = _businessusa_money(cell("price")), _businessusa_money(cell("annual"))
+            remark = re.sub(r"\s+", " ", tds[col["remarks"]].get_text(" ", strip=True)
+                            .replace("\xa0", " ")).strip()
+            status, status_text, note = businessusa_remark_status(remark)
+            if status == _LS_DROP:
+                if dropped is not None:
+                    dropped.append(status_text)
+                continue
+
+            detail_url = f"https://{BUSINESSUSA_HOST}/business/{num}"
+            where = ", ".join(p for p in (f"{county} County" if county else "",
+                                          state) if p)
+            title = f"{biz_type or 'Business'}{' – ' + where if where else ''} (#{num})"
+            desc = f"{biz_type or 'Business'} for sale" + (f" in {where}" if where else "") + "."
+            if price:
+                desc += f" Asking ${price:,.0f}."
+            if annual:
+                desc += f" Annual sales ${annual:,.0f}."
+            if remark:
+                desc += f" Remarks: {remark}"
+            rec = _make_api_listing(
+                base_url, broker_name, title=title, detail_url=detail_url,
+                asking_price=price, revenue=annual,
+                state=_businessusa_state(state, county),
+                description=desc)
+            rec["broker_domain"] = BUSINESSUSA_HOST
+            rec["broker_listing_ref"] = num
+            rec["status"] = status
+            rec["status_source"] = "index_remarks"
+            rec["broker_status_text"] = status_text
+            rec["broker_note"] = note
+            out.append(rec)
+    return out
+
+
+def _handler_businessusa(url, html, broker_name, fetcher):
+    """Walk every index page (?page=N) and parse the Remarks table."""
+    if _bare(urlparse(url).netloc) != BUSINESSUSA_HOST:
+        return None
+    p = urlparse(url)
+    page_base = f"{p.scheme or 'https'}://{p.netloc}{p.path or '/business-for-sale'}"
+    m = _BUSINESSUSA_TOTAL_RE.search(BeautifulSoup(html or "", "html.parser")
+                                     .get_text(" ", strip=True))
+    displayed = int(m.group(2).replace(",", "")) if m else None
+
+    by_ref, dropped = {}, []
+    page_html, page = html, 1
+    while page <= _BUSINESSUSA_MAX_PAGES:
+        rows = parse_businessusa_rows(page_html, url, broker_name, dropped)
+        new = [r for r in rows if r["broker_listing_ref"] not in by_ref]
+        for r in new:
+            by_ref[r["broker_listing_ref"]] = r
+        # dropped rows are still rows the site lists: they count toward its total
+        if not new or (displayed and len(by_ref) + len(dropped) >= displayed):
+            break
+        page += 1
+        try:
+            r = fetcher.session.get(f"{page_base}?page={page}", timeout=REQ_TIMEOUT)
+            if r.status_code != 200:
+                print(f"   ⚠️  businessusa page {page}: HTTP {r.status_code}")
+                break
+            page_html = r.text
+        except Exception as exc:
+            print(f"   ⚠️  businessusa page {page}: {exc}")
+            break
+
+    out = list(by_ref.values())
+    sold = sum(1 for r in out if r["status"] == "sold")
+    print(f"   🗂  businessusa index: {len(out)} rows over {page} page(s), "
+          f"site says {displayed}; sold={sold} active={len(out) - sold}"
+          f"{f'; status DROP (not emitted): {len(dropped)}' if dropped else ''}")
+    if displayed and len(out) + len(dropped) != displayed:
+        print(f"   ⚠️  businessusa: parsed {len(out)} (+{len(dropped)} not emitted) "
+              f"!= displayed {displayed}")
+    return out or None
+
+
+API_HANDLERS.append((BUSINESSUSA_HOST, _handler_businessusa))
+
+
+# ============================================================
+# Astro island props blob — corbettrestaurantgroup.com (2026-11-12)
+# ============================================================
+#
+# /listings is an Astro page whose <astro-island component-url=".../
+# ListingsContainer.*.js" props="..."> carries EVERY listing the site lists
+# (178 on 2026-11-12, "Showing 1 to 30 of 178 listings") as JSON in Astro's
+# serialised form ({"k": [0, value]}, arrays [1, [...]]). The cards are drawn
+# client-side 30 at a time, so the generic path saw page 1 only (6 rows in the
+# DB, URLs like /listings?page=4). The blob is the site's own data: read it as
+# a feed, like the Base44 / Tupelo handlers.
+#
+# Each item has a uuid `id`, a `slug` (the card links /listings/<slug>, which
+# returns 200), title, listing_price / cash_flow / sales, location, and a
+# `status` of active | new_listing | price_reduced | under_agreement |
+# off_market | sold. Status goes through the shared listing_status phrase set
+# (decision 6): sold -> sold; under agreement / off market -> active with the
+# broker's words; new / reduced / active -> active. A type of for_lease is a
+# space for lease, not a business (decision 5): not emitted, counted.
+CORBETT_HOST = "corbettrestaurantgroup.com"
+_ASTRO_LISTINGS_COMPONENT = "ListingsContainer"
+
+
+def _astro_decode(v):
+    """Astro's island prop serialisation -> plain JSON values.
+    [0, x] = value (objects recurse), [1, [...]] = array; other tags
+    (dates, maps, ...) keep their payload."""
+    if isinstance(v, list) and len(v) == 2 and isinstance(v[0], int):
+        tag, x = v
+        if tag == 0:
+            return ({k: _astro_decode(y) for k, y in x.items()}
+                    if isinstance(x, dict) else x)
+        if tag == 1 and isinstance(x, list):
+            return [_astro_decode(y) for y in x]
+        return x
+    if isinstance(v, dict):
+        return {k: _astro_decode(y) for k, y in v.items()}
+    return v
+
+
+def astro_island_props(html, component):
+    """Decoded props of the first <astro-island> whose component-url names
+    `component`, or None."""
+    soup = BeautifulSoup(html or "", "html.parser")
+    for isl in soup.find_all("astro-island"):
+        if component not in (isl.get("component-url") or ""):
+            continue
+        try:
+            raw = json.loads(isl.get("props") or "{}")
+        except ValueError:
+            return None
+        return {k: _astro_decode(v) for k, v in raw.items()}
+    return None
+
+
+def parse_corbett_props(html, base_url, broker_name, dropped=None):
+    props = astro_island_props(html, _ASTRO_LISTINGS_COMPONENT) or {}
+    items = props.get("allListings")
+    if not isinstance(items, list):
+        return None
+    p = urlparse(base_url)
+    root = f"{p.scheme or 'https'}://{p.netloc}"
+    out, seen = [], set()
+    for it in items:
+        if not isinstance(it, dict) or it.get("deleted_at"):
+            continue
+        slug, title = (it.get("slug") or "").strip(), (it.get("title") or "").strip()
+        if not slug or not title or slug in seen:
+            continue
+        seen.add(slug)
+        if (it.get("type") or "").strip().lower() == "for_lease":
+            if dropped is not None:
+                dropped.append("For Lease (type)")
+            continue
+        raw_status = (it.get("status") or "").replace("_", " ").strip().title()
+        hit = _ls_lookup(raw_status, CORBETT_HOST) if (_ls_lookup and raw_status) else None
+        status, status_text = (hit if hit else ("active", None))
+        if status == _LS_DROP:
+            if dropped is not None:
+                dropped.append(status_text or raw_status)
+            continue
+        loc = (it.get("location") or "").strip()
+        city = it.get("city") or None
+        state = (it.get("state") or "").strip().upper() or None
+        if state not in US_STATES:
+            state = _state_from_location(loc)
+        desc = re.sub(r"\s+", " ", BeautifulSoup(it.get("content") or "", "html.parser")
+                      .get_text(" ", strip=True))
+        rec = _make_api_listing(
+            base_url, broker_name, title=title,
+            detail_url=f"{root}/listings/{slug}",
+            asking_price=it.get("listing_price"), cash_flow=it.get("cash_flow"),
+            revenue=it.get("sales"), city=city, state=state,
+            description=(f"{loc}. " if loc else "") + desc)
+        rec["broker_listing_ref"] = str(it.get("id") or "") or None
+        rec["status"] = status
+        rec["status_source"] = "index_feed"
+        rec["broker_status_text"] = status_text
+        out.append(rec)
+    return out
+
+
+def _handler_corbett(url, html, broker_name, fetcher):
+    if _bare(urlparse(url).netloc) != CORBETT_HOST:
+        return None
+    dropped = []
+    out = parse_corbett_props(html, url, broker_name, dropped)
+    if out is None:
+        print("   ⚠️  corbett: no ListingsContainer props on the page - generic path")
+        return None
+    sold = sum(1 for r in out if r["status"] == "sold")
+    print(f"   🗂  corbett props blob: {len(out)} rows; sold={sold} "
+          f"active={len(out) - sold}"
+          + (f"; not emitted: {len(dropped)} ({', '.join(sorted(set(dropped)))})"
+             if dropped else ""))
+    return out or None
+
+
+API_HANDLERS.append((CORBETT_HOST, _handler_corbett))
+
+
+# ============================================================
 # PAGE FETCHER (with proxy support)
 # ============================================================
 
@@ -1955,13 +4155,19 @@ class PageFetcher:
         self.browser_proxy = None   # with proxy
         # Domains that 403'd once — subsequent pages go straight to the proxy.
         self._proxy_domains_runtime = set()
+        # Domains whose server reset the HTTP/2 stream (curl 92) on the
+        # default fingerprint and then served the fallback-family one —
+        # later pages of the run go straight to RESET_FALLBACK_IMPERSONATE.
+        self._reset_fallback_domains = set()
+        self.stats = {"h2_reset_fallback": 0, "h2_reset_fallback_ok": 0}
 
     @staticmethod
     def _new_session():
-        """A curl_cffi session impersonating a current Chrome (chrome131).
-        chrome124 went stale ~6/30/2026 and started drawing Akamai 403s."""
+        """A curl_cffi session impersonating IMPERSONATE (default chrome145,
+        DL_IMPERSONATE overrides). chrome124 went stale ~6/30/2026 (Akamai
+        403s); chrome131 ~11/2026 (laundromat-broker.com curl 92)."""
         if HAS_CURL_CFFI:
-            return cffi_requests.Session(impersonate="chrome131")
+            return cffi_requests.Session(impersonate=IMPERSONATE)
         return requests.Session()
 
     def _proxy_dict(self):
@@ -2041,6 +4247,34 @@ class PageFetcher:
         resp.raise_for_status()
         return resp.text
 
+    # Fingerprint for the one-shot retry after an HTTP/2 stream reset.
+    # laundromat-broker.com (nginx) resets every request whose User-Agent says
+    # Chrome < 137 — curl 92 over HTTP/2, curl 56 over HTTP/1.1, plain curl
+    # too — so retrying the same fingerprint over HTTP/1.1 does not help; a
+    # different one does (verified 2026-11-11). With the default now chrome145
+    # the retry goes to the NEXT family (Safari 26), so it still has somewhere
+    # to go when a server starts rejecting the current Chrome.
+    RESET_FALLBACK_IMPERSONATE = _reset_fallback_for(IMPERSONATE)
+
+    @staticmethod
+    def _is_h2_stream_reset(exc):
+        """curl error 92 (HTTP/2 stream reset by server, e.g. PROTOCOL_ERROR)."""
+        if getattr(exc, "code", None) == 92:
+            return True
+        msg = str(exc)
+        return "PROTOCOL_ERROR" in msg or "HTTP/2 stream" in msg
+
+    def _get(self, url, use_proxy, timeout, tls_kw, impersonate=None):
+        kw = dict(tls_kw)
+        if impersonate:
+            kw["impersonate"] = impersonate
+        return self.session.get(
+            url, headers=self._headers(), timeout=timeout,
+            allow_redirects=True,
+            proxies=self._proxy_dict() if use_proxy else None,
+            **kw,
+        )
+
     def _fetch_http(self, url, use_proxy=False, timeout=REQ_TIMEOUT):
         """
         GET with anti-block handling: on 403/429/503, escalate to the proxy
@@ -2053,22 +4287,46 @@ class PageFetcher:
         if domain in self._proxy_domains_runtime:
             use_proxy = True
         tls_kw = {"verify": False} if _bare(domain) in INSECURE_TLS_DOMAINS else {}
+        # Per-domain pin (regression narrowing); None = session default.
+        pin = IMPERSONATE_DOMAIN_OVERRIDES.get(_bare(domain)) if HAS_CURL_CFFI else None
+        fb_target = _reset_fallback_for(pin) if pin else self.RESET_FALLBACK_IMPERSONATE
+        fb_imp = (fb_target
+                  if HAS_CURL_CFFI and domain in self._reset_fallback_domains else None)
+        reset_retried = False
         resp = None
         for attempt in range(MAX_403_RETRIES + 1):
+            resp = None
             try:
-                resp = self.session.get(
-                    url, headers=self._headers(), timeout=timeout,
-                    allow_redirects=True,
-                    proxies=self._proxy_dict() if use_proxy else None,
-                    **tls_kw,
-                )
-            except Exception:
-                # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
-                if attempt < MAX_403_RETRIES:
-                    time.sleep(BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5))
-                    self._rewarm(url, use_proxy)
-                    continue
-                raise
+                resp = self._get(url, use_proxy, timeout, tls_kw,
+                                 impersonate=fb_imp or pin)
+            except Exception as e:
+                # HTTP/2 stream reset: retry ONCE, same proxy setting, with the
+                # next fingerprint family. If that also fails, fall through
+                # with the ORIGINAL exception so the failure keeps its shape
+                # (FETCH_ERROR) — the retry must never hide a real failure.
+                if (HAS_CURL_CFFI and not reset_retried and fb_imp is None
+                        and self._is_h2_stream_reset(e)):
+                    reset_retried = True
+                    self.stats["h2_reset_fallback"] += 1
+                    print(f"   ↻ HTTP/2 PROTOCOL_ERROR on {domain}, retrying once "
+                          f"as {fb_target}")
+                    try:
+                        resp = self._get(url, use_proxy, timeout, tls_kw,
+                                         impersonate=fb_target)
+                    except Exception as e2:
+                        print(f"   ↻ fallback failed on {domain}: {str(e2)[:120]}")
+                        resp = None
+                    if resp is not None:
+                        self.stats["h2_reset_fallback_ok"] += 1
+                        self._reset_fallback_domains.add(domain)
+                        fb_imp = fb_target
+                if resp is None:
+                    # Dead proxy IP / timeout — re-warm onto a fresh IP and retry.
+                    if attempt < MAX_403_RETRIES:
+                        time.sleep(BACKOFF_BASE * (2 ** attempt) + random.uniform(0, 1.5))
+                        self._rewarm(url, use_proxy)
+                        continue
+                    raise e
 
             if resp.status_code == 200:
                 return resp.text
@@ -2105,9 +4363,41 @@ class PageFetcher:
             except Exception:
                 pass
             # Scroll to trigger lazy-loaded / infinite-scroll listing cards.
-            for _ in range(4):
+            # Keep scrolling to the bottom until the page stops growing:
+            # four fixed wheel scrolls stopped restaurantrealty.com's
+            # infinite-scroll widget (12 cards per fetch) at 55-114 of 124
+            # listings, and nothing said so. Never fewer rounds than the old
+            # fixed four; a cap reached while still growing is logged.
+            prev_h, stable = None, 0
+            self.last_scroll_growth = 0
+            for i in range(SCROLL_MAX_ROUNDS):
                 page.mouse.wheel(0, 4000)
+                try:
+                    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                except Exception:
+                    pass
                 page.wait_for_timeout(1200)
+                try:
+                    h = page.evaluate("document.body.scrollHeight")
+                except Exception:
+                    h = None
+                if h is not None and h == prev_h:
+                    stable += 1
+                    if stable >= 2 and i >= 3:
+                        break
+                    # A slow (proxied) XHR may not have landed yet.
+                    try:
+                        page.wait_for_load_state("networkidle", timeout=3000)
+                    except Exception:
+                        pass
+                else:
+                    if prev_h is not None and h is not None:
+                        self.last_scroll_growth += 1
+                    stable = 0
+                prev_h = h
+            else:
+                print(f"   ⚠️  infinite scroll still growing after "
+                      f"{SCROLL_MAX_ROUNDS} rounds - page may be truncated")
             page.wait_for_timeout(1500)
             return page.content()
         finally:
@@ -2197,21 +4487,32 @@ class PaginationHandler:
         return re.sub(r"\s+", " ", (s or "").replace("\xa0", " ")).strip().lower()
 
     @classmethod
-    def find_next_page(cls, soup, current_url):
+    def find_next_page(cls, soup, current_url, exclude=None):
+        """`exclude`: URLs that cannot be the next page - the detail URLs of
+        this page's own cards. A card's "›" / ">" arrow link matched the
+        bare-arrow text rule and sent the crawl to a listing's detail page as
+        "page 2" (crossroadsbusiness.com, listings.kingsleybrokers.com,
+        2026-11-12); such a match is skipped and the search goes on."""
+        exclude = {canonical_url(u) for u in (exclude or ()) if u}
+
+        def ok(href):
+            return canonical_url(urljoin(current_url, href)) not in exclude
+
         for sel in ["a.next", "a.next-page", "a[rel='next']", "li.next a",
                     "a.pagination-next", "a[aria-label='Next']",
                     "li.pager__item--next a", "a.page-numbers.next",
                     ".pagination a.active + a"]:
             try:
                 el = soup.select_one(sel)
-                if el and el.get("href") and not el["href"].startswith(("#", "javascript")):
+                if (el and el.get("href") and not el["href"].startswith(("#", "javascript"))
+                        and ok(el["href"])):
                     return urljoin(current_url, el["href"])
             except Exception:
                 pass
 
         for a in soup.find_all("a", href=True):
             href = a["href"]
-            if href.startswith(("#", "javascript")):
+            if href.startswith(("#", "javascript")) or not ok(href):
                 continue
             label = cls._norm_text(a.get("aria-label") or a.get("title"))
             if label in ("next", "next page", "go to next page"):
@@ -2219,6 +4520,57 @@ class PaginationHandler:
             if cls._norm_text(a.get_text(" ", strip=True)) in cls._NEXT_TEXTS:
                 return urljoin(current_url, href)
         return None
+
+    @classmethod
+    def find_numbered_page(cls, soup, current_url, next_num):
+        """The page's own link to page `next_num`, for pagers with numbered
+        links and no "next" (Toolset Views ?wpv_view_count=..&wpv_paged=N,
+        2026-11-12: v-aidgroup.com). Principle 9: the pager says what its
+        URLs are, so read them instead of guessing ?page=N.
+
+        An <a> counts when its text (or data-page) is exactly the number, it
+        stays on the same host, and the number appears in its URL as a query
+        value or a whole path segment - so a "2" in a menu or a phone number
+        never qualifies. None when there is no such link."""
+        want = str(next_num)
+        host = _bare(urlparse(current_url).netloc)
+        cur = urlparse(current_url)
+        for a in soup.find_all("a", href=True):
+            href = (a.get("href") or "").strip()
+            if not href or href.startswith(("#", "javascript", "mailto:", "tel:")):
+                continue
+            txt = cls._norm_text(a.get_text(" ", strip=True))
+            if txt != want and (a.get("data-page") or "").strip() != want:
+                continue
+            full = urljoin(current_url, href)
+            pu = urlparse(full)
+            if _bare(pu.netloc) != host:
+                continue
+            if (pu.path, pu.query) == (cur.path, cur.query):
+                continue
+            in_query = any(want in vals for vals in parse_qs(pu.query).values())
+            in_path = want in [seg for seg in pu.path.split("/") if seg]
+            if in_query or in_path or cls._in_pager(a):
+                return full
+        return None
+
+    _PAGER_HINT = re.compile(r"paginat|pager|page-numbers", re.I)
+
+    @classmethod
+    def _in_pager(cls, a, depth=4):
+        """The link sits inside the page's own pager: an ancestor (within
+        `depth` levels) whose class or aria-label says pagination. Covers
+        offset pagers whose URL carries the offset, not the page number
+        (krbrokers.com: "2" -> ?limitstart=10)."""
+        el = a
+        for _ in range(depth):
+            el = el.parent
+            if el is None or el.name in ("body", "html", "[document]"):
+                return False
+            hint = " ".join(el.get("class") or []) + " " + (el.get("aria-label") or "")
+            if cls._PAGER_HINT.search(hint):
+                return True
+        return False
 
     # Per-broker override, from broker_sources.pagination_mode /
     # pagination_param (or --pagination MODE[:PARAM] on a --broker test):
@@ -2301,6 +4653,32 @@ class PaginationHandler:
 # SUPABASE WRITER
 # ============================================================
 
+# One rule, shared with run_specialized.py, for "the broker explicitly withholds
+# the price" -> listings_direct.price_not_disclosed / broker_price_text.
+from price_disclosure import (
+    DisclosureColumns, disclosure_fields, find_labelled_withheld_price,
+    flagged_without_phrase, group_by_keys, is_missing_disclosure_column,
+    strip_disclosure,
+)
+
+# The broker's verbatim status label (decision 6) -> broker_status_text, with
+# broker_status_seen_at. Same optional-column mechanism as the disclosure
+# fields (optional_columns.py), shared with run_specialized.py (principle 15).
+from optional_columns import missing_group, new_status_label_columns, status_label_fields
+
+# price_not_disclosed / broker_price_text may not exist yet (w14 migration);
+# broker_status_text / broker_status_seen_at may not (j3 migration).
+# Module-level, not set in __init__, so a writer built without __init__ (tests
+# with a fake client) still works; remembered per process so we log once.
+_DISCLOSURE = DisclosureColumns()
+_STATUS_LABEL = new_status_label_columns()
+
+
+def _optional_groups():
+    """Looked up at call time (tests rebind the module globals)."""
+    return (_DISCLOSURE, _STATUS_LABEL)
+
+
 class SupabaseWriter:
 
     def __init__(self):
@@ -2311,6 +4689,26 @@ class SupabaseWriter:
         if not HAS_SUPABASE:
             raise RuntimeError("pip3 install supabase")
         self.client = create_client(url, key)
+
+    def _upsert_batch(self, batch: list[dict]) -> None:
+        """One PostgREST upsert. If it fails ONLY because an optional column
+        group (disclosure, status label) doesn't exist yet, strip that group,
+        note it, and retry — at most once per group. The response is read, the
+        drop is counted (principle 17)."""
+        groups = _optional_groups()
+        for g in groups:
+            g.strip_if_missing(batch)
+        while True:
+            try:
+                self.client.table("listings_direct").upsert(
+                    batch, on_conflict="id", ignore_duplicates=False
+                ).execute()
+                return
+            except Exception as exc:
+                g = missing_group(exc, groups)
+                if g is None:
+                    raise
+                g.note_missing(print, g.strip(batch))
 
     def upsert(self, listings: list[dict]) -> int:
         """
@@ -2335,6 +4733,16 @@ class SupabaseWriter:
         now = datetime.now(timezone.utc).isoformat()
         rows = []
         for l in listings:
+            # Sent only with evidence: a price (-> false) or the broker's
+            # explicit phrase (-> true + verbatim). Neither -> not sent, so an
+            # existing row keeps its value and a new row gets the default.
+            disclosure = disclosure_fields(l)
+            if flagged_without_phrase(l):
+                _DISCLOSURE.flag_no_phrase += 1
+            # Same rule for the broker's status label: sent only when the row
+            # carries one, so a row without a label never nulls a stored one
+            # (principle 14).
+            label = status_label_fields(l, now)
             rows.append({
                 "id":            l["id"],
                 "title":         (l.get("title") or "")[:500],
@@ -2357,6 +4765,8 @@ class SupabaseWriter:
                 "last_seen":     now,
                 "updated_at":    now,
                 "created_at":    l.get("first_seen", now),
+                **(disclosure or {}),
+                **(label or {}),
             })
 
         # Postgres refuses an INSERT ... ON CONFLICT batch that contains the
@@ -2376,13 +4786,16 @@ class SupabaseWriter:
             print(f"   ⓘ  collapsed {dropped} duplicate ids before upsert")
         rows = list(deduped.values())
 
+        # PostgREST needs uniform keys per POST: rows with and without the
+        # optional fields (disclosure, status label) are written as separate
+        # batches.
+        batches = [g[i:i + 100] for g in group_by_keys(rows)
+                   for i in range(0, len(g), 100)]
+
         written = 0
-        for i in range(0, len(rows), 100):
-            batch = rows[i:i + 100]
+        for batch in batches:
             try:
-                self.client.table("listings_direct").upsert(
-                    batch, on_conflict="id", ignore_duplicates=False
-                ).execute()
+                self._upsert_batch(batch)
                 written += len(batch)
             except Exception as exc:
                 # One bad row must not cost the other 99. Retry singly so the
@@ -2390,14 +4803,18 @@ class SupabaseWriter:
                 print(f"   ⚠️  batch upsert failed ({exc}); retrying rows individually")
                 for row in batch:
                     try:
-                        self.client.table("listings_direct").upsert(
-                            [row], on_conflict="id", ignore_duplicates=False
-                        ).execute()
+                        self._upsert_batch([row])
                         written += 1
                     except Exception as row_exc:
                         print(f"      row {row.get('id')} "
                               f"({(row.get('title') or '')[:50]}): {row_exc}")
             time.sleep(0.1)
+        for g in _optional_groups():
+            if g.summary():
+                print(f"   ⓘ  {g.summary()}")
+        if _DISCLOSURE.flag_no_phrase:
+            print(f"   ⓘ  {_DISCLOSURE.flag_no_phrase} row(s) so far flagged "
+                  f"price_not_disclosed by the scraper with no broker phrase - not written")
         return written
 
 
@@ -2542,7 +4959,7 @@ class DealLedgerScraper:
                     # Never let failure logging take down a listings run.
                     print(f"⚠️  crawl_failures unavailable: {e} — failures.json only")
 
-        fp = "chrome131 (curl_cffi)" if HAS_CURL_CFFI else "plain requests"
+        fp = fingerprint_banner()
         if PROXY_AVAILABLE:
             print(f"🔀 Proxy enabled — DataImpulse US sticky; escalate on 403. Fingerprint: {fp}")
         else:
@@ -2562,6 +4979,10 @@ class DealLedgerScraper:
             "patterns_learned":  0,
             "verticals":         Counter(),
             "failure_types":     Counter(),
+            # one entry per broker whose cached pattern extracted 0 cards
+            # (STALE_CACHE) or that fell back to the www/bare twin's entry;
+            # lands in summary.json so a dead cache entry is never silent
+            "pattern_cache_events": [],
         }
         self.all_listings: list[dict] = []
         self.failures:     list[dict] = []
@@ -2986,31 +5407,64 @@ class DealLedgerScraper:
         Note stats['brokers_failed'] is ALSO wrong for this: the two gate
         rejections append to self.failures but never increment it.
         """
-        run_id = start_run("v6", broker.get("domain"))
+        # A --broker test run (Supabase disabled) must not write crawl_run
+        # either. start_run() only checks for a service key, which is in .env
+        # and the shell, so until 2026-11-11 every "no-write" --broker test
+        # opened and closed a production crawl_run row (principle 16).
+        # supabase_writer is None exactly when listings are not being written.
+        log_runs = self.supabase_writer is not None
+        run_id = start_run("v6", broker.get("domain")) if log_runs else None
         failures_before = len(self.failures)
+        # Displayed count (2026-11-11): _scrape_broker_inner feeds every index
+        # page it fetches into this tracker; see scrapers/displayed_count.py.
+        self._displayed = DisplayedCountTracker()
         try:
             listings = self._scrape_broker_inner(broker)
         except Exception as e:                       # inner shouldn't raise, but
             finish_run(run_id, "failed", error=str(e))
             raise
 
+        # seen = one more plausibility signal for a weak stated count (j3-polish)
+        dc = self._displayed.result(seen=len(listings)) or {}
+        dc_kw = {"displayed_count": dc.get("count"),
+                 "displayed_source": dc.get("source"),
+                 "displayed_note": "; ".join(x for x in (
+                     dc.get("text") and f"matched: {dc['text']}", dc.get("note")) if x) or None}
+        if dc:
+            print(f"   📏 broker displays {dc['count']} ({dc['source']}"
+                  + (f": '{dc['text']}'" if dc.get("text") else "")
+                  + f") vs {len(listings)} seen -> {verdict_label(len(listings), dc['count'])}"
+                  + (f"\n      [{dc['note'][:300]}]" if dc.get("note") else ""))
+        else:
+            print(f"   📏 no displayed count found -> {verdict_label(len(listings), None)}")
+
         if len(self.failures) > failures_before:
             ftype = self.failures[-1].get("type", "UNKNOWN")
-            finish_run(run_id, "failed", error=ftype)
+            finish_run(run_id, "failed", error=ftype, **dc_kw)
         elif listings:
-            finish_run(run_id, "ok", len(listings), len(listings))
+            finish_run(run_id, "ok", len(listings), len(listings), **dc_kw)
         else:
             # 'empty' is not an allowed status (crawl_run_status_check:
             # running/ok/failed/partial/backfill). The PATCH was rejected and
             # the row stayed 'running' forever. Zero listings is not a
             # coverage window, so it closes as failed.
-            finish_run(run_id, "failed", 0, 0, error="EMPTY")
+            finish_run(run_id, "failed", 0, 0, error="EMPTY", **dc_kw)
         return listings
+
+    def _dc_page(self, page_html: str, count: bool = True) -> None:
+        """Feed one index page to the displayed-count tracker. Never raises."""
+        t = getattr(self, "_displayed", None)
+        if t is not None:
+            t.add_page(page_html, count=count)
 
     def _scrape_broker_inner(self, broker: dict) -> list[dict]:
         name      = broker["name"]
         url       = broker["url"]
-        domain    = broker["domain"]
+        # Pattern cache + proxy are keyed on the canonical host, so the bare
+        # and www spellings of one site share one learned pattern
+        # (calhouncompanies.com's bare key held a stale div.block selector
+        # that matched one card per page).
+        domain    = canonical_host(broker["domain"])
         use_proxy = _needs_proxy(domain)
         t_start = time.monotonic()
 
@@ -3038,6 +5492,7 @@ class DealLedgerScraper:
                 return []
 
             print(f"   ✅ Fetched ({method}, {len(html):,} bytes)")
+            self._dc_page(html, count=False)  # stated count only; loop counts cards
 
             # ── API handler (JS sites with a JSON feed) ───────────────────
             # If this is a known JS platform, pull listings straight from its
@@ -3048,12 +5503,37 @@ class DealLedgerScraper:
                 p  = sum(1 for l in api_listings if l.get("asking_price"))
                 st = sum(1 for l in api_listings if l.get("state"))
                 print(f"   💰 price={p}  state={st}/{len(api_listings)}")
+                syn = assign_synthetic_urls(api_listings, url)
+                if syn["synthetic"]:
+                    print(f"   #️⃣  synthetic URLs: {syn['synthetic']} "
+                          f"(slug collisions left {syn['unresolved_collisions']})")
                 self.stats["brokers_success"] += 1
                 self.stats["detail_pages_fetched"] += 0
                 return api_listings
 
             # ── Pattern detection ─────────────────────────────────────────
-            cached = self.pattern_cache.get(domain)
+            forced_card = card_selector_override(domain)
+            cached = ({"container_selector": forced_card} if forced_card
+                      else self.pattern_cache.get(domain))
+            # A cached pattern is a shortcut past detection, so a dead one
+            # (the site was rebuilt) used to fail as NO_PATTERN every night
+            # with detection and the Playwright re-detect never running
+            # (ninbb.com, momentumprojects.com, districtbusinessbrokers.com).
+            # The nightly job never commits pattern_cache.json, so this has to
+            # heal inside the run: a cached selector that extracts 0 cards
+            # from page 1 is dropped for this run and detection runs as if
+            # nothing were cached.
+            stale_sel = None
+            if (cached and not forced_card
+                    and not pattern_card_count(html, url, cached["container_selector"],
+                                               name, stop_at=1)):
+                stale_sel = cached["container_selector"]
+                print(f"   ♻️  STALE_CACHE: cached pattern {stale_sel} extracts 0 cards "
+                      f"from this page - ignoring it, re-detecting")
+                self.stats["pattern_cache_events"].append(
+                    {"broker": name, "domain": domain, "event": "stale_cache",
+                     "selector": stale_sel})
+                cached = None
             if cached:
                 pattern = cached
                 print(f"   📦 Cached pattern: {pattern['container_selector']}")
@@ -3079,8 +5559,9 @@ class DealLedgerScraper:
                             html, method, pattern = pw_html, "playwright", pw_pattern
                             print(f"   🎭 Playwright escalation recovered a pattern "
                                   f"({len(pw_html):,} bytes)")
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        print(f"   ⚠️  Playwright re-detect failed: "
+                              f"{type(e).__name__}: {str(e)[:120]}")
 
                 # ── iframe unwrap ─────────────────────────────────────────
                 # Still no pattern? The listings may live inside an <iframe>
@@ -3161,26 +5642,95 @@ class DealLedgerScraper:
                                 {"broker": name, "url": broker["url"],
                                  "iframe": ifr_url, "provider": "feed"})
 
-                if pattern:
-                    predicted = self.pattern_cache.predict(html, url)
-                    if (predicted and predicted.get("score", 0) > pattern.get("score", 0)
-                            and not _is_nav_selector(predicted.get("container_selector", ""))):
+                # Last resort before NO_PATTERN: an entry learned under the
+                # www / bare twin of this host (patriotbusinessadvisors.com's
+                # working selector sits under www.; the nightly crawls the
+                # bare host). Only used if it extracts cards from this page.
+                alt_used = False
+                if not pattern:
+                    alt = self.pattern_cache.other_spelling(domain)
+                    if alt and alt.get("container_selector") != stale_sel:
+                        for cand_html in (html, rendered_html):
+                            if cand_html and pattern_card_count(
+                                    cand_html, url, alt["container_selector"], name, stop_at=1):
+                                pattern, html, alt_used = alt, cand_html, True
+                                print(f"   📦 Cached pattern (www/bare twin): "
+                                      f"{alt['container_selector']}")
+                                self.stats["pattern_cache_events"].append(
+                                    {"broker": name, "domain": domain, "event": "twin_spelling",
+                                     "selector": alt["container_selector"]})
+                                break
+
+                if pattern and alt_used:
+                    self.pattern_cache.store(domain, pattern)
+                elif pattern:
+                    # Re-detecting after a dead cache entry: this broker's own
+                    # page only. Another broker's generic selector is the
+                    # weakest evidence there is (proformapartners.com healed
+                    # to div[class*="elementor"] and wrote webinar links).
+                    predicted = (None if stale_sel
+                                 else self.pattern_cache.predict(html, url))
+                    if predicted_beats_detected(predicted, pattern, html, url, name):
                         pattern = predicted
                         print(f"   🧠 ML predicted: {pattern['container_selector']}")
                     else:
                         print(f"   🔎 Detected: {pattern['container_selector']} "
                               f"({pattern['count']} elements)")
-                    self.pattern_cache.store(domain, pattern)
+                    exposed = pattern.pop("_exposed_by_yield_guard", False)
+                    bad = (healed_pattern_problem(html, url, pattern["container_selector"], name)
+                           if (stale_sel or exposed) else None)
+                    if bad:
+                        # A broker whose cached pattern died, or whose detected
+                        # pattern only surfaces because the yield guard dropped
+                        # the prediction that hid it, has no history for the
+                        # new guess; it has to look like a listing grid before
+                        # it writes anything (businessadvisors.us re-detected 1
+                        # "Business Valuation Calculator" card,
+                        # ccbusinessbrokers.com 7 cards on one NDA link,
+                        # laundrybuyers.com two "Listings" nav cards).
+                        why = (f"cached {stale_sel} is dead" if stale_sel
+                               else "ML prediction rejected")
+                        print(f"   ⚠️  NO_PATTERN ({why}; re-detected "
+                              f"{pattern['container_selector'][:80]} rejected: {bad})")
+                        if stale_sel:
+                            self.stats["pattern_cache_events"][-1]["rejected"] = \
+                                f"{pattern['container_selector']}: {bad}"
+                        self.failures.append({"broker": name, "url": url,
+                                              "error": f"{why}; detected pattern rejected: {bad}",
+                                              "type": "NO_PATTERN",
+                                              **({"stale_cache": stale_sel} if stale_sel else {}),
+                                              "html_size": len(html)})
+                        self.stats["brokers_failed"] += 1
+                        self.stats["failure_types"]["NO_PATTERN"] += 1
+                        return []
+                    if stale_sel:
+                        self.pattern_cache.replace(domain, pattern)
+                        print(f"   ♻️  STALE_CACHE healed: {stale_sel} → "
+                              f"{pattern['container_selector']}")
+                        self.stats["pattern_cache_events"][-1]["healed_to"] = \
+                            pattern["container_selector"]
+                    else:
+                        self.pattern_cache.store(domain, pattern)
                     self.stats["patterns_learned"] += 1
                 else:
-                    print(f"   ⚠️  NO_PATTERN")
+                    print(f"   ⚠️  NO_PATTERN"
+                          + (f" (cached {stale_sel} is dead, re-detect found nothing)"
+                             if stale_sel else ""))
                     self.failures.append({"broker": name, "url": url,
                                           "error": "No listing pattern detected",
                                           "type": "NO_PATTERN",
+                                          **({"stale_cache": stale_sel} if stale_sel else {}),
                                           "html_size": len(html)})
                     self.stats["brokers_failed"] += 1
                     self.stats["failure_types"]["NO_PATTERN"] += 1
                     return []
+
+            # Striped tables: read both row classes, not just the one cached.
+            _sel = pattern["container_selector"]
+            _wide = widen_striped_rows(html, _sel, url)
+            if _wide != _sel:
+                print(f"   🦓 striped rows: {_sel} → {_wide}")
+                pattern = dict(pattern, container_selector=_wide)
 
             # ── Phase 1: extract cards from all list pages ────────────────
             # Follows explicit next-links; when a site has none (numbered / JS
@@ -3188,6 +5738,7 @@ class DealLedgerScraper:
             # ?offset= URLs, locks onto whichever template yields new cards, and
             # stops when a page adds nothing new or repeats page 1.
             unique_cards: list[dict] = []
+            ListingExtractor.status_drops = []   # Coming Soon / For Lease cards, this broker
             seen_ids: set[str] = set()
             first_page_ids: set[str] = set()
             page_size = 0
@@ -3208,12 +5759,17 @@ class DealLedgerScraper:
                 print(f"   🔧 pagination override: {forced[0]}"
                       + (f" ({forced[1]})" if forced[1] else ""))
 
+            wrapper_log = WrapperSkipLog()   # printed once, after the page loop
+
             def _cards_from(html_text, page_url):
                 soup = BeautifulSoup(html_text, "html.parser")
                 try:
                     els = soup.select(pattern["container_selector"])
                 except Exception:
                     els = []
+                els, n_wrappers = drop_wrapper_matches(
+                    els, lambda e: ListingExtractor.from_card(e, page_url, name) is not None)
+                wrapper_log.add(n_wrappers)
                 out = []
                 for el in els:
                     c = ListingExtractor.from_card(el, page_url, name)
@@ -3221,7 +5777,16 @@ class DealLedgerScraper:
                         out.append(c)
                 return soup, out
 
+            def _card_key(c):
+                d = c.get("_detail_url")
+                if d and c.get("url_is_listing_specific", True) and d != url:
+                    return ("u", d)
+                return ("t", (c.get("title") or "")[:80])
+
             MAX_CARDS_PER_BROKER = 2500
+            visited = set()         # index URLs already fetched (pager loop guard)
+            via_pager = False       # this page came from the site's own pager link
+            stalls, stalled = 0, None
 
             while page_num <= max_pages:
                 if over_budget():
@@ -3244,6 +5809,7 @@ class DealLedgerScraper:
                         stop_reason = f"fetch_error p{page_num}: {type(e).__name__}"
                         break
 
+                visited.add(canonical_url(current_url))
                 soup, page_cards = _cards_from(cur_html, current_url)
                 if not page_cards:
                     stop_reason = f"no_cards p{page_num}"
@@ -3255,38 +5821,74 @@ class DealLedgerScraper:
                 # page URL - quietlight.com returned the same 227 cards on all
                 # 50 pages and every one counted as new, producing 11,440 rows
                 # for ~300 real listings. Titles are what actually repeat.
-                page_sig = hash(frozenset(
-                    (c.get("title") or "")[:80] for c in page_cards
-                ))
+                # A card's content key is its own detail URL when it has one,
+                # else its title: on a site whose cards all carry the same
+                # CTA text ("Full Listing") every page had the same title
+                # set, so page 2 always "repeated" page 1 (therouteexchange.com,
+                # 2026-11-12); a detail URL is what actually repeats.
+                page_sig = hash(frozenset(_card_key(c) for c in page_cards))
                 if page_num == 1:
                     first_page_ids = page_ids
                     first_page_sig = page_sig
                     page_size = len(page_cards)
                     seen_sigs = {page_sig}
                 else:
+                    halt, halt_msg = None, None
                     if page_sig in seen_sigs:
-                        print(f"   ↩︎  page {page_num} repeats earlier content - stopping")
-                        stop_reason = f"repeat_content p{page_num}"
-                        break
+                        halt = f"repeat_content p{page_num}"
+                        halt_msg = f"page {page_num} repeats earlier content"
                     seen_sigs.add(page_sig)
 
-                    if not (page_ids - seen_ids) or page_ids == first_page_ids:
-                        stop_reason = f"no_new_ids p{page_num}"
-                        break  # nothing new / pagination looped back to page 1
+                    if not halt and (not (page_ids - seen_ids) or page_ids == first_page_ids):
+                        halt = f"no_new_ids p{page_num}"  # nothing new / looped to page 1
 
                     # A site that ignores the page parameter serves page 1
                     # forever. Titles repeating is the tell.
-                    prev_titles = {(c.get("title") or "")[:80] for c in unique_cards}
-                    page_titles = {(c.get("title") or "")[:80] for c in page_cards}
-                    if page_titles and len(page_titles - prev_titles) / len(page_titles) < 0.2:
-                        print(f"   ↩︎  page {page_num} is {100 - int(100*len(page_titles - prev_titles)/len(page_titles))}% "
-                              f"repeat titles - stopping")
-                        stop_reason = f"repeat_titles p{page_num}"
-                        break
+                    prev_titles = {_card_key(c) for c in unique_cards}
+                    page_titles = {_card_key(c) for c in page_cards}
+                    if (not halt and page_titles
+                            and len(page_titles - prev_titles) / len(page_titles) < 0.2):
+                        halt = f"repeat_titles p{page_num}"
+                        halt_msg = (f"page {page_num} is "
+                                    f"{100 - int(100*len(page_titles - prev_titles)/len(page_titles))}% "
+                                    f"repeat titles")
+                    if halt:
+                        # A page the site's OWN pager linked to (not a guessed
+                        # URL) that adds nothing is not a loop when it is not
+                        # page 1 again: unionbaygroup.com lists ~32 identical
+                        # "Investment Opportunity" cards (one URL) across pages
+                        # 1-3, and its other 30 listings are on pages 4-6.
+                        # Allow PAGER_STALL_MAX such pages in a row, then stop.
+                        if (via_pager and page_ids != first_page_ids
+                                and stalls < PAGER_STALL_MAX):
+                            stalls += 1
+                            print(f"   …  page {page_num} adds nothing ({halt}) - "
+                                  f"pager offers more, continuing ({stalls}/{PAGER_STALL_MAX})")
+                            stalled = halt
+                        else:
+                            if halt_msg:
+                                print(f"   ↩︎  {halt_msg} - stopping")
+                            stop_reason = halt
+                            break
+                    else:
+                        stalls, stalled = 0, None
 
                 new = [c for c in page_cards if c["id"] not in seen_ids]
+                # A later page whose new cards are ALL sold is a sold archive
+                # (therouteexchange.com pages its "Sold Routes" list only:
+                # pages 2-10 = ~720 sold routes, 0 for sale). Stop rather than
+                # walk it; page 1's sold cards are kept as before.
+                if (page_num > 1 and new
+                        and all(c.get("status") == "sold" for c in new)):
+                    print(f"   🏁 page {page_num}: all {len(new)} new cards are sold "
+                          f"- sold archive, stopping")
+                    stop_reason = f"sold_only p{page_num}"
+                    break
                 unique_cards.extend(new)
                 seen_ids |= page_ids
+                # Displayed count: only pages accepted as new content (a page
+                # that repeats page 1 would double the card count).
+                self._dc_page(cur_html)
                 if page_num > 1:
                     print(f"   📄 Page {page_num}: {len(new)} new cards")
 
@@ -3294,17 +5896,37 @@ class DealLedgerScraper:
                 if override == "none":
                     stop_reason = "override_none"
                     break
-                nxt = None if forced else PaginationHandler.find_next_page(soup, current_url)
+                card_urls = {c.get("_detail_url") for c in page_cards}
+                nxt = None if forced else PaginationHandler.find_next_page(
+                    soup, current_url, exclude=card_urls)
+                if not nxt and not forced:
+                    nxt = PaginationHandler.find_numbered_page(
+                        soup, current_url, page_num + 1)
+                if nxt and canonical_url(nxt) in visited:
+                    stop_reason = stalled or f"pager_loop p{page_num}"
+                    break
                 if nxt:
-                    current_url, template = nxt, None
+                    current_url, template, via_pager = nxt, None, True
                     page_num += 1
                     continue
+                if stalled:                 # a stalled page with no further pager link
+                    stop_reason = stalled
+                    break
+                via_pager = False
                 if template:
                     current_url = PaginationHandler.build_from_template(
                         url, template, page_num + 1, page_size)
                     page_num += 1
                     continue
                 # No explicit next-link and no locked template yet — discover one.
+                # Unless page 1 was an infinite scroll that kept growing past
+                # the old four fixed scrolls: it is already the whole list,
+                # and rendering ~9 guessed ?page= URLs the same way ate most of
+                # the broker budget (restaurantrealty.com, 2026-11-11).
+                if (page_num == 1 and method == "playwright"
+                        and getattr(self.fetcher, "last_scroll_growth", 0) > 4):
+                    stop_reason = "infinite_scroll"
+                    break
                 discovered = False
                 for cand, tmpl in PaginationHandler.candidate_page_urls(
                         url, page_num + 1, page_size):
@@ -3336,6 +5958,27 @@ class DealLedgerScraper:
             print(f"   📋 {len(unique_cards)} cards (reached page {page_num}, "
                   f"stopped: {stop_reason}"
                   + (f", template {template[0]}:{template[1]}" if template else "") + ")")
+            if wrapper_log.summary():
+                print(wrapper_log.summary())
+            sf_drops = _STATUS_FIELD_DROPS.pop(_bare(urlparse(url).netloc), None)
+            if sf_drops:
+                print("   ⓘ  status field: " + ", ".join(
+                    f"{len(v)} '{k}'" for k, v in sorted(sf_drops.items()))
+                      + " not emitted (Coming Soon / For Lease)")
+            # Decision 5, title/badge markers: Coming Soon / For Lease cards
+            # are not emitted - say so.
+            _drops = {t: lab for t, lab in ListingExtractor.status_drops}
+            if _drops:
+                _by = {}
+                for lab in _drops.values():
+                    _by[lab or "?"] = _by.get(lab or "?", 0) + 1
+                print(f"   🚫 status DROP: {len(_drops)} cards not emitted ("
+                      + ", ".join(f"{k}: {v}" for k, v in sorted(_by.items())) + ")")
+            sf_labels = Counter(f"{l.get('status')}:{l['broker_status_text']}"
+                                for l in unique_cards if l.get("broker_status_text"))
+            if sf_labels:
+                print("   🏷️  broker status labels: " + ", ".join(
+                    f"{k} {n}" for k, n in sf_labels.most_common()))
 
             # ── Phase 2: fetch detail pages ───────────────────────────────
             with_detail = [
@@ -3357,6 +6000,7 @@ class DealLedgerScraper:
                         c["description"] = prev_desc
                     if len(prev.get("title") or "") > len(c.get("title") or ""):
                         c["title"] = prev["title"]
+                        restatus_from_title(c)     # status was decided on the card title
                     for f in ("asking_price", "cash_flow", "revenue", "state"):
                         if not c.get(f) and prev.get(f):
                             c[f] = prev[f]
@@ -3398,6 +6042,7 @@ class DealLedgerScraper:
                         detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
                     had_state = bool(listing.get("state"))
                     listing = ListingExtractor.enrich_from_detail(listing, detail_html)
+                    restatus_from_title(listing)   # the detail <h1> may carry "(SOLD)"
                     if fin_map:
                         found = _apply_fin_map(fin_map, detail_html)
                         for f, v in found.items():
@@ -3426,6 +6071,7 @@ class DealLedgerScraper:
             for l in unique_cards:
                 l.pop("_detail_url", None)
                 l.pop("_fin_from_map", None)
+                l.pop("_status_from_field", None)
 
             # Guard: url_is_listing_specific must mean "unique to this
             # listing", not just "differs from the list-page URL". A card
@@ -3528,6 +6174,14 @@ class DealLedgerScraper:
                                       "error": f"yield gate: {yreason}",
                                       "type": "TITLE_REPETITION_REJECT"})
                 return []
+
+            # SYNTHETIC URLS (2026-11-11): cards with no detail link get
+            # <index>#<slug>. Done last so every gate above saw the plain
+            # index URL as before; the id is not changed here.
+            syn = assign_synthetic_urls(unique_cards, url)
+            if syn["synthetic"]:
+                print(f"   #️⃣  synthetic URLs: {syn['synthetic']} "
+                      f"(slug collisions left {syn['unresolved_collisions']})")
 
             return unique_cards
 
@@ -3676,6 +6330,15 @@ class DealLedgerScraper:
                 print(f"  {secs:>5}s  {dom}  ({cnt} listings)")
         print(f"Patterns:  {s['patterns_cached']} cached  "
               f"{s['patterns_learned']} learned")
+        ev = s.get("pattern_cache_events") or []
+        if ev:
+            stale = [e for e in ev if e["event"] == "stale_cache"]
+            dead = [e["domain"] for e in stale if not e.get("healed_to")]
+            print(f"  ♻️  stale cache entries: {len(stale)} "
+                  f"({len(stale) - len(dead)} healed by re-detect"
+                  + (f"; still dead: {', '.join(dead[:10])}" if dead else "") + ")"
+                  + f"; www/bare twin entries used: "
+                  f"{sum(1 for e in ev if e['event'] == 'twin_spelling')}")
         if s.get("verticals"):
             print(f"\nVerticals:")
             for v, cnt in sorted(s["verticals"].items(), key=lambda x: -x[1]):

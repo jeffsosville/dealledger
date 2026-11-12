@@ -28,7 +28,9 @@ import requests as http_requests
 # Add parent dir to path so we can import specialized_scrapers
 sys.path.insert(0, os.path.dirname(__file__))
 import csv as _csv
-from crawl_run_log import start_run, finish_run, expire_stale_runs
+from crawl_run_log import (start_run, finish_run, expire_stale_runs,
+                           record_domain_runs, domain_counts_excluding)
+from displayed_count import parse_stated_count, verdict_label
 from junk_filter import is_junk_title, title_from_slug
 from specialized_scrapers import (
     MurphyScraper, HedgestoneScraper, TransworldScraper,
@@ -37,6 +39,7 @@ from specialized_scrapers import (
     WeSellRestaurantsScraper, VestedScraper, RoutesForSaleScraper,
     WPRestScraper, FacetWPScraper
 )
+from ere_property_scraper import EREPropertyScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -167,6 +170,20 @@ BROKERS = {
                                      {"status": ["for-sale", "new-listing", "under-contract"]},
                                      link_match="/listings/").scrape("3477"),
     },
+    # Reputed Brokerage (2026-11-11): G5 Beyot theme + Essential Real Estate
+    # plugin. The `property` post type is not exposed in WP REST, so this reads
+    # the server-filtered property-status archives: for-sale -> active,
+    # not-available -> inactive, for-lease -> not emitted; a for-sale card the
+    # broker labels Sold/Expired -> sold, Lands/Apartment types not emitted
+    # (owner decision 7, 2026-11-12). Replaces the V6
+    # generic crawl, which also wrote the search form's Min/Max Price dropdowns
+    # as listings (see SPECIALIZED_DOMAINS in dealledger_scraper_v6.py).
+    "reputedbrokerage": {
+        "domain": "reputedbrokerage.com",
+        "account": "reputedbrokerage",
+        "display_name": "Reputed Brokerage",
+        "fn": lambda: EREPropertyScraper("www.reputedbrokerage.com").scrape("reputedbrokerage"),
+    },
 }
 
 
@@ -188,12 +205,25 @@ def _register_wp_rest_brokers():
             key = "wp_" + slug
             account = acct or key
             display = (row.get("display_name") or "").strip() or domain
+            # Live "for sale" page. With it, REST posts that are not on the
+            # page go out as status='inactive' instead of active (a WP post
+            # type keeps every listing ever published — vikingmergers: 411
+            # posts, 62 live). Blank = REST status fields only.
+            index_url = (row.get("index_url") or "").strip() or None
+            # 'drop' only for a broker whose off-index rows are handled by hand
+            # (truforte: quarantined); blank = 'inactive'.
+            off_index = (row.get("off_index") or "").strip() or "inactive"
+            # yes = follow each active post's detail page for price / revenue /
+            # cash flow (synergybb: REST and its FacetWP grid carry none).
+            fetch_fin = (row.get("fetch_financials") or "").strip().lower() in ("yes", "true", "1")
             BROKERS[key] = {
                 "domain": domain.replace("www.", "").lower(),
                 "account": account,
                 "display_name": display,
-                "fn": (lambda d=domain, rb=rest, a=account:
-                       WPRestScraper(d, rb).scrape(a, max_pages=60)),
+                "wp_rest": True,
+                "fn": (lambda d=domain, rb=rest, a=account, iu=index_url, oi=off_index, ff=fetch_fin:
+                       WPRestScraper(d, rb, fetch_financials=ff, index_url=iu,
+                                     off_index=oi).scrape(a, max_pages=60)),
             }
 
 
@@ -339,16 +369,72 @@ def listing_key(url: str, broker_domain: str | None = None) -> str:
 
 
 # ── Supabase upsert ───────────────────────────────────────────────────────────
-def upsert_listings(listings: list[dict], display_name: str | None = None) -> int:
+# One rule, shared with dealledger_scraper_v6.py, for "the broker explicitly
+# withholds the price" -> listings_direct.price_not_disclosed / broker_price_text.
+from price_disclosure import (
+    DisclosureColumns, disclosure_fields, flagged_without_phrase,
+    group_by_keys, is_missing_disclosure_column, strip_disclosure,
+)
+
+# price_not_disclosed / broker_price_text may not exist yet (w14 migration);
+# remembered for the whole process so the fallback is logged once.
+_DISCLOSURE = DisclosureColumns()
+
+# The broker's verbatim status label (decision 6) -> broker_status_text, with
+# broker_status_seen_at. Same optional-column mechanism and the same field
+# builder as dealledger_scraper_v6.SupabaseWriter (principle 15); the columns
+# may not exist yet (j3 migration).
+from optional_columns import missing_group, new_status_label_columns, status_label_fields
+_STATUS_LABEL = new_status_label_columns()
+
+
+def _optional_groups():
+    """Looked up at call time (tests rebind the module globals)."""
+    return (_DISCLOSURE, _STATUS_LABEL)
+
+
+def domain_breakdown(listings: list[dict]) -> dict:
+    """Pure. {broker_domain: n} the way upsert_listings would key the rows
+    (URL required, deduped by listing_key). Rows later dropped for a missing
+    title or a refused write are still counted - dry-run estimate only."""
+    seen, out = set(), {}
+    for l in listings or []:
+        url = l.get("listing_url") or l.get("url") or ""
+        if not url:
+            continue
+        d = derive_broker_domain(url)
+        k = listing_key(url, d)
+        if k in seen:
+            continue
+        seen.add(k)
+        out[d] = out.get(d, 0) + 1
+    return out
+
+
+def upsert_listings(listings: list[dict], display_name: str | None = None,
+                    domain_counts: dict | None = None) -> int:
     """
     Upsert specialized-scraper results to listings_direct.
 
     listings:     list of dicts as returned by specialized_scrapers.format_listing()
     display_name: explicit broker name from the BROKERS registry; used as a
                   fallback when account-ID resolution fails.
+    domain_counts: optional dict, filled with {broker_domain: rows written}
+                  for rows the server ACCEPTED (crawl_run per-domain rows).
     """
     if not listings:
         return 0
+
+    # A 'DROP' row (Coming Soon / For Lease, scrapers/listing_status.py) is
+    # never written: the scrapers filter them and log the count; this catches
+    # one that slipped through, loudly, instead of sending status='DROP'
+    # through the explicit-status path below (2026-11-12).
+    slipped = sum(1 for l in listings if (l.get("status") or "") == "DROP")
+    if slipped:
+        log.warning(f"{slipped} row(s) with status DROP reached the writer - not written")
+        listings = [l for l in listings if (l.get("status") or "") != "DROP"]
+        if not listings:
+            return 0
 
     # Deduplicate by STABLE per-broker key within this batch before upserting
     seen_keys = set()
@@ -374,10 +460,20 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
     # Normalize to listings_direct schema (the unified table)
     rows = []
     now = datetime.now(timezone.utc).isoformat()
+    flag_no_phrase = 0
     for l in listings:
         url = l.get("listing_url") or l.get("url", "")
         if not url:
             continue
+        # Sent only with evidence: a price (-> false) or the broker's explicit
+        # phrase (-> true + verbatim). Neither -> not sent, so an existing row
+        # keeps its value (principle 14) and a new row gets the default (false).
+        disclosure = disclosure_fields(l)
+        if flagged_without_phrase(l):
+            flag_no_phrase += 1
+        # Same rule for the broker's status label: sent only when the row
+        # carries one, so a row without a label never nulls a stored one.
+        label = status_label_fields(l, now)
 
         broker_domain = derive_broker_domain(url)
         key = listing_key(url, broker_domain)
@@ -433,7 +529,12 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
             "last_seen":     now,
             "created_at":    now,
             "updated_at":    now,
+            **(disclosure or {}),
+            **(label or {}),
         })
+    if flag_no_phrase:
+        log.warning(f"{flag_no_phrase} row(s) flagged price_not_disclosed by the scraper "
+                    f"with no broker phrase (broker_price_text/price_text) - flag not written")
 
     # Drop rows still missing a NOT NULL title (no scraper title, no usable
     # slug) so they can't reject an entire batch.
@@ -449,9 +550,23 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
         one bad record can't take out its 99 good neighbours."""
         if not chunk:
             return 0
+        groups = _optional_groups()
+        for g in groups:
+            g.strip_if_missing(chunk)
         r = http_requests.post(endpoint, headers=headers, json=chunk, timeout=60)
         if r.status_code in (200, 201):
+            if domain_counts is not None:
+                for row in chunk:
+                    d = row.get("broker_domain")
+                    domain_counts[d] = domain_counts.get(d, 0) + 1
             return len(chunk)
+        # An optional column group (w14 disclosure, j3 status label) isn't
+        # there yet: strip it and retry this chunk, instead of splitting it
+        # down to single rows that all fail. Once per group per process.
+        g = missing_group(r.text, groups)
+        if g is not None:
+            g.note_missing(log.warning, g.strip(chunk))
+            return write_chunk(chunk)
         if len(chunk) == 1:
             log.error(f"Dropping bad row id={chunk[0].get('id')}: "
                       f"{r.status_code} {r.text[:150]}")
@@ -509,11 +624,94 @@ def upsert_listings(listings: list[dict], display_name: str | None = None) -> in
 
     upserted = 0
     for batch in (new_rows, upd_rows_status, upd_rows_nostatus):
-        for i in range(0, len(batch), 500):
-            upserted += write_chunk(batch[i:i + 500])
-            time.sleep(0.1)
+        # Uniform keys per POST: rows with and without the optional fields
+        # (disclosure, status label) are posted separately.
+        for group in group_by_keys(batch):
+            for i in range(0, len(group), 500):
+                upserted += write_chunk(group[i:i + 500])
+                time.sleep(0.1)
 
+    for g in _optional_groups():
+        if g.summary():
+            log.warning(g.summary())
     return upserted
+
+
+# ── Broker-displayed count (2026-11-11) ──────────────────────────────────────
+# vikingmergers.com's REST post type holds 411 posts; its page says "Showing 62
+# items". Every run closed 'ok'. For a broker whose public index page is known,
+# fetch it once, read the count the broker states, and hand it to finish_run(),
+# which closes the run 'partial' when we are outside 90-110% of it.
+# Index page: wp_rest_brokers.csv `index_url` if that column exists, else the
+# domain's row in data/brokers_clean.csv (regenerated from broker_sources at
+# job start); other specialized brokers only via DISPLAYED_INDEX_URLS below. Stated counts only: one page
+# cannot be card-counted when the index paginates.
+DISPLAYED_INDEX_URLS = {
+    # FacetWP status facet carries "For Sale (56)" / "Under Contract (16)".
+    "eatz": "https://eatz-associates.com/listings/",
+}
+
+
+def _index_url_for(name: str, broker_meta: dict) -> str | None:
+    if name in DISPLAYED_INDEX_URLS:
+        return DISPLAYED_INDEX_URLS[name]
+    # Scope: the WP-REST brokers (whose REST feed is known to over-count).
+    # The hand-written scrapers (Transworld, Sunbelt, VR...) get an entry in
+    # DISPLAYED_INDEX_URLS once someone has checked their page's count.
+    if not name.startswith("wp_"):
+        return None
+    dom = (broker_meta.get("domain") or "").lower().removeprefix("www.")
+    if not dom:
+        return None
+    here = os.path.dirname(__file__)
+    for fname, col in (("wp_rest_brokers.csv", "index_url"), ("brokers_clean.csv", None)):
+        path = os.path.join(here, "..", "data", fname)
+        try:
+            with open(path, newline="") as f:
+                for row in _csv.DictReader(f):
+                    if col:
+                        d = (row.get("domain") or "").lower().removeprefix("www.")
+                        u = (row.get(col) or "").strip()
+                    else:
+                        u = (row.get("listing_url") or "").strip()
+                        d = (urlparse(u).netloc or "").lower().removeprefix("www.")
+                    if d == dom and u:
+                        return u
+        except Exception:
+            continue
+    return None
+
+
+def _displayed_count_for(name: str, broker_meta: dict, listings: list[dict]) -> dict:
+    """finish_run() kwargs for the broker's displayed count. Never raises;
+    {} when no index page is known or it states no count."""
+    try:
+        url = _index_url_for(name, broker_meta)
+        if not url:
+            return {}
+        r = http_requests.get(url, timeout=30, headers={
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"})
+        if r.status_code != 200:
+            log.info(f"[{name}] displayed count: index HTTP {r.status_code} ({url})")
+            return {}
+        dc = parse_stated_count(r.text, seen=len(listings))   # seen: plausibility signal
+        # Compare against what we would publish as for sale, not every REST
+        # post: sold / inactive rows are not on the broker's for-sale page.
+        active = sum(1 for l in listings
+                     if (l.get("status") or "active") == "active")
+        if not dc:
+            log.info(f"[{name}] displayed count: none stated on {url}")
+            return {"compared_count": active}
+        log.info(f"[{name}] broker displays {dc['count']} (stated: '{dc['text']}'"
+                 f"{'; ' + dc['note'] if dc.get('note') else ''}) vs {active} active seen "
+                 f"of {len(listings)} -> {verdict_label(active, dc['count'])}")
+        return {"displayed_count": dc["count"], "displayed_source": "stated",
+                "displayed_note": f"matched: {dc['text']}; {dc.get('note') or ''}; index {url}"[:500],
+                "compared_count": active}
+    except Exception as e:                                  # never raise
+        log.warning(f"[{name}] displayed count failed: {e}")
+        return {}
 
 
 def cleanup_stale_wesell_rows() -> int:
@@ -592,6 +790,41 @@ def cleanup_stale_wesell_rows() -> int:
 EMPTY_RETRY_WAIT = int(os.environ.get("EMPTY_RETRY_WAIT", "90"))
 
 
+# ── broker_block ──────────────────────────────────────────────────────────────
+# Triage rule (owner, 2026-11-11): a "Sign up to view" / VIP-access wall on financials = gated platform, not broker-direct -> broker_block (unbroker.com, flow.unbroker.com).
+# V6 reads broker_block at startup (dealledger_scraper_v6.py RUNTIME_BLOCKED);
+# this runner never did, so a domain blocked in the DB kept being crawled from
+# data/wp_rest_brokers.csv (trufortebusinessgroup.com, 2026-11-11: blocked,
+# still registered). Same bug class as V6's --broker path skipping the domain
+# filter: a block that only some callers check is not a block.
+def load_broker_block() -> set | None:
+    """Bare domains on broker_block, or None if the table could not be read
+    (no key, HTTP error). None is never treated as 'nothing is blocked'."""
+    if not SUPABASE_SERVICE_KEY:
+        return None
+    h = {"apikey": SUPABASE_SERVICE_KEY, "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
+    try:
+        r = http_requests.get(f"{SUPABASE_URL}/rest/v1/broker_block", headers=h, timeout=30,
+                              params={"select": "broker_domain", "limit": "10000"})
+        r.raise_for_status()
+        rows = r.json()
+    except Exception as e:
+        log.error(f"broker_block: could not read table: {e}")
+        return None
+    out = set()
+    for row in rows or []:
+        d = (row.get("broker_domain") or "").strip().lower()
+        if d:
+            out.add(d[4:] if d.startswith("www.") else d)
+    return out
+
+
+def is_block_listed(domain: str | None, blocked: set) -> bool:
+    d = (domain or "").strip().lower()
+    d = d[4:] if d.startswith("www.") else d
+    return bool(d) and any(d == b or d.endswith("." + b) for b in blocked)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def run(broker_filter: list[str] | None, dry_run: bool):
     if not SUPABASE_SERVICE_KEY and not dry_run:
@@ -606,8 +839,20 @@ def run(broker_filter: list[str] | None, dry_run: bool):
     to_run = broker_filter if broker_filter else list(BROKERS.keys())
     log.info(f"Running {len(to_run)} specialized scrapers: {', '.join(to_run)}")
 
+    blocked = load_broker_block()
+    if blocked is not None:
+        log.info(f"broker_block: {len(blocked)} domains")
+    elif dry_run:
+        log.warning("broker_block NOT read (dry run / no key) — block list not "
+                    "enforced for this dry run; nothing is written")
+    else:
+        log.error("broker_block NOT read — every CSV-registered (WP-REST) broker is "
+                  "skipped this run and the job exits non-zero")
+    unverified = []
+
     grand_total = 0
     results = {}
+    domain_row_failures = []   # (broker, domain) whose crawl_run row was refused
 
     for name in to_run:
         if name not in BROKERS:
@@ -615,6 +860,16 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             continue
 
         broker_meta = BROKERS[name]
+        if blocked is not None and is_block_listed(broker_meta.get("domain"), blocked):
+            log.warning(f"[{name}] {broker_meta.get('domain')} is on broker_block — skipped")
+            results[name] = "blocked"
+            continue
+        if blocked is None and not dry_run and broker_meta.get("wp_rest"):
+            log.error(f"[{name}] skipped: broker_block unreadable, cannot prove "
+                      f"{broker_meta.get('domain')} is not blocked")
+            results[name] = "unverified"
+            unverified.append(name)
+            continue
         log.info(f"\n{'='*60}\nScraping: {name.upper()} ({broker_meta['display_name']})\n{'='*60}")
 
         # crawl_run (2026-09-24): every row this opens is closed, ok or
@@ -631,6 +886,7 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         #     either).
         run_id = None if dry_run else start_run("specialized", broker_meta.get("domain"))
         outcome = ("failed", 0, 0, "interrupted")
+        dc_kw = {}
         try:
             listings = broker_meta["fn"]()
             # 2026-11-04: Transworld, Sunbelt, routesforsale and Vested come
@@ -643,6 +899,8 @@ def run(broker_filter: list[str] | None, dry_run: bool):
                 listings = broker_meta["fn"]()
             log.info(f"[{name}] Got {len(listings)} listings")
             results[name] = len(listings)
+            if listings:
+                dc_kw = _displayed_count_for(name, broker_meta, listings)
 
             if dry_run:
                 if listings:
@@ -653,19 +911,41 @@ def run(broker_filter: list[str] | None, dry_run: bool):
                         f"{sample.get('city','?')}, {sample.get('state','?')}"
                     )
                     log.info(f"  Would write as broker_name='{broker_meta['display_name']}'")
+                    extra = domain_counts_excluding(domain_breakdown(listings),
+                                                    broker_meta.get("domain"))
+                    log.info(f"  Would log crawl_run: {broker_meta.get('domain')} "
+                             f"(run total) + {len(extra)} domain row(s)"
+                             + "".join(f"\n    {d:<40} {n:>6}" for d, n in
+                                       sorted(extra.items(), key=lambda x: -x[1])))
                 continue
 
             if not listings:
                 outcome = ("failed", 0, 0, "EMPTY: scraper returned 0 listings")
                 continue
 
-            upserted = upsert_listings(listings, display_name=broker_meta["display_name"])
+            written_by_domain = {}
+            upserted = upsert_listings(listings, display_name=broker_meta["display_name"],
+                                       domain_counts=written_by_domain)
             log.info(f"[{name}] Upserted {upserted} rows")
             grand_total += upserted
 
             # 'ok' is load-bearing: v_dom_direct filters status='ok' to find the
             # last successful crawl before a listing appeared.
             outcome = ("ok", len(listings), upserted, None)
+
+            # The registry row above carries the whole run. Listings that land
+            # on another host (Bodner -> execbb.com, VR -> ~30 office domains)
+            # get one closed row per host with that host's count, because
+            # v_dom_direct / absence_candidates join crawl_run on broker_domain.
+            # The registry domain itself never gets a second row.
+            ids, failed = record_domain_runs("specialized", broker_meta.get("domain"),
+                                             written_by_domain)
+            if ids:
+                per = domain_counts_excluding(written_by_domain, broker_meta.get("domain"))
+                log.info(f"[{name}] crawl_run domain rows: "
+                         + ", ".join(f"{d}={per[d]}" for d in sorted(ids)))
+            for d in failed:
+                domain_row_failures.append((name, d))
 
             # Post-upsert cleanup of legacy index-page rows for We Sell Restaurants
             if name == "wesell":
@@ -678,12 +958,20 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         finally:
             status, fetched, seen, err = outcome
             finish_run(run_id, status, urls_fetched=fetched,
-                       listings_seen=seen, error=err)
+                       listings_seen=seen, error=err, **dc_kw)
 
     log.info(f"\n{'='*60}")
     log.info(f"DONE — {grand_total} total listings upserted to listings_direct")
     for name, count in results.items():
         log.info(f"  {name:<15} {count:>5}")
+    if domain_row_failures:
+        log.error(f"crawl_run: {len(domain_row_failures)} per-domain row(s) NOT written "
+                  f"(those domains have no 'ok' crawl for today): "
+                  + ", ".join(f"{b}:{d}" for b, d in domain_row_failures))
+    if unverified:
+        log.error(f"{len(unverified)} WP-REST broker(s) skipped because broker_block "
+                  f"could not be read: {', '.join(unverified)}")
+        sys.exit(4)
 
 
 if __name__ == "__main__":

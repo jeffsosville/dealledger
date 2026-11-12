@@ -23,7 +23,27 @@ JUNK_TITLES = {
     "learn more", "read more", "view listing", "see details", "click here",
     "contact us", "get started", "details", "view", "more info",
     "view more", "inquire", "request info", "save", "share", "favorites",
+    # Participants Database link field (therouteexchange.com, 2026-11-12)
+    "full listing", "view full listing", "see full listing",
 }
+# Button copy: a CTA verb plus filler words only, 1-4 words ("Inquire Here",
+# "Enquire Now", "Learn More Here", "Click Here For Details"). healthcarebizsales
+# .com wrote 62 rows titled "Inquire Here" (2026-11-10) because only the bare
+# word "inquire" was listed. Every word must come from these two sets, so a real
+# name that starts with a verb ("Contact Lens Practice", "View Ridge Dental")
+# is not touched.
+_CTA_VERBS = r"(?:inquire|enquire|learn|read|view|see|click|request|contact|ask|get|find|send|call|apply)"
+_CTA_FILL = (r"(?:here|now|more|today|info|information|details?|us|out|about|"
+             r"this|listing|business|opportunity|for|a|the|me|it)")
+_CTA_TITLE_RE = re.compile(r"^\s*" + _CTA_VERBS + r"(?:\s+" + _CTA_FILL
+                           + r"){0,3}\s*[.!:>»›]*\s*$", re.IGNORECASE)
+
+
+def is_cta_text(t):
+    """True if `t` is call-to-action button copy, never a listing title."""
+    return bool(t) and bool(_CTA_TITLE_RE.match(t))
+
+
 JUNK_PREFIXES = ("you need to register", "sign up to", "log in to",
                  "create an account", "please register", "register to")
 
@@ -38,9 +58,14 @@ def is_junk_title(t, firm_name=None):
         return True
     if any(tl.startswith(p) for p in JUNK_PREFIXES):
         return True
+    if is_cta_text(tl):
+        return True
     # Category slug, e.g. "Food/Liquor-Liquor Store". Requires the '/' so a real
     # hyphenated title ("Well-Established Cafe") is NOT rejected.
-    if "/" in tl and len(tl) < 40 and re.match(r'^[a-z/ ]+-[a-z/ ]+$', tl):
+    # A leading status word is a marker, not a category ("SOLD-GP/Pediatric MD
+    # Practice", healthcarebizsales.com).
+    if ("/" in tl and len(tl) < 40 and re.match(r'^[a-z/ ]+-[a-z/ ]+$', tl)
+            and not re.match(r'^(?:sold|pending|under contract)\s*-', tl)):
         return True
     # Bodner/execbb category column: "General Services-Laundromat",
     # "Food/Liquor-Liquor Lic. C", "General Retail-Convenience". The hyphen must
@@ -161,6 +186,27 @@ def is_dead_listing(url, html=None):
     return False
 
 
+# Words a money-metric fragment is made of. A title that opens with a dollar
+# figure ("$450,000 Gross Sales") is a fragment only if nothing else is left
+# once these and the numbers are removed; "$1M+ Revenue – $347K Net Income
+# -9+ Years Established" (lbaweb.com, a real available listing dropped here
+# until 2026-11-12) keeps "years established" and is a title.
+_METRIC_WORDS = frozenset({
+    "for", "sale", "gross", "revenue", "revenues", "sales", "net", "income",
+    "cash", "flow", "cashflow", "sde", "ebitda", "asking", "price", "profit",
+    "profits", "annual", "annually", "per", "year", "yr", "in", "of", "and",
+    "with", "the", "a", "k", "m", "mm", "b", "million", "thousand", "plus",
+    "usd", "approx", "approximately", "over", "only", "total", "earnings",
+    "seller", "discretionary", "owner", "benefit", "adjusted",
+})
+
+
+def _has_business_words(tl):
+    """True if a lower-cased title that opens with a dollar figure has a word
+    of 3+ letters beyond money-metric vocabulary."""
+    return any(w not in _METRIC_WORDS for w in re.findall(r"[a-z][a-z']{2,}", tl))
+
+
 def is_listing_junk(title, url=""):
     """True if (title, url) is scraper junk, not a real business listing."""
     t = (title or "").strip()
@@ -185,7 +231,13 @@ def is_listing_junk(title, url=""):
         return True
     if re.match(r'^\$?[\d,]+(\.\d+)?\s*$', t):                 # title is just a number
         return True
-    if re.match(r'^\$[\d,]+.{0,4}(for sale|gross|revenue)', tl):
+    # "$500,000 for sale" is a fragment (and "$925,000For Sale5 Island Ave..."
+    # is a residential MLS card); always junk. "$X Revenue/Gross ..." is junk
+    # only when nothing but money-metric words follow: "$310,000 Revenue -
+    # Marin County Tax and Accounting Practice" (acctsales.com) is a title.
+    if re.match(r'^\$[\d,]+.{0,4}for sale', tl):
+        return True
+    if re.match(r'^\$[\d,]+.{0,4}(gross|revenue)', tl) and not _has_business_words(tl):
         return True
     # 5 CTA / marketing copy
     if (tl.startswith("join the") or tl.startswith("sell your business")

@@ -1,0 +1,64 @@
+name: Health alerts
+
+# Runs after the daily pipeline (pg_cron 'gh-health-alerts' 16:20 UTC via dispatch_workflow()).
+# Reads public.health_alerts_report() (service role only). Any CRITICAL row:
+#   - fails this run (GitHub emails the owner),
+#   - opens or updates one open issue labelled 'health-alert' with the full table (issue emails + phone push).
+# When everything is clean the open issue is closed with a comment.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 16 * * *'   # backup trigger if pg_cron dispatch fails
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query alerts
+        id: q
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set -euo pipefail
+          curl -sf -X POST "$SUPABASE_URL/rest/v1/rpc/health_alerts_report" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" -d '{}' > alerts.json
+          python3 - <<'PY'
+          import json, os
+          rows = json.load(open("alerts.json"))
+          crit = [r for r in rows if r["severity"] == "CRITICAL"]
+          lines = ["| severity | check | subject | detail |", "|---|---|---|---|"]
+          lines += [f"| {r['severity']} | {r['check_name']} | {r['subject']} | {r['detail']} |" for r in rows]
+          body = (f"**{len(crit)} critical, {len(rows)-len(crit)} warnings**\n\n" + "\n".join(lines)) if rows else "All clear."
+          open("body.md", "w").write(body)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f: f.write("### Health alerts\n\n" + body + "\n")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"critical={len(crit)}\nwarn={len(rows)-len(crit)}\n")
+          PY
+      - name: Open or update the alert issue
+        if: steps.q.outputs.critical != '0' || steps.q.outputs.warn != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create health-alert --color B60205 --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          n=$(gh issue list --repo "$GITHUB_REPOSITORY" --label health-alert --state open --json number -q '.[0].number')
+          title="Health alerts $(date -u +%F): ${{ steps.q.outputs.critical }} critical, ${{ steps.q.outputs.warn }} warn"
+          if [ -n "$n" ]; then gh issue comment "$n" --repo "$GITHUB_REPOSITORY" --body-file body.md; gh issue edit "$n" --repo "$GITHUB_REPOSITORY" --title "$title";
+          else gh issue create --repo "$GITHUB_REPOSITORY" --label health-alert --title "$title" --body-file body.md --assignee jeffsosville; fi
+      - name: Close the alert issue when clean
+        if: steps.q.outputs.critical == '0' && steps.q.outputs.warn == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh issue list --repo "$GITHUB_REPOSITORY" --label health-alert --state open --json number -q '.[0].number')
+          [ -n "$n" ] && gh issue close "$n" --repo "$GITHUB_REPOSITORY" --comment "All clear $(date -u +%F)." || true
+      - name: Fail on critical
+        if: steps.q.outputs.critical != '0'
+        run: echo "::error::${{ steps.q.outputs.critical }} critical health alerts" && exit 1
