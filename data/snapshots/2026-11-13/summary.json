@@ -1,0 +1,160 @@
+{
+  "started": "2026-11-13T10:25:31.442504+00:00",
+  "brokers_attempted": 687,
+  "brokers_success": 600,
+  "brokers_failed": 80,
+  "total_listings": 14335,
+  "listings_with_price": 13084,
+  "listings_with_cashflow": 5567,
+  "listings_with_state": 12072,
+  "detail_pages_fetched": 1977,
+  "patterns_cached": 597,
+  "patterns_learned": 500,
+  "verticals": {
+    "restaurant": 3199,
+    "automotive": 1123,
+    "technology": 1801,
+    "other": 3446,
+    "manufacturing": 400,
+    "landscaping": 137,
+    "healthcare": 1090,
+    "retail": 1650,
+    "construction": 500,
+    "cleaning": 251,
+    "hvac": 235,
+    "roofing": 49,
+    "electrical": 122,
+    "pest_control": 14,
+    "vending": 160,
+    "plumbing": 158
+  },
+  "failure_types": {
+    "EMBED_BBS": 7,
+    "NO_PATTERN": 57,
+    "FETCH_ERROR": 7,
+    "HTTP_403": 12,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "matthew gorman",
+      "domain": "districtbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div._15gGoQK1",
+      "healed_to": "div._root_1w52m_1._minHeightFix_1w52m_5.container.builder-root"
+    },
+    {
+      "broker": "Titan Business Brokers",
+      "domain": "titanbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.eael-entry-wrapper",
+      "healed_to": "li[class*=\"elementskit-mobile-builder-content\"]"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    }
+  ],
+  "site_pages_dropped": 48,
+  "slowest_brokers": [
+    [
+      2304,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      1493,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      1283,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      534,
+      "pacificrb.com",
+      7
+    ],
+    [
+      503,
+      "restaurantrealty.com",
+      122
+    ],
+    [
+      464,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      463,
+      "konablueplantations.com",
+      5
+    ],
+    [
+      462,
+      "toddbusinesssolutions.com",
+      14
+    ],
+    [
+      462,
+      "naz-business.com",
+      25
+    ],
+    [
+      459,
+      "buygasstations.com",
+      3
+    ],
+    [
+      457,
+      "beehivebusinessbrokers.com",
+      1
+    ],
+    [
+      436,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      372,
+      "jarbly.com",
+      0
+    ],
+    [
+      361,
+      "alpinebusinessbrokers.com",
+      40
+    ],
+    [
+      336,
+      "autocenter-sales.com",
+      15
+    ]
+  ],
+  "seconds_total": 38903,
+  "completed": "2026-11-13T13:43:57.644350+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
