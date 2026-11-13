@@ -41,8 +41,24 @@ export const requestMeta = (ctx: GetServerSidePropsContext) => {
   };
 };
 
+/**
+ * Broker URLs can contain spaces, en/em dashes, curly quotes, etc. Node
+ * rejects any non-ASCII byte in a Location header (ERR_INVALID_CHAR), which
+ * surfaced as a 500 on /go. Percent-encode without double-encoding.
+ */
+const safeLocation = (url: string): string | null => {
+  let decoded = url.trim();
+  try { decoded = decodeURI(decoded); } catch { /* malformed %-seq: encode as-is */ }
+  try {
+    const out = encodeURI(decoded);
+    return /^https?:\/\//i.test(out) ? out : null;
+  } catch {
+    return null; // lone surrogate etc.
+  }
+};
+
 export const redirectTo = (url: string | null, fallback: string) => ({
-  redirect: { destination: url || fallback, permanent: false },
+  redirect: { destination: (url && safeLocation(url)) || fallback, permanent: false },
 });
 
 export { getSupabase };

@@ -21,6 +21,7 @@ type Props = {
   showState?: boolean;      // show the state next to the city (national pages)
   refreshedNote?: string;
   guide?: TypeGuide;        // buyer context + FAQ for national type pages
+  noindex?: boolean;        // thin pages: render for visitors, keep out of the index
 };
 
 const place = (r: Row, showState: boolean) => {
@@ -112,7 +113,7 @@ export default function SeoPage(p: Props) {
       <Head>
         <title>{p.title}</title>
         <meta name="description" content={p.description} />
-        <link rel="canonical" href={url} />
+        {p.noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={url} />}
         {csv && <link rel="alternate" type="text/csv" href={csv} title="All listings on this page as CSV (CC0)" />}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={p.title} />
