@@ -3,7 +3,8 @@
 // Same service-role + Resend setup as pages/api/sba-inquiry.ts.
 
 import { createClient } from '@supabase/supabase-js';
-import { STATES, TYPES, comboPath, statePath, typePath } from './seo';
+import { STATES, TYPES, comboPath, statePath, stateSlug, typePath } from './seo';
+import { nicheFromSlug, nichePath } from './niches';
 
 export const SITE = 'https://dealledger.org';
 export const FROM_EMAIL = 'DealLedger <pulse@dealledger.org>';
@@ -13,16 +14,22 @@ export const serviceDb = () =>
     auth: { persistSession: false },
   });
 
-export const validScope = (state: string | null, vertical: string | null) =>
-  (state === null || !!STATES[state]) && (vertical === null || !!TYPES[vertical]) && !!(state || vertical);
+// `key` (stored in alert_subscriptions.vertical) is a lib/seo TYPES key, a lib/niches slug,
+// or null for every type. state null = every state. Both null = everything.
+export const validScope = (state: string | null, key: string | null) =>
+  (state === null || !!STATES[state]) && (key === null || !!TYPES[key] || !!nicheFromSlug(key));
 
-export const scopeLabel = (state: string | null, vertical: string | null) => {
-  const what = vertical ? TYPES[vertical].label : 'Businesses';
-  return state ? `${what} for sale in ${STATES[state]}` : `${what} for sale nationwide`;
+const keyLabel = (key: string | null) =>
+  key ? (TYPES[key]?.label ?? nicheFromSlug(key)?.label ?? 'Businesses') : 'Businesses';
+
+export const scopeLabel = (state: string | null, key: string | null) =>
+  `${keyLabel(key)} for sale ${state ? `in ${STATES[state]}` : 'nationwide'}`;
+
+export const scopePath = (state: string | null, key: string | null) => {
+  if (!key) return state ? statePath(state) : '/businesses-for-sale';
+  if (TYPES[key]) return state ? comboPath(state, key) : typePath(key);
+  return state ? `/businesses-for-sale/${stateSlug(state)}/${key}` : nichePath(key);
 };
-
-export const scopePath = (state: string | null, vertical: string | null) =>
-  state && vertical ? comboPath(state, vertical) : state ? statePath(state) : typePath(vertical!);
 
 export async function sendEmail(to: string, subject: string, html: string, headers?: Record<string, string>) {
   const r = await fetch('https://api.resend.com/emails', {
@@ -59,3 +66,15 @@ export const resultPage = (title: string, body: string, href: string, linkText: 
 <p>${body}</p>
 <p><a href="${href}" style="color:#0c4a6e;">${esc(linkText)}</a></p>
 </div></body></html>`;
+
+/** Dropdown options for picker-mode signup (/alerts, 404). Server-side only. */
+export async function alertPickerOptions() {
+  const { NICHE_MIN, nicheCounts } = await import('./niches');
+  const states = Object.entries(STATES)
+    .map(([value, label]) => ({ value, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  const niches = (await nicheCounts()).filter((c) => c.count >= NICHE_MIN).map((c) => ({ value: c.slug, label: c.label }));
+  const types = [...Object.entries(TYPES).map(([value, t]) => ({ value, label: t.label })), ...niches]
+    .sort((a, b) => a.label.localeCompare(b.label));
+  return { states, types };
+}

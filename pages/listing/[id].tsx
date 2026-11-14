@@ -7,6 +7,9 @@ import Head from 'next/head';
 import { getSupabase } from '../../lib/supabase';
 import { goListing } from '../../lib/clickout';
 import { displayName, isMarketplaceDomain } from '../../lib/brokerRegistry';
+import AlertSignup from '../../components/AlertSignup';
+import { firstNiche } from '../../lib/niches';
+import { STATES, TYPES } from '../../lib/seo';
 
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────
@@ -55,6 +58,7 @@ type PageProps = {
   priceChanges: PriceChange[];
   registryBroker: { slug: string; name: string } | null;
   domPercentile: number | null;
+  alert: { state: string | null; vertical: string | null; label: string } | null;
 };
 
 // ─── DATA FETCHING ─────────────────────────────────────────────────────────
@@ -120,6 +124,23 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     }
   }
 
+  // "More like this" alert: the listing's most specific niche (or broad type) in its state.
+  let alert: PageProps['alert'] = null;
+  {
+    const { data: seo } = await sb
+      .from('mv_seo_listings_v2')
+      .select('title, vertical, state_code')
+      .eq('listing_number', listingNumber)
+      .maybeSingle();
+    if (seo) {
+      const niche = firstNiche({ title: seo.title, vertical: seo.vertical });
+      const key = niche ? niche.slug : (TYPES[seo.vertical] ? seo.vertical : null);
+      const what = niche ? niche.label : key ? TYPES[key].label : 'Businesses';
+      const state = seo.state_code && STATES[seo.state_code] ? seo.state_code : null;
+      if (key || state) alert = { state, vertical: key, label: `${what}${state ? ` in ${STATES[state]}` : ''}` };
+    }
+  }
+
   // No percentile or 'slowest' comparison: observed age is a minimum, not days on market.
   const domPercentile: number | null = null;
 
@@ -149,7 +170,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   console.log('[listing] === SUCCESS ===');
 
   return {
-    props: { listing, priceChanges, registryBroker, domPercentile },
+    props: { listing, priceChanges, registryBroker, domPercentile, alert },
     revalidate: 60 * 60 * 6,
   };
 };
@@ -196,6 +217,7 @@ export default function ListingPage({
   priceChanges,
   registryBroker,
   domPercentile,
+  alert,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!listing) return null;
 
@@ -516,6 +538,14 @@ export default function ListingPage({
               </p>
             </div>
           </Section>
+
+          {alert && (
+            <AlertSignup
+              {...alert}
+              path={`/listing/${listing.listing_number}`}
+              heading={`Get more like this: new ${alert.label.charAt(0).toLowerCase()}${alert.label.slice(1)}, by email`}
+            />
+          )}
 
           <Section title="METHODOLOGY" subtitle="What we observe">
             <div className="prose">

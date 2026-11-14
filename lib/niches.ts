@@ -377,3 +377,15 @@ export const VERTICAL_NICHE_GROUPS: Record<string, string[]> = {
 };
 
 export const NICHE_GROUP_ORDER = ['Food & drink', 'Retail', 'Health', 'Personal services', 'Automotive', 'Trades', 'Industrial', 'Professional & tech'];
+
+/** Listings an alert covers. `key` is a TYPES vertical key, a niche slug, or null (any type). */
+export async function alertMatches(state: string | null, key: string | null) {
+  const niche = key ? nicheFromSlug(key) : null;
+  return (await universe()).filter((x) =>
+    (!state || x.state_code === state) &&
+    (!key || (niche ? inNiche(niche, x) : x.vertical === key)));
+}
+
+/** Most specific niche a listing belongs to (first in NICHES order), for "more like this". */
+export const firstNiche = (row: { title: string | null; vertical: string }) =>
+  NICHES.find((n) => n.slug !== 'franchise-resales' && inNiche(n, row)) ?? null;

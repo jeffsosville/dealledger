@@ -19,6 +19,7 @@ export default function NichePage(p: NichePageProps) {
       path={path}
       noindex={p.thin}
       noCsv
+      alert={{ state: p.state, vertical: p.slug, label: `${p.label}${where}` }}
       title={guide && full ? guide.title.replace('{n}', fmtNum(n))
         : `${p.label} for Sale${where}${n ? ` (${fmtNum(n)})` : ''} — DealLedger`}
       h1={guide?.h1 || `${p.label} for Sale${where}`}

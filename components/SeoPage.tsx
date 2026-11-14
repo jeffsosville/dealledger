@@ -6,7 +6,7 @@ import type { TypeGuide } from '../lib/typeGuides';
 import AlertSignup from './AlertSignup';
 
 // Off until sql/2026-11-13_alert_subscriptions.sql is applied; the API routes need the table.
-const ALERTS_ENABLED = false;
+const ALERTS_ENABLED = true;
 
 export type LinkGroup = { title: string; links: { href: string; label: string; count?: number }[] };
 export type Crumb = { href: string; label: string };
@@ -26,7 +26,7 @@ type Props = {
   refreshedNote?: string;
   guide?: TypeGuide;        // buyer context + FAQ for national type pages
   noindex?: boolean;        // thin pages: render for visitors, keep out of the index
-  alert?: { state?: string | null; vertical?: string | null; label: string }; // new-listing email signup
+  alert?: Omit<React.ComponentProps<typeof AlertSignup>, 'path'>; // new-listing email signup
   noCsv?: boolean;          // niche pages: no CSV route yet
 };
 
@@ -203,6 +203,8 @@ export default function SeoPage(p: Props) {
             </div>
           )}
 
+          {ALERTS_ENABLED && p.alert && <AlertSignup empty={shown === 0} {...p.alert} path={p.path} />}
+
           {shown > 0 && (
             <section className="section">
               <div className="section-eyebrow">— LISTINGS</div>
@@ -245,8 +247,6 @@ export default function SeoPage(p: Props) {
               )}
             </section>
           )}
-
-          {ALERTS_ENABLED && p.alert && <AlertSignup {...p.alert} path={p.path} empty={shown === 0} />}
 
           {p.guide &&
             p.guide.sections.map((sec) => (
