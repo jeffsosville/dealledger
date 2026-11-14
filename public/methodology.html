@@ -145,6 +145,39 @@
         <h2>Relisting</h2>
         <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A listing that comes back later, sometimes at a different price, is one of the most useful signals in the record. A disappearance is not evidence that a business sold. Automated relist matching across broker-direct listings is in development; until it ships, disappearances and reappearances are visible in the raw history but are not flagged.</p>
 
+        <h2>Price changes</h2>
+        <p>Every crawl records the asking price we saw on the broker's page that day, one observation per listing per day, whether the price moved or not. Earlier history comes from our dated snapshot archive. Every observation traces back to the exact crawl or snapshot row it came from.</p>
+
+        <p><strong>What counts as a change.</strong> A price change is two consecutive dated observations of the same listing at different asking prices. We publish the last date we saw the old price and the first date we saw the new one. The change happened somewhere in that window; we don't know the exact day and don't claim to. Because each producing broker is crawled at least weekly, most windows are a week or less.</p>
+
+        <p><strong>Screening.</strong> Scrapers misread prices, so a raw difference is not yet a fact. Candidate changes are screened first:</p>
+        <ul>
+            <li><strong>Excluded outright</strong> — new price under 20% or over 5x the old one, placeholder values ($1, $9,999,999), a price that flips back to an earlier value, a price swapped with a revenue or cash-flow figure, a price that contradicts the headline, or a change in title, city or state that suggests a different listing. These are never published.</li>
+            <li><strong>Flagged for a closer look</strong> — moves over 60% or under 0.5%, a price equal to the listing's revenue or cash flow, and listings with more than three changes.</li>
+        </ul>
+        <p>Every change that survives screening is then reviewed by a person against our dated snapshots and the broker's live page before it is published. That review is why a change can take a few days to appear on the <a href="/price-changes" class="inline">price changes page</a>.</p>
+
+        <p><strong>What we publish.</strong> Reviewed changes on broker-direct listings that have a public page on DealLedger:</p>
+        <table class="field-table">
+            <thead>
+                <tr><th>Field</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="f">listing_number</td><td>The listing the change belongs to.</td></tr>
+                <tr><td class="f">prev_price</td><td>Asking price before the change.</td></tr>
+                <tr><td class="f">prev_last_seen</td><td>Last date we observed the old price.</td></tr>
+                <tr><td class="f">next_price</td><td>Asking price after the change.</td></tr>
+                <tr><td class="f">next_first_seen</td><td>First date we observed the new price.</td></tr>
+                <tr><td class="f">pct_change</td><td>Percent change from prev_price to next_price.</td></tr>
+                <tr><td class="f">window_days</td><td>Days between prev_last_seen and next_first_seen — how tightly the change is dated.</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>Asking, not sold</strong>
+            These are changes to the asking price a broker publishes. They are not sale prices, and a price cut is not evidence that a business sold or will sell.
+        </div>
+
         <h2>Data quality</h2>
         <p>Rows are gated before they enter the index:</p>
         <ul>
@@ -177,10 +210,11 @@
             <li>A listing is only as fresh as the last crawl of its broker. Each producing broker is crawled at least weekly.</li>
             <li>Brokers can repost or refresh listings in ways that affect apparent listing age. We detect some of these, not all.</li>
             <li>Listing content (price, headline, category) reflects what the source publishes. If a broker publishes inflated or stale information, we record what we observe.</li>
+            <li>A price that changes and changes again between two crawls of its broker shows up as a single change. Price changes before March 2026 are not observed.</li>
         </ul>
 
         <p style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted);">
-            Last updated: <span class="mono">September 2026</span>.
+            Last updated: <span class="mono">November 2026</span>.
             Questions: <a href="mailto:info@dealledger.org" class="inline">info@dealledger.org</a>.
         </p>
     </div>
