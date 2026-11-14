@@ -1,0 +1,134 @@
+{
+  "started": "2026-11-14T10:25:19.042835+00:00",
+  "brokers_attempted": 684,
+  "brokers_success": 607,
+  "brokers_failed": 71,
+  "total_listings": 13869,
+  "listings_with_price": 12622,
+  "listings_with_cashflow": 5452,
+  "listings_with_state": 11849,
+  "detail_pages_fetched": 687,
+  "patterns_cached": 599,
+  "patterns_learned": 506,
+  "verticals": {
+    "restaurant": 3045,
+    "automotive": 1088,
+    "technology": 1737,
+    "other": 3379,
+    "manufacturing": 389,
+    "landscaping": 128,
+    "retail": 1637,
+    "construction": 453,
+    "plumbing": 152,
+    "healthcare": 1050,
+    "cleaning": 243,
+    "roofing": 47,
+    "electrical": 119,
+    "hvac": 230,
+    "pest_control": 13,
+    "vending": 159
+  },
+  "failure_types": {
+    "EMBED_BBS": 6,
+    "NO_PATTERN": 49,
+    "FETCH_ERROR": 6,
+    "HTTP_403": 12,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "michael mcgrath",
+      "domain": "homecarebuysell.com",
+      "event": "stale_cache",
+      "selector": "tr",
+      "healed_to": "tr[class*=\"element_row\"]"
+    }
+  ],
+  "site_pages_dropped": 39,
+  "slowest_brokers": [
+    [
+      2221,
+      "pacificrb.com",
+      7
+    ],
+    [
+      1514,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      506,
+      "restaurantrealty.com",
+      121
+    ],
+    [
+      474,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      463,
+      "konablueplantations.com",
+      5
+    ],
+    [
+      459,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      410,
+      "naz-business.com",
+      25
+    ],
+    [
+      385,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      379,
+      "buythrivesell.com",
+      0
+    ],
+    [
+      335,
+      "equity1advisorycorp.com",
+      0
+    ],
+    [
+      312,
+      "americanbussales.net",
+      109
+    ],
+    [
+      306,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      297,
+      "therockbridge.group",
+      7
+    ],
+    [
+      296,
+      "franchiseconnectors.com",
+      101
+    ],
+    [
+      295,
+      "www.usbizsell.com",
+      3
+    ]
+  ],
+  "seconds_total": 34273,
+  "completed": "2026-11-14T13:08:20.675938+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
