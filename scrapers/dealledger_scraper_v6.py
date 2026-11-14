@@ -109,7 +109,16 @@ except ImportError:                                   # run as package
     from scrapers.classify_verticals import rule_match as _cv_rule_match
 
 
+# A liquor license on its own is not a liquor store (keyword counting tags it
+# liquor_store). Same rule as dl_vertical_from_title() in the database.
+_LICENSE_ONLY = re.compile(r"liquor licen[cs]e", re.I)
+_LICENSE_WITH_BUSINESS = re.compile(
+    r"store|shop|\bmart\b|market|package|bottle|restaurant|\bbar\b|tavern|pub\b|grill|deli|lounge|business", re.I)
+
+
 def _title_rule_vertical(title):
+    if _LICENSE_ONLY.search(title or "") and not _LICENSE_WITH_BUSINESS.search(title or ""):
+        return "other"
     v = _cv_rule_match(title, None)
     return v if v and v != "other" else None
 
