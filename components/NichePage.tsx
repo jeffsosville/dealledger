@@ -2,7 +2,7 @@
 import SeoPage from './SeoPage';
 import { STATES, fmtMoney, fmtMultiple, fmtNum, stateSlug, statePath } from '../lib/seo';
 import { nichePath, type NichePageProps } from '../lib/niches';
-import { TYPE_GUIDES } from '../lib/typeGuides';
+import { NICHE_GUIDES } from '../lib/nicheGuides';
 
 const comboNichePath = (code: string, slug: string) => `/businesses-for-sale/${stateSlug(code)}/${slug}`;
 
@@ -11,7 +11,7 @@ export default function NichePage(p: NichePageProps) {
   const where = p.state ? ` in ${STATES[p.state]}` : '';
   const path = p.state ? comboNichePath(p.state, p.slug) : nichePath(p.slug);
   const n = s.listings;
-  const guide = p.state ? undefined : TYPE_GUIDES[p.slug];
+  const guide = p.state ? undefined : NICHE_GUIDES[p.slug];
   const multiple = s.median_multiple != null ? `, a median of ${fmtMultiple(s.median_multiple)} cash flow` : '';
   const full = !p.thin;
   return (
