@@ -1,0 +1,18 @@
+-- 2026-11-14 — applied via migrations rekey_repair_2026_11_13 and
+-- inherit_first_seen_exact_url_and_title.
+--
+-- Problem: Job 3 (2c576ad, 2026-11-12) changed listing identity for many brokers
+-- (detail URLs found where the index URL used to be stored; new id rules). ~2,800
+-- rows were inserted on 2026-11-13 with a fresh first_seen; ~850 of them were
+-- existing listings whose old rows then went stale. listings_direct_inherit_first_seen()
+-- missed them: it only matched norm_listing_url() (which strips the query string, so
+-- every restaurantrealty.com "?listing=" URL collapses to one and the "shared > 1"
+-- guard bails) and skipped rows stored with the index URL.
+--
+-- Repair (one-time): one-to-one pairs by same broker + exact URL, else same title
+-- (>= 12 chars); new row gets the old first_seen, old row -> 'superseded'.
+-- Audit: public.listing_rekey_2026_11_13 (848 pairs: 135 by URL, 713 by title).
+--
+-- Prevention: inherit trigger now tries exact URL, then the old normalized rule,
+-- then a unique same-title row seen in the last 21 days.
+-- Full function body: see migration inherit_first_seen_exact_url_and_title.
