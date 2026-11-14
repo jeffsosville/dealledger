@@ -10,6 +10,14 @@ on:
         description: "Print emails instead of sending"
         type: boolean
         default: true
+      test_email:
+        description: "Test: send only this subscriber's alerts (sign up + confirm first)"
+        type: string
+        default: ""
+      since:
+        description: "Test: include listings since YYYY-MM-DD (does not advance last_sent_at)"
+        type: string
+        default: ""
 
 jobs:
   digest:
@@ -27,4 +35,11 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-        run: npx -y tsx scripts/send_alert_digest.ts ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+          DRY: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+          TEST_EMAIL: ${{ inputs.test_email }}
+          SINCE: ${{ inputs.since }}
+        run: |
+          ARGS="$DRY"
+          [ -n "$TEST_EMAIL" ] && ARGS="$ARGS --to $TEST_EMAIL"
+          [ -n "$SINCE" ] && ARGS="$ARGS --since $SINCE"
+          npx -y tsx scripts/send_alert_digest.ts $ARGS

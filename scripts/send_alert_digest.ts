@@ -10,14 +10,20 @@
 //
 // Env: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
 //      SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY.
-// Run: npx tsx scripts/send_alert_digest.ts [--dry-run]
+// Run: npx tsx scripts/send_alert_digest.ts [--dry-run] [--to you@x.com --since 2026-11-01]
+//   --to     only this subscriber's alerts (must have signed up and confirmed)
+//   --since  test window start instead of last_sent_at; last_sent_at is NOT advanced
 import { SITE, scopeLabel, scopePath, sendEmail, serviceDb, validScope } from '../lib/alerts';
 import { alertMatches } from '../lib/niches';
 import { displayTitle, fmtMoney } from '../lib/seo';
 
 const MAX_ROWS = 25;
 const NEW_BASES = new Set(['observed', 'window']);
+const arg = (k: string) => { const i = process.argv.indexOf(k); const v = i >= 0 ? process.argv[i + 1] : ''; return v && !v.startsWith('--') ? v : ''; };
 const dry = process.argv.includes('--dry-run') || !process.env.RESEND_API_KEY;
+const onlyTo = arg('--to').toLowerCase();
+const testSince = /^\d{4}-\d{2}-\d{2}$/.test(arg('--since')) ? arg('--since') : '';
+const testRun = !!(onlyTo || testSince);
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
@@ -42,7 +48,7 @@ function render(sub: Sub, label: string, path: string, rows: Awaited<ReturnType<
 <p><a href="${SITE}${path}" style="color:#0c4a6e;">See all on DealLedger</a></p>
 <p style="margin-top:32px;padding-top:16px;border-top:1px solid #d4cfc4;font-size:12px;color:#78716c;">
 You asked for this alert on dealledger.org. <a href="${unsub}" style="color:#78716c;">Unsubscribe</a><br>
-DealLedger · 10 Academy St, Skaneateles, NY 13152</p></div></body></html>`;
+DealLedger · 10&#8203; Academy St, Skaneateles,&#8203; NY 13152</p></div></body></html>`;
   return { subject: `${n} new: ${label}`, html, unsub };
 }
 
@@ -56,29 +62,33 @@ async function main() {
   if (error) throw error;
 
   let sent = 0, quiet = 0, failed = 0;
-  for (const sub of (subs || []) as Sub[]) {
+  const list = ((subs || []) as Sub[]).filter((s) => !onlyTo || s.email.toLowerCase() === onlyTo);
+  if (onlyTo && !list.length) console.log(`no confirmed alerts for ${onlyTo}`);
+  for (const sub of list) {
     if (!validScope(sub.state_code, sub.vertical)) { failed++; console.log(`bad scope ${sub.id}`); continue; }
-    const since = (sub.last_sent_at || '').slice(0, 10);
+    const since = testSince || (sub.last_sent_at || '').slice(0, 10);
     const rows = (await alertMatches(sub.state_code, sub.vertical))
       .filter((r) => r.dom_basis && NEW_BASES.has(r.dom_basis) && (r.estimated_listed_date || '') > since)
       .sort((a, b) => (b.estimated_listed_date || '').localeCompare(a.estimated_listed_date || ''));
     if (!rows.length) { quiet++; continue; }
     const label = scopeLabel(sub.state_code, sub.vertical);
-    const { subject, html, unsub } = render(sub, label, scopePath(sub.state_code, sub.vertical), rows);
+    const r = render(sub, label, scopePath(sub.state_code, sub.vertical), rows);
+    const { html, unsub } = r;
+    const subject = testRun ? `[Test] ${r.subject}` : r.subject;
     if (dry) { console.log(`--- ${sub.email}: ${subject}`); continue; }
     try {
       await sendEmail(sub.email, subject, html, {
         'List-Unsubscribe': `<${unsub}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       });
-      await db.from('alert_subscriptions').update({ last_sent_at: new Date().toISOString() }).eq('id', sub.id);
+      if (!testRun) await db.from('alert_subscriptions').update({ last_sent_at: new Date().toISOString() }).eq('id', sub.id);
       sent++;
     } catch (e) {
       failed++;
       console.log(`send failed ${sub.id}: ${(e as Error).message}`);
     }
   }
-  console.log(`alerts: ${(subs || []).length} active, ${sent} sent, ${quiet} nothing new, ${failed} failed${dry ? ' (dry run)' : ''}`);
+  console.log(`alerts: ${list.length} active, ${sent} sent, ${quiet} nothing new, ${failed} failed${dry ? ' (dry run)' : ''}`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

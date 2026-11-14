@@ -47,7 +47,7 @@ const shell = (body: string) => `<!doctype html><html><body style="margin:0;back
 <div style="font-family:'IBM Plex Mono',Menlo,monospace;font-size:13px;font-weight:600;letter-spacing:0.04em;margin-bottom:24px;">DealLedger</div>
 ${body}
 <p style="margin-top:32px;padding-top:16px;border-top:1px solid #d4cfc4;font-size:12px;color:#78716c;">
-DealLedger · 10 Academy St, Skaneateles, NY 13152 · the public record of businesses for sale
+DealLedger · 10&#8203; Academy St, Skaneateles,&#8203; NY 13152 · the public record of businesses for sale
 </p></div></body></html>`;
 
 export const confirmEmail = (label: string, token: string) =>
