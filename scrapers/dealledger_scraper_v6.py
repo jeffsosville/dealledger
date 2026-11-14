@@ -103,6 +103,15 @@ except Exception:
 from crawl_run_log import start_run, finish_run
 # Broker's own displayed count per crawl (2026-11-11). Pure module, no I/O.
 from displayed_count import DisplayedCountTracker, verdict_label
+try:
+    from classify_verticals import rule_match as _cv_rule_match
+except ImportError:                                   # run as package
+    from scrapers.classify_verticals import rule_match as _cv_rule_match
+
+
+def _title_rule_vertical(title):
+    v = _cv_rule_match(title, None)
+    return v if v and v != "other" else None
 
 # curl_cffi impersonates a real Chrome TLS/JA3 fingerprint — the same fix that
 # unblocked the collector (plain requests gets 403'd). Falls back to
@@ -302,7 +311,8 @@ def strip_dangling_sep(t):
 # Applied ONLY to TITLE_STATUS_MARKER_DOMAINS (owner decision 11, 2026-11-11):
 # the 11-10 snapshot has 22 not-yet-sold titles at other brokers that carry
 # such a marker, and those keep whatever the generic path gives them.
-TITLE_STATUS_MARKER_DOMAINS = {"healthcarebizsales.com"}
+TITLE_STATUS_MARKER_DOMAINS = {"healthcarebizsales.com",
+                               "atmbrokerage.com"}  # own site: "Route – $29,000 – Sold!" is a real status
 _STATUS_WORD = r"(?:sold|under[\s-]*contract|sale[\s-]*pending|pending)"
 _TITLE_STATUS_PREFIX_RE = re.compile(
     r"^\s*((?:SOLD|UNDER[\s-]*CONTRACT|SALE[\s-]*PENDING|PENDING)(?:\s*[!:\-–—…]+)?(?=\W|$)"
@@ -3115,7 +3125,16 @@ class ListingExtractor:
         ])
 
     @staticmethod
-    def classify_vertical(text):
+    def classify_vertical(text, title=None):
+        # Title rules first (scrapers/classify_verticals.py RULES: unambiguous
+        # on a title alone). Keyword counting over description text is what
+        # tagged ATM routes as restaurant/vending/plumbing: an ATM listing
+        # describes its locations ("bars, restaurants, convenience stores")
+        # more often than it says "ATM".
+        if title:
+            v = _title_rule_vertical(title)
+            if v:
+                return v
         text_lower = text.lower()
         scores = {v: sum(1 for kw in kws if kw in text_lower)
                   for v, kws in VERTICALS.items()}
@@ -3287,7 +3306,7 @@ class ListingExtractor:
         asking_price, cash_flow, revenue = _sane_financials(
             asking_price, cash_flow, revenue)
         location     = LocationExtractor.extract(text)
-        vertical     = cls.classify_vertical(text)
+        vertical     = cls.classify_vertical(text, title)
 
         _url = detail_url or base_url
         # No detail link on a gated broker: ref / title+location identity
@@ -3437,7 +3456,8 @@ class ListingExtractor:
 
         # Re-classify vertical with full description
         listing["vertical"] = cls.classify_vertical(
-            (listing.get("description") or "") + " " + (listing.get("title") or "")
+            (listing.get("description") or "") + " " + (listing.get("title") or ""),
+            listing.get("title"),
         )
 
         return listing
@@ -3469,7 +3489,7 @@ def _make_api_listing(base_url, broker_name, title, detail_url=None,
         "revenue":       positive_or_none(revenue),
         "city":          city,
         "state":         state,
-        "vertical":      ListingExtractor.classify_vertical(text),
+        "vertical":      ListingExtractor.classify_vertical(text, title),
         "url":           url,
         "url_is_listing_specific": bool(detail_url) and detail_url != base_url,
         "broker_name":   broker_name,
@@ -6012,7 +6032,8 @@ class DealLedgerScraper:
                         c["city"] = prev["city"]
                     c["url"] = c.pop("_detail_url")
                     c["vertical"] = ListingExtractor.classify_vertical(
-                        (c.get("description") or "") + " " + (c.get("title") or ""))
+                        (c.get("description") or "") + " " + (c.get("title") or ""),
+                        c.get("title"))
                     reused += 1
                 else:
                     fresh.append(c)

@@ -72,7 +72,8 @@ VERTICALS = [
 RULES = [
     ("laundromat",       r"\blaundromat\b|\bcoin laundry\b|\bcoin-op laundry\b"),
     ("dry_cleaner",      r"\bdry clean|\bdry-clean|\bgarment care\b"),
-    ("atm",              r"\batm route\b|\batm portfolio\b|\batm business\b|\batm machines?\b"),
+    ("atm",              r"\batm (processing )?route\b|\batm portfolio\b|\batm business\b|\batm machines?\b|"
+                         r"\b\d+ atms?\b|\batms? for sale\b|\bbitcoin atm\b"),
     ("vending",          r"\bvending\b|\bmicro ?market\b|\bunattended retail\b"),
     ("pest_control",     r"\bpest control\b|\bexterminat|\btermite\b"),
     ("junk_removal",     r"\bjunk removal\b|\bjunk haul"),
