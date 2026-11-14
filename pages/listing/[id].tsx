@@ -106,7 +106,10 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   listing.dom_basis = rec?.dom_basis ?? null;
   listing.listed_after = rec?.listed_after ?? null;
   listing.days_max = rec?.dom_days_max ?? null;
-  listing.age_label = rec?.dom_display ?? null;
+  listing.age_label =
+    rec?.dom_basis === 'window' && rec?.dom_display
+      ? rec.dom_display.replace(/^Listed between .+ and /, 'Listed ')
+      : rec?.dom_display ?? null;
   listing.age_source = rec?.age_source ?? null;
   listing.first_seen = null;
 
@@ -227,8 +230,6 @@ export default function ListingPage({
   const ageValue =
     listing.days_on_market == null
       ? '—'
-      : listing.dom_basis === 'window' && listing.days_max != null && listing.days_max !== listing.days_on_market
-      ? `${listing.days_on_market}–${listing.days_max} days`
       : listing.dom_basis === 'window'
       ? `${listing.days_on_market} days`
       : `${listing.days_on_market}+ days`;
@@ -250,9 +251,7 @@ export default function ListingPage({
   if (listing.estimated_listed_date && listing.dom_basis) {
     changeLog.push({
       sortKey: listing.estimated_listed_date.slice(0, 10),
-      date: listing.dom_basis === 'window' && listing.listed_after
-        ? fmtWindow(listing.listed_after, listing.estimated_listed_date)
-        : listing.estimated_listed_date.slice(0, 10),
+      date: listing.estimated_listed_date.slice(0, 10),
       description: listing.dom_basis === 'window'
         ? 'Appeared on the broker’s site (complete crawls before and after)'
         : listing.dom_basis === 'observed'

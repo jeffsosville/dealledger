@@ -40,6 +40,11 @@ const place = (r: Row, showState: boolean) => {
 // Strongest age evidence (mv_listings_page_v2): window > observed > in_db. Never seeded dates.
 const domCell = (r: Row) => {
   if (!r.dom_display || !r.dom_basis) return '—';
+  // Window: show one date (the day it first appeared), not the A–B range.
+  if (r.dom_basis === 'window') {
+    const m = r.dom_display.match(/ and (.+)$/);
+    if (m) return `Listed ${m[1]}`;
+  }
   return r.dom_display
     .replace('Observed by DealLedger since ', 'Observed since ')
     .replace('Listed between ', 'Listed ');

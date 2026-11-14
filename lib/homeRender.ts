@@ -60,8 +60,7 @@ function daysCell(r: Row): string {
   if (d === null || d === undefined || !r.dom_basis) return '<span class="days">—</span>';
   const rnd = (x: number) => (x < 60 ? x : x <= 365 ? Math.round(x / 5) * 5 : Math.round(x / 10) * 10);
   if (r.dom_basis === 'window' && r.dom_days_max != null) {
-    const hi = r.dom_days_max;
-    return `<span class="days ${dayClass(d)}" title="Listed between these many days ago, from complete crawls of the broker’s site">${hi === d ? d : `${d}–${hi}`}</span>`;
+    return `<span class="days ${dayClass(d)}" title="Days since it appeared, from complete crawls of the broker’s site">${d}</span>`;
   }
   const title = r.dom_basis === 'in_db'
     ? 'In DealLedger at least this long (date the record was first written to our database)'
@@ -78,7 +77,7 @@ function fmtD(s: string): string {
 
 function seenCell(r: Row): string {
   if (!r.estimated_listed_date || !r.dom_basis) return '—';
-  if (r.dom_basis === 'window' && r.listed_after) return `Listed ${fmtD(r.listed_after)} – ${fmtD(r.estimated_listed_date)}`;
+  if (r.dom_basis === 'window') return `Listed ${fmtD(r.estimated_listed_date)}`;
   if (r.dom_basis === 'in_db') return `In DealLedger since ${fmtD(r.estimated_listed_date)}`;
   return `Observed since ${fmtD(r.estimated_listed_date)}`;
 }
