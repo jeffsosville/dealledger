@@ -226,8 +226,9 @@ export default function SeoPage(p: Props) {
                   <div className="t-row" key={r.listing_number}>
                     <div className="t-title">
                       <a href={`/listing/${r.listing_number}`}>{displayTitle(r)}</a>
-                      <a className="src" href={goListing(r.listing_number, 'seo')} target="_blank" rel="nofollow noopener">
-                        broker ↗
+                      <a className="src" href={goListing(r.listing_number, 'seo')} target="_blank" rel="nofollow noopener"
+                        title="Open the listing on the broker’s website">
+                        listing ↗
                       </a>
                     </div>
                     <div className="t-loc">{place(r, !!p.showState)}</div>
@@ -238,8 +239,9 @@ export default function SeoPage(p: Props) {
                 ))}
               </div>
               <p className="more">
-                “broker ↗” opens the listing on the broker’s own website. DealLedger never stands
-                between you and the seller’s broker.
+                A business name opens DealLedger’s record of the listing: its history, price changes and
+                real age. “listing ↗” opens the listing itself on the broker’s own website. DealLedger never
+                stands between you and the seller’s broker.
               </p>
               {csv && (
                 <p className="download">
@@ -355,7 +357,7 @@ export default function SeoPage(p: Props) {
         }
         .t-row:last-child { border-bottom: none; }
         .t-head { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-mute); }
-        .t-title a { color: var(--ink); text-decoration: none; }
+        .t-title a { color: var(--ink); text-decoration: none; font-weight: 500; }
         .t-title a:hover { color: var(--accent); text-decoration: underline; }
         .t-title .src { font-family: var(--mono); font-size: 11px; color: var(--link); margin-left: 8px; white-space: nowrap; }
         .t-loc { font-size: 13px; color: var(--ink-soft); }

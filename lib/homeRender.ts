@@ -121,7 +121,7 @@ function rowsHtml(all: Row[]): string {
         `<td class="seen" data-state="${r.state ? ' · ' + esc(r.state) : ''}">${seenCell(r)}</td>` +
         `<td class="title"><a href="/listing/${n}">${esc(cut(r.title, 70))}</a>` +
         (r.source_url
-          ? `<a class="src" href="/go/${n}?s=home" target="_blank" rel="nofollow noopener" title="Open the broker’s listing" aria-label="Open the broker’s listing">↗&#xFE0E;</a>`
+          ? `<a class="src" href="/go/${n}?s=home" target="_blank" rel="nofollow noopener" title="Open the listing on the broker’s website" aria-label="Open the listing on the broker’s website">listing ↗&#xFE0E;</a>`
           : '') +
         brokerLink(r.source_url) +
         '</td>' +

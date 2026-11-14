@@ -16,7 +16,14 @@ type Props = {
   picker?: { states: Opt[]; types: Opt[] };
 };
 
-const lc = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+// "Liquor Stores in New Jersey" -> "liquor stores in New Jersey": lowercase the type, keep the state.
+const lc = (s: string) => {
+  const i = s.indexOf(' in ');
+  const type = i >= 0 ? s.slice(0, i) : s;
+  const keep = /^(SaaS|IT|HVAC|ATM|PT)\b/;
+  const t = type.split(' ').map((w) => (keep.test(w) ? w : w.toLowerCase())).join(' ');
+  return i >= 0 ? t + s.slice(i) : t;
+};
 
 export default function AlertSignup({ state = null, vertical = null, label, path, empty, heading, picker }: Props) {
   const [email, setEmail] = useState('');

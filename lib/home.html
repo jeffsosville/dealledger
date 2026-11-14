@@ -194,7 +194,7 @@ input.ctl{width:104px}
 .ledger td.title{overflow-wrap:anywhere}
 .title a{color:var(--text);text-decoration:none;font-weight:500}
 .title a:hover{text-decoration:underline}
-.src{margin-left:6px;font-size:12px;text-decoration:none;color:var(--link)}
+.src{margin-left:8px;font-family:var(--mono);font-size:11px;text-decoration:none;color:var(--link);white-space:nowrap}
 .title a.brk{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--muted, #6b6b6b);text-decoration:none}
 .title a.brk:hover{text-decoration:underline}
 .days{font-family:var(--mono);font-weight:600}
@@ -526,7 +526,7 @@ function paint(rows){
       '<tr>' +
         '<td class="seen" data-state="' + (r.state ? ' · ' + esc(r.state) : '') + '">' + seenCell(r) + '</td>' +
         '<td class="title"><a href="/listing/' + encodeURIComponent(r.listing_number) + '">' + esc(cut(r.title, 70)) + '</a>' +
-          (r.source_url ? '<a class="src" href="/go/' + encodeURIComponent(r.listing_number) + '?s=home" target="_blank" rel="nofollow noopener" title="Open the broker’s listing" aria-label="Open the broker’s listing">↗&#xFE0E;</a>' : '') +
+          (r.source_url ? '<a class="src" href="/go/' + encodeURIComponent(r.listing_number) + '?s=home" target="_blank" rel="nofollow noopener" title="Open the listing on the broker’s website" aria-label="Open the listing on the broker’s website">listing ↗&#xFE0E;</a>' : '') +
           brokerLink(r.source_url) +
         '</td>' +
         '<td class="state">' + esc(r.state || '—') + '</td>' +

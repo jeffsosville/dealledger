@@ -543,7 +543,7 @@ export default function ListingPage({
             <AlertSignup
               {...alert}
               path={`/listing/${listing.listing_number}`}
-              heading={`Get more like this: new ${alert.label.charAt(0).toLowerCase()}${alert.label.slice(1)}, by email`}
+              heading={`Get more like this: new listings for ${alert.label}, by email`}
             />
           )}
 
