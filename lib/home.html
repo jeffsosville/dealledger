@@ -134,6 +134,12 @@ h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spac
 .stat-n{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.1;letter-spacing:-.5px}
 .stat-l{font-size:13px;color:var(--text-muted);margin-top:4px}
 .proof{font-size:13px;color:var(--text-muted);margin-top:10px}
+.alert-cta{margin:22px 0 4px;border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--bg-alt);padding:16px 18px}
+.alert-cta-k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:6px}
+.alert-cta-h{font-size:17px;line-height:1.35;margin-bottom:6px}
+.alert-cta-p{font-size:14px;color:var(--text-muted)}
+.alert-cta-btn{display:inline-block;margin-left:6px;padding:6px 12px;background:var(--text);color:var(--bg)!important;text-decoration:none;font-family:var(--mono);font-size:12px}
+.alert-cta-q{font-size:13px;color:var(--text-muted);margin-top:8px}
 .qnote{font-family:var(--mono);font-size:12px;color:var(--text-muted);margin-top:8px}
 .qnote button{font:inherit;color:var(--link);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0}
 .ctl-check{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap}
@@ -263,6 +269,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     </div>
     <nav>
       <a href="/businesses-for-sale">Browse</a>
+      <a href="/alerts">Alerts</a>
       <a href="/brokers">Brokers</a>
       <a href="/price-changes">Price Changes</a>
       <a href="/writing">Pulse</a>
@@ -289,6 +296,13 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
       <div class="stat"><div class="stat-n"><!--DL:BROKERS--></div><div class="stat-l">broker websites on the record</div></div>
     </div>
     <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/methodology.html">How it works →</a></p>
+
+    <div class="alert-cta">
+      <div class="alert-cta-k">— New listing alerts</div>
+      <p class="alert-cta-h">Get new listings in your niche and state by email, often before they reach the big marketplaces.</p>
+      <p class="alert-cta-p">Free, weekly, no account. <a class="alert-cta-btn" href="/alerts">Set up an alert →</a></p>
+      <p class="alert-cta-q">Popular: <a href="/alerts?type=laundromat">Laundromats</a> · <a href="/alerts?type=pizzerias">Pizzerias</a> · <a href="/alerts?type=cleaning">Cleaning</a> · <a href="/alerts?type=hvac">HVAC</a> · <a href="/alerts?type=vending">Vending</a> · <a href="/alerts?type=dental-practices">Dental</a> · <a href="/alerts?type=auto-repair-shops">Auto repair</a></p>
+    </div>
 
     <div class="rule">or browse the ledger</div>
 
@@ -351,6 +365,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   <div class="container foot">
     <div class="foot-links">
       <a href="/businesses-for-sale">Browse by state</a>
+      <a href="/alerts">Email alerts</a>
       <a href="/businesses-for-sale/type/laundromats">Laundromats for sale</a>
       <a href="/businesses-for-sale/type/hvac">HVAC businesses for sale</a>
       <a href="/brokers">Brokers</a>

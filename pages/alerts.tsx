@@ -1,5 +1,6 @@
 // /alerts — standalone signup for new-listing email alerts: pick a type and a state.
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { useRouter } from 'next/router';
 import SeoPage from '../components/SeoPage';
 import { alertPickerOptions } from '../lib/alerts';
 
@@ -11,6 +12,12 @@ export const getStaticProps: GetStaticProps<Props> = async () => ({
 });
 
 export default function AlertsPage({ picker }: InferGetStaticPropsType<typeof getStaticProps>) {
+  // /alerts?type=pizzerias&state=NJ preselects the pickers (homepage quick links, emails).
+  const { query } = useRouter();
+  const q = (k: string) => (typeof query[k] === 'string' ? (query[k] as string) : '');
+  const type = picker.types.some((o) => o.value === q('type')) ? q('type') : null;
+  const st = q('state').toUpperCase();
+  const state = picker.states.some((o) => o.value === st) ? st : null;
   return (
     <SeoPage
       path="/alerts"
@@ -21,7 +28,7 @@ export default function AlertsPage({ picker }: InferGetStaticPropsType<typeof ge
       intro="Pick a type of business and a state. Once a week, DealLedger emails you the new listings it found on broker websites, often before they reach the big marketplaces, with the real listing age for each. Free, no account, one-click unsubscribe."
       stats={null}
       rows={[]}
-      alert={{ label: 'Businesses for sale', heading: 'Choose what to watch', picker }}
+      alert={{ label: 'Businesses for sale', heading: 'Choose what to watch', picker, vertical: type, state }}
       crumbs={[{ href: '/', label: 'DealLedger' }, { href: '/alerts', label: 'Alerts' }]}
       groups={[{ title: 'Or browse first', links: [{ href: '/businesses-for-sale', label: 'All businesses for sale by state and type' }] }]}
     />

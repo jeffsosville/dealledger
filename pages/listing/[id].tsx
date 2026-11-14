@@ -432,7 +432,7 @@ export default function ListingPage({
           <div className="masthead-inner">
             <a href="/" className="brand">DealLedger</a>
             <div className="masthead-meta">
-              PUBLIC RECORD · {today.toUpperCase()}
+              PUBLIC RECORD · {today.toUpperCase()} · <a href="/alerts" className="masthead-alerts">GET ALERTS</a>
             </div>
           </div>
           <div className="masthead-rule" />
@@ -630,6 +630,7 @@ export default function ListingPage({
           letter-spacing: 0.08em;
           color: var(--ink-mute);
         }
+        .masthead-alerts { color: var(--accent); text-decoration: none; }
         .masthead-rule {
           max-width: 880px;
           margin: 0 auto;

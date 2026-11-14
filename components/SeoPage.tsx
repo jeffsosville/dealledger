@@ -157,7 +157,10 @@ export default function SeoPage(p: Props) {
         <header className="masthead">
           <div className="masthead-inner">
             <a href="/" className="brand">DealLedger</a>
-            <a href="/businesses-for-sale" className="masthead-meta">BROWSE BY STATE &amp; TYPE</a>
+            <span className="masthead-links">
+              <a href="/businesses-for-sale" className="masthead-meta">BROWSE BY STATE &amp; TYPE</a>
+              <a href="/alerts" className="masthead-meta masthead-alerts">GET ALERTS</a>
+            </span>
           </div>
           <div className="masthead-rule" />
         </header>
@@ -326,6 +329,8 @@ export default function SeoPage(p: Props) {
         }
         .brand { font-weight: 700; font-size: 22px; text-decoration: none; letter-spacing: -0.01em; }
         .masthead-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-mute); text-decoration: none; }
+        .masthead-links { display: flex; gap: 18px; flex-wrap: wrap; justify-content: flex-end; }
+        .masthead-alerts { color: var(--accent); }
         .masthead-rule { max-width: 1100px; margin: 0 auto; border-top: 1px solid var(--rule); }
         .content { max-width: 1100px; margin: 0 auto; padding: 40px 32px 96px 32px; }
         .crumbs { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); margin-bottom: 28px; }

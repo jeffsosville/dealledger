@@ -3,7 +3,7 @@
 // Fixed scope (browse, niche and listing pages): pass `state` / `vertical`
 // and the label for the heading. Picker mode (/alerts, 404): pass `picker`
 // with the state and type options and the visitor chooses.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Opt = { value: string; label: string };
 type Props = {
@@ -25,6 +25,9 @@ export default function AlertSignup({ state = null, vertical = null, label, path
   const [ty, setTy] = useState(vertical ?? '');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'already' | 'error'>('idle');
   const [err, setErr] = useState('');
+  // Picker preselect can arrive after hydration (/alerts?type=...&state=...).
+  useEffect(() => { setSt(state ?? ''); }, [state]);
+  useEffect(() => { setTy(vertical ?? ''); }, [vertical]);
 
   const h = heading ?? (empty
     ? `Get an email when ${lc(label)} come up for sale`
