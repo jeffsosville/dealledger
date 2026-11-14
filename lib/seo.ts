@@ -151,10 +151,12 @@ export const fmtMultiple = (n: number | null) => (n == null ? '—' : `${n.toFix
 // Services-Laundromat"). Strip the code; when what is left is only a category,
 // build a plain title from the category, place and price instead.
 const CODE_PREFIX = /^\s*\d{6,}[A-Z]{1,5}\d\s+/;
+// Broker pages that number their cards leak it into the title ("7. Profitable Laundromat").
+const LIST_NUMBER = /^\s*#?\d{1,3}[.)]\s+(?=\S)/;
 const CATEGORY_ONLY = /^general services\s*-\s*(.+)$/i;
 
 export function displayTitle(r: Pick<Row, 'title' | 'city' | 'state_code' | 'price'>): string {
-  let t = (r.title || '').replace(CODE_PREFIX, '').replace(/^[\s|–-]+/, '').trim();
+  let t = (r.title || '').replace(CODE_PREFIX, '').replace(LIST_NUMBER, '').replace(/^[\s|–-]+/, '').trim();
   const cat = t.match(CATEGORY_ONLY);
   if (cat || !t) {
     const what = cat ? cat[1].trim() : 'Business';

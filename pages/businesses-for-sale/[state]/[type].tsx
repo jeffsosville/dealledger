@@ -1,22 +1,32 @@
 // /businesses-for-sale/{state}/{type} — one business type in one state.
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import SeoPage from '../../../components/SeoPage';
+import NichePage from '../../../components/NichePage';
+import { nichePageProps, type NichePageProps } from '../../../lib/niches';
 import {
   Row, Stats, STATES, TYPES, allStats, comboPath, fmtMoney, fmtMultiple, fmtNum, hasComboPage,
   hasStatePage, hasTypePage, listingsFor, stateFromSlug, statePath, typeFromSlug, typePath,
 } from '../../../lib/seo';
 
-type Props = {
-  code: string; vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; hasState: boolean; hasType: boolean;
+type ComboProps = {
+  kind: 'type'; code: string; vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; hasState: boolean; hasType: boolean;
   sameTypeElsewhere: { code: string; count: number }[]; otherTypesHere: { vertical: string; count: number }[];
 };
+
+type Props = ComboProps | ({ kind: 'niche' } & NichePageProps);
 
 export const getStaticPaths: GetStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const code = stateFromSlug(String(params?.state || ''));
-  const vertical = typeFromSlug(String(params?.type || ''));
-  if (!code || !vertical) return { notFound: true, revalidate: 86400 };
+  const slug = String(params?.type || '');
+  const vertical = typeFromSlug(slug);
+  if (!code) return { notFound: true, revalidate: 86400 };
+  if (!vertical) {
+    const niche = await nichePageProps(slug, code);
+    if (!niche) return { notFound: true, revalidate: 86400 };
+    return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+  }
   const all = await allStats();
   const found = all.find((s) => s.scope === 'vertical_state' && s.page_state === code && s.page_vertical === vertical);
   // Below COMBO_MIN we still render (people land here from links and AI answers),
@@ -34,7 +44,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .map((s) => ({ vertical: s.page_vertical as string, count: s.listings }));
   return {
     props: {
-      code, vertical, stats, thin, rows, sameTypeElsewhere, otherTypesHere,
+      kind: 'type', code, vertical, stats, thin, rows, sameTypeElsewhere, otherTypesHere,
       hasState: all.some((s) => hasStatePage(s) && s.page_state === code),
       hasType: all.some((s) => hasTypePage(s) && s.page_vertical === vertical),
     },
@@ -42,7 +52,11 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 };
 
-export default function ComboPage(p: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function ComboOrNichePage(p: InferGetStaticPropsType<typeof getStaticProps>) {
+  return p.kind === 'niche' ? <NichePage {...p} /> : <ComboPage {...p} />;
+}
+
+function ComboPage(p: ComboProps) {
   const name = STATES[p.code];
   const t = TYPES[p.vertical];
   const path = comboPath(p.code, p.vertical);
@@ -56,6 +70,7 @@ export default function ComboPage(p: InferGetStaticPropsType<typeof getStaticPro
     <SeoPage
       path={path}
       noindex={p.thin}
+      alert={{ state: p.code, vertical: p.vertical, label: `${t.label} in ${name}` }}
       title={`${t.label} for Sale in ${name}${n ? ` (${fmtNum(n)})` : ''} — DealLedger`}
       h1={`${t.label} for Sale in ${name}`}
       eyebrow={`${p.code} · ${t.label.toUpperCase()}`}

@@ -2,8 +2,12 @@
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import SeoPage from '../../components/SeoPage';
 import { STATES, TYPES, allStats, fmtNum, hasStatePage, hasTypePage, statePath, typePath } from '../../lib/seo';
+import { NICHE_GROUP_ORDER, NICHE_MIN, nicheCounts, nichePath } from '../../lib/niches';
 
-type Props = { states: { code: string; count: number }[]; types: { vertical: string; count: number }[]; total: number };
+type Props = {
+  states: { code: string; count: number }[]; types: { vertical: string; count: number }[]; total: number;
+  niches: { group: string; links: { slug: string; label: string; count: number }[] }[];
+};
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const all = await allStats();
@@ -16,10 +20,14 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     .sort((a, b) => b.listings - a.listings)
     .map((s) => ({ vertical: s.page_vertical as string, count: s.listings }));
   const total = all.filter((s) => s.scope === 'state').reduce((n, s) => n + s.listings, 0);
-  return { props: { states, types, total }, revalidate: 60 * 60 * 6 };
+  const nc = (await nicheCounts()).filter((c) => c.count >= NICHE_MIN);
+  const niches = NICHE_GROUP_ORDER
+    .map((group) => ({ group, links: nc.filter((c) => c.group === group).sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count })) }))
+    .filter((g) => g.links.length);
+  return { props: { states, types, total, niches }, revalidate: 60 * 60 * 6 };
 };
 
-export default function Hub({ states, types, total }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Hub({ states, types, total, niches }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <SeoPage
       path="/businesses-for-sale"
@@ -34,6 +42,7 @@ export default function Hub({ states, types, total }: InferGetStaticPropsType<ty
       groups={[
         { title: 'By state', links: states.map((s) => ({ href: statePath(s.code), label: STATES[s.code], count: s.count })) },
         { title: 'By type, nationwide', links: types.map((t) => ({ href: typePath(t.vertical), label: TYPES[t.vertical].label, count: t.count })) },
+        ...niches.map((g) => ({ title: `Specific types: ${g.group}`, links: g.links.map((l) => ({ href: nichePath(l.slug), label: l.label, count: l.count })) })),
       ]}
     />
   );

@@ -6,14 +6,23 @@ import {
   hasTypePage, listingsFor, typeFromSlug, typePath,
 } from '../../../lib/seo';
 import { TYPE_GUIDES } from '../../../lib/typeGuides';
+import NichePage from '../../../components/NichePage';
+import { NICHE_MIN, VERTICAL_NICHE_GROUPS, nicheCounts, nichePageProps, nichePath, type NichePageProps } from '../../../lib/niches';
 
-type Props = { vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; byState: { code: string; count: number }[]; otherTypes: { vertical: string; count: number }[] };
+type TypeProps = { kind: 'type'; vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; byState: { code: string; count: number }[]; otherTypes: { vertical: string; count: number }[]; niches: { slug: string; label: string; count: number }[] };
+
+type Props = TypeProps | ({ kind: 'niche' } & NichePageProps);
 
 export const getStaticPaths: GetStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const vertical = typeFromSlug(String(params?.type || ''));
-  if (!vertical) return { notFound: true, revalidate: 86400 };
+  const slug = String(params?.type || '');
+  const vertical = typeFromSlug(slug);
+  if (!vertical) {
+    const niche = await nichePageProps(slug, null);
+    if (!niche) return { notFound: true, revalidate: 86400 };
+    return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+  }
   const all = await allStats();
   const found = all.find((s) => s.scope === 'vertical' && s.page_vertical === vertical);
   // Below TYPE_MIN: render a thin noindex page instead of a 404 (sitemap still uses hasTypePage).
@@ -28,10 +37,19 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .filter((s) => hasTypePage(s) && s.page_vertical !== vertical)
     .sort((a, b) => b.listings - a.listings)
     .map((s) => ({ vertical: s.page_vertical as string, count: s.listings }));
-  return { props: { vertical, stats, thin, rows, byState, otherTypes }, revalidate: thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+  const groups = VERTICAL_NICHE_GROUPS[vertical] || [];
+  const niches = groups.length
+    ? (await nicheCounts()).filter((c) => groups.includes(c.group) && c.count >= NICHE_MIN)
+        .sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count }))
+    : [];
+  return { props: { kind: 'type', vertical, stats, thin, rows, byState, otherTypes, niches }, revalidate: thin ? 60 * 60 * 24 : 60 * 60 * 6 };
 };
 
-export default function TypePage({ vertical, stats: s, thin, rows, byState, otherTypes }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function TypeOrNichePage(p: InferGetStaticPropsType<typeof getStaticProps>) {
+  return p.kind === 'niche' ? <NichePage {...p} /> : <TypePage {...p} />;
+}
+
+function TypePage({ vertical, stats: s, thin, rows, byState, otherTypes, niches }: TypeProps) {
   const t = TYPES[vertical];
   const path = typePath(vertical);
   const guide = TYPE_GUIDES[vertical];
@@ -41,6 +59,7 @@ export default function TypePage({ vertical, stats: s, thin, rows, byState, othe
     <SeoPage
       path={path}
       noindex={thin}
+      alert={{ vertical, label: t.label }}
       title={guide && s ? guide.title.replace('{n}', fmtNum(s.listings)) : `${t.label} for Sale${n ? ` (${fmtNum(n)} listings)` : ''} — DealLedger`}
       h1={guide?.h1 || `${t.label} for Sale`}
       guide={guide}
@@ -58,6 +77,7 @@ export default function TypePage({ vertical, stats: s, thin, rows, byState, othe
       showState
       crumbs={[{ href: '/', label: 'DealLedger' }, { href: '/businesses-for-sale', label: 'Businesses for sale' }, { href: path, label: t.label }]}
       groups={[
+        { title: `${t.label} by specialty`, links: niches.map((o) => ({ href: nichePath(o.slug), label: o.label, count: o.count })) },
         { title: `${t.label} by state`, links: byState.map((o) => ({ href: comboPath(o.code, vertical), label: STATES[o.code], count: o.count })) },
         { title: 'Other business types', links: otherTypes.map((o) => ({ href: typePath(o.vertical), label: TYPES[o.vertical].label, count: o.count })) },
       ]}

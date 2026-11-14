@@ -3,6 +3,10 @@ import Head from 'next/head';
 import { goListing } from '../lib/clickout';
 import { Row, Stats, STATES, displayTitle, fmtAsOf, fmtMoney, fmtMultiple, fmtNum, pageUrl } from '../lib/seo';
 import type { TypeGuide } from '../lib/typeGuides';
+import AlertSignup from './AlertSignup';
+
+// Off until sql/2026-11-13_alert_subscriptions.sql is applied; the API routes need the table.
+const ALERTS_ENABLED = false;
 
 export type LinkGroup = { title: string; links: { href: string; label: string; count?: number }[] };
 export type Crumb = { href: string; label: string };
@@ -22,6 +26,8 @@ type Props = {
   refreshedNote?: string;
   guide?: TypeGuide;        // buyer context + FAQ for national type pages
   noindex?: boolean;        // thin pages: render for visitors, keep out of the index
+  alert?: { state?: string | null; vertical?: string | null; label: string }; // new-listing email signup
+  noCsv?: boolean;          // niche pages: no CSV route yet
 };
 
 const place = (r: Row, showState: boolean) => {
@@ -44,7 +50,7 @@ export default function SeoPage(p: Props) {
   const shown = p.rows.length;
   const total = p.stats?.listings ?? shown;
   const asOf = fmtAsOf(p.stats?.refreshed_at);
-  const csv = p.stats ? `${p.path}.csv` : null;
+  const csv = p.stats && !p.noCsv ? `${p.path}.csv` : null;
 
   const ld = [
     {
@@ -192,7 +198,7 @@ export default function SeoPage(p: Props) {
               <div className="stat">
                 <div className="stat-label">Price ÷ cash flow</div>
                 <div className="stat-value">{fmtMultiple(p.stats.median_multiple)}</div>
-                <div className="stat-sub">median, {fmtNum(p.stats.with_cash_flow)} listings report cash flow</div>
+                <div className="stat-sub">median, {fmtNum(p.stats.with_cash_flow)} {p.stats.with_cash_flow === 1 ? 'listing reports' : 'listings report'} cash flow</div>
               </div>
             </div>
           )}
@@ -239,6 +245,8 @@ export default function SeoPage(p: Props) {
               )}
             </section>
           )}
+
+          {ALERTS_ENABLED && p.alert && <AlertSignup {...p.alert} path={p.path} empty={shown === 0} />}
 
           {p.guide &&
             p.guide.sections.map((sec) => (

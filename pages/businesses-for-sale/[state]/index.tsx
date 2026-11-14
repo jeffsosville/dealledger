@@ -1,12 +1,13 @@
 // /businesses-for-sale/{state} — every public listing in one state.
 import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import SeoPage from '../../../components/SeoPage';
+import { NICHE_COMBO_MIN, nicheCounts } from '../../../lib/niches';
 import {
   Row, Stats, STATES, TYPES, allStats, comboPath, fmtMoney, fmtNum, hasComboPage, hasStatePage,
   listingsFor, stateFromSlug, statePath,
 } from '../../../lib/seo';
 
-type Props = { code: string; stats: Stats; rows: Row[]; types: { vertical: string; count: number }[]; others: { code: string; count: number }[] };
+type Props = { code: string; stats: Stats; rows: Row[]; types: { vertical: string; count: number }[]; others: { code: string; count: number }[]; niches: { slug: string; label: string; count: number }[] };
 
 export const getStaticPaths: GetStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
 
@@ -25,15 +26,20 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .filter((s) => hasStatePage(s) && s.page_state !== code)
     .sort((a, b) => STATES[a.page_state!].localeCompare(STATES[b.page_state!]))
     .map((s) => ({ code: s.page_state as string, count: s.listings }));
-  return { props: { code, stats, rows, types, others }, revalidate: 60 * 60 * 6 };
+  const niches = (await nicheCounts())
+    .map((c) => ({ slug: c.slug, label: c.label, count: c.states[code] || 0 }))
+    .filter((c) => c.count >= NICHE_COMBO_MIN)
+    .sort((a, b) => b.count - a.count);
+  return { props: { code, stats, rows, types, others, niches }, revalidate: 60 * 60 * 6 };
 };
 
-export default function StatePage({ code, stats, rows, types, others }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function StatePage({ code, stats, rows, types, others, niches }: InferGetStaticPropsType<typeof getStaticProps>) {
   const name = STATES[code];
   const path = statePath(code);
   return (
     <SeoPage
       path={path}
+      alert={{ state: code, label: `Businesses in ${name}` }}
       title={`Businesses for Sale in ${name} (${fmtNum(stats.listings)} listings) — DealLedger`}
       h1={`Businesses for Sale in ${name}`}
       eyebrow={`${code} · LISTED DIRECTLY BY BROKERS`}
@@ -44,6 +50,7 @@ export default function StatePage({ code, stats, rows, types, others }: InferGet
       crumbs={[{ href: '/', label: 'DealLedger' }, { href: '/businesses-for-sale', label: 'Businesses for sale' }, { href: path, label: name }]}
       groups={[
         { title: `By type in ${name}`, links: types.map((t) => ({ href: comboPath(code, t.vertical), label: TYPES[t.vertical].label, count: t.count })) },
+        { title: `Specific types in ${name}`, links: niches.map((n) => ({ href: `${path}/${n.slug}`, label: n.label, count: n.count })) },
         { title: 'Other states', links: others.map((o) => ({ href: statePath(o.code), label: STATES[o.code], count: o.count })) },
       ]}
     />
