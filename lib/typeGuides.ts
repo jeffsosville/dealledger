@@ -195,7 +195,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
         heading: 'What sets the price of a restaurant',
         body: [
           'Many restaurants for sale are priced closer to the value of the space and equipment than to earnings, because margins are thin and a new owner often changes the concept. Profitable, established restaurants with clean books are the ones that sell on a multiple of earnings.',
-          'The lease is often the most valuable thing being sold: location, remaining term, rent as a share of sales, and whether the landlord will assign it.',
+          'The lease is often the most valuable thing in the deal: location, remaining term, rent as a share of sales, and whether the landlord will assign it.',
           'Franchise resales are priced differently from independents. The franchisor’s transfer fee, approval process and any required remodel all affect what a buyer can pay.',
         ],
       },
