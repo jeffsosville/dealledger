@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   ctx.res.setHeader('X-Robots-Tag', 'noindex, nofollow');
 
   const kind = ctx.query.to === 'listings' ? 'listings' : 'home';
-  const { source, referrer, ua, human } = requestMeta(ctx);
+  const { source, referrer, ua, human, ip } = requestMeta(ctx);
   try {
     const { data } = await getSupabase().rpc('dl_click_broker', {
       p_slug: slug,
@@ -19,6 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       p_referrer: referrer,
       p_ua: ua,
       p_human: human,
+      p_ip: ip,
     });
     return redirectTo(typeof data === 'string' ? data : null, `/broker/${slug}`, 'broker');
   } catch {

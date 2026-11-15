@@ -33,7 +33,10 @@ export const isHumanClick = (ctx: GetServerSidePropsContext): boolean => {
 
 export const requestMeta = (ctx: GetServerSidePropsContext) => {
   const s = ctx.query.s;
+  const fwd = ctx.req.headers['x-forwarded-for'];
+  const ip = (Array.isArray(fwd) ? fwd[0] : fwd)?.split(',')[0]?.trim() || ctx.req.socket?.remoteAddress || null;
   return {
+    ip,
     source: typeof s === 'string' ? s.slice(0, 32) : null,
     referrer: (ctx.req.headers.referer as string | undefined) ?? null,
     ua: (ctx.req.headers['user-agent'] as string | undefined) ?? null,
