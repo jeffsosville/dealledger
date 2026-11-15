@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       p_ua: ua,
       p_human: human,
     });
-    return redirectTo(typeof data === 'string' ? data : null, `/broker/${slug}`);
+    return redirectTo(typeof data === 'string' ? data : null, `/broker/${slug}`, 'broker');
   } catch {
     return redirectTo(null, `/broker/${slug}`);
   }

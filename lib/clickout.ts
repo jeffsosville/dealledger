@@ -57,8 +57,28 @@ const safeLocation = (url: string): string | null => {
   }
 };
 
-export const redirectTo = (url: string | null, fallback: string) => ({
-  redirect: { destination: (url && safeLocation(url)) || fallback, permanent: false },
-});
+/**
+ * Tag outbound traffic so brokers see it as dealledger.org / referral in
+ * their own analytics. Never overwrites UTM params the broker URL already has.
+ */
+const withUtm = (url: string, campaign: 'listing' | 'broker'): string => {
+  try {
+    const u = new URL(url);
+    if (u.searchParams.has('utm_source')) return url;
+    u.searchParams.set('utm_source', 'dealledger.org');
+    u.searchParams.set('utm_medium', 'referral');
+    u.searchParams.set('utm_campaign', campaign);
+    return u.toString();
+  } catch {
+    return url;
+  }
+};
+
+export const redirectTo = (url: string | null, fallback: string, campaign: 'listing' | 'broker' = 'listing') => {
+  const safe = url ? safeLocation(url) : null;
+  return {
+    redirect: { destination: (safe && withUtm(safe, campaign)) || fallback, permanent: false },
+  };
+};
 
 export { getSupabase };
