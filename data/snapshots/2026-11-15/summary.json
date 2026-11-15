@@ -1,0 +1,154 @@
+{
+  "started": "2026-11-15T10:25:18.743726+00:00",
+  "brokers_attempted": 722,
+  "brokers_success": 593,
+  "brokers_failed": 121,
+  "total_listings": 13436,
+  "listings_with_price": 12177,
+  "listings_with_cashflow": 4957,
+  "listings_with_state": 11576,
+  "detail_pages_fetched": 768,
+  "patterns_cached": 595,
+  "patterns_learned": 499,
+  "verticals": {
+    "restaurant": 3066,
+    "automotive": 917,
+    "technology": 1535,
+    "other": 3246,
+    "manufacturing": 387,
+    "landscaping": 163,
+    "healthcare": 1063,
+    "hvac": 224,
+    "construction": 378,
+    "retail": 1470,
+    "pressure_washing": 9,
+    "laundromat": 155,
+    "electrical": 117,
+    "plumbing": 142,
+    "cleaning": 172,
+    "dry_cleaner": 42,
+    "roofing": 61,
+    "pest_control": 18,
+    "delivery_route": 93,
+    "vending": 116,
+    "atm": 46,
+    "amusement": 8,
+    "junk_removal": 4,
+    "pool_service": 4
+  },
+  "failure_types": {
+    "NO_PATTERN": 92,
+    "EMBED_BBS": 8,
+    "HTTP_403": 17,
+    "FETCH_ERROR": 6,
+    "TITLE_REPETITION_REJECT": 2
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "Diversified Business Advisors",
+      "domain": "businessadvisors.us",
+      "event": "stale_cache",
+      "selector": "article.bde-loop-item.ee-post",
+      "rejected": "div[class*=\"bde-column-1492\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "Empire Global Business Brokers",
+      "domain": "empiregbb.com",
+      "event": "stale_cache",
+      "selector": "div.ssmoxNY"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    }
+  ],
+  "site_pages_dropped": 33,
+  "slowest_brokers": [
+    [
+      2049,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      1999,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      885,
+      "www.gatewayma.com",
+      115
+    ],
+    [
+      852,
+      "pacificrb.com",
+      7
+    ],
+    [
+      495,
+      "beehivebusinessbrokers.com",
+      11
+    ],
+    [
+      489,
+      "restaurantrealty.com",
+      121
+    ],
+    [
+      464,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      462,
+      "buygasstations.com",
+      3
+    ],
+    [
+      428,
+      "buyselledge.com",
+      6
+    ],
+    [
+      309,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      308,
+      "bossgi.com",
+      2
+    ],
+    [
+      303,
+      "rpmshopsales.com",
+      2
+    ],
+    [
+      299,
+      "www.usbizsell.com",
+      3
+    ],
+    [
+      294,
+      "therockbridge.group",
+      7
+    ],
+    [
+      292,
+      "vrnutmeg.com",
+      0
+    ]
+  ],
+  "seconds_total": 35563,
+  "completed": "2026-11-15T13:22:38.039213+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
