@@ -82,6 +82,23 @@ function seenCell(r: Row): string {
   return `Observed since ${fmtD(r.estimated_listed_date)}`;
 }
 
+// Mirrors stateLabel() in lib/home.html.
+const STATE_CODE: Record<string, string> = {
+  alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA', colorado: 'CO', connecticut: 'CT',
+  delaware: 'DE', 'district of columbia': 'DC', florida: 'FL', georgia: 'GA', hawaii: 'HI', idaho: 'ID', illinois: 'IL',
+  indiana: 'IN', iowa: 'IA', kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD',
+  massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO', montana: 'MT',
+  nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY',
+  'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH', oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA',
+  'rhode island': 'RI', 'south carolina': 'SC', 'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT',
+  vermont: 'VT', virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY',
+};
+function stateLabel(s: string | null): string {
+  if (!s) return '';
+  const t = s.trim();
+  return STATE_CODE[t.toLowerCase()] || t;
+}
+
 function brokerLink(url: string | null): string {
   const m = /^https?:\/\/(?:www\.)?([^\/:?#]+)/i.exec(url || '');
   if (!m) return '';
@@ -117,14 +134,14 @@ function rowsHtml(all: Row[]): string {
       const n = encodeURIComponent(String(r.listing_number));
       return (
         '<tr>' +
-        `<td class="seen" data-state="${r.state ? ' · ' + esc(r.state) : ''}">${seenCell(r)}</td>` +
+        `<td class="seen" data-state="${r.state ? ' · ' + esc(stateLabel(r.state)) : ''}">${seenCell(r)}</td>` +
         `<td class="title"><a href="/listing/${n}">${esc(cut(r.title, 70))}</a>` +
         (r.source_url
           ? `<a class="src" href="/go/${n}?s=home" target="_blank" rel="nofollow noopener" title="Open the listing on the broker’s website" aria-label="Open the listing on the broker’s website">listing ↗&#xFE0E;</a>`
           : '') +
         brokerLink(r.source_url) +
         '</td>' +
-        `<td class="state">${esc(r.state || '—')}</td>` +
+        `<td class="state">${esc(stateLabel(r.state) || '—')}</td>` +
         `<td class="num price">${fmtPrice(r.price)}${cutTag(r)}</td>` +
         `<td class="num daysc">${daysCell(r)}</td>` +
         '</tr>'

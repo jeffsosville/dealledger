@@ -191,12 +191,6 @@ const fmtPriceFull = (n: number | null | undefined) => {
   return `$${new Intl.NumberFormat('en-US').format(n)}`;
 };
 
-const fmtMonthYear = (s: string | null | undefined) => {
-  if (!s) return '—';
-  const d = new Date(s);
-  if (isNaN(d.getTime())) return s;
-  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-};
 
 const padDLId = (id: number) => `DL-${String(id).padStart(8, '0')}`;
 
@@ -472,15 +466,6 @@ export default function ListingPage({
             />
           </div>
 
-          {listing.estimated_listed_date && listing.dom_basis && (
-            <Section title="TIMELINE" subtitle="Observed events">
-              <Timeline
-                listedDate={listing.estimated_listed_date}
-                label={listing.dom_basis === 'window' ? 'Appeared by' : listing.dom_basis === 'observed' ? 'Observed since' : 'In DealLedger since'}
-              />
-            </Section>
-          )}
-
           {changes.length > 0 && (
             <Section title="PRICE CHANGES" subtitle="From the broker&rsquo;s own listing">
               <div className="changelog">
@@ -503,7 +488,7 @@ export default function ListingPage({
           )}
 
           {changeLog.length > 0 && (
-            <Section title="CHANGE LOG" subtitle="What's changed">
+            <Section title="LISTING HISTORY" subtitle="What we've observed">
               <div className="changelog">
                 {changeLog.map((entry, i) => (
                   <div key={i} className="changelog-row">
@@ -528,16 +513,6 @@ export default function ListingPage({
             </Section>
           )}
 
-          <Section title="ACQUISITION FINANCING" subtitle="">
-            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--rule)', padding: '22px 24px' }}>
-              <p style={{ margin: 0, color: 'var(--ink-soft)', maxWidth: '64ch' }}>
-                Most SBA-eligible businesses on this ledger qualify for 7(a) acquisition
-                financing at approximately 10% buyer equity. DealLedger maintains relationships
-                with SBA lender partners. <a href="/sba">See SBA options →</a>
-              </p>
-            </div>
-          </Section>
-
           {alert && (
             <AlertSignup
               {...alert}
@@ -557,9 +532,9 @@ export default function ListingPage({
                 </p>
               ) : (
                 <p>
-                  DealLedger displays the latest recorded asking price from the
-                  broker&rsquo;s listing. Historical price changes are not
-                  currently tracked.
+                  DealLedger records the asking price each time it observes the
+                  broker&rsquo;s listing. No change has been observed for this
+                  listing yet; if the price changes, it will appear here.
                 </p>
               )}
               {listing.quality_tier && listing.quality_tier !== 'Verified' && (
@@ -882,90 +857,6 @@ function Section({
         }
       `}</style>
     </section>
-  );
-}
-
-function Timeline({
-  listedDate,
-  label,
-}: {
-  listedDate: string | null;
-  label: string;
-}) {
-  const events: { label: string; date: string }[] = [];
-
-  if (listedDate) {
-    events.push({ label, date: fmtMonthYear(listedDate) });
-  }
-
-  if (events.length === 0) return null;
-
-  return (
-    <div className="tl-wrap">
-      <div className="tl-track">
-        {events.map((e, i) => (
-          <div key={i} className="tl-event">
-            <div className="tl-label">{e.label}</div>
-            <div className={`tl-dot ${i === 0 ? 'tl-dot-first' : ''} ${i === events.length - 1 ? 'tl-dot-last' : ''}`} />
-            <div className="tl-date">{e.date}</div>
-          </div>
-        ))}
-      </div>
-      <style jsx>{`
-        .tl-wrap {
-          background: var(--bg-card);
-          border: 1px solid var(--rule);
-          padding: 32px 24px;
-        }
-        .tl-track {
-          display: grid;
-          grid-template-columns: repeat(${events.length}, 1fr);
-          position: relative;
-        }
-        .tl-track::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 8%;
-          right: 8%;
-          height: 1px;
-          background: var(--rule);
-          z-index: 0;
-        }
-        .tl-event {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          position: relative;
-          z-index: 1;
-        }
-        .tl-label {
-          font-size: 12px;
-          color: var(--ink-soft);
-          text-align: center;
-          min-height: 32px;
-          display: flex;
-          align-items: flex-end;
-        }
-        .tl-dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: var(--ink-soft);
-          border: 2px solid var(--bg-card);
-          box-shadow: 0 0 0 1px var(--rule);
-        }
-        .tl-dot-first { background: #4a7a4a; }
-        .tl-dot-last { background: var(--accent); }
-        .tl-date {
-          font-family: var(--mono);
-          font-size: 11px;
-          color: var(--ink-mute);
-          text-align: center;
-        }
-      `}</style>
-    </div>
   );
 }
 

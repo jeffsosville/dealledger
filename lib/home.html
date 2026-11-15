@@ -40,7 +40,6 @@
         "name": "DealLedger",
         "url": "https://dealledger.org"
       },
-      "temporalCoverage": "2026-03-24/..",
       "spatialCoverage": {
         "@type": "Place",
         "name": "United States",
@@ -120,8 +119,8 @@ header{border-bottom:1px solid var(--border);padding:18px 0}
 .brand{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap;min-width:0}
 .logo{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.5px;color:var(--text);text-decoration:none}
 .tagline{font-size:13px;color:var(--text-muted)}
-nav{display:flex;gap:20px}
-nav a{font-family:var(--mono);font-size:12px;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:.5px}
+nav{display:flex;flex-wrap:wrap;gap:6px 20px}
+nav a{font-family:var(--mono);font-size:12px;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
 nav a:hover{color:var(--text)}
 
 /* hero */
@@ -134,9 +133,9 @@ h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spac
 .stat-n{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.1;letter-spacing:-.5px}
 .stat-l{font-size:13px;color:var(--text-muted);margin-top:4px}
 .proof{font-size:13px;color:var(--text-muted);margin-top:10px}
-.alert-cta{margin:22px 0 4px;border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--bg-alt);padding:16px 18px}
-.alert-cta-k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:6px}
-.alert-cta-h{font-size:17px;line-height:1.35;margin-bottom:6px}
+.alert-cta{margin:22px 0 4px;border:1px solid var(--border);background:var(--bg-alt);padding:16px 18px}
+.alert-cta-k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px}
+.alert-cta-h{font-size:15px;line-height:1.35;margin-bottom:6px}
 .alert-cta-p{font-size:14px;color:var(--text-muted)}
 .alert-cta-btn{display:inline-block;margin-left:6px;padding:6px 12px;background:var(--text);color:var(--bg)!important;text-decoration:none;font-family:var(--mono);font-size:12px}
 .alert-cta-q{font-size:13px;color:var(--text-muted);margin-top:8px}
@@ -198,7 +197,7 @@ input.ctl{width:104px}
 .title a.brk{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--muted, #6b6b6b);text-decoration:none}
 .title a.brk:hover{text-decoration:underline}
 .days{font-family:var(--mono);font-weight:600}
-.d0{color:#15803d}.d1{color:var(--text)}.d2{color:#b45309}.d3{color:#b91c1c}
+.d0,.d1,.d2,.d3{color:var(--text)}
 .empty{padding:40px;text-align:center;color:var(--text-muted)}
 .is-busy{opacity:.45}
 .foot-note{font-size:12px;color:var(--text-muted);margin-top:10px;max-width:72ch}
@@ -223,6 +222,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   :root{--gutter:16px}
   .hero{padding:32px 0 20px}
   .tagline{flex-basis:100%}
+  nav{gap:6px 16px}
   .lookup input,.search-bar,.ctl{font-size:16px} /* stops iOS zoom-on-focus */
   .lookup button{flex:1 1 100%}
   .stats{grid-template-columns:1fr}
@@ -285,7 +285,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <p class="lede">Business listings appear, change, disappear and come back, and nobody keeps the record. We read every broker website we can find, every day, and write down what we see: when a listing appeared, what changed, when it came down.</p>
     <form class="lookup" id="lkForm" role="search">
       <input id="lkInput" type="search" autocomplete="off" aria-label="Paste a listing link or search listings"
-             placeholder="Paste a listing link or search: HVAC, Texas…">
+             placeholder="Search or paste a listing link">
       <button id="lkGo" type="submit">Search</button>
     </form>
     <div class="lk-msg" id="lkMsg"></div>
@@ -295,7 +295,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
       <div class="stat"><div class="stat-n" id="nHero"><!--DL:TOTAL--></div><div class="stat-l">listings on the record</div></div>
       <div class="stat"><div class="stat-n"><!--DL:BROKERS--></div><div class="stat-l">broker websites on the record</div></div>
     </div>
-    <p class="proof">Counted from <a href="/brokers">brokers' own websites</a> since March 2026. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/methodology.html">How it works →</a></p>
+    <p class="proof">Counted from <a href="/brokers">brokers' own websites</a>. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/methodology.html">How it works →</a></p>
 
     <div class="alert-cta">
       <div class="alert-cta-k">— New listing alerts</div>
@@ -330,7 +330,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     </div>
   </section>
 
-  <div class="count" id="ledger"><strong id="n"><!--DL:SHOWN--></strong> listings<span id="qShow"></span></div>
+  <div class="count" id="ledger"><strong id="n"><!--DL:SHOWN--></strong> listings<span id="nPriced"> with an asking price</span><span id="qShow"></span></div>
 
   <table class="ledger">
     <thead>
@@ -357,7 +357,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <p><strong>The problem.</strong> There is no public registry of small businesses for sale. Listing dates are hidden, the same business turns up on several sites under different numbers, and stale listings inflate every count.</p>
     <p><strong>What this is.</strong> An open record of businesses listed for sale by brokers. We read every broker site we can find — <a href="/brokers">see every broker we track</a> — write down what we see, and keep the history: when a listing appeared, what changed, when it came down. The data is CC0 and the code is public.</p>
     <p><strong>What this isn’t.</strong> We don’t rank listings, recommend brokers, capture leads or broker deals. A record, not a marketplace.</p>
-    <p><strong>How the dates work.</strong> We only show an age we can back with evidence. When complete crawls of a broker’s site show a listing appearing, we show the window it appeared in. Otherwise we show the first date our own crawl saw it (“Observed since”), or the date our database first recorded it (“In DealLedger since”). Our record starts March 2026, so a listing that was already up then is at least that old.</p>
+    <p><strong>How the dates work.</strong> We only show an age we can back with evidence. When complete crawls of a broker’s site show a listing appearing, we show the window it appeared in. Otherwise we show the first date our own crawl saw it (“Observed since”), or the date our database first recorded it (“In DealLedger since”). A listing that was already up the first time we saw it is at least that old.</p>
   </section>
 </div>
 
@@ -386,6 +386,12 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const API  = SUPABASE_URL + '/rest/v1';
 const HEAD = { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON };
 const PER_PAGE = 50;
+
+// Some brokers write the state out ("Florida") or give a county or city
+// instead; show codes where we can and match both forms when filtering.
+const STATE_NAME = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+const STATE_CODE = Object.fromEntries(Object.entries(STATE_NAME).map(([c, n]) => [n.toLowerCase(), c]));
+function stateLabel(s){ if (!s) return ''; const t = String(s).trim(); return STATE_CODE[t.toLowerCase()] || t; }
 
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
@@ -435,7 +441,7 @@ function query(){
   p.set('select','listing_number,title,state,price,source_url,estimated_listed_date,listed_after,dom_days_eff,dom_days_max,dom_basis');
   p.append('source','eq.broker_direct');
   const st = $('fState').value, lo = num($('fMin').value), hi = num($('fMax').value);
-  if (st) p.append('state','eq.' + st);
+  if (st) p.append('state','in.(' + st + ',"' + STATE_NAME[st] + '")');
   if (lo) p.append('price','gte.' + lo);
   if (hi) p.append('price','lte.' + hi);
   if ($('fPriced').checked) p.append('price','not.is.null');
@@ -506,6 +512,7 @@ function paint(rows){
   const body = $('rows');
   body.classList.remove('is-busy');
   $('n').textContent = total.toLocaleString();
+  $('nPriced').hidden = !$('fPriced').checked;
   $('qShow').innerHTML = q
     ? ' matching “' + esc(q) + '” · <button type="button" id="qClear">clear</button>'
     : '';
@@ -524,12 +531,12 @@ function paint(rows){
   } else {
     body.innerHTML = rows.map(r =>
       '<tr>' +
-        '<td class="seen" data-state="' + (r.state ? ' · ' + esc(r.state) : '') + '">' + seenCell(r) + '</td>' +
+        '<td class="seen" data-state="' + (r.state ? ' · ' + esc(stateLabel(r.state)) : '') + '">' + seenCell(r) + '</td>' +
         '<td class="title"><a href="/listing/' + encodeURIComponent(r.listing_number) + '">' + esc(cut(r.title, 70)) + '</a>' +
           (r.source_url ? '<a class="src" href="/go/' + encodeURIComponent(r.listing_number) + '?s=home" target="_blank" rel="nofollow noopener" title="Open the listing on the broker’s website" aria-label="Open the listing on the broker’s website">listing ↗&#xFE0E;</a>' : '') +
           brokerLink(r.source_url) +
         '</td>' +
-        '<td class="state">' + esc(r.state || '—') + '</td>' +
+        '<td class="state">' + esc(stateLabel(r.state) || '—') + '</td>' +
         '<td class="num price">' + price(r.price) + cutTag(r) + '</td>' +
         '<td class="num daysc">' + daysCell(r) + '</td>' +
       '</tr>').join('');
