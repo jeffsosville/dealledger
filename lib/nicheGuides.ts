@@ -269,4 +269,60 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
       SOURCE_FAQ('med spa'),
     ],
   },
+
+  'hotels-and-motels': {
+    title: 'Hotels & Motels for Sale: {n} Hotels, Motels & Inns Listed by Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of a hotel or motel',
+        body: [
+          'Most hotels and motels come with the land and building, so they are priced like income property: on net operating income and the value of the real estate, with the business included.',
+          'Buyers and lenders look at occupancy, average daily rate and revenue per available room, compared with nearby properties. A hotel that earns well below its neighbors may be an opportunity or may have a reason: location, condition or reputation.',
+          'Branded properties carry the franchise’s reservation system and loyalty program. On a sale the brand usually requires a property improvement plan, a list of renovations the buyer must complete. Its cost belongs in the price.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Monthly revenue by room and by channel (direct, brand, online travel agencies) for at least two years, compared with lodging tax filings and bank deposits.',
+          'Online reviews and the brand’s quality scores, which predict both revenue and renovation costs.',
+          'The age of roofs, HVAC units, boilers and room interiors. Deferred maintenance is the most common surprise in older motels.',
+          'Whether long-term guests have tenant rights under state or local law, and how much of the revenue comes from them.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are hotels and motels for sale priced?', a: 'On net operating income and real estate value, adjusted for brand, condition and any required renovation. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Can I buy a motel with an SBA loan?', a: 'Hotels and motels are financed with SBA 7(a) and 504 loans regularly. Lenders want operating history, an appraisal and, for branded properties, the franchisor’s approval and renovation plan.' },
+      SOURCE_FAQ('hotel and motel'),
+    ],
+  },
+
+  'campgrounds-and-rv-parks': {
+    title: 'Campgrounds & RV Parks for Sale: {n} Listed by Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'What sets the price of a campground or RV park',
+        body: [
+          'Campgrounds and RV parks almost always include the land, so they are priced on net operating income and real estate value together.',
+          'The mix of stays sets how steady the income is. Annual and seasonal sites are predictable; nightly and weekend stays pay more per night but depend on weather, season and marketing. Many parks also earn from cabins, a camp store, propane, laundry and events.',
+          'Infrastructure is most of the cost of running a park: roads, electrical service to each site, water and wastewater. Sites with full hookups and 50-amp service earn more and suit today’s larger RVs.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Occupancy and revenue by site type and by month for at least two years, compared with lodging tax filings and reservation system reports.',
+          'Water and wastewater: is the park on public utilities, private wells and septic, or its own treatment system? Permits, testing records and remaining capacity all matter.',
+          'Zoning and permits for the current number of sites and any planned expansion, and any limits on how long guests can stay.',
+          'Long-term residents. In some states, guests who stay long enough gain tenant protections, which changes how the park can be run.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are RV parks and campgrounds for sale priced?', a: 'On net operating income and land value, adjusted for site mix, hookups and the condition of roads and utilities. When this page has enough listings, the median asking price at the top is calculated from them.' },
+      { q: 'Can I finance an RV park with an SBA loan?', a: 'Many campgrounds and RV parks qualify for SBA 7(a) or 504 financing as operating businesses. Lenders look at operating history, an appraisal and environmental reports on wells and wastewater systems.' },
+      SOURCE_FAQ('campground and RV park'),
+    ],
+  },
 };

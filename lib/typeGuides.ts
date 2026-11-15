@@ -27,11 +27,34 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
         ],
       },
       {
+        heading: 'Unattended, attended, or service-led',
+        body: [
+          'Unattended stores run on coin, card or app payment with an owner or route person visiting daily to clean, collect and handle repairs. They are the listings that say “absentee” or “semi-absentee,” and they attract the most buyers, so they rarely trade at a discount.',
+          'Attended stores keep an employee on site during open hours. Payroll is the biggest cost after rent and utilities, and it buys cleaner machines, fewer break-ins and the chance to sell services.',
+          'Wash-and-fold, commercial accounts (gyms, salons, short-term rentals, clinics) and pickup and delivery turn a laundromat into a service business. They can lift revenue well beyond what the machines alone earn, but that revenue depends on staff and customer relationships, so ask how much of it the current owner personally manages.',
+        ],
+      },
+      {
+        heading: 'Equipment and payment systems',
+        body: [
+          'Commercial washers and dryers last many years but not forever. The age, brand and mix of machine sizes matter: large-capacity washers earn the most per turn, and a store with only small top-loaders will usually need investment.',
+          'Card and app payment systems let an owner change prices, run promotions and see revenue by machine. They also make reported revenue easier to verify. Coin-only stores often carry a conversion cost in the buyer’s plan.',
+          'Ask whether any equipment is still under a distributor loan or lease, because that debt either gets paid off at closing or transfers with the store.',
+        ],
+      },
+      {
         heading: 'What to check before you make an offer',
         body: [
           'Ask for twelve months of water and utility bills alongside the profit and loss statement. Water usage is the most reliable way to confirm reported revenue in a cash-heavy business.',
           'Get the lease, every option to renew, and the landlord’s willingness to assign it. Then get an equipment list with model years and any service records.',
           'Walk the store on a weekend and a weekday. Turns per machine per day, competition within a couple of miles and parking tell you more than the listing does.',
+          'Check the neighborhood behind the numbers: the share of renters without in-unit laundry is what keeps a laundromat busy. New apartment buildings with in-unit machines, or a new store opening nearby, change the outlook.',
+        ],
+      },
+      {
+        heading: 'Buying the building too',
+        body: [
+          'Some laundromats come with the real estate. That removes lease risk and changes the financing: the building can be financed separately from the business, often over a longer term. It also means part of the price is real estate and should be checked against local property values, not only against the store’s earnings.',
         ],
       },
     ],
@@ -43,6 +66,10 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       {
         q: 'Can I buy a laundromat with an SBA loan?',
         a: 'Laundromats are a common SBA 7(a) acquisition. Lenders generally want a lease that runs at least as long as the loan, verified revenue, and some industry or management experience from the buyer.',
+      },
+      {
+        q: 'Is a laundromat a passive business?',
+        a: 'An unattended store can be run in a few hours a day, but someone still has to clean, collect, handle repairs and deal with customers. Stores that earn more from wash-and-fold, delivery or commercial accounts take more management, not less.',
       },
       {
         q: 'Where do these laundromat listings come from?',
@@ -266,6 +293,136 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
       {
         q: 'Where do these HVAC listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  car_wash: {
+    title: 'Car Washes for Sale: {n} Car Wash Businesses Listed by Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'Types of car washes for sale',
+        body: [
+          'Self-serve bays: customers wash their own cars with wands and foam brushes. Low labor and simple equipment, but revenue per car is small and the site needs regular cleaning and collection.',
+          'In-bay automatics: the car parks and a machine moves around it. Often paired with self-serve bays or a gas station. One or two automatics limit how many cars an hour the site can handle.',
+          'Express exterior tunnels: a conveyor pulls cars through in a few minutes, with free vacuums after. This is the format most new construction uses, because it handles high volume with a small crew and lends itself to monthly memberships.',
+          'Full-service and flex-serve washes add interior cleaning and detailing. Revenue per car is higher; so are labor and management.',
+        ],
+      },
+      {
+        heading: 'What sets the price of a car wash',
+        body: [
+          'Most car washes come with the land, so the asking price usually combines a business valued on earnings with real estate valued on location. Ask the broker how the price splits between the two.',
+          'Monthly unlimited memberships turn weather-dependent revenue into recurring revenue. The number of active members, how long they stay and the share of revenue they produce are the figures buyers weigh most.',
+          'Equipment age matters because tunnel equipment, dryers, water reclaim systems and payment kiosks are expensive. A wash due for a rebuild is priced as one.',
+          'Competition moves value more than in most businesses. A new express tunnel opening down the road can take members quickly, so buyers check what is permitted or under construction nearby.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Get revenue from the point-of-sale and membership system by month for at least two years, and compare it with bank deposits. Look at how much wet or cold months pull revenue down.',
+          'Ask for water, sewer, electric and chemical bills. They track volume and confirm car counts, and they show what a reclaim system is saving.',
+          'Get an equipment list with installation years and service history, and have an equipment technician look at the tunnel or automatics before closing.',
+          'Order an environmental review. Car washes handle chemicals and wastewater, and many sit on former gas station sites.',
+          'Check zoning, the traffic count on the road in front and how easy it is to turn in and out. Access is hard to fix after you buy.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are car washes for sale priced?', a: 'Usually as earnings plus real estate: a multiple of cash flow for the business, adjusted for format, membership base and equipment age, and the value of the land and building. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Can I buy a car wash with an SBA loan?', a: 'Car washes are financed with both SBA 7(a) and 504 loans. The 504 program is often used when the purchase includes the real estate. Lenders look closely at environmental reports and equipment condition.' },
+      { q: 'Is a car wash a passive investment?', a: 'Self-serve and express formats need less labor than most businesses, but equipment breaks, customers need help and memberships need to be managed. Plan on daily attention from an owner or manager.' },
+      {
+        q: 'Where do these car wash listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  gas_station: {
+    title: 'Gas Stations for Sale: {n} Gas Stations & Convenience Stores Listed by Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'What you are actually buying',
+        body: [
+          'A gas station listing can mean very different things. Some include the land, the building, the tanks and the business. Others are the business only, with the site leased from a landlord or fuel distributor. Read the listing closely: the price, the risk and the financing are completely different.',
+          'Most stations earn on two lines. Fuel sells in high volume at a thin margin per gallon. The convenience store inside sells at much higher margins. Many buyers value the inside sales, food service, car wash and lottery commissions more than the gallons.',
+          'Listings offered for lease with no goodwill are operating rights on someone else’s site, not a business with a sales history. They are a different kind of deal from a business for sale.',
+        ],
+      },
+      {
+        heading: 'Fuel supply and branding',
+        body: [
+          'Branded stations buy fuel under a supply agreement with a distributor (jobber) or oil company. The agreement sets how fuel is priced, the minimum volume, how long it runs and whether it can be assigned to a new owner.',
+          'Leaving a brand early can trigger repayment of incentives the original owner received for signing or rebranding. Ask for the supply agreement and any incentive schedule before you make an offer.',
+          'Unbranded stations buy at the rack price and keep pricing control, but give up the brand’s traffic and card programs.',
+        ],
+      },
+      {
+        heading: 'Environmental review comes first',
+        body: [
+          'Underground storage tanks are regulated by the EPA and state agencies. Ask for tank installation dates and materials, leak detection and tank tightness test records, compliance inspections, and any history of releases or cleanups.',
+          'A Phase I environmental site assessment is standard when the real estate is included, and lenders usually require it. If it finds a problem, a Phase II with soil and groundwater testing follows.',
+          'Some states run funds that help pay for cleanup of past leaks. Find out whether the site is enrolled and in good standing.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Fuel gallons by month from distributor invoices, and inside sales from the point-of-sale system and sales tax filings. Compare both with bank deposits.',
+          'Every license that has to transfer: tobacco, beer and wine, lottery, and food service. Each has its own process and timeline.',
+          'The age of pumps, dispensers and payment equipment, and whether any upgrade is due under card network or state rules.',
+          'Traffic, visibility and access from both directions, and any road work or new competing stations planned nearby.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are gas stations for sale priced?', a: 'Stations with real estate are priced on the combined value of the land, improvements and business earnings. Business-only stations are priced on earnings, mostly inside-store profit, plus inventory. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Can I get an SBA loan for a gas station?', a: 'Gas stations are financed with SBA 7(a) and 504 loans. Expect lenders to require a Phase I environmental report, and sometimes more testing, before they approve the loan.' },
+      { q: 'Is inventory included in the asking price?', a: 'Often not. Fuel and store inventory are commonly counted at closing and paid for on top of the asking price. The listing or the broker should say which.' },
+      {
+        q: 'Where do these gas station listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  liquor_store: {
+    title: 'Liquor Stores for Sale: {n} Liquor Stores & Licenses Listed by Brokers | DealLedger',
+    sections: [
+      {
+        heading: 'The license is the business',
+        body: [
+          'Liquor licensing is set state by state, and it decides what a liquor store is worth. In states that cap the number of retail licenses, the license itself can carry much of the price. In states that issue licenses freely, the value sits in the location and the store’s earnings.',
+          'In control states, the state runs the wholesale or retail sale of spirits, which limits what a private store can sell and how it prices. Know which system the state uses before you look at the numbers.',
+          'A license usually transfers only after the state and often the town approve the buyer, with background checks and sometimes a public hearing. Make the purchase contingent on that approval.',
+        ],
+      },
+      {
+        heading: 'What sets the price of a liquor store',
+        body: [
+          'Established stores are priced on owner’s earnings plus the license value, and inventory is usually counted and paid for separately at closing. Ask whether the asking price includes inventory.',
+          'Margins on beer, wine and spirits are modest, so volume, product mix and shrink control drive profit. Stores that add lottery, tobacco, mixers and snacks earn more per customer.',
+          'The lease and location matter as much as anywhere in retail: parking, visibility and nearby grocery or big-box competitors.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Purchase records from distributors compared with reported sales. Distributor invoices are the best check on revenue in a cash-heavy store.',
+          'Sales tax returns, point-of-sale reports and bank deposits for at least two years.',
+          'The license type, any violations on record, and how long transfer takes in that state and town.',
+          'A physical inventory count, with aged or slow-moving stock priced accordingly.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'Does the liquor license transfer with the store?', a: 'In most states it can, after the buyer is approved by the state licensing agency and sometimes the local authority. Some licenses are tied to the location. The purchase should be contingent on approval.' },
+      { q: 'How are liquor stores priced?', a: 'On earnings plus the value of the license, with inventory usually added at cost at closing. The median asking price at the top of this page is calculated from the listings below.' },
+      {
+        q: 'Where do these liquor store listings come from?',
         a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
     ],

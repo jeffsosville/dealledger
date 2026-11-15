@@ -151,7 +151,7 @@ export const NICHES: Niche[] = [
   { slug: 'towing-companies', label: 'Towing Companies', noun: 'towing companies', re: r('towing|tow truck|wrecker|roadside'), group: 'Automotive' },
   { slug: 'auto-dealerships', label: 'Auto, RV & Powersports Dealerships', noun: 'auto, RV and powersports dealerships',
     re: r('dealership|used car|auto sales|car lot|\\brv\\b|motorcycle|powersports|boat dealer|marine dealer|trailer sales'),
-    group: 'Automotive' },
+    not: r('rv (park|resort|campground)|campground|mobile home park'), group: 'Automotive' },
   { slug: 'auto-detailing', label: 'Auto Detailing & Window Tint', noun: 'auto detailing and window tint businesses',
     re: r('detailing|window tint|ceramic coating|paint protection'), group: 'Automotive' },
 
@@ -216,6 +216,14 @@ export const NICHES: Niche[] = [
     re: r('\\bsaas\\b|software|\\bapp\\b|platform'), parents: ['technology', 'other'], group: 'Professional & tech' },
   { slug: 'engineering-and-consulting', label: 'Engineering & Consulting Firms', noun: 'engineering and consulting firms',
     re: r('engineering|consult|architect|surveying|environmental services'), group: 'Professional & tech' },
+  // Added 2026-11-15 from the demand review (claude/seo-plan.md): hotels/motels and
+  // campgrounds/RV parks are separate searches with separate buyers. They sit before
+  // travel-and-hospitality so firstNiche() prefers them.
+  { slug: 'hotels-and-motels', label: 'Hotels & Motels', noun: 'hotels and motels',
+    re: r('hotel|motel|\\binn\\b|extended stay|bed (and|&) breakfast|\\bb&b\\b'),
+    not: r('hotel (cleaning|laundry|supply|wedding)|wedding hair'), group: 'Professional & tech' },
+  { slug: 'campgrounds-and-rv-parks', label: 'Campgrounds & RV Parks', noun: 'campgrounds and RV parks',
+    re: r('campground|camp ?ground|rv (park|resort)|glamping|cabin resort'), group: 'Professional & tech' },
   { slug: 'travel-and-hospitality', label: 'Hotels, Motels & Travel Businesses', noun: 'hotels, motels and travel businesses',
     re: r('hotel|motel|\\binn\\b|bed (and|&) breakfast|\\bb&b\\b|lodge|campground|rv park|travel agency|tour (company|operator)'),
     group: 'Professional & tech' },
