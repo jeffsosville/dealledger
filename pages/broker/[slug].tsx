@@ -50,6 +50,7 @@ type PageProps = {
   active: ListingRow[];
   removed: ListingRow[];
   removedShown: number;
+  clicks: { d30: number; total: number };
 };
 
 const LISTING_COLUMNS = 'listing_number, header, price, cash_flow, city, state, url, first_seen, last_seen';
@@ -115,9 +116,14 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .order('last_seen', { ascending: false, nullsFirst: false })
     .range(0, REMOVED_LIMIT - 1);
 
+  const { data: clickRows } = await sb.rpc('dl_broker_clicks', { p_domain: firm.domain });
+  const c = Array.isArray(clickRows) ? clickRows[0] : null;
+  const clicks = { d30: Number(c?.clicks_30d ?? 0), total: Number(c?.clicks_total ?? 0) };
+
   return {
     props: {
       firm,
+      clicks,
       active: (activeRows || []) as ListingRow[],
       removed: (removedRows || []) as ListingRow[],
       removedShown: (removedRows || []).length,
@@ -133,7 +139,7 @@ const place = (r: { city: string | null; state: string | null }) => {
   return [c, r.state?.toUpperCase()].filter(Boolean).join(', ') || '—';
 };
 
-export default function BrokerPage({ firm, active, removed, removedShown }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function BrokerPage({ firm, active, removed, removedShown, clicks }: InferGetStaticPropsType<typeof getStaticProps>) {
   const name = displayName(firm.firm_name, firm.domain);
   const pageUrl = `https://dealledger.org/broker/${firm.slug}`;
   const site = firm.homepage_url || `https://${firm.domain}`;
@@ -288,6 +294,14 @@ export default function BrokerPage({ firm, active, removed, removedShown }: Infe
               <div className="stat-sub">Reading their site since {fmtDate(firm.tracking_since || firm.first_observed)}</div>
             </div>
           </div>
+
+          {clicks.total > 0 && (
+            <p className="note">
+              Outbound listing clicks from DealLedger: <strong>{fmtNum(clicks.d30)}</strong> in the last 30 days,{' '}
+              {fmtNum(clicks.total)} since October 19, 2026. Each is a visitor who clicked through to a listing or page on{' '}
+              {firm.domain}; crawlers and repeat bursts are excluded. The broker sees this traffic as dealledger.org / referral in their own analytics.
+            </p>
+          )}
 
           {states.length > 1 && (
             <p className="note">Active listings in {states.length} states: {states.join(', ')}.</p>
