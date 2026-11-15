@@ -143,7 +143,11 @@
         </div>
 
         <h2>Relisting</h2>
-        <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A listing that comes back later, sometimes at a different price, is one of the most useful signals in the record. A disappearance is not evidence that a business sold. Automated relist matching across broker-direct listings is in development; until it ships, disappearances and reappearances are visible in the raw history but are not flagged.</p>
+        <p>When a listing disappears from a broker's site we record the date it was last seen; it is never deleted. A listing that comes back later, sometimes at a different price, is one of the most useful signals in the record. A disappearance is not evidence that a business sold.</p>
+
+        <p><strong>How relists are flagged.</strong> Every day the pipeline checks each active listing against our dated history. A listing is flagged as relisted when an earlier record under a different listing number matches it on all of: the same state, the exact same asking price, and the same opening words of the title. Listings priced under $50,000 are left out, because cheap and placeholder prices match by coincidence too often. Once a listing is flagged, the flag stays.</p>
+
+        <p>The rule is deliberately strict. A business that comes back at a new price, or under a reworded title, is not caught, so the relist count understates how often businesses return to market. Relisted listings carry the flag on their listing page and in the downloadable data.</p>
 
         <h2>Price changes</h2>
         <p>Every crawl records the asking price we saw on the broker's page that day, one observation per listing per day, whether the price moved or not. Earlier history comes from our dated snapshot archive. Every observation traces back to the exact crawl or snapshot row it came from.</p>
