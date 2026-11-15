@@ -393,6 +393,35 @@ const STATE_NAME = {AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'Cali
 const STATE_CODE = Object.fromEntries(Object.entries(STATE_NAME).map(([c, n]) => [n.toLowerCase(), c]));
 function stateLabel(s){ if (!s) return ''; const t = String(s).trim(); return STATE_CODE[t.toLowerCase()] || t; }
 
+// ---- search ------------------------------------------------------
+// The box used to match the whole phrase against the title, so "cleaning
+// business texas" found nothing. Now: filler words are dropped, a state name
+// (or an upper-case code like TX) becomes the state filter, and every other
+// word must appear in the title. "cleaning" also matches "cleaners".
+const STOP = new Set(['business','businesses','for','sale','the','and','of','in','a','an','company','companies','near','me','with','to','buy','selling','small','local']);
+const STATE_NAMES = Object.keys(STATE_CODE).sort((a, b) => b.length - a.length);
+const CODE_WORDS = new Set(['IN','OR','ME','HI','OK']);   // also ordinary words; only the dropdown sets these
+function stem(t){
+  if (t.length > 5 && t.endsWith('ing')) return t.slice(0, -3);
+  if (t.length > 4 && t.endsWith('ies')) return t.slice(0, -3) + 'y';
+  if (t.length > 3 && t.endsWith('s') && !t.endsWith('ss')) return t.slice(0, -1);
+  return t;
+}
+function parseQuery(raw){
+  let s = ' ' + String(raw || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
+  let state = '';
+  for (const name of STATE_NAMES) {
+    if (s.includes(' ' + name + ' ')) { state = STATE_CODE[name]; s = s.replace(' ' + name + ' ', ' '); break; }
+  }
+  if (!state) {
+    for (const m of String(raw || '').match(/\b[A-Z]{2}\b/g) || []) {
+      if (STATE_NAME[m] && !CODE_WORDS.has(m)) { state = m; s = s.replace(' ' + m.toLowerCase() + ' ', ' '); break; }
+    }
+  }
+  const tokens = s.split(' ').filter(t => t.length > 1 && !STOP.has(t)).map(stem);
+  return { state, tokens };
+}
+
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
 
 let page = 1, total = 0, sortField = 'days', sortDir = 1, domFilter = 'all', q = '';
@@ -440,12 +469,15 @@ function query(){
   const p = new URLSearchParams();
   p.set('select','listing_number,title,state,price,source_url,estimated_listed_date,listed_after,dom_days_eff,dom_days_max,dom_basis');
   p.append('source','eq.broker_direct');
-  const st = $('fState').value, lo = num($('fMin').value), hi = num($('fMax').value);
+  const pq = parseQuery(q);
+  const st = $('fState').value || pq.state, lo = num($('fMin').value), hi = num($('fMax').value);
   if (st) p.append('state','in.(' + st + ',"' + STATE_NAME[st] + '")');
   if (lo) p.append('price','gte.' + lo);
   if (hi) p.append('price','lte.' + hi);
   if ($('fPriced').checked) p.append('price','not.is.null');
-  if (q) p.append('title_lc','like.*' + q.toLowerCase().replace(/[*,()]/g,'') + '*');
+  const clean = t => t.replace(/[*,()%_\\"]/g, '');
+  if (q && !pq.tokens.length && !pq.state) p.append('title_lc','like.*' + clean(q.toLowerCase()) + '*');
+  pq.tokens.forEach(t => p.append('title_lc','like.*' + clean(t) + '*'));
   if (domFilter === 'fresh')  p.append('dom_days_eff','lte.30');
   if (domFilter === 'recent') p.append('dom_days_eff','lte.90');
   if (domFilter === 'stale')  p.append('dom_days_eff','gt.90');
@@ -514,7 +546,7 @@ function paint(rows){
   $('n').textContent = total.toLocaleString();
   $('nPriced').hidden = !$('fPriced').checked;
   $('qShow').innerHTML = q
-    ? ' matching “' + esc(q) + '” · <button type="button" id="qClear">clear</button>'
+    ? ' matching “' + esc(q) + '”' + (parseQuery(q).state && !$('fState').value ? ' in ' + esc(parseQuery(q).state) : '') + ' · <button type="button" id="qClear">clear</button>'
     : '';
   if (q) $('qClear').addEventListener('click', () => { q = ''; lkInput.value = ''; refresh(); });
   // The same business is often posted on two sites of one brokerage;
@@ -527,7 +559,8 @@ function paint(rows){
     return true;
   });
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="5" class="empty">No listings match.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" class="empty">No listings match.' +
+      (q ? ' Try fewer words, such as one keyword and a state.' : '') + '</td></tr>';
   } else {
     body.innerHTML = rows.map(r =>
       '<tr>' +
