@@ -255,16 +255,25 @@ async function universe(): Promise<URow[]> {
   if (inflight) return inflight;
   inflight = (async () => {
     const sb = getSupabase();
-    const { count } = await sb.from('mv_seo_listings_v2').select('listing_number', { count: 'exact', head: true });
-    const pages = Math.ceil((count || 0) / PAGE) || 1;
-    const chunks = await Promise.all(
-      Array.from({ length: pages }, (_, i) =>
-        sb.from('mv_seo_listings_v2').select(U_COLS).order('listing_number').range(i * PAGE, i * PAGE + PAGE - 1)
-          .then(({ data, error }) => {
-            if (error) throw error;
-            return (data || []) as URow[];
-          })),
-    );
+    // Keyset pages, one at a time, with retry: 20+ parallel offset queries trip the
+    // anon role's 3s statement_timeout whenever the DB is busy, which fails the build.
+    const fetchPage = async (after: number): Promise<URow[]> => {
+      for (let attempt = 0; ; attempt++) {
+        const { data, error } = await sb.from('mv_seo_listings_v2').select(U_COLS)
+          .gt('listing_number', after).order('listing_number').limit(PAGE);
+        if (!error) return (data || []) as URow[];
+        if (attempt >= 3) throw error;
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+      }
+    };
+    const chunks: URow[][] = [];
+    let after = -1;
+    for (;;) {
+      const page = await fetchPage(after);
+      chunks.push(page);
+      if (page.length < PAGE) break;
+      after = Number((page[page.length - 1] as any).listing_number);
+    }
     const rows = chunks.flat();
     cache = { at: Date.now(), rows };
     return rows;
