@@ -1,0 +1,161 @@
+{
+  "started": "2026-11-16T10:25:18.964124+00:00",
+  "brokers_attempted": 619,
+  "brokers_success": 510,
+  "brokers_failed": 84,
+  "total_listings": 12105,
+  "listings_with_price": 11129,
+  "listings_with_cashflow": 4695,
+  "listings_with_state": 10628,
+  "detail_pages_fetched": 341,
+  "patterns_cached": 599,
+  "patterns_learned": 424,
+  "verticals": {
+    "restaurant": 2367,
+    "automotive": 954,
+    "technology": 1411,
+    "other": 2917,
+    "manufacturing": 339,
+    "landscaping": 147,
+    "healthcare": 1005,
+    "retail": 1521,
+    "construction": 353,
+    "roofing": 55,
+    "plumbing": 144,
+    "hvac": 211,
+    "electrical": 109,
+    "cleaning": 163,
+    "amusement": 8,
+    "dry_cleaner": 54,
+    "laundromat": 148,
+    "atm": 46,
+    "vending": 52,
+    "pressure_washing": 8,
+    "pest_control": 15,
+    "junk_removal": 4,
+    "delivery_route": 71,
+    "pool_service": 3
+  },
+  "failure_types": {
+    "EMBED_BBS": 24,
+    "NO_PATTERN": 59,
+    "FETCH_ERROR": 5,
+    "HTTP_403": 16,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "michael mcgrath",
+      "domain": "homecarebuysell.com",
+      "event": "stale_cache",
+      "selector": "tr",
+      "healed_to": "tr[class*=\"element_row\"]"
+    },
+    {
+      "broker": "michael mitchell",
+      "domain": "brgbrokers.com",
+      "event": "stale_cache",
+      "selector": "tr",
+      "healed_to": "tr[class*=\"element_row\"]"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    }
+  ],
+  "site_pages_dropped": 22,
+  "slowest_brokers": [
+    [
+      1614,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      897,
+      "www.gatewayma.com",
+      115
+    ],
+    [
+      783,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      480,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      458,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      415,
+      "murraybizbuy.com",
+      48
+    ],
+    [
+      409,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      311,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      298,
+      "bossgi.com",
+      2
+    ],
+    [
+      293,
+      "www.usbizsell.com",
+      3
+    ],
+    [
+      290,
+      "excellencebusinessbrokers.com",
+      1
+    ],
+    [
+      287,
+      "zenappy.com",
+      2
+    ],
+    [
+      285,
+      "canzell.com",
+      8
+    ],
+    [
+      281,
+      "cannabis-brokers.com",
+      1
+    ]
+  ],
+  "seconds_total": 30164,
+  "completed": "2026-11-16T15:10:54.012058+00:00",
+  "interrupted": true,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
