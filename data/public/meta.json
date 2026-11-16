@@ -1,15 +1,28 @@
 {
-  "generated_at": "2026-10-08T21:23:26+00:00",
-  "rows": 24820,
-  "broker_domains": 535,
+  "schema_version": 2,
+  "generated_at": "2026-11-16T20:25:48+00:00",
+  "listing_age_built_at": "2026-11-16T15:32:00.290202+00:00",
+  "rows": 23813,
+  "broker_domains": 609,
   "coverage_pct": {
     "asking_price": 100,
-    "cash_flow": 63,
-    "revenue": 37,
-    "city": 59,
-    "state": 82,
+    "cash_flow": 59,
+    "revenue": 60,
+    "city": 63,
+    "state": 89,
     "vertical": 100
   },
+  "age_basis": {
+    "window": 3776,
+    "observed": 13697,
+    "in_db": 6340
+  },
+  "excluded_out_of_scope": 142,
+  "held_until_next_age_build": 0,
+  "held_listing_number_collision": 2,
+  "left_observation_rows": 1667,
+  "left_observation_held_no_age": 0,
   "license": "CC0-1.0",
-  "dictionary": "DATA_DICTIONARY.md"
+  "dictionary": "DATA_DICTIONARY.md",
+  "verification": "verification.json"
 }

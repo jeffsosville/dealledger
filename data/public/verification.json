@@ -1,0 +1,106 @@
+{
+  "verified_at": "2026-11-16T20:26:44+00:00",
+  "passed": true,
+  "rows": 23813,
+  "left_observation_rows": 1667,
+  "site_listings": 20504,
+  "rows_on_site": 18815,
+  "checks": [
+    {
+      "check": "P1",
+      "name": "listings.csv columns are the published schema",
+      "checked": 1,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "P1b",
+      "name": "left-observation columns are the published schema",
+      "checked": 1,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "P1c",
+      "name": "listings.json matches listings.csv",
+      "checked": 1,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "P2",
+      "name": "every row is active, published, broker-direct in listings_direct now",
+      "checked": 23813,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "P3",
+      "name": "only permitted sources (no marketplace/aggregator/digital/real-estate/MLS host, no blocked broker)",
+      "checked": 23813,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "P4",
+      "name": "listing numbers unique and match the database formula",
+      "checked": 23813,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "A1",
+      "name": "age evidence equals listing_age_v2",
+      "checked": 23813,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "A2",
+      "name": "age evidence internally consistent",
+      "checked": 23813,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "A3",
+      "name": "age evidence equals what the website shows (mv_listings_page_v2)",
+      "checked": 18815,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "L1",
+      "name": "left-observation rows carry three-crawl evidence and permitted sources",
+      "checked": 1667,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "S1",
+      "name": "row count plausible against the site",
+      "checked": 1,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    },
+    {
+      "check": "S2",
+      "name": "meta.json agrees with the files",
+      "checked": 1,
+      "failures": 0,
+      "passed": true,
+      "examples": []
+    }
+  ]
+}
