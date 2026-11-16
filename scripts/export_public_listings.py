@@ -65,8 +65,11 @@ def _paged(base, key, table, params, order_col):
     while True:
         p = dict(params)
         if last_id is not None:
-            quoted = str(last_id).replace("\\", "\\\\").replace('"', '\\"')
-            p[order_col] = f'gt."{quoted}"'  # keys contain | : / and can't go unquoted
+            if isinstance(last_id, (int, float)):
+                p[order_col] = f"gt.{last_id}"  # numeric keys: PostgREST rejects a quoted number (400)
+            else:
+                quoted = str(last_id).replace("\\", "\\\\").replace('"', '\\"')
+                p[order_col] = f'gt."{quoted}"'  # text keys contain | : / and can't go unquoted
         r = requests.get(f"{base}/rest/v1/{table}", headers=headers, params=p, timeout=60)
         r.raise_for_status()
         batch = r.json()

@@ -1,0 +1,103 @@
+name: Dataset release (GitHub + Zenodo DOI, Hugging Face, Kaggle)
+
+# Monthly snapshot of the verified public export (data/public/, written daily by
+# export_public.yml). Publishes only if today's export passed verification.
+#   1. GitHub release data-YYYY-MM-DD with the files attached. With the Zenodo
+#      GitHub integration switched on for this repo, every release gets a DOI
+#      (metadata from .zenodo.json).
+#   2. Hugging Face dataset (if secret HF_TOKEN is set; repo from var HF_DATASET).
+#   3. Kaggle dataset (if secrets KAGGLE_USERNAME + KAGGLE_KEY are set; slug from var KAGGLE_DATASET).
+# Dispatched by pg_cron (gh-dataset-release, 1st of the month) or by hand.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dataset-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HF_DATASET: ${{ vars.HF_DATASET || 'dealledger/us-businesses-for-sale' }}
+      KAGGLE_DATASET: ${{ vars.KAGGLE_DATASET || 'jeffsosville/dealledger-us-businesses-for-sale' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gate — today's export passed verification
+        id: gate
+        run: |
+          python3 - <<'PY'
+          import json, datetime, os, sys
+          v = json.load(open("data/public/verification.json"))
+          m = json.load(open("data/public/meta.json"))
+          day = m["generated_at"][:10]
+          age = (datetime.date.today() - datetime.date.fromisoformat(day)).days
+          if not v.get("passed") or age > 1:
+              sys.exit(f"Not releasing: passed={v.get('passed')} generated_at={m['generated_at']}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"day={day}\n")
+          PY
+
+      - name: Assemble snapshot
+        run: |
+          mkdir -p out
+          cp data/public/listings.csv data/public/listings.json data/public/listings_left_observation.csv \
+             data/public/meta.json data/public/verification.json data/public/DATA_DICTIONARY.md \
+             data/release/README.md out/
+          cp CITATION.cff out/ 2>/dev/null || true
+          (cd out && zip -q ../dealledger-${{ steps.gate.outputs.day }}.zip *)
+
+      - name: GitHub release (Zenodo mints the DOI from this)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=data-${{ steps.gate.outputs.day }}
+          gh release view "$tag" >/dev/null 2>&1 && { echo "Release $tag exists"; exit 0; }
+          gh release create "$tag" dealledger-${{ steps.gate.outputs.day }}.zip out/listings.csv out/meta.json \
+            --title "DealLedger data snapshot ${{ steps.gate.outputs.day }}" \
+            --notes "Verified snapshot of the DealLedger public export (CC0). Files and field definitions inside the zip. Daily data: https://github.com/jeffsosville/dealledger/tree/main/data/public"
+
+      - name: Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        if: env.HF_TOKEN != ''
+        run: |
+          pip install -q huggingface_hub
+          python3 - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          repo = os.environ["HF_DATASET"]
+          api.create_repo(repo, repo_type="dataset", exist_ok=True)
+          api.upload_folder(folder_path="out", repo_id=repo, repo_type="dataset",
+                            commit_message="DealLedger snapshot ${{ steps.gate.outputs.day }}")
+          PY
+
+      - name: Kaggle
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        if: env.KAGGLE_KEY != ''
+        run: |
+          pip install -q kaggle
+          python3 - <<'PY'
+          import json, os
+          json.dump({
+            "title": "DealLedger: US Businesses for Sale",
+            "id": os.environ["KAGGLE_DATASET"],
+            "subtitle": "Broker-direct listings, verified daily, public domain",
+            "licenses": [{"name": "CC0-1.0"}],
+            "keywords": ["business", "finance", "tabular"],
+          }, open("out/dataset-metadata.json", "w"))
+          PY
+          rm -f out/listings.json   # keep the Kaggle copy small; CSV carries the same rows
+          if kaggle datasets status "$KAGGLE_DATASET" >/dev/null 2>&1; then
+            kaggle datasets version -p out -m "Snapshot ${{ steps.gate.outputs.day }}"
+          else
+            kaggle datasets create -p out
+          fi

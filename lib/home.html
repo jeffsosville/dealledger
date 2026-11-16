@@ -72,9 +72,21 @@
       "distribution": [
         {
           "@type": "DataDownload",
-          "name": "Daily snapshots and source code",
+          "name": "All published listings (CSV, verified daily)",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings.csv"
+        },
+        {
+          "@type": "DataDownload",
+          "name": "All published listings (JSON, verified daily)",
           "encodingFormat": "application/json",
-          "contentUrl": "https://github.com/jeffsosville/dealledger"
+          "contentUrl": "https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings.json"
+        },
+        {
+          "@type": "DataDownload",
+          "name": "Listings that left observation, with evidence (CSV)",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://raw.githubusercontent.com/jeffsosville/dealledger/main/data/public/listings_left_observation.csv"
         }
       ]
     },

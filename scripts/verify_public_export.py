@@ -82,7 +82,7 @@ class Db:
         while True:
             p = {"select": select, "order": f"{order}.asc", "limit": "1000"}
             if last is not None:
-                p[order] = f'gt."{last}"'
+                p[order] = f"gt.{last}" if isinstance(last, (int, float)) else f'gt."{last}"'
             batch = self.get(table, p)
             rows.extend(batch)
             if len(batch) < 1000:

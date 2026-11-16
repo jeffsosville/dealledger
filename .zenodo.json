@@ -1,0 +1,13 @@
+{
+  "title": "DealLedger: an open record of US businesses listed for sale",
+  "upload_type": "dataset",
+  "description": "Daily-verified snapshot of business-for-sale listings published directly on US business brokers' own websites, with first-observed dates, listing-age evidence basis, asking-price changes and listings that left observation. Collected by DealLedger (https://dealledger.org). Public domain (CC0 1.0). Field definitions in DATA_DICTIONARY.md.",
+  "creators": [{ "name": "Sosville, Jeff" }, { "name": "DealLedger contributors" }],
+  "license": "cc-zero",
+  "access_right": "open",
+  "keywords": ["small business", "business brokerage", "businesses for sale", "Main Street M&A", "open data", "entrepreneurship through acquisition"],
+  "related_identifiers": [
+    { "identifier": "https://dealledger.org", "relation": "isSupplementTo", "scheme": "url" },
+    { "identifier": "https://github.com/jeffsosville/dealledger", "relation": "isSupplementTo", "scheme": "url" }
+  ]
+}
