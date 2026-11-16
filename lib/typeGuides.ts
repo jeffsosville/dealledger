@@ -298,6 +298,193 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
     ],
   },
 
+  plumbing: {
+    title: 'Plumbing Companies for Sale: {n} Plumbing Businesses Listed by Brokers | DealLedger',
+    h1: 'Plumbing Companies for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a plumbing company',
+        body: [
+          'Service and repair work is steadier than new-construction work, and buyers pay for that. Emergency calls, drain cleaning, water heater replacement and maintenance agreements come back every year; new-build rough-ins rise and fall with housing starts.',
+          'Licensed plumbers are hard to hire, so the crew is a large part of what a buyer is paying for. A company with licensed technicians who are staying, a dispatcher, and an owner who is not running every call is worth more than one built around the seller.',
+          'Commercial and multifamily service contracts with property managers, restaurants or facilities can add recurring revenue, but check how concentrated it is. One large customer can be most of the value.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue by year split into service, replacement and new construction, plus the count of any maintenance or service agreements and how often they renew.',
+          'Whose master plumber license the company operates under, and how it transfers or who replaces it.',
+          'Technician tenure and pay, the fleet and equipment list, and any open warranty or callback claims.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are plumbing companies valued?',
+        a: 'Usually as a multiple of seller’s discretionary earnings for owner-operated companies, or EBITDA for larger ones with managers in place. Recurring service revenue and a team that runs without the owner push the multiple up; new-construction dependence pulls it down. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Can I buy a plumbing company with an SBA loan?',
+        a: 'Yes, plumbing companies are commonly financed with SBA 7(a) loans. Lenders will want a licensed qualifier in place, so plan for one if you are not licensed yourself.',
+      },
+      {
+        q: 'Where do these plumbing listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  electrical: {
+    title: 'Electrical Contractors for Sale: {n} Electrical Businesses Listed by Brokers | DealLedger',
+    h1: 'Electrical Contractors for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of an electrical contractor',
+        body: [
+          'The mix of work matters most. Residential service, commercial service and maintenance, and new-construction or bid work each carry different risk. Service and maintenance revenue repeats; bid work depends on winning the next job and on margins holding through it.',
+          'Backlog is part of the price. Signed contracts not yet billed show what the next year looks like, but check the margins on them and whether they need bonding the buyer can carry.',
+          'Licensed electricians are the constraint. A company with journeymen and a master electrician who are staying, a project manager, and an owner who is not estimating every job is worth more.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue by year and by type of work, the current backlog with expected margins, and the largest customers’ share of sales.',
+          'Whose master electrician license the company operates under, how it transfers, and the company’s bonding capacity.',
+          'Work-in-progress schedules for open jobs, retainage owed, and any warranty or callback claims.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are electrical contractors valued?',
+        a: 'As a multiple of seller’s discretionary earnings or EBITDA, adjusted for the service and bid mix, backlog and owner dependence. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Can I buy an electrical contractor with an SBA loan?',
+        a: 'Yes. Lenders look for several years of verified earnings, a licensed qualifier, and for bid-heavy companies, work-in-progress schedules they can follow.',
+      },
+      {
+        q: 'Where do these electrical contractor listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  construction: {
+    title: 'Construction Companies for Sale: {n} Construction Businesses Listed by Brokers | DealLedger',
+    h1: 'Construction Companies for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a construction company',
+        body: [
+          'Buyers pay for earnings they expect to repeat. A general contractor or specialty trade with repeat commercial clients, maintenance work or a steady referral base is worth more than one whose last two years came from a few large jobs.',
+          'Backlog and bonding capacity carry real value. Signed work shows the next year, and the bonding line decides which jobs the company can bid. Both depend partly on the owner’s personal finances and history, so ask how they transfer.',
+          'Equipment can be a large part of the price. Get the list with ages and condition, and separate owned equipment from leased or financed equipment.',
+          'Owner dependence is the biggest discount. If the seller holds the license, the relationships and the estimating, plan for how each one moves to you.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue and gross margin by year and by customer, and work-in-progress schedules showing over- and under-billing on open jobs.',
+          'Licenses, bonding capacity and surety relationship, and insurance and safety records, including the workers’ compensation experience modifier.',
+          'Open warranty obligations, liens, disputes and retainage owed to or by the company.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are construction companies valued?',
+        a: 'Smaller owner-operated companies trade on a multiple of seller’s discretionary earnings; larger ones on EBITDA, plus or minus equipment and working capital. Backlog quality, customer concentration and owner dependence move the multiple. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Can I buy a construction company with an SBA loan?',
+        a: 'Yes, though lenders look harder at construction than most industries: several years of earnings, work-in-progress schedules, bonding and a licensed qualifier.',
+      },
+      {
+        q: 'Where do these construction listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  healthcare: {
+    title: 'Healthcare Businesses for Sale: {n} Medical Practices & Healthcare Companies Listed by Brokers | DealLedger',
+    h1: 'Healthcare Businesses for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a healthcare business',
+        body: [
+          'Healthcare listings cover very different businesses: physician, dental and therapy practices, home health and home care agencies, pharmacies, medical spas, staffing firms and clinics. Each has its own licensing and payer rules, so compare a listing with others of the same kind.',
+          'Payer mix moves value. Revenue from commercial insurance, Medicare, Medicaid and cash patients carries different reimbursement rates and different risk if rates or rules change.',
+          'Provider dependence is the main discount. A practice where the selling clinician produces most of the revenue is worth less than one with associate providers who are staying, unless the seller agrees to a transition period.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Collections, not just billings, by year and by payer, and how many active patients or clients the business has.',
+          'Licenses, certifications and payer contracts, and which of them transfer to a new owner, need a new application, or require a licensed professional as owner.',
+          'Billing and coding compliance, any audits or recoupments, and the lease and equipment for the location.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are healthcare businesses valued?',
+        a: 'Usually as a multiple of seller’s discretionary earnings or EBITDA, adjusted for payer mix, provider dependence and licensing. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Do I need to be licensed to buy a medical practice?',
+        a: 'It depends on the state and the type of practice. Some states require a licensed professional to own a physician or dental practice; other healthcare businesses, like home care agencies or staffing firms, can be owned by non-clinicians with licensed staff. Check before you make an offer.',
+      },
+      {
+        q: 'Where do these healthcare listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
+  automotive: {
+    title: 'Automotive Businesses for Sale: {n} Auto Repair Shops, Dealers & More Listed by Brokers | DealLedger',
+    h1: 'Automotive Businesses for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of an automotive business',
+        body: [
+          'Automotive listings include repair and service shops, collision and body shops, tire and oil change franchises, used car dealers, detailing and parts businesses. Compare a listing with others of the same kind, because margins and risks are very different.',
+          'For repair shops, buyers pay for technicians who are staying, a steady base of repeat customers and fleet accounts, and an owner who is not the only diagnostician. Car counts and average repair order tell you more than total revenue.',
+          'Collision shops depend heavily on insurance direct-repair relationships, which may not transfer automatically. Dealers depend on inventory financing and, for franchised dealers, manufacturer approval of the buyer.',
+          'Many automotive businesses come with the real estate, and environmental history matters when they do.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue by year from the shop management or dealer system, car count and average repair order, and the share of revenue from fleet or insurance customers.',
+          'Technician certifications and tenure, the equipment list with ages, and any franchise or insurance agreements that need approval to transfer.',
+          'If the property is included, a Phase I environmental review covering lifts, waste oil, solvents and any underground tanks.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are automotive businesses valued?',
+        a: 'Most are priced as a multiple of seller’s discretionary earnings plus equipment, with inventory and any real estate valued separately. The median figures at the top of this page are calculated from the listings shown below.',
+      },
+      {
+        q: 'Can I buy an auto repair shop with an SBA loan?',
+        a: 'Yes. Repair shops are commonly financed with SBA 7(a) loans, or 504 loans when the building is included. Lenders will usually want an environmental review on the property.',
+      },
+      {
+        q: 'Where do these automotive listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+
   car_wash: {
     title: 'Car Washes for Sale: {n} Car Wash Businesses Listed by Brokers | DealLedger',
     sections: [

@@ -60,7 +60,7 @@ function TypePage({ vertical, stats: s, thin, rows, byState, otherTypes, niches 
       path={path}
       noindex={thin}
       alert={{ vertical, label: t.label }}
-      title={guide && s ? guide.title.replace('{n}', fmtNum(s.listings)) : `${t.label} for Sale${n ? ` (${fmtNum(n)} listings)` : ''} — DealLedger`}
+      title={guide && s ? guide.title.replace('{n}', fmtNum(s.listings)) : `${t.label} for Sale${n ? `: ${fmtNum(n)} Listed by Brokers` : ''} | DealLedger`}
       h1={guide?.h1 || `${t.label} for Sale`}
       guide={guide}
       eyebrow={`NATIONWIDE · ${t.label.toUpperCase()}`}
