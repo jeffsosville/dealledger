@@ -180,8 +180,25 @@ def build_left_observation(base, key, ages, blocked):
             no_age += 1
             continue
         out.append({k: r.get(k) for k in LEFT_FIELDS})
+    out, _ = drop_number_collisions(out)
     out.sort(key=lambda r: (r.get("left_observation_on") or "", r["id"]))
     return out, no_age
+
+
+def drop_number_collisions(rows):
+    """Two different listings can hash to the same public listing number (28-bit
+    md5 prefix; 20 pairs across listings_direct on 2026-11-16). listing_age_v2 is
+    keyed by that number, so their ages can't be told apart. Hold both out until
+    listing numbers come from a stored key map; report the count in meta.json."""
+    count = {}
+    for r in rows:
+        count[r["listing_number"]] = count.get(r["listing_number"], 0) + 1
+    kept = [r for r in rows if count[r["listing_number"]] == 1]
+    held = len(rows) - len(kept)
+    for r in rows:
+        if count[r["listing_number"]] > 1:
+            print(f"  held (listing number collision): {r['listing_number']} {r['id']}", flush=True)
+    return kept, held
 
 
 def write_csv(path, fields, rows):
@@ -219,7 +236,7 @@ def main():
             kept.append({k: r.get(k) for k in FIELDS})
         else:
             held_no_age += 1
-    rows = kept
+    rows, held_collision = drop_number_collisions(kept)
     rows.sort(key=lambda r: (r.get("state") or "~", r.get("broker_domain") or "", r["id"]))
 
     if len(rows) < 5000:
@@ -249,6 +266,7 @@ def main():
         "age_basis": {b: sum(1 for r in rows if r["age_basis"] == b) for b in AGE_BASES},
         "excluded_out_of_scope": excluded_scope,
         "held_until_next_age_build": held_no_age,
+        "held_listing_number_collision": held_collision,
         "left_observation_rows": len(left),
         "left_observation_held_no_age": left_no_age,
         "license": "CC0-1.0",
