@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getSupabase } from './supabase';
+import { TYPES, typePath } from './seo';
 
 const PER_PAGE = 50;
 const COLUMNS =
@@ -170,8 +171,15 @@ function ogDescription(d: HomeData | null): string {
   return `${fmt(d.total)} listings on the record. ` + base;
 }
 
+// Server-rendered links to every business-type page, so crawlers reach them from the homepage.
+const typeLinksHtml = (): string =>
+  Object.keys(TYPES)
+    .sort((a, b) => TYPES[a].label.localeCompare(TYPES[b].label))
+    .map((v) => `<a href="${typePath(v)}">${esc(TYPES[v].label)} for sale</a>`)
+    .join('');
+
 export function renderHome(d: HomeData | null): string {
-  const html = getTemplate();
+  const html = getTemplate().replace('<!--DL:TYPES-->', typeLinksHtml());
   const og = esc(ogDescription(d));
   if (!d) {
     return html

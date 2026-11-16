@@ -1,6 +1,6 @@
 """Source check: public site copy makes no aggregate days-on-market claims, carries no
-hard-coded broker counts, and doesn't link the pages unlinked on 2026-11-09 (kept in
-drafts/ for rewriting). Run: python3 tests/test_public_copy.py (no network)."""
+hard-coded broker counts, and doesn't link the Pulse page (kept in drafts/).
+The dated essays /why and /writing/no-reason-to-fix are exempt. Run: python3 tests/test_public_copy.py (no network)."""
 import os
 import re
 import sys
@@ -9,11 +9,11 @@ ROOT = os.path.join(os.path.dirname(__file__), "..")
 
 # Everything a visitor can load. drafts/ is deliberately excluded.
 SCAN = ["public", "lib", "pages", "components"]
+# Dated essays (Pulse) stand as written on their publication date; restored 2026-11-16.
+SKIP = {os.path.normpath(p) for p in ("public/why.html", "public/writing/no-reason-to-fix.html")}
 EXT = (".html", ".ts", ".tsx", ".xml")
 
 FORBIDDEN = {
-    r'href="/why(\.html)?"': "/why is unlinked until rewritten (drafts/writing/)",
-    r"no-reason-to-fix\"|/writing/no-reason-to-fix<": "essay is unlinked until rewritten (drafts/writing/)",
     r'href="/pulse(\.html)?"|dealledger\.org/pulse': "Pulse page is unlinked until rebuilt from verified data",
     r"(?i)\b(true|real) days on market": "no days-on-market claim; listing age uses the evidence hierarchy",
     r"(?i)days on market reflect": "no days-on-market claim; listing age uses the evidence hierarchy",
@@ -36,6 +36,8 @@ def main() -> int:
                 if not name.endswith(EXT):
                     continue
                 path = os.path.join(dirpath, name)
+                if os.path.normpath(os.path.relpath(path, ROOT)) in SKIP:
+                    continue
                 with open(path, encoding="utf-8", errors="replace") as fh:
                     for n, line in enumerate(fh, 1):
                         if ALLOW.search(line):

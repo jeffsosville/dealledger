@@ -94,6 +94,17 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ query,
     activeListings: all.reduce((s, r) => s + (r.active_count || 0), 0),
     refreshedAt: all[0]?.refreshed_at ?? null,
   };
+  // Headline figures come only from public_stats, so /brokers, the homepage and
+  // the dataset all show the same numbers. The registry sums are a fallback.
+  const { data: ps } = await sb
+    .from('public_stats')
+    .select('listings_on_site, broker_sites_on_site, as_of')
+    .limit(1)
+    .maybeSingle();
+  const stats = ps as { listings_on_site?: number; broker_sites_on_site?: number; as_of?: string } | null;
+  if (stats?.broker_sites_on_site != null) totals.activeFirms = stats.broker_sites_on_site;
+  if (stats?.listings_on_site != null) totals.activeListings = stats.listings_on_site;
+  if (stats?.as_of) totals.refreshedAt = stats.as_of;
 
   res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
 

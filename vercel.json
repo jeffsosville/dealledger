@@ -9,6 +9,10 @@
       "destination": "/methodology.html"
     },
     {
+      "source": "/why",
+      "destination": "/why.html"
+    },
+    {
       "source": "/writing",
       "destination": "/writing.html"
     },
@@ -18,26 +22,6 @@
     }
   ],
   "redirects": [
-    {
-      "source": "/why",
-      "destination": "/methodology",
-      "permanent": false
-    },
-    {
-      "source": "/why.html",
-      "destination": "/methodology",
-      "permanent": false
-    },
-    {
-      "source": "/writing/no-reason-to-fix",
-      "destination": "/writing",
-      "permanent": false
-    },
-    {
-      "source": "/writing/no-reason-to-fix.html",
-      "destination": "/writing",
-      "permanent": false
-    },
     {
       "source": "/pulse",
       "destination": "/",
