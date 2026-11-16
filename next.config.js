@@ -12,7 +12,13 @@ const nextConfig = {
   },
 
   async redirects() {
-    return [{ source: '/index.html', destination: '/', permanent: true }];
+    return [
+      { source: '/index.html', destination: '/', permanent: true },
+      // Singular and alternate type slugs people search for; these 404'd.
+      { source: '/businesses-for-sale/type/laundromat', destination: '/businesses-for-sale/type/laundromats', permanent: true },
+      { source: '/businesses-for-sale/type/restaurant', destination: '/businesses-for-sale/type/restaurants', permanent: true },
+      { source: '/businesses-for-sale/type/commercial-cleaning', destination: '/businesses-for-sale/type/cleaning', permanent: true },
+    ];
   },
 
   async rewrites() {

@@ -614,4 +614,141 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
       },
     ],
   },
+  vending: {
+    title: 'Vending Routes for Sale: {n} Vending Machine Businesses Listed by Brokers | DealLedger',
+    h1: 'Vending Routes for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a vending route',
+        body: [
+          'Most vending routes sell on a multiple of the owner’s net earnings, and the price swings on how secure the locations are. A route is only worth what its locations keep producing after the sale, so buyers pay most for placements that are busy, long-standing and documented.',
+          'Many placements run on a handshake. A written placement agreement with a term, a commission rate and the right to assign it to a new owner is worth far more than a verbal arrangement with an office manager who may leave next year.',
+          'Route density matters as much as revenue. Machines clustered in a few buildings or one metro area take less driving and less time per dollar than a route spread across several counties.',
+          'Machine age and payment hardware set the near-term capital a buyer needs. Card readers and cashless payment lift sales at most locations; coin-and-bill machines will usually need upgrading.',
+        ],
+      },
+      {
+        heading: 'Snack and soda, healthy, combo, or micro market',
+        body: [
+          'Traditional snack and soda routes are the most common listings. They are simple to run and easy to understand, and their value rests almost entirely on placement quality.',
+          'Healthy vending, combo machines and specialty machines (coffee, frozen, PPE) can earn more per machine at the right location but carry more product spoilage and a narrower set of good locations.',
+          'Micro markets — open self-checkout kiosks in larger workplaces — carry higher revenue per site and more inventory to manage. They are valued closer to a small retail operation than a machine route.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Sales by machine and by location for at least twelve months, from telemetry or cashless-payment reports where they exist, not just the owner’s summary.',
+          'Product purchase records from wholesale clubs and distributors, compared with reported sales. In a cash business, what the owner bought is the best check on what the route sold.',
+          'Which locations have written agreements, what commission each is paid, and whether the agreements can be assigned. Ask to visit the top locations before closing.',
+          'Machine make, model and age, card-reader and telemetry contracts, and whether any machines are leased or financed.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are vending routes valued?',
+        a: 'Usually as a multiple of the owner’s net earnings after product cost and location commissions, adjusted for machine condition and how secure the locations are. The median asking price at the top of this page is calculated from the listings below.',
+      },
+      {
+        q: 'Do vending locations transfer to a new owner?',
+        a: 'Only if the location agrees. Written agreements that allow assignment transfer cleanly; verbal placements depend on the relationship, so a good seller introduces the buyer to each location before or at closing.',
+      },
+      {
+        q: 'Where do these vending listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+  atm: {
+    title: 'ATM Routes for Sale: {n} ATM Businesses Listed by Brokers | DealLedger',
+    h1: 'ATM Routes for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of an ATM route',
+        body: [
+          'An ATM route earns from the surcharge each cardholder pays plus a share of the interchange fee, minus what the operator pays the location and the processor. Buyers pay for verified transaction volume, and the processor’s reports are the record of it.',
+          'The placement agreements carry the value. A written agreement with a meaningful remaining term, a fixed commission, exclusivity and the right to assign it to a new owner is worth much more than a month-to-month arrangement.',
+          'Who loads the cash matters. On merchant-loaded machines the location supplies the vault cash; on operator-loaded machines the buyer has to fund it, which ties up capital and adds armored-car or loading costs that come out of earnings.',
+          'Machine condition and compliance set the capital a buyer will need. Older units that can no longer run a supported operating system or meet current card standards are priced as a near-term replacement.',
+        ],
+      },
+      {
+        heading: 'Processing and transfer',
+        body: [
+          'Each ATM is set up with a processor that routes transactions, collects the fees and pays them out. Check whether the seller’s processing agreement can be assigned, whether it carries an early-termination fee, and how long it takes to move terminals to the buyer’s account so settlement never stops.',
+          'Surcharge rates and location commission splits are set per machine. A route with surcharges well below what its area supports may have room to grow; one with high commissions may have less margin than its volume suggests.',
+          'Encryption keys, terminal IDs and settlement accounts change hands at closing. Plan that step with the processor before signing.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Processor transaction reports by terminal for at least twelve months, with surcharge and interchange broken out, rather than the seller’s summary.',
+          'Every placement agreement: term, commission, exclusivity, assignability and renewal.',
+          'Machine make, model and age, software and compliance status, and any leased or financed equipment.',
+          'Vault cash arrangements, loading costs, and any history of theft or damage at each location.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are ATM routes valued?',
+        a: 'Usually as a multiple of verified net earnings after location commissions, processing and loading costs, adjusted for contract terms and machine condition. The median asking price at the top of this page is calculated from the listings below.',
+      },
+      {
+        q: 'Do I need to supply the cash for the machines?',
+        a: 'Only on operator-loaded machines. On merchant-loaded machines the location keeps the ATM stocked from its own cash. Listings usually say which kind they include, and it changes how much capital the purchase takes.',
+      },
+      {
+        q: 'Where do these ATM listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
+  pest_control: {
+    title: 'Pest Control Companies for Sale: {n} Pest Control Businesses Listed by Brokers | DealLedger',
+    h1: 'Pest Control Companies for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a pest control company',
+        body: [
+          'Pest control is valued on its recurring revenue. Customers on quarterly, monthly or annual service plans are worth far more than one-time treatments, because they keep paying after the sale. Buyers look first at how much revenue is recurring and how many customers cancel each year.',
+          'Route density drives margin. Customers clustered in a tight service area mean more stops per technician per day, so the same revenue spread over a wide territory is worth less.',
+          'The mix of work matters: residential general pest, commercial accounts, termite, mosquito and wildlife each carry different margins and risks. Termite work in particular can carry long-term warranty or bond obligations that transfer with the business.',
+          'Pest control is one of the most actively acquired service industries, with national companies and private-equity-backed platforms buying regularly. Larger, well-documented companies can draw more than one bidder.',
+        ],
+      },
+      {
+        heading: 'Licensing and people',
+        body: [
+          'Every state licenses pest control, and most require a certified applicator or qualifier to operate the business. Find out whose license the company runs under and whether that person stays, or how the buyer will replace them.',
+          'Technicians hold the customer relationships day to day. Technician turnover, pay structure and any non-solicit or non-compete agreements matter more than in many businesses this size.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue split into recurring and one-time work, customer counts and cancellation rate by year, from the routing or billing software rather than a summary.',
+          'Open termite warranties and bonds, any claims history, and what the buyer becomes responsible for after closing.',
+          'The company’s licenses, the qualifier’s status, state inspection records, and chemical storage and disposal practices.',
+          'Vehicles, equipment, routing software and the age of the customer contracts.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'How are pest control companies valued?',
+        a: 'Smaller owner-operated companies usually sell on a multiple of seller’s discretionary earnings; larger ones on EBITDA, with recurring revenue and customer retention driving the multiple. The median asking price at the top of this page is calculated from the listings below.',
+      },
+      {
+        q: 'Do I need a pest control license to buy one?',
+        a: 'The company needs a licensed, certified applicator to operate, but the owner does not always have to hold the license personally. Many buyers keep the seller or a senior technician as the qualifier while they get certified.',
+      },
+      {
+        q: 'Where do these pest control listings come from?',
+        a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
+      },
+    ],
+  },
 };
