@@ -36,6 +36,7 @@ Usage:
 import argparse
 import csv
 import json
+import time
 import os
 import sys
 from datetime import datetime, timezone
@@ -70,15 +71,23 @@ def _paged(base, key, table, params, order_col):
             else:
                 quoted = str(last_id).replace("\\", "\\\\").replace('"', '\\"')
                 p[order_col] = f'gt."{quoted}"'  # text keys contain | : / and can't go unquoted
+        t0 = time.time()
         r = requests.get(f"{base}/rest/v1/{table}", headers=headers, params=p, timeout=60)
         r.raise_for_status()
         batch = r.json()
         if not batch:
             break
         rows.extend(batch)
-        last_id = batch[-1][order_col]
+        new_last = batch[-1][order_col]
+        if new_last == last_id:
+            sys.exit(f"{table}: keyset cursor stuck at {last_id!r}")
+        last_id = new_last
+        print(f"  {table}: {len(rows)} rows ({time.time() - t0:.1f}s for this page)", flush=True)
+        if len(rows) > 500_000:
+            sys.exit(f"{table}: more than 500K rows, refusing (runaway paging?)")
         if len(batch) < PAGE:
             break
+    print(f"{table}: done, {len(rows)} rows", flush=True)
     return rows
 
 

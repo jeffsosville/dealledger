@@ -39,13 +39,13 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python scripts/export_public_listings.py
+        run: python -u scripts/export_public_listings.py
 
       - name: Verify (gate)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: python scripts/verify_public_export.py --dir data/public
+        run: python -u scripts/verify_public_export.py --dir data/public
 
       - name: Keep the verification report
         if: always()
