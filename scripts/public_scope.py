@@ -71,8 +71,26 @@ def host_denied(host, blocked=()):
     return False
 
 
-def listing_number(row_id):
-    """The public listing number for a listings_direct row: the same formula the
-    database uses for /listing/{n} pages and listing_age_v2
-    (900000000 + first 28 bits of md5(row id))."""
+# listings_direct.id -> public listing number, from public.listing_key_map (the stored
+# numbers since 2026-11-16). Callers load it with load_keymap() before using listing_number().
+KEYMAP = {}
+
+
+def dl_hash_number(row_id):
+    """The original formula (900000000 + first 28 bits of md5(row id)). Still the number
+    for every row except the few that collided; new rows start from it."""
     return 900000000 + int(hashlib.md5(str(row_id).encode()).hexdigest()[:7], 16)
+
+
+def listing_number(row_id):
+    """The public listing number for a listings_direct row: the stored number in
+    listing_key_map (same as /listing/{n} pages and listing_age_v2), else the hash."""
+    n = KEYMAP.get(row_id)
+    return int(n) if n is not None else dl_hash_number(row_id)
+
+
+def load_keymap(rows):
+    """rows: [{listing_id, listing_number}] from listing_key_map."""
+    KEYMAP.clear()
+    KEYMAP.update({r["listing_id"]: int(r["listing_number"]) for r in rows})
+    return len(KEYMAP)

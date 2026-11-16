@@ -49,7 +49,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_scope import (  # noqa: E402
     AGE_BASES, FORBIDDEN_COLUMNS, RECORD_START, SOLD_WORDS, WINDOW_MAX_DAYS,
-    bare_domain, host_denied, host_of, listing_number,
+    bare_domain, host_denied, host_of, listing_number, load_keymap,
 )
 from export_public_listings import FIELDS, LEFT_FIELDS  # noqa: E402
 
@@ -223,6 +223,7 @@ def verify(folder, db, today=None):
     with open(folder / "listings.json", encoding="utf-8") as f:
         jrows = json.load(f)
 
+    load_keymap(db.all("listing_key_map", "listing_id,listing_number", "listing_id"))
     blocked = {bare_domain(r["broker_domain"]) for r in db.all("broker_block", "broker_domain", "broker_domain")}
     ids = [r["id"] for r in rows] + [r["id"] for r in left]
     current = {c["id"]: c for c in db.by_values(
@@ -247,7 +248,7 @@ def verify(folder, db, today=None):
             check_source_rows(rows, current, "active", True), len(rows))
     rep.add("P3", "only permitted sources (no marketplace/aggregator/digital/real-estate/MLS host, no blocked broker)",
             check_scope(rows, blocked), len(rows))
-    rep.add("P4", "listing numbers unique and match the database formula", check_numbers(rows), len(rows))
+    rep.add("P4", "listing numbers unique and match listing_key_map", check_numbers(rows), len(rows))
     rep.add("A1", "age evidence equals listing_age_v2", check_age_matches(rows, ages, "listing_age_v2"), len(rows))
     rep.add("A2", "age evidence internally consistent", check_age_consistency(rows, today), len(rows))
     on_site = [r for r in rows if int(r["listing_number"]) in page]

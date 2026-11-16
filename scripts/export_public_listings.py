@@ -45,7 +45,7 @@ from pathlib import Path
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from public_scope import AGE_BASES, bare_domain, host_denied, host_of, listing_number  # noqa: E402
+from public_scope import AGE_BASES, bare_domain, host_denied, host_of, listing_number, load_keymap  # noqa: E402
 
 SCHEMA_VERSION = 2
 SITE = "https://dealledger.org/listing/"
@@ -186,10 +186,9 @@ def build_left_observation(base, key, ages, blocked):
 
 
 def drop_number_collisions(rows):
-    """Two different listings can hash to the same public listing number (28-bit
-    md5 prefix; 20 pairs across listings_direct on 2026-11-16). listing_age_v2 is
-    keyed by that number, so their ages can't be told apart. Hold both out until
-    listing numbers come from a stored key map; report the count in meta.json."""
+    """Safety net: two rows with the same public listing number are both held out
+    and counted in meta.json. Should be 0 since listing_key_map (2026-11-16)
+    stores unique numbers; before it, 20 pairs shared a hashed number."""
     count = {}
     for r in rows:
         count[r["listing_number"]] = count.get(r["listing_number"], 0) + 1
@@ -218,6 +217,9 @@ def main():
     if not base or not key:
         sys.exit("Set SUPABASE_URL and SUPABASE_SERVICE_KEY.")
 
+    n_keys = load_keymap(_paged(base, key, "listing_key_map", {"select": "listing_id,listing_number"}, "listing_id"))
+    if n_keys < 5000:
+        sys.exit(f"listing_key_map returned {n_keys} rows; refusing to export without stored listing numbers.")
     blocked = fetch_blocked(base, key)
     ages = fetch_ages(base, key)
     if len(ages) < 5000:
