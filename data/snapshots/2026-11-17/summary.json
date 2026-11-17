@@ -1,0 +1,163 @@
+{
+  "started": "2026-11-17T10:25:58.656431+00:00",
+  "brokers_attempted": 800,
+  "brokers_success": 652,
+  "brokers_failed": 135,
+  "total_listings": 14810,
+  "listings_with_price": 13499,
+  "listings_with_cashflow": 5791,
+  "listings_with_state": 12772,
+  "detail_pages_fetched": 683,
+  "patterns_cached": 604,
+  "patterns_learned": 550,
+  "verticals": {
+    "hvac": 268,
+    "other": 3437,
+    "manufacturing": 412,
+    "restaurant": 3202,
+    "automotive": 1113,
+    "technology": 1766,
+    "pressure_washing": 9,
+    "retail": 1657,
+    "healthcare": 1190,
+    "laundromat": 159,
+    "plumbing": 169,
+    "cleaning": 207,
+    "construction": 440,
+    "electrical": 133,
+    "dry_cleaner": 61,
+    "landscaping": 184,
+    "roofing": 64,
+    "delivery_route": 133,
+    "vending": 123,
+    "pest_control": 19,
+    "atm": 46,
+    "pool_service": 5,
+    "amusement": 9,
+    "junk_removal": 4
+  },
+  "failure_types": {
+    "EMBED_BBS": 13,
+    "FETCH_ERROR": 15,
+    "NO_PATTERN": 90,
+    "HTTP_403": 21,
+    "TITLE_REPETITION_REJECT": 2
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "Diversified Business Advisors",
+      "domain": "businessadvisors.us",
+      "event": "stale_cache",
+      "selector": "article.bde-loop-item.ee-post",
+      "rejected": "div[class*=\"bde-column-1492\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "Lonestar Business Advisor",
+      "domain": "lonestarba.com",
+      "event": "stale_cache",
+      "selector": "div.listing-card",
+      "rejected": "div.listing-card: 0 distinct listing(s) on page 1"
+    }
+  ],
+  "site_pages_dropped": 64,
+  "slowest_brokers": [
+    [
+      2296,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      2156,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      1903,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      1290,
+      "birminghambusinessbroker.com",
+      6
+    ],
+    [
+      907,
+      "www.gatewayma.com",
+      115
+    ],
+    [
+      602,
+      "alpinebusinessbrokers.com",
+      40
+    ],
+    [
+      499,
+      "restaurantrealty.com",
+      123
+    ],
+    [
+      465,
+      "blackbookadvisers.com",
+      18
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      460,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      453,
+      "progressivepracticesales.com",
+      89
+    ],
+    [
+      308,
+      "therockbridge.group",
+      7
+    ],
+    [
+      299,
+      "3cre.com",
+      3
+    ],
+    [
+      298,
+      "simmonsinc.com",
+      5
+    ],
+    [
+      298,
+      "businessforsaleinhudsonvalley.com",
+      23
+    ]
+  ],
+  "seconds_total": 42812,
+  "completed": "2026-11-17T14:41:28.621568+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
