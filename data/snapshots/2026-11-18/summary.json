@@ -1,0 +1,155 @@
+{
+  "started": "2026-11-18T10:26:04.375323+00:00",
+  "brokers_attempted": 748,
+  "brokers_success": 651,
+  "brokers_failed": 93,
+  "total_listings": 14697,
+  "listings_with_price": 13394,
+  "listings_with_cashflow": 5696,
+  "listings_with_state": 12717,
+  "detail_pages_fetched": 469,
+  "patterns_cached": 608,
+  "patterns_learned": 546,
+  "verticals": {
+    "restaurant": 3172,
+    "automotive": 1106,
+    "technology": 1753,
+    "other": 3409,
+    "manufacturing": 418,
+    "landscaping": 174,
+    "healthcare": 1180,
+    "construction": 434,
+    "retail": 1659,
+    "plumbing": 167,
+    "cleaning": 200,
+    "hvac": 257,
+    "laundromat": 159,
+    "electrical": 133,
+    "delivery_route": 133,
+    "dry_cleaner": 61,
+    "pest_control": 19,
+    "roofing": 65,
+    "pressure_washing": 9,
+    "amusement": 9,
+    "vending": 125,
+    "atm": 46,
+    "pool_service": 5,
+    "junk_removal": 4
+  },
+  "failure_types": {
+    "EMBED_BBS": 4,
+    "NO_PATTERN": 62,
+    "FETCH_ERROR": 7,
+    "HTTP_403": 19,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "shane torres",
+      "domain": "krbb.com",
+      "event": "stale_cache",
+      "selector": "div.ejYUwA.t1Z_7C"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    }
+  ],
+  "site_pages_dropped": 36,
+  "slowest_brokers": [
+    [
+      2301,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      2094,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      1429,
+      "coinlaundrysales.com",
+      3
+    ],
+    [
+      913,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      726,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      684,
+      "alpinebusinessbrokers.com",
+      40
+    ],
+    [
+      461,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      456,
+      "restaurantrealty.com",
+      122
+    ],
+    [
+      456,
+      "konablueplantations.com",
+      2
+    ],
+    [
+      410,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      335,
+      "keystoneadvisors.co",
+      16
+    ],
+    [
+      310,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      302,
+      "businessforsaleinhudsonvalley.com",
+      24
+    ],
+    [
+      297,
+      "therockbridge.group",
+      7
+    ],
+    [
+      296,
+      "griffinbusinessbrokers.com",
+      4
+    ]
+  ],
+  "seconds_total": 39704,
+  "completed": "2026-11-18T14:33:29.079637+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
