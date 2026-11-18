@@ -1,0 +1,30 @@
+name: Alert Confirm Reminder
+
+on:
+  schedule:
+    # Daily 15:13 UTC = 10:13am ET (EST). Off the hour: GitHub queues :00 crons.
+    - cron: "13 15 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print instead of sending"
+        type: boolean
+        default: true
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Remind unconfirmed alert signups (once, after 24h)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DRY: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+        run: npx -y tsx scripts/send_confirm_reminders.ts $DRY
