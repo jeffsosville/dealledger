@@ -90,13 +90,19 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
       const { data: hit } = await sb.from(REGISTRY_VIEW).select('slug').eq('slug', target).maybeSingle();
       if (hit) return { redirect: { destination: `/broker/${hit.slug}`, permanent: true } };
     }
+    // Retired registry slug we can't match (e.g. /broker/karen-suh): send it to the registry.
+    if (legacy) return { redirect: { destination: '/brokers', permanent: true } };
     return { notFound: true, revalidate: 60 * 60 * 24 };
   }
 
   const firm = firmRow as unknown as RegistryRow;
   if (isMarketplaceDomain(firm.domain)) return { notFound: true, revalidate: 60 * 60 * 24 };
 
-  const { data: activeRows } = await sb
+  // A failed query must never be cached as an empty table. Throwing makes ISR keep
+  // serving the last good page (or return a 500 that is retried) instead of
+  // caching "No listings visible" for 6 hours. Seen 2026-11-16: 493 of 574 broker
+  // pages empty after statement timeouts on the url host lookup.
+  const { data: activeRows, error: activeErr } = await sb
     .from('listings')
     .select(LISTING_COLUMNS)
     .eq('source', 'broker_direct')
@@ -106,7 +112,9 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .range(0, ACTIVE_LIMIT - 1);
 
   const since = new Date(Date.now() - 180 * 86400 * 1000).toISOString();
-  const { data: removedRows } = await sb
+  if (activeErr) throw new Error(`broker ${slug}: active listings query failed: ${activeErr.message}`);
+
+  const { data: removedRows, error: removedErr } = await sb
     .from('listings')
     .select(LISTING_COLUMNS)
     .eq('source', 'broker_direct')
@@ -115,6 +123,12 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .or(hostFilter(firm.domain))
     .order('last_seen', { ascending: false, nullsFirst: false })
     .range(0, REMOVED_LIMIT - 1);
+
+  if (removedErr) throw new Error(`broker ${slug}: removed listings query failed: ${removedErr.message}`);
+
+  // The registry count and the listing query disagree (count > 0, rows = 0):
+  // render, but re-check within the hour rather than holding it for 6.
+  const mismatch = firm.active_count > 0 && (activeRows || []).length === 0;
 
   const { data: clickRows } = await sb.rpc('dl_broker_clicks', { p_domain: firm.domain });
   const c = Array.isArray(clickRows) ? clickRows[0] : null;
@@ -128,7 +142,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
       removed: (removedRows || []) as ListingRow[],
       removedShown: (removedRows || []).length,
     },
-    revalidate: 60 * 60 * 6,
+    revalidate: mismatch ? 60 * 30 : 60 * 60 * 6,
   };
 };
 

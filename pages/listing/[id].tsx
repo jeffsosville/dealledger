@@ -89,7 +89,16 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
   console.log('[listing] Query 1:', listingErr ? 'ERR' : 'OK', listingRow ? `id=${listingRow.id}` : 'null');
 
-  if (listingErr || !listingRow) return { notFound: true };
+  // A failed query must not be cached as a 404 (same failure mode as broker pages).
+  if (listingErr) throw new Error(`listing ${listingNumber}: query failed: ${listingErr.message}`);
+  if (!listingRow) {
+    // 7-digit numbers are retired BizBuySell-era ids (e.g. /listing/2350632) still
+    // linked from old pages and AI answers. Nothing to show; send them to browse.
+    if (listingNumber < 10_000_000) {
+      return { redirect: { destination: '/businesses-for-sale', permanent: true } };
+    }
+    return { notFound: true, revalidate: 60 * 60 };
+  }
   const listing = listingRow as Listing;
 
   // Listing age comes only from the evidence hierarchy in mv_listings_page_v2 (2026-11-07):

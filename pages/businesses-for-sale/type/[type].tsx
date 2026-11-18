@@ -20,7 +20,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const vertical = typeFromSlug(slug);
   if (!vertical) {
     const niche = await nichePageProps(slug, null);
-    if (!niche) return { notFound: true, revalidate: 86400 };
+    // Unknown type slug (often made up by an AI answer): browse hub, not a 404.
+    if (!niche) return { redirect: { destination: '/businesses-for-sale', permanent: false } };
     return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
   }
   const all = await allStats();

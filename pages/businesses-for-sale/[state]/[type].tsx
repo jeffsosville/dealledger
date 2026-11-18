@@ -24,7 +24,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   if (!code) return { notFound: true, revalidate: 86400 };
   if (!vertical) {
     const niche = await nichePageProps(slug, code);
-    if (!niche) return { notFound: true, revalidate: 86400 };
+    // Unknown second segment under a real state (a city such as /california/los-angeles,
+    // or a type slug an AI answer made up): send it to the state page, not a 404.
+    if (!niche) return { redirect: { destination: `/businesses-for-sale/${String(params?.state)}`, permanent: false } };
     return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
   }
   const all = await allStats();
