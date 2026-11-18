@@ -111,9 +111,24 @@ const STAT_COLS =
 const ROW_COLS =
   'listing_number, title, city, state_code, vertical, price, cash_flow, dom_display, dom_basis, estimated_listed_date, broker_domain';
 
+// PostgREST caps every response at 1000 rows no matter what range is asked for,
+// and mv_seo_page_stats has more than that, so page through it. A failed query
+// throws: Next keeps the last good page instead of caching a 404.
+const PAGE = 1000;
 export async function allStats(): Promise<Stats[]> {
-  const { data } = await getSupabase().from('mv_seo_page_stats').select(STAT_COLS).range(0, 4999);
-  return (data || []) as Stats[];
+  const out: Stats[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await getSupabase()
+      .from('mv_seo_page_stats')
+      .select(STAT_COLS)
+      .order('scope')
+      .order('page_state', { nullsFirst: true })
+      .order('page_vertical', { nullsFirst: true })
+      .range(from, from + PAGE - 1);
+    if (error) throw new Error(`mv_seo_page_stats: ${error.message}`);
+    out.push(...((data || []) as Stats[]));
+    if (!data || data.length < PAGE) return out;
+  }
 }
 
 export async function listingsFor(filter: { state?: string; vertical?: string }): Promise<Row[]> {
