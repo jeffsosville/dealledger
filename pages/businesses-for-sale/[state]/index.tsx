@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths = async () => ({ paths: [], fallback
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const code = stateFromSlug(String(params?.state || ''));
-  if (!code) return { notFound: true, revalidate: 86400 };
+  if (!code) return { notFound: true, revalidate: 3600 };
   const all = await allStats();
   const stats = all.find((s) => s.scope === 'state' && s.page_state === code);
   if (!stats || !hasStatePage(stats)) return { notFound: true, revalidate: 86400 };
