@@ -81,11 +81,19 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ query,
   if (error) console.error('[brokers] query error', error.message);
 
   // Headline totals: always for the whole registry, independent of filters.
-  const { data: totalRows } = await sb
-    .from(REGISTRY_VIEW)
-    .select('domain, active_count, refreshed_at')
-    .range(0, 4999);
-  const all = ((totalRows || []) as { domain: string; active_count: number; refreshed_at: string | null }[]).filter(
+  // PostgREST returns at most 1000 rows per request, so page through.
+  const totalRows: { domain: string; active_count: number; refreshed_at: string | null }[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error: e } = await sb
+      .from(REGISTRY_VIEW)
+      .select('domain, active_count, refreshed_at')
+      .order('domain')
+      .range(from, from + 999);
+    if (e) { console.error('[brokers] totals query error', e.message); break; }
+    totalRows.push(...((data || []) as typeof totalRows));
+    if (!data || data.length < 1000) break;
+  }
+  const all = totalRows.filter(
     (r) => !isMarketplaceDomain(r.domain)
   );
   const totals = {
