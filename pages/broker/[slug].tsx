@@ -55,9 +55,9 @@ type PageProps = {
 
 const LISTING_COLUMNS = 'listing_number, header, price, cash_flow, city, state, url, first_seen, last_seen';
 
-// Listing URLs on this exact host, with or without www.
-const hostFilter = (domain: string) =>
-  [`url.ilike.*://${domain}/*`, `url.ilike.*://www.${domain}/*`, `url.eq.https://${domain}`, `url.eq.https://www.${domain}`].join(',');
+// Listing URLs on this exact host, with or without www. Matches the generated
+// listings.url_host column (indexed for broker_direct).
+const urlHost = (domain: string) => domain.toLowerCase().replace(/^www\./, '');
 
 const slugFromHost = (url: string | null) => {
   const h = bareHost(url)?.split('/')[0]?.toLowerCase();
@@ -107,7 +107,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .select(LISTING_COLUMNS)
     .eq('source', 'broker_direct')
     .eq('is_active', true)
-    .or(hostFilter(firm.domain))
+    .eq('url_host', urlHost(firm.domain))
     .order('first_seen', { ascending: false, nullsFirst: false })
     .range(0, ACTIVE_LIMIT - 1);
 
@@ -120,7 +120,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     .eq('source', 'broker_direct')
     .eq('is_active', false)
     .gte('last_seen', since)
-    .or(hostFilter(firm.domain))
+    .eq('url_host', urlHost(firm.domain))
     .order('last_seen', { ascending: false, nullsFirst: false })
     .range(0, REMOVED_LIMIT - 1);
 
