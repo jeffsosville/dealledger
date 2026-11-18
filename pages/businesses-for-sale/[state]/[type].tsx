@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const code = stateFromSlug(String(params?.state || ''));
   const slug = String(params?.type || '');
   const vertical = typeFromSlug(slug);
-  if (!code) return { notFound: true, revalidate: 86400 };
+  if (!code) return { notFound: true, revalidate: 3600 };
   if (!vertical) {
     const niche = await nichePageProps(slug, code);
     // Unknown second segment under a real state (a city such as /california/los-angeles,
