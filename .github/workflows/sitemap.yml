@@ -93,4 +93,13 @@ jobs:
       - name: IndexNow
         if: ${{ !inputs.dry_run }}
         continue-on-error: true
-        run: python3 scripts/indexnow.py
+        # Only what changed since the commit this run checked out ($GITHUB_SHA):
+        # new/changed/gone listings and new/gone brokers. Browse + static pages
+        # go once a week (Mondays) — sending them daily is what Bing flags as
+        # "IndexNow Batch Mode".
+        run: |
+          if [ "$(date -u +%u)" = "1" ]; then
+            python3 scripts/indexnow.py --changed --browse
+          else
+            python3 scripts/indexnow.py --changed
+          fi
