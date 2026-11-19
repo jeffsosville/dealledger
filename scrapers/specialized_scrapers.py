@@ -3125,6 +3125,11 @@ class WPRestScraper:
         loc = self._taxonomy(cl, "location", "region")
         st = self._taxonomy(cl, "state")
         state = st.upper() if st and re.fullmatch(r"[a-z]{2}", st.strip(), re.I) else None
+        # Houzez (laundrybuyers.com) writes full names: property_state-maryland.
+        # Same form Murphy's bare state names take (US_STATE_NAMES).
+        if not state and st and st.strip().lower() in US_STATE_NAMES:
+            state = US_STATE_NAMES[st.strip().lower()]
+        city_tax = self._taxonomy(cl, "property_city")
 
         acf = item.get("acf") or {}
         # Some themes expose listing fields in REST `meta` instead of ACF, prefixed
@@ -3150,7 +3155,8 @@ class WPRestScraper:
             url=link, broker_account=broker_account, title=title,
             price=price, cash_flow=cash_flow, revenue=revenue,
             business_type=(business_type.title() if business_type else None),
-            city=(acf.get("city") or None), state=(state or acf.get("state") or None),
+            city=(acf.get("city") or (city_tax.title() if city_tax else None)),
+            state=(state or acf.get("state") or None),
             location=loc.title() if loc else None, status=status, price_text=price_text,
             broker_published_on=wp_date(item.get("date")),
             broker_modified_on=wp_date(item.get("modified")),
