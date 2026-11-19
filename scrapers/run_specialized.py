@@ -41,6 +41,7 @@ from specialized_scrapers import (
 )
 from ere_property_scraper import EREPropertyScraper
 from laundromat_broker_scraper import LaundromatBrokerScraper
+from lbrokers_scraper import LBrokersScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -194,6 +195,16 @@ BROKERS = {
         "account": "laundromat-broker",
         "display_name": "john m. bedosky",
         "fn": lambda: LaundromatBrokerScraper().scrape("laundromat-broker"),
+    },
+    # lbrokers.com (2026-11-19): Laundry Brokers, Inc. A map + cards index
+    # (V6: NO_PATTERN on every run) linking to one detail page per store.
+    # New build-out / equipment packages ("This is not a business sale") are
+    # not emitted.
+    "lbrokers": {
+        "domain": "www.lbrokers.com",
+        "account": "lbrokers",
+        "display_name": "Laundry Brokers",
+        "fn": lambda: LBrokersScraper().scrape("lbrokers"),
     },
 }
 

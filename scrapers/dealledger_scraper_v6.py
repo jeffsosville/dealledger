@@ -2326,6 +2326,8 @@ SPECIALIZED_DOMAINS = {
                                      # 'reputedbrokerage'; property-status archives)
     "laundromat-broker.com",         # LaundromatBrokerScraper (run_specialized key
                                      # 'laundromatbroker'; numbered headings + status)
+    "lbrokers.com",                  # LBrokersScraper (run_specialized key 'lbrokers';
+                                     # detail pages, new-build packages skipped)
 }
 
 
