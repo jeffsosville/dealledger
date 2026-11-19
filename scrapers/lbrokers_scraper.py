@@ -106,7 +106,7 @@ def split_h1(h1: str) -> Tuple[str, Optional[str], Optional[float]]:
     if m:
         label, t = label or m.group(1), t[:m.start()]
     price = money(t)
-    title = re.sub(r"\$\s*[\d,.]+\s*$", "", t).strip(" -–")
+    title = re.sub(r"\$[\d,.\s]+$", "", t).strip(" -–")
     return title, label, price
 
 
