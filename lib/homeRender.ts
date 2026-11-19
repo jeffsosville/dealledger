@@ -161,6 +161,7 @@ export type HomeData = {
   // Headline figures, over every listing on the site.
   total: number;
   brokers: number | null;
+  producing: number | null;
 };
 
 const fmt = (n: number) => n.toLocaleString('en-US');
@@ -186,6 +187,7 @@ export function renderHome(d: HomeData | null): string {
       .split('<!--DL:OGDESC-->').join(og)
       .replace('<!--DL:TOTAL-->', '—')
       .replace('<!--DL:BROKERS-->', '—')
+      .replace('<!--DL:PRODUCING-->', '—')
       .replace('<!--DL:SHOWN-->', '—')
       .replace('<!--DL:ROWS-->', '')
       .replace('<!--DL:PAGEINFO-->', '')
@@ -196,6 +198,7 @@ export function renderHome(d: HomeData | null): string {
     .split('<!--DL:OGDESC-->').join(og)
     .replace('<!--DL:TOTAL-->', fmt(d.total))
     .replace('<!--DL:BROKERS-->', d.brokers === null ? '—' : fmt(d.brokers))
+    .replace('<!--DL:PRODUCING-->', d.producing === null ? '—' : fmt(d.producing))
     .replace('<!--DL:SHOWN-->', fmt(d.shown))
     .replace('<!--DL:ROWS-->', rowsHtml(d.rows))
     .replace('<!--DL:PAGEINFO-->', `Page 1 of ${fmt(pages)}`)
@@ -220,9 +223,9 @@ export async function loadHome(): Promise<HomeData | null> {
         .order('dom_days_eff', { ascending: true, nullsFirst: false })
         .range(0, PER_PAGE - 1),
       // Headline figures come only from public_stats.
-      sb.from('public_stats').select('listings_on_site, broker_sites_on_site').limit(1).maybeSingle(),
+      sb.from('public_stats').select('listings_on_site, broker_sites_on_site, broker_sites_producing').limit(1).maybeSingle(),
     ]);
-    const ps = stats.data as { listings_on_site?: number; broker_sites_on_site?: number } | null;
+    const ps = stats.data as { listings_on_site?: number; broker_sites_on_site?: number; broker_sites_producing?: number } | null;
     if (page.error || !page.data || stats.error || typeof ps?.listings_on_site !== 'number') {
       return null;
     }
@@ -237,11 +240,13 @@ export async function loadHome(): Promise<HomeData | null> {
       for (const r of rows) Object.assign(r, byNum.get(String(r.listing_number)) || {});
     }
     const brokers = ps.broker_sites_on_site;
+    const producing = ps.broker_sites_producing;
     return {
       shown: page.count ?? rows.length,
       rows,
       total: ps.listings_on_site,
       brokers: typeof brokers === 'number' ? brokers : null,
+      producing: typeof producing === 'number' ? producing : null,
     };
   } catch {
     return null;
