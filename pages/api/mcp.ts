@@ -96,9 +96,49 @@ const RELIST_BASIS =
   'Heuristic match to an earlier listing in DealLedger’s historical archive with the same state, the same asking price ' +
   '(over $50K) and the same opening words of the title, under a different listing number. Not confirmed.';
 
-function buildServer() {
-  const server = new McpServer({ name: 'dealledger', version: '1.1.0' });
+// Usage log (sql/2026-11-19_mcp_calls.sql): tool, arguments, result count,
+// error, time taken and the client's self-reported name. No IP, no identity.
+// Logging never blocks or breaks a tool call.
+function resultCount(out: any): number | null {
+  if (out?.isError) return 0;
+  try {
+    const v = JSON.parse(out?.content?.[0]?.text ?? 'null');
+    return typeof v?.count === 'number' ? v.count : 1;
+  } catch {
+    return null;
+  }
+}
+
+function buildServer(client: string | null) {
+  const server = new McpServer({ name: 'dealledger', version: '1.2.0' });
   const sb = getSupabase();
+
+  function logged<A>(tool: string, fn: (a: A) => Promise<any>) {
+    return async (a: A) => {
+      const t0 = Date.now();
+      let out: any;
+      try {
+        out = await fn(a);
+      } catch (e: any) {
+        out = fail(`Internal error: ${e?.message ?? e}`);
+      }
+      const ms = Date.now() - t0;
+      try {
+        await sb.from('mcp_calls').insert({
+          tool,
+          args: a ?? null,
+          result_count: resultCount(out),
+          is_error: !!out?.isError,
+          error: out?.isError ? String(out?.content?.[0]?.text ?? '').slice(0, 300) : null,
+          ms,
+          client,
+        });
+      } catch {
+        /* never let logging fail a call */
+      }
+      return out;
+    };
+  }
 
   async function loadListing(n: number) {
     const { data, error } = await sb
@@ -116,7 +156,7 @@ function buildServer() {
       'observed listing age with its evidence and confidence, reviewed asking-price changes with dates, relist signal, ' +
       'whether it is still listed, the broker’s original page and the permanent DealLedger URL.',
     { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
-    async ({ listing }) => {
+    logged('get_listing_history', async ({ listing }) => {
       const n = toListingNumber(listing);
       if (!n) return fail('Give a DealLedger listing number or a dealledger.org/listing/… URL.');
       try {
@@ -151,7 +191,7 @@ function buildServer() {
       } catch (e: any) {
         return fail(`Lookup failed: ${e.message}`);
       }
-    }
+    })
   );
 
   server.tool(
@@ -167,7 +207,7 @@ function buildServer() {
       since: z.string().optional().describe('Only changes observed on or after this date (YYYY-MM-DD)'),
       limit: z.number().int().min(1).max(50).optional().describe('Number of results, default 20'),
     },
-    async (a) => {
+    logged('search_price_changes', async (a) => {
       const state = toStateCode(a.state);
       if (a.state && !state) return fail(`Unknown state "${a.state}".`);
       const vertical = toVertical(a.type);
@@ -217,7 +257,7 @@ function buildServer() {
           };
         });
       return json({ count: results.length, results, source: SOURCE });
-    }
+    })
   );
 
   server.tool(
@@ -225,7 +265,7 @@ function buildServer() {
     'Check whether a business-for-sale listing shows evidence of having been listed before under a different listing. ' +
       'Returns the signal, its confidence and how it was derived. A possible relist is never confirmed proof.',
     { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
-    async ({ listing }) => {
+    logged('check_relisting', async ({ listing }) => {
       const n = toListingNumber(listing);
       if (!n) return fail('Give a DealLedger listing number or a dealledger.org/listing/… URL.');
       try {
@@ -246,7 +286,7 @@ function buildServer() {
       } catch (e: any) {
         return fail(`Lookup failed: ${e.message}`);
       }
-    }
+    })
   );
 
   return server;
@@ -261,7 +301,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     return;
   }
-  const server = buildServer();
+  const ua = req.headers['user-agent'];
+  const server = buildServer(typeof ua === 'string' ? ua.slice(0, 80) : null);
   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
   res.on('close', () => {
     transport.close();
