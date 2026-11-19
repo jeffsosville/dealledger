@@ -2328,6 +2328,8 @@ SPECIALIZED_DOMAINS = {
                                      # 'laundromatbroker'; numbered headings + status)
     "lbrokers.com",                  # LBrokersScraper (run_specialized key 'lbrokers';
                                      # detail pages, new-build packages skipped)
+    "feldmanbrokerage.com",          # FeldmanScraper (run_specialized key 'feldman';
+                                     # text blocks ending "Selling price.")
 }
 
 

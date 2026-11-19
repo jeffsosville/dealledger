@@ -42,6 +42,7 @@ from specialized_scrapers import (
 from ere_property_scraper import EREPropertyScraper
 from laundromat_broker_scraper import LaundromatBrokerScraper
 from lbrokers_scraper import LBrokersScraper
+from feldman_scraper import FeldmanScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -205,6 +206,15 @@ BROKERS = {
         "account": "lbrokers",
         "display_name": "Laundry Brokers",
         "fn": lambda: LBrokersScraper().scrape("lbrokers"),
+    },
+    # feldmanbrokerage.com (2026-11-19): Eric Feldman, laundromat specialist.
+    # One Weebly page of text blocks (title "(ST)", Revenue, Net, Town, County,
+    # State, Selling price). V6 stored each text line as its own listing.
+    "feldman": {
+        "domain": "feldmanbrokerage.com",
+        "account": "feldman",
+        "display_name": "Feldman Brokerage and Consulting",
+        "fn": lambda: FeldmanScraper().scrape("feldman"),
     },
 }
 
