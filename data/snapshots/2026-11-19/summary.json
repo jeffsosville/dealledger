@@ -1,0 +1,162 @@
+{
+  "started": "2026-11-19T10:26:02.561911+00:00",
+  "brokers_attempted": 597,
+  "brokers_success": 516,
+  "brokers_failed": 76,
+  "total_listings": 10815,
+  "listings_with_price": 9849,
+  "listings_with_cashflow": 4474,
+  "listings_with_state": 9179,
+  "detail_pages_fetched": 242,
+  "patterns_cached": 600,
+  "patterns_learned": 428,
+  "verticals": {
+    "restaurant": 2377,
+    "automotive": 714,
+    "technology": 1348,
+    "other": 2600,
+    "manufacturing": 276,
+    "landscaping": 144,
+    "healthcare": 793,
+    "vending": 107,
+    "cleaning": 151,
+    "retail": 987,
+    "hvac": 227,
+    "laundromat": 153,
+    "construction": 367,
+    "pressure_washing": 8,
+    "dry_cleaner": 56,
+    "pest_control": 18,
+    "plumbing": 135,
+    "electrical": 105,
+    "amusement": 7,
+    "pool_service": 5,
+    "roofing": 58,
+    "delivery_route": 130,
+    "atm": 45,
+    "junk_removal": 4
+  },
+  "failure_types": {
+    "EMBED_BBS": 4,
+    "NO_PATTERN": 48,
+    "FETCH_ERROR": 8,
+    "HTTP_403": 16,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "shane torres",
+      "domain": "krbb.com",
+      "event": "stale_cache",
+      "selector": "div.ejYUwA.t1Z_7C"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "michael mcgrath",
+      "domain": "homecarebuysell.com",
+      "event": "stale_cache",
+      "selector": "tr",
+      "healed_to": "tr[class*=\"element_row\"]"
+    }
+  ],
+  "interrupted": true,
+  "slowest_brokers": [
+    [
+      2269,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      1425,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      900,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      517,
+      "alpinebusinessbrokers.com",
+      40
+    ],
+    [
+      435,
+      "buygasstations.com",
+      3
+    ],
+    [
+      350,
+      "carwashbrokers.com",
+      0
+    ],
+    [
+      311,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      310,
+      "progressivepracticesales.com",
+      90
+    ],
+    [
+      294,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      291,
+      "3cre.com",
+      3
+    ],
+    [
+      289,
+      "zenappy.com",
+      2
+    ],
+    [
+      288,
+      "houlihanbusinessbrokers.net",
+      1
+    ],
+    [
+      287,
+      "businessforsaleinhudsonvalley.com",
+      24
+    ],
+    [
+      284,
+      "globalbizbkrs.com",
+      2
+    ],
+    [
+      284,
+      "canzell.com",
+      8
+    ]
+  ],
+  "seconds_total": 28567,
+  "completed": "2026-11-19T15:13:32.601718+00:00",
+  "site_pages_dropped": 18,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
