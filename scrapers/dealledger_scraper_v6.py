@@ -2324,6 +2324,8 @@ SPECIALIZED_DOMAINS = {
                                      # companies; V6 must keep scraping those)
     "reputedbrokerage.com",          # EREPropertyScraper (run_specialized key
                                      # 'reputedbrokerage'; property-status archives)
+    "laundromat-broker.com",         # LaundromatBrokerScraper (run_specialized key
+                                     # 'laundromatbroker'; numbered headings + status)
 }
 
 

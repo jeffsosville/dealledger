@@ -40,6 +40,7 @@ from specialized_scrapers import (
     WPRestScraper, FacetWPScraper
 )
 from ere_property_scraper import EREPropertyScraper
+from laundromat_broker_scraper import LaundromatBrokerScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -183,6 +184,16 @@ BROKERS = {
         "account": "reputedbrokerage",
         "display_name": "Reputed Brokerage",
         "fn": lambda: EREPropertyScraper("www.reputedbrokerage.com").scrape("reputedbrokerage"),
+    },
+    # laundromat-broker.com (2026-11-19): one Weebly page, every listing a
+    # numbered <h2> heading with its status written at the end ("SOLD 2021",
+    # "Under Deposit 2026", "Temporarily Off Market"). Replaces the V6 generic
+    # crawl, which took body text as titles and read 35 of 154 as active.
+    "laundromatbroker": {
+        "domain": "laundromat-broker.com",
+        "account": "laundromat-broker",
+        "display_name": "john m. bedosky",
+        "fn": lambda: LaundromatBrokerScraper().scrape("laundromat-broker"),
     },
 }
 
