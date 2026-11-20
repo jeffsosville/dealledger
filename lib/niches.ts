@@ -238,9 +238,30 @@ export const NICHES: Niche[] = [
     group: 'Professional & tech' },
 
   // ── Routes & car washes (added 2026-11-19, claude/seo-keyword-targets.md) ──
+  // Brand route types (2026-11-20), mirroring how route brokers sort them (e.g. routesforsale.net's route-type filter).
+  // Before bread-and-snack-routes so firstNiche() prefers the brand. Brand names describe the distributorship sold.
+  { slug: 'flowers-bread-routes', label: 'Flowers Bread Routes', noun: 'Flowers Foods bread distribution routes',
+    re: r('\\bflowers\\b.*(route|bread|bakery|distribut|territor)|(route|bread|bakery|distribut|territor).*\\bflowers\\b'), group: 'Routes' },
+  { slug: 'pepperidge-farm-routes', label: 'Pepperidge Farm Routes', noun: 'Pepperidge Farm distribution routes',
+    re: r('pepperidge'), group: 'Routes' },
+  { slug: 'bimbo-bakery-routes', label: 'Bimbo Bakeries Routes', noun: 'Bimbo Bakeries (Entenmann’s, Sara Lee) distribution routes',
+    re: r('bimbo|entenmann|sara lee'), group: 'Routes' },
+  { slug: 'snyders-lance-routes', label: 'Snyder’s-Lance & Campbell’s Snacks Routes', noun: 'Snyder’s-Lance and Campbell’s Snacks chip routes',
+    re: r('snyder|\\blance\\b|campbell.?s snack'), group: 'Routes' },
+  { slug: 'mission-tortilla-routes', label: 'Mission Tortilla Routes', noun: 'Mission tortilla distribution routes',
+    re: r('mission.*tortilla|tortilla.*mission'), group: 'Routes' },
+  { slug: 'tastykake-routes', label: 'Tastykake Routes', noun: 'Tastykake distribution routes',
+    re: r('tasty ?kake'), group: 'Routes' },
   { slug: 'bread-and-snack-routes', label: 'Bread & Snack Routes', noun: 'bread, snack and tortilla distribution routes',
     re: r('(bread|bakery|snack|chip|tortilla|cake|cookie|pastry) (route|distribut)|\\b(flowers|pepperidge|bimbo|utz|herr|frito|lance|mission tortilla|entenmann|arnold|little debbie|sara lee|nature.s own|dave.s killer)\\b.*\\broutes?\\b'),
     group: 'Routes' },
+  // Route types added 2026-11-20 (claude/seo-keyword-targets.md: fedex ~6K/mo, bread ~2.4K, amazon ~800).
+  { slug: 'fedex-linehaul-routes', label: 'FedEx Linehaul Routes', noun: 'FedEx linehaul and dedicated run businesses',
+    re: r('line ?haul|dedicated (solo |team )?runs?'), group: 'Routes' },
+  { slug: 'amazon-routes', label: 'Amazon Delivery Routes', noun: 'Amazon delivery routes and DSP businesses',
+    re: r('amazon (delivery|routes?|dsp|relay|flex)|\\bdsp\\b|delivery service partner'), group: 'Routes', min: 5 },
+  { slug: 'beverage-routes', label: 'Beverage & Dairy Routes', noun: 'beverage, dairy and ice cream distribution routes',
+    re: r('(beverage|soda|water|snapple|milk|dairy|ice cream|juice) (routes?|distribut)'), group: 'Routes' },
   { slug: 'fedex-routes', label: 'FedEx Routes', noun: 'FedEx Ground and Home Delivery routes',
     re: r('fed ?ex|ground (route|contract)s?|home delivery (route|contract)s?'), group: 'Routes' },
   { slug: 'self-serve-car-washes', label: 'Self-Serve Car Washes', noun: 'self-serve and self-service car washes',
@@ -417,7 +438,7 @@ export const VERTICAL_NICHE_GROUPS: Record<string, string[]> = {
 
 /** Single niches to cross-link from a vertical whose niche group would be too broad. */
 export const VERTICAL_NICHE_SLUGS: Record<string, string[]> = {
-  delivery_route: ['bread-and-snack-routes', 'fedex-routes'],
+  delivery_route: ['bread-and-snack-routes', 'flowers-bread-routes', 'pepperidge-farm-routes', 'bimbo-bakery-routes', 'snyders-lance-routes', 'mission-tortilla-routes', 'tastykake-routes', 'fedex-routes', 'fedex-linehaul-routes', 'amazon-routes', 'beverage-routes'],
   car_wash: ['self-serve-car-washes'],
   gas_station: ['truck-stops', 'convenience-stores'],
 };

@@ -495,4 +495,31 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
       SOURCE_FAQ('car wash'),
     ],
   },
+
+  'fedex-linehaul-routes': {
+    title: 'FedEx Linehaul Routes for Sale: {n} Linehaul & Dedicated Run Businesses Listed by Brokers | DealLedger',
+    description: '{n} FedEx linehaul and dedicated run businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
+    sections: [
+      {
+        heading: 'Linehaul versus pickup and delivery',
+        body: [
+          'Linehaul contractors move freight between FedEx terminals on scheduled runs, usually with tractor-trailers, rather than delivering packages door to door. A business may hold solo runs (one driver) or team runs (two drivers sharing long trips).',
+          'Because runs are scheduled and repeat, revenue is steadier than in many trucking businesses. Costs are mostly drivers, fuel, tractor payments, maintenance and insurance, and drivers need commercial licenses.',
+          'FedEx has to approve the buyer, and the contract sets equipment, safety and insurance requirements. Ask early what the approval steps are and how long they take.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Settlement statements by run for at least a year, compared with bank deposits, fuel cards and payroll.',
+          'The contract term and renewal, any announced changes to runs or rates, and the transfer process.',
+          'Tractor ages, mileage, liens and replacement schedule; driver count, pay and turnover; the safety record in FMCSA’s public data.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are FedEx linehaul businesses priced?', a: 'Usually as a multiple of net earnings after drivers, fuel, insurance and equipment costs, adjusted for contract term and fleet condition. The median asking price at the top of this page is calculated from the listings below.' },
+      SOURCE_FAQ('linehaul'),
+    ],
+  },
 };
