@@ -43,6 +43,13 @@ from ere_property_scraper import EREPropertyScraper
 from laundromat_broker_scraper import LaundromatBrokerScraper
 from lbrokers_scraper import LBrokersScraper
 from feldman_scraper import FeldmanScraper
+from carwashbrokers_scraper import CaffeineIcpListingsScraper
+from petroleumrealty_scraper import PetroleumRealtyScraper
+from gasstationsusa_scraper import GasStationsUSAScraper
+from buygasstations_scraper import BuyGasStationsScraper
+from broker_vertical import broker_default_vertical
+from carwashking_scraper import CarWashKingScraper
+from globalpetro_scraper import GlobalPetroScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -215,6 +222,59 @@ BROKERS = {
         "account": "feldman",
         "display_name": "Feldman Brokerage and Consulting",
         "fn": lambda: FeldmanScraper().scrape("feldman"),
+    },
+    # carwashbrokers.com (T1 2026-11-20, from loop-2 l2-carwash): Caffeine / ICP
+    # SPA (2.9 KB HTML shell, V6 FETCH_ERROR since Mar 27); public anonymous
+    # canister query, scrapers/icp_query.py.
+    "carwashbrokers": {
+        "domain": "carwashbrokers.com",
+        "account": "carwashbrokers",
+        "display_name": "Car Wash Brokers",
+        "fn": lambda: CaffeineIcpListingsScraper().scrape("carwashbrokers"),
+    },
+    # petroleumrealty.net (T1 2026-11-20): one Weebly page of <h2> property
+    # blocks since its mid-Nov redesign. V6 titled each block by its last
+    # bullet and kept the old per-page rows alive (12 active / 8 URLs vs 6).
+    "petroleumrealty": {
+        "domain": "petroleumrealty.net",
+        "account": "petroleumrealty",
+        "display_name": "gus otaki",
+        "fn": lambda: PetroleumRealtyScraper().scrape("petroleumrealty"),
+    },
+    # gasstationsusa.com (T1 2026-11-20): V6 HTTP_403 since Nov 17, and before
+    # that it stored the call-to-action card, vacant lots and sold cards as
+    # active with bullet-text prices. Card list + price box + status bullet.
+    "gasstationsusa": {
+        "domain": "gasstationsusa.com",
+        "account": "gasstationsusa",
+        "display_name": "mark amendolagine",
+        "fn": lambda: GasStationsUSAScraper().scrape("gasstationsusa"),
+    },
+    # buygasstations.com (T1 2026-11-20): two GoDaddy pages of text blocks
+    # keyed by the broker's "ID#" ref. V6 read slideshow captions: 3 rows.
+    "buygasstations": {
+        "domain": "buygasstations.com",
+        "account": "buygasstations",
+        "display_name": "daniel diaz",
+        "fn": lambda: BuyGasStationsScraper().scrape("buygasstations"),
+    },
+    # carwashking.com (2026-11-20): Vincent Carfora Broker, car washes. The
+    # /carwashes index is the whole archive (599 ids, no status); the homepage
+    # cards are the current set. Rows keyed on the numeric id (listing_key).
+    "carwashking": {
+        "domain": "carwashking.com",
+        "account": "carwashking",
+        "display_name": "Vincent Carfora Broker (CarWashKing)",
+        "fn": lambda: CarWashKingScraper().scrape("carwashking"),
+    },
+    # globalpetroadvisors.com (2026-11-20): Global Petro Advisors (FL), gas /
+    # grocery / c-store. One server-rendered /listings/ page; land, condos and
+    # terminal property on it are not emitted. Own site only, never crexi.
+    "globalpetro": {
+        "domain": "globalpetroadvisors.com",
+        "account": "globalpetro",
+        "display_name": "Global Petro Advisors",
+        "fn": lambda: GlobalPetroScraper().scrape("globalpetro"),
     },
 }
 
@@ -397,6 +457,12 @@ def listing_key(url: str, broker_domain: str | None = None) -> str:
         if m:
             return f"vestedbb:{m.group(1)}"
 
+    # carwashking: the slug changes between pages (.../Title/GA vs .../Title-GA)
+    if "carwashking.com" in host:
+        m = re.search(r"/carwash/(\d+)/", u)
+        if m:
+            return f"carwashking:{m.group(1)}"
+
     return u
 
 
@@ -563,6 +629,10 @@ def upsert_listings(listings: list[dict], display_name: str | None = None,
             "updated_at":    now,
             **(disclosure or {}),
             **(label or {}),
+            # Single-vertical broker default (scrapers/broker_vertical.py, the
+            # same rule V6 writes with). Sent only when it applies; otherwise
+            # the key is absent and classify_verticals fills a NULL as before.
+            **({"vertical": dv} if (dv := broker_default_vertical(broker_domain, title)) else {}),
         })
     if flag_no_phrase:
         log.warning(f"{flag_no_phrase} row(s) flagged price_not_disclosed by the scraper "

@@ -58,7 +58,9 @@ def _card(title, loc="Austin, TX", price="$250,000", link=None, index=INDEX,
 
 # ── allowlist ───────────────────────────────────────────────────────────────
 def test_allowlist_is_the_33_bucket_b_domains_with_and_without_www():
-    assert len(SYNTHETIC_URL_DOMAINS) == 33
+    # 33 bucket (b) domains + mycarwashbroker.com (T1 2026-11-20)
+    assert len(SYNTHETIC_URL_DOMAINS) == 34
+    assert synthetic_urls_enabled("mycarwashbroker.com")
     assert synthetic_urls_enabled("peakbusinessbrokersllc.com")
     assert synthetic_urls_enabled("www.dentalbroker.com")
     assert synthetic_urls_enabled("WWW.Patriotbusinessadvisors.com")

@@ -103,6 +103,9 @@ except Exception:
 from crawl_run_log import start_run, finish_run
 # Broker's own displayed count per crawl (2026-11-11). Pure module, no I/O.
 from displayed_count import DisplayedCountTracker, verdict_label
+# Single-vertical brokers (car wash only / gas station only): one rule shared
+# with run_specialized.upsert_listings (principle 15). T1 2026-11-20, proposed.
+from broker_vertical import broker_default_vertical
 try:
     from classify_verticals import rule_match as _cv_rule_match
 except ImportError:                                   # run as package
@@ -1795,6 +1798,9 @@ SYNTHETIC_URL_DOMAINS = frozenset({
     "richbizbrokers.com", "selahdirective.com", "shermangroup.net",
     "thesynergybroker.com", "vermontbusinessbrokers.com",
     "vistapoolroutes.com",
+    # T1 2026-11-20: 25 inline cards on one page, no detail links; the bridge
+    # kept 2 of 30 published rows (one URL). Proposed, not yet decided.
+    "mycarwashbroker.com",
 })
 # Bucket (c): the broker-ref rule only. naz-business.com prints a 4-digit ref
 # on all 81 cards; 16 link out to BizBuySell (never stored - marketplace gate),
@@ -2330,6 +2336,18 @@ SPECIALIZED_DOMAINS = {
                                      # detail pages, new-build packages skipped)
     "feldmanbrokerage.com",          # FeldmanScraper (run_specialized key 'feldman';
                                      # text blocks ending "Selling price.")
+    "carwashbrokers.com",            # CaffeineIcpListingsScraper (run_specialized key
+                                     # 'carwashbrokers'; ICP canister query)
+    "petroleumrealty.net",           # PetroleumRealtyScraper (run_specialized key
+                                     # 'petroleumrealty'; one page of <h2> blocks)
+    "gasstationsusa.com",            # GasStationsUSAScraper (run_specialized key
+                                     # 'gasstationsusa'; card list + price box)
+    "buygasstations.com",            # BuyGasStationsScraper (run_specialized key
+                                     # 'buygasstations'; GoDaddy "ID#" text blocks)
+    "carwashking.com",               # CarWashKingScraper (run_specialized key
+                                     # 'carwashking'; homepage cards, id-keyed)
+    "globalpetroadvisors.com",       # GlobalPetroScraper (run_specialized key
+                                     # 'globalpetro'; land/condos/terminal skipped)
 }
 
 
@@ -4789,7 +4807,8 @@ class SupabaseWriter:
                 "asking_price":  positive_or_none(l.get("asking_price")),
                 "cash_flow":     positive_or_none(l.get("cash_flow")),
                 "revenue":       positive_or_none(l.get("revenue")),
-                "vertical":      l.get("vertical", "other"),
+                "vertical":      (broker_default_vertical(l.get("broker_domain"), l.get("title"))
+                                  or l.get("vertical", "other")),
                 "description":   (l.get("description") or "")[:2000],
                 "status":        l.get("status") or "active",
                 "needs_review":  bool(l.get("needs_review", False)),
