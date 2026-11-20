@@ -8,14 +8,20 @@
 
 export type TypeGuide = {
   title: string;        // <title>, with {n} replaced by the listing count
+  description?: string; // meta description: {n} listings, {b} broker sites, {p} median asking (claude/seo-keyword-targets.md)
   h1?: string;
   sections: { heading: string; body: string[] }[];
   faqs: { q: string; a: string }[];
 };
 
+/** Fill a guide's title/description template from live stats. Numbers never live in this file. */
+export const fillGuide = (tpl: string, v: { n: string; b: string; p: string }) =>
+  tpl.replace(/\{n\}/g, v.n).replace(/\{b\}/g, v.b).replace(/\{p\}/g, v.p);
+
 export const TYPE_GUIDES: Record<string, TypeGuide> = {
   laundromat: {
-    title: 'Laundromats for Sale: {n} Laundromat Businesses Listed by Brokers | DealLedger',
+    title: 'Laundromats for Sale: {n} Laundromat & Coin Laundry Businesses, Updated Daily | DealLedger',
+    description: 'Buy a laundromat: {n} laundromats and coin laundries (laundry mats) for sale from {b} broker websites, updated daily. Median asking {p}. Real listing age and a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a laundromat',
@@ -80,6 +86,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
 
   cleaning: {
     title: 'Cleaning Businesses for Sale: {n} Janitorial, Maid & Commercial Cleaning Companies | DealLedger',
+    description: '{n} cleaning businesses for sale from {b} broker websites: commercial janitorial, residential maid, window and specialty cleaning. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a cleaning business',
@@ -116,7 +123,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   roofing: {
-    title: 'Roofing Companies for Sale: {n} Roofing Businesses Listed by Brokers | DealLedger',
+    title: 'Roofing Companies for Sale: {n} Roofing Businesses Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} roofing companies and roofing businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with real listing age and a direct link to each broker.',
     h1: 'Roofing Companies for Sale',
     sections: [
       {
@@ -189,7 +197,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   restaurant: {
-    title: 'Restaurants for Sale: {n} Restaurants Listed by Business Brokers | DealLedger',
+    title: 'Restaurants for Sale: {n} Restaurants Listed by Business Brokers, Updated Daily | DealLedger',
+    description: '{n} restaurants for sale from {b} broker websites, from small cafés to full-service restaurants. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a restaurant',
@@ -226,6 +235,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
 
   landscaping: {
     title: 'Landscaping Businesses for Sale: {n} Lawn Care & Landscaping Companies | DealLedger',
+    description: '{n} landscaping and lawn care companies for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a landscaping business',
@@ -261,7 +271,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   hvac: {
-    title: 'HVAC Businesses for Sale: {n} HVAC Companies Listed by Brokers | DealLedger',
+    title: 'HVAC Businesses for Sale: {n} HVAC Companies Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} HVAC companies and heating and air conditioning businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     h1: 'HVAC Businesses for Sale',
     sections: [
       {
@@ -299,7 +310,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   plumbing: {
-    title: 'Plumbing Companies for Sale: {n} Plumbing Businesses Listed by Brokers | DealLedger',
+    title: 'Plumbing Companies for Sale: {n} Plumbing Businesses Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} plumbing companies and plumbing businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     h1: 'Plumbing Companies for Sale',
     sections: [
       {
@@ -486,7 +498,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   car_wash: {
-    title: 'Car Washes for Sale: {n} Car Wash Businesses Listed by Brokers | DealLedger',
+    title: 'Car Washes for Sale: {n} Car Wash Businesses (Express, Self-Serve & Tunnel), Updated Daily | DealLedger',
+    description: '{n} car washes for sale from {b} broker websites: express tunnels, self-serve bays and in-bay automatic carwash businesses. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'Types of car washes for sale',
@@ -529,7 +542,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   gas_station: {
-    title: 'Gas Stations for Sale: {n} Gas Stations & Convenience Stores Listed by Brokers | DealLedger',
+    title: 'Gas Stations for Sale: {n} Gas Stations, Truck Stops & Convenience Stores, Updated Daily | DealLedger',
+    description: '{n} gas stations, truck stops and convenience stores for sale from {b} broker websites, with and without real estate. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What you are actually buying',
@@ -577,7 +591,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
 
   liquor_store: {
-    title: 'Liquor Stores for Sale: {n} Liquor Stores & Licenses Listed by Brokers | DealLedger',
+    title: 'Liquor Stores for Sale: {n} Liquor Stores & Licenses Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} liquor stores and liquor licenses for sale from {b} broker websites. Median asking {p}. Updated daily, with real listing age and a direct link to each broker.',
     sections: [
       {
         heading: 'The license is the business',
@@ -615,7 +630,8 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
     ],
   },
   vending: {
-    title: 'Vending Routes for Sale: {n} Vending Machine Businesses Listed by Brokers | DealLedger',
+    title: 'Vending Routes for Sale: {n} Vending Machine Routes & Businesses, Updated Daily | DealLedger',
+    description: '{n} vending machine routes, vending locations and vending businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     h1: 'Vending Routes for Sale',
     sections: [
       {
@@ -708,6 +724,7 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
   },
   pest_control: {
     title: 'Pest Control Companies for Sale: {n} Pest Control Businesses Listed by Brokers | DealLedger',
+    description: '{n} pest control companies and pest control businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     h1: 'Pest Control Companies for Sale',
     sections: [
       {
@@ -749,6 +766,105 @@ export const TYPE_GUIDES: Record<string, TypeGuide> = {
         q: 'Where do these pest control listings come from?',
         a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.',
       },
+    ],
+  },
+
+  delivery_route: {
+    title: 'Delivery Routes for Sale: {n} FedEx, Bread & Snack Routes Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} delivery routes for sale from {b} broker websites: FedEx Ground and Home Delivery routes, bread, snack and tortilla distribution routes. Median asking {p}. Updated daily, with a direct link to each broker.',
+    h1: 'Delivery Routes for Sale',
+    sections: [
+      {
+        heading: 'FedEx routes',
+        body: [
+          'A FedEx Ground or Home Delivery route is a contract to deliver packages in a defined service area, held by an independent company. What a buyer purchases is that company: its operating agreement with FedEx, its trucks and its drivers.',
+          'FedEx has to approve the buyer before the sale closes, and it sets requirements for the business entity, insurance and safety. Ask the broker early what the approval steps are and how long they are taking.',
+          'Value rests on the contract terms, the settlement the company receives, and what it costs to run: driver pay, fuel, insurance and truck payments. The age and mileage of the fleet set how much capital a buyer will need soon after closing.',
+        ],
+      },
+      {
+        heading: 'Bread, snack and tortilla routes',
+        body: [
+          'Bread and snack routes are independent distributorships. The distributor owns the right to deliver a manufacturer’s products to stores in a territory, buys product at a discount and earns the margin on what sells.',
+          'The manufacturer usually has to approve the buyer and the transfer, and the distributor agreement sets the rules: territory, returns of unsold product, and what happens if the route is sold or split.',
+          'These routes are hands-on. Early-morning store deliveries, shelf stocking and handling stale product are the daily work, though larger routes often run with a helper or second driver.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Settlement statements or distributor statements for at least twelve months, compared with bank deposits, rather than the seller’s summary.',
+          'The operating or distributor agreement itself: remaining term, renewal conditions, transfer rules and any fees owed on sale.',
+          'Vehicle titles, loans and leases, maintenance records and mileage. A route whose trucks need replacing is priced as one.',
+          'Who does the work today. If the owner drives the route, the buyer either drives it too or adds a driver’s wages to the costs.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are delivery routes priced?', a: 'Usually as a multiple of the owner’s net earnings after drivers, fuel, insurance and vehicle costs. Bread and snack routes are often quoted as a multiple of weekly sales. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Does FedEx or the manufacturer have to approve the buyer?', a: 'In almost every case, yes. FedEx approves buyers of its contracted routes, and bread and snack manufacturers approve new distributors. Make the purchase contingent on that approval.' },
+      { q: 'Can I finance a route with an SBA loan?', a: 'Many delivery and distribution routes are financed with SBA 7(a) loans. Lenders look at the contract or distributor agreement, its remaining term and transfer rules, and verified earnings.' },
+      { q: 'Where do these route listings come from?', a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.' },
+    ],
+  },
+  trucking: {
+    title: 'Trucking Companies for Sale: {n} Trucking & Logistics Businesses Listed by Brokers | DealLedger',
+    description: '{n} trucking companies, freight carriers and logistics businesses for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
+    h1: 'Trucking & Logistics Companies for Sale',
+    sections: [
+      {
+        heading: 'Asset-based carriers, brokers and logistics',
+        body: [
+          'Asset-based trucking companies own or lease tractors and trailers and employ drivers. They are valued on earnings and on the equipment, so fleet age and debt matter as much as revenue.',
+          'Freight brokerages and logistics companies arrange loads without owning trucks. They are valued mainly on gross margin, customer relationships and the people who hold them.',
+          'Specialized carriers (refrigerated, flatbed, tanker, hazmat, last-mile) earn more per mile but need specific equipment, endorsements and insurance.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'The company’s USDOT number, operating authority, safety rating and inspection and crash history in FMCSA’s public records. A poor safety record raises insurance costs and can cost customers.',
+          'Insurance loss runs for several years and the current premium. Insurance is one of the largest costs in trucking and changes with ownership.',
+          'Customer concentration: how much revenue comes from the top few shippers, whether there are contracts, and whether those customers stay after a sale.',
+          'Equipment list with model years, mileage, liens and lease terms, and driver count, pay and turnover.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are trucking companies valued?', a: 'Usually on earnings plus the value of the equipment, net of equipment debt. Freight brokerages are valued more on gross margin and customer retention. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Does the operating authority transfer with the sale?', a: 'Buying the company’s stock keeps its existing DOT number and authority with it. In an asset purchase the buyer usually needs its own authority, which takes time and affects insurance. Ask the broker how the sale is structured.' },
+      { q: 'Where do these trucking listings come from?', a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.' },
+    ],
+  },
+  childcare: {
+    title: 'Daycares for Sale: {n} Childcare Centers & Preschools Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} daycares, childcare centers and preschools for sale from {b} broker websites. Median asking {p}. Updated daily, with real listing age and a direct link to each broker.',
+    h1: 'Daycares & Childcare Centers for Sale',
+    sections: [
+      {
+        heading: 'What sets the price of a daycare',
+        body: [
+          'Childcare centers sell on earnings, and earnings come from enrollment. Buyers look at licensed capacity, how full the center is by age group, the waitlist, and tuition rates compared with nearby centers.',
+          'Infant and toddler rooms need more staff per child than preschool rooms, so the age mix changes margins. A center full of preschoolers can earn more than one full of infants at the same tuition.',
+          'Some centers own their building; most lease. Because licensing is tied to the space, the lease term and the landlord’s consent to assign it carry real weight.',
+          'Franchise centers carry the brand’s curriculum and marketing, with royalties and transfer approval to match.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'The state license, licensed capacity by room, and inspection reports for the last several years. Most states publish inspection results and violations online.',
+          'Enrollment and tuition records by month, compared with bank deposits, and how much revenue comes from state childcare subsidies or pre-K programs.',
+          'Staff: the director’s qualifications, teacher turnover, pay compared with the local market, and whether the director plans to stay. Staffing limits how many children a center can enroll.',
+          'How the license transfers. In many states a new owner applies for a new license, so plan the timing with the licensing agency before closing.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are daycares for sale priced?', a: 'Usually as a multiple of seller’s discretionary earnings, adjusted for enrollment, the age mix, the lease and whether the real estate is included. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Do I need childcare experience to buy a daycare?', a: 'Not always. Owners do not always have to hold the director credential, but the center needs a qualified director, and licensing agencies and lenders look closely at who will run it.' },
+      { q: 'Can I buy a daycare with an SBA loan?', a: 'Childcare centers are a common SBA 7(a) and 504 acquisition. Lenders want verified enrollment and earnings, a lease that runs at least as long as the loan, and a plan for the license transfer.' },
+      { q: 'Where do these daycare listings come from?', a: 'Directly from business broker websites. DealLedger records when each listing first appears and when it comes down, so each listing’s age reflects only what we have actually observed, and every listing links straight to the broker.' },
     ],
   },
 };

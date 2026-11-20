@@ -30,6 +30,7 @@ export type Niche = {
   not?: RegExp;           // title exclusions
   parents?: string[];     // limit to these verticals (omit = any)
   group: string;          // hub grouping
+  min?: number;           // national page threshold if not NICHE_MIN (high-demand, thin-supply niches)
 };
 
 const r = (s: string) => new RegExp(s, 'i');
@@ -69,6 +70,9 @@ export const NICHES: Niche[] = [
     group: 'Food & drink' },
 
   // ── Retail ───────────────────────────────────────────────────────────────
+  // Added 2026-11-19 (Tier 2, "truck stop for sale"). Before convenience-stores so firstNiche() prefers it.
+  { slug: 'truck-stops', label: 'Truck Stops & Travel Centers', noun: 'truck stops and travel centers',
+    re: r('truck ?stop|travel (center|centre|plaza)|truck plaza|fuel (stop|plaza)'), group: 'Retail' },
   { slug: 'convenience-stores', label: 'Convenience Stores', noun: 'convenience stores',
     re: r('convenience|c-store|mini ?mart|corner store|bodega|food mart'), group: 'Retail' },
   { slug: 'grocery-stores', label: 'Grocery Stores & Markets', noun: 'grocery stores and markets',
@@ -222,15 +226,29 @@ export const NICHES: Niche[] = [
   { slug: 'hotels-and-motels', label: 'Hotels & Motels', noun: 'hotels and motels',
     re: r('hotel|motel|\\binn\\b|extended stay|bed (and|&) breakfast|\\bb&b\\b'),
     not: r('hotel (cleaning|laundry|supply|wedding)|wedding hair'), group: 'Professional & tech' },
+  // min 5 (2026-11-19, claude/seo-keyword-targets.md Tier 4): ~31K monthly searches and
+  // almost no broker-listed supply anywhere, so the national page is indexed early.
   { slug: 'campgrounds-and-rv-parks', label: 'Campgrounds & RV Parks', noun: 'campgrounds and RV parks',
-    re: r('campground|camp ?ground|rv (park|resort)|glamping|cabin resort'), group: 'Professional & tech' },
+    re: r('campground|camp ?ground|rv (park|resort)|glamping|cabin resort'), group: 'Professional & tech', min: 5 },
   { slug: 'travel-and-hospitality', label: 'Hotels, Motels & Travel Businesses', noun: 'hotels, motels and travel businesses',
     re: r('hotel|motel|\\binn\\b|bed (and|&) breakfast|\\bb&b\\b|lodge|campground|rv park|travel agency|tour (company|operator)'),
     group: 'Professional & tech' },
   { slug: 'franchise-resales', label: 'Franchise Resales', noun: 'franchise resales',
     re: r('franchise'), not: r('franchise (opportunity|available|territor)|new franchise|start (your|a) franchise'),
     group: 'Professional & tech' },
+
+  // ── Routes & car washes (added 2026-11-19, claude/seo-keyword-targets.md) ──
+  { slug: 'bread-and-snack-routes', label: 'Bread & Snack Routes', noun: 'bread, snack and tortilla distribution routes',
+    re: r('(bread|bakery|snack|chip|tortilla|cake|cookie|pastry) (route|distribut)|\\b(flowers|pepperidge|bimbo|utz|herr|frito|lance|mission tortilla|entenmann|arnold|little debbie|sara lee|nature.s own|dave.s killer)\\b.*\\broutes?\\b'),
+    group: 'Routes' },
+  { slug: 'fedex-routes', label: 'FedEx Routes', noun: 'FedEx Ground and Home Delivery routes',
+    re: r('fed ?ex|ground (route|contract)s?|home delivery (route|contract)s?'), group: 'Routes' },
+  { slug: 'self-serve-car-washes', label: 'Self-Serve Car Washes', noun: 'self-serve and self-service car washes',
+    re: r('self[- ]?serv(e|ice)|coin[- ]?op(erated)? car ?wash|wand wash'), parents: ['car_wash'], group: 'Automotive', min: 10 },
 ];
+
+/** National-page threshold for a niche (NICHE_MIN unless the niche sets its own). */
+export const nicheMin = (slug: string) => BY_SLUG.get(slug)?.min ?? NICHE_MIN;
 
 const BY_SLUG = new Map(NICHES.map((n) => [n.slug, n]));
 for (const n of NICHES) {
@@ -360,7 +378,7 @@ export async function nichePageProps(slug: string, state: string | null) {
   const d = await nicheData(slug, state);
   if (!d) return null;
   const counts = await nicheCounts();
-  const min = state ? NICHE_COMBO_MIN : NICHE_MIN;
+  const min = state ? NICHE_COMBO_MIN : nicheMin(slug);
   const related = counts
     .filter((c) => c.slug !== slug && c.group === d.niche.group)
     .map((c) => ({ slug: c.slug, label: c.label, count: state ? c.states[state] || 0 : c.count }))
@@ -397,7 +415,14 @@ export const VERTICAL_NICHE_GROUPS: Record<string, string[]> = {
   childcare: ['Personal services'],
 };
 
-export const NICHE_GROUP_ORDER = ['Food & drink', 'Retail', 'Health', 'Personal services', 'Automotive', 'Trades', 'Industrial', 'Professional & tech'];
+/** Single niches to cross-link from a vertical whose niche group would be too broad. */
+export const VERTICAL_NICHE_SLUGS: Record<string, string[]> = {
+  delivery_route: ['bread-and-snack-routes', 'fedex-routes'],
+  car_wash: ['self-serve-car-washes'],
+  gas_station: ['truck-stops', 'convenience-stores'],
+};
+
+export const NICHE_GROUP_ORDER = ['Food & drink', 'Retail', 'Health', 'Personal services', 'Automotive', 'Trades', 'Industrial', 'Routes', 'Professional & tech'];
 
 /** Listings an alert covers. `key` is a TYPES vertical key, a niche slug, or null (any type). */
 export async function alertMatches(state: string | null, key: string | null) {

@@ -5,9 +5,9 @@ import {
   Row, Stats, STATES, TYPES, allStats, comboPath, fmtMoney, fmtMultiple, fmtNum, hasComboPage,
   hasTypePage, listingsFor, typeFromSlug, typePath,
 } from '../../../lib/seo';
-import { TYPE_GUIDES } from '../../../lib/typeGuides';
+import { TYPE_GUIDES, fillGuide } from '../../../lib/typeGuides';
 import NichePage from '../../../components/NichePage';
-import { NICHE_MIN, VERTICAL_NICHE_GROUPS, nicheCounts, nichePageProps, nichePath, type NichePageProps } from '../../../lib/niches';
+import { VERTICAL_NICHE_GROUPS, VERTICAL_NICHE_SLUGS, nicheCounts, nicheMin, nichePageProps, nichePath, type NichePageProps } from '../../../lib/niches';
 
 type TypeProps = { kind: 'type'; vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; byState: { code: string; count: number }[]; otherTypes: { vertical: string; count: number }[]; niches: { slug: string; label: string; count: number }[] };
 
@@ -39,8 +39,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .sort((a, b) => b.listings - a.listings)
     .map((s) => ({ vertical: s.page_vertical as string, count: s.listings }));
   const groups = VERTICAL_NICHE_GROUPS[vertical] || [];
-  const niches = groups.length
-    ? (await nicheCounts()).filter((c) => groups.includes(c.group) && c.count >= NICHE_MIN)
+  const slugs = VERTICAL_NICHE_SLUGS[vertical] || [];
+  const niches = groups.length || slugs.length
+    ? (await nicheCounts()).filter((c) => (groups.includes(c.group) || slugs.includes(c.slug)) && c.count >= nicheMin(c.slug))
         .sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count }))
     : [];
   return { props: { kind: 'type', vertical, stats, thin, rows, byState, otherTypes, niches }, revalidate: thin ? 60 * 60 * 24 : 60 * 60 * 6 };
@@ -56,16 +57,17 @@ function TypePage({ vertical, stats: s, thin, rows, byState, otherTypes, niches 
   const guide = TYPE_GUIDES[vertical];
   const n = s ? s.listings : rows.length;
   const multiple = s && s.median_multiple != null ? ` and a median of ${fmtMultiple(s.median_multiple)} cash flow` : '';
+  const fill = (tpl: string) => fillGuide(tpl, { n: fmtNum(s!.listings), b: fmtNum(s!.brokers), p: fmtMoney(s!.median_price) });
   return (
     <SeoPage
       path={path}
       noindex={thin}
       alert={{ vertical, label: t.label }}
-      title={guide && s ? guide.title.replace('{n}', fmtNum(s.listings)) : `${t.label} for Sale${n ? `: ${fmtNum(n)} Listed by Brokers` : ''} | DealLedger`}
+      title={guide && s ? fill(guide.title) : `${t.label} for Sale${n ? `: ${fmtNum(n)} Listed by Brokers` : ''} | DealLedger`}
       h1={guide?.h1 || `${t.label} for Sale`}
       guide={guide}
       eyebrow={`NATIONWIDE · ${t.label.toUpperCase()}`}
-      description={s
+      description={guide?.description && s ? fill(guide.description) : s
         ? `${fmtNum(s.listings)} ${t.noun} for sale across the US from ${fmtNum(s.brokers)} broker websites. Median asking ${fmtMoney(s.median_price)}. Evidence-based listing age and a direct link to each broker.`
         : `${t.label} for sale across the US, tracked from broker websites by DealLedger.`}
       intro={s

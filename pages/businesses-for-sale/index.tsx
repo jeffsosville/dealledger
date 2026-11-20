@@ -2,7 +2,7 @@
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import SeoPage from '../../components/SeoPage';
 import { STATES, TYPES, allStats, fmtNum, hasStatePage, hasTypePage, statePath, typePath } from '../../lib/seo';
-import { NICHE_GROUP_ORDER, NICHE_MIN, nicheCounts, nichePath } from '../../lib/niches';
+import { NICHE_GROUP_ORDER, nicheCounts, nicheMin, nichePath } from '../../lib/niches';
 
 type Props = {
   states: { code: string; count: number }[]; types: { vertical: string; count: number }[]; total: number;
@@ -20,7 +20,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     .sort((a, b) => b.listings - a.listings)
     .map((s) => ({ vertical: s.page_vertical as string, count: s.listings }));
   const total = all.filter((s) => s.scope === 'state').reduce((n, s) => n + s.listings, 0);
-  const nc = (await nicheCounts()).filter((c) => c.count >= NICHE_MIN);
+  const nc = (await nicheCounts()).filter((c) => c.count >= nicheMin(c.slug));
   const niches = NICHE_GROUP_ORDER
     .map((group) => ({ group, links: nc.filter((c) => c.group === group).sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count })) }))
     .filter((g) => g.links.length);

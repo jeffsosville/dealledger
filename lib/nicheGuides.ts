@@ -37,7 +37,8 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
   },
 
   'bars-and-taverns': {
-    title: 'Bars for Sale: {n} Bars, Taverns & Pubs Listed by Brokers | DealLedger',
+    title: 'Bars for Sale: {n} Bars, Taverns & Pubs Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} bars, taverns and pubs for sale from {b} broker websites, many with liquor licenses. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a bar',
@@ -167,7 +168,8 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
   },
 
   'convenience-stores': {
-    title: 'Convenience Stores for Sale: {n} C-Stores & Mini Marts Listed by Brokers | DealLedger',
+    title: 'Convenience Stores for Sale: {n} C-Stores & Mini Marts Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} convenience stores, c-stores and mini marts for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a convenience store',
@@ -272,6 +274,7 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
 
   'hotels-and-motels': {
     title: 'Hotels & Motels for Sale: {n} Hotels, Motels & Inns Listed by Brokers | DealLedger',
+    description: '{n} hotels, motels and inns for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a hotel or motel',
@@ -299,7 +302,8 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
   },
 
   'campgrounds-and-rv-parks': {
-    title: 'Campgrounds & RV Parks for Sale: {n} Listed by Brokers | DealLedger',
+    title: 'Campgrounds & RV Parks for Sale: {n} Campgrounds, RV Parks & Resorts Listed by Brokers | DealLedger',
+    description: '{n} campgrounds, RV parks and RV resorts for sale from {b} broker websites, most with the land included. Updated daily, with a direct link to each broker.',
     sections: [
       {
         heading: 'What sets the price of a campground or RV park',
@@ -323,6 +327,172 @@ export const NICHE_GUIDES: Record<string, TypeGuide> = {
       { q: 'How are RV parks and campgrounds for sale priced?', a: 'On net operating income and land value, adjusted for site mix, hookups and the condition of roads and utilities. When this page has enough listings, the median asking price at the top is calculated from them.' },
       { q: 'Can I finance an RV park with an SBA loan?', a: 'Many campgrounds and RV parks qualify for SBA 7(a) or 504 financing as operating businesses. Lenders look at operating history, an appraisal and environmental reports on wells and wastewater systems.' },
       SOURCE_FAQ('campground and RV park'),
+    ],
+  },
+
+  'nail-salons': {
+    title: 'Nail Salons for Sale: {n} Nail Salons Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} nail salons for sale from {b} broker websites. Median asking {p}. Updated daily, with real listing age and a direct link to each broker.',
+    sections: [
+      {
+        heading: 'What sets the price of a nail salon',
+        body: [
+          'Nail salons sell on earnings, and earnings depend on the technicians. A salon whose clients follow individual technicians is worth what those technicians stay to produce after the sale.',
+          'How technicians are paid matters: employees on commission, independent contractors, or booth or station rent. Each has different margins, and misclassified contractors are a liability that can follow the business.',
+          'The lease, the location’s visibility and parking, and the condition of pedicure chairs, ventilation and plumbing set much of the value and the near-term capital a buyer needs.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Point-of-sale and booking reports by technician and by month, compared with bank deposits and sales tax filings. Cash and tips make reported revenue harder to verify.',
+          'The salon’s establishment license, technicians’ licenses and recent state board inspections.',
+          'Which technicians are staying, how they are paid, and whether any agreements keep them or their clients with the salon.',
+          'The lease term and the landlord’s consent to assign it.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are nail salons priced?', a: 'Usually as a multiple of seller’s discretionary earnings, adjusted for the lease, staff stability and equipment. The median asking price at the top of this page is calculated from the listings below.' },
+      SOURCE_FAQ('nail salon'),
+    ],
+  },
+
+  barbershops: {
+    title: 'Barbershops for Sale: {n} Barber Shops Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} barbershops and barber shops for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
+    sections: [
+      {
+        heading: 'What sets the price of a barbershop',
+        body: [
+          'A barbershop’s value comes from its chairs and the barbers in them. Shops that rent chairs earn steady rent with low payroll; commission shops keep more of each cut but carry staff costs and more management.',
+          'Regular clients tend to follow their barber, so the most important question is which barbers stay after the sale. A shop where the owner does most of the cutting is worth less to a buyer who will not.',
+          'Location, the lease, the number of chairs and any product sales, memberships or online booking that make revenue more predictable all move the price.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Booking and point-of-sale reports by barber, chair rent collected, and bank deposits for at least a year.',
+          'The shop license, each barber’s license and recent state board inspections.',
+          'Chair rental or commission agreements, and the lease term and assignment terms.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are barbershops priced?', a: 'Usually on seller’s discretionary earnings or on chair rent income, adjusted for the lease and which barbers stay. The median asking price at the top of this page is calculated from the listings below.' },
+      SOURCE_FAQ('barbershop'),
+    ],
+  },
+
+  'truck-stops': {
+    title: 'Truck Stops for Sale: {n} Truck Stops & Travel Centers Listed by Brokers | DealLedger',
+    description: '{n} truck stops and travel centers for sale from {b} broker websites, most with fuel, a store and the land. Updated daily, with a direct link to each broker.',
+    sections: [
+      {
+        heading: 'What sets the price of a truck stop',
+        body: [
+          'Truck stops earn from diesel and gasoline, the store, food service, and often truck parking, scales, showers and repair bays. Buyers look at fuel gallons by month and the profit per gallon, then at inside sales, which usually carry the better margin.',
+          'Most truck stops come with the land, so the price combines the business with real estate valued on highway access, exit visibility and acreage.',
+          'Branded stops sell under a fuel supplier’s brand with a supply agreement that carries volume commitments and terms the buyer takes on. Unbranded stops buy fuel more freely but without brand traffic.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Fuel volume and margin reports, inside sales by category, and bank deposits for at least two years.',
+          'The fuel supply agreement: term, volume requirements, rebates or incentives that must be repaid on sale, and the brand’s approval of the buyer.',
+          'Underground storage tank registration, inspection and leak-detection records, and an environmental site assessment of the property.',
+          'Restaurant or franchise agreements on site, and the condition of pumps, canopies, scales and paving.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are truck stops priced?', a: 'On business earnings plus the value of the real estate, with fuel volume, inside sales and the fuel supply agreement driving the business value.' },
+      SOURCE_FAQ('truck stop'),
+    ],
+  },
+
+  'bread-and-snack-routes': {
+    title: 'Bread Routes for Sale: {n} Bread, Snack & Tortilla Routes Listed by Brokers, Updated Daily | DealLedger',
+    description: '{n} bread routes, snack routes and tortilla distribution routes for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
+    h1: 'Bread & Snack Routes for Sale',
+    sections: [
+      {
+        heading: 'What you are buying',
+        body: [
+          'A bread or snack route is an independent distributorship: the right to deliver one manufacturer’s products to stores in a defined territory. The distributor buys product at a discount, delivers and stocks shelves, and earns the margin on what sells.',
+          'The distributor agreement sets the rules: the territory, how unsold product is handled, pricing, and what happens if the route is sold or split. The manufacturer usually must approve the buyer.',
+          'Routes are often quoted as a multiple of weekly sales. What matters to a buyer is the net after product cost, stales, vehicle and fuel, and any helper’s wages.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Distributor settlement statements by week for at least a year, and the list of stores served with sales by store.',
+          'The distributor agreement and the manufacturer’s transfer process and timeline.',
+          'Truck title or lease, condition and mileage, and the daily schedule the route requires.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are bread routes priced?', a: 'Often as a multiple of weekly sales, then checked against net earnings after product, stales, vehicle and labor. The median asking price at the top of this page is calculated from the listings below.' },
+      { q: 'Does the bakery have to approve the buyer?', a: 'Usually yes. Distributor agreements generally give the manufacturer approval over a new distributor, so the purchase should be contingent on it.' },
+      SOURCE_FAQ('route'),
+    ],
+  },
+
+  'fedex-routes': {
+    title: 'FedEx Routes for Sale: {n} FedEx Ground & Home Delivery Routes Listed by Brokers | DealLedger',
+    description: '{n} FedEx Ground and Home Delivery routes for sale from {b} broker websites. Median asking {p}. Updated daily, with a direct link to each broker.',
+    sections: [
+      {
+        heading: 'What you are buying',
+        body: [
+          'A FedEx route business is an independent company that holds a contract to deliver FedEx Ground or Home Delivery packages in a defined area. The sale transfers that company, its trucks and usually its drivers.',
+          'FedEx must approve the buyer, and the contract sets requirements for the business, insurance, safety and vehicles. Approval timelines vary, so ask early.',
+          'Value rests on the contract’s settlement payments and the costs of running the routes: drivers, fuel, insurance, truck payments and maintenance.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Weekly settlement statements for at least a year, compared with bank deposits and payroll.',
+          'The operating agreement’s term and renewal, any changes FedEx has announced to routes or pay, and the transfer process.',
+          'The fleet: vehicle ages, mileage, liens and replacement schedule, and driver count and turnover.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are FedEx routes priced?', a: 'Usually as a multiple of net earnings after drivers, fuel, insurance and vehicle costs, adjusted for contract term and fleet condition. The median asking price at the top of this page is calculated from the listings below.' },
+      SOURCE_FAQ('FedEx route'),
+    ],
+  },
+
+  'self-serve-car-washes': {
+    title: 'Self-Serve Car Washes for Sale: {n} Self-Service Car Washes Listed by Brokers | DealLedger',
+    description: '{n} self-serve and self-service car washes for sale from {b} broker websites, many with the land included. Median asking {p}. Updated daily, with a direct link to each broker.',
+    sections: [
+      {
+        heading: 'What sets the price of a self-serve car wash',
+        body: [
+          'Self-serve washes run with little or no staff, so they appeal to buyers who want a lower-labor business. Revenue per car is small, so the number of bays, traffic and local competition matter.',
+          'Many self-serve sites add one or more in-bay automatics and vacuums, which raise revenue and equipment costs together.',
+          'Most come with the land. Ask how the price splits between the business and the real estate, and check payment systems: card readers and app payments lift sales over coin-only bays.',
+        ],
+      },
+      {
+        heading: 'What to check before you make an offer',
+        body: [
+          'Revenue by bay and by month from the payment system, compared with bank deposits, and water, sewer, electric and chemical bills.',
+          'Equipment age and service records for pumps, boilers, water softeners and reclaim systems.',
+          'Environmental records for drainage, oil separators and sewer discharge permits.',
+        ],
+      },
+    ],
+    faqs: [
+      { q: 'How are self-serve car washes priced?', a: 'On earnings plus the value of the real estate, adjusted for equipment age and competition nearby. The median asking price at the top of this page is calculated from the listings below.' },
+      SOURCE_FAQ('car wash'),
     ],
   },
 };

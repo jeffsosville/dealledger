@@ -3,6 +3,7 @@ import SeoPage from './SeoPage';
 import { STATES, fmtMoney, fmtMultiple, fmtNum, stateSlug, statePath } from '../lib/seo';
 import { nichePath, type NichePageProps } from '../lib/niches';
 import { NICHE_GUIDES } from '../lib/nicheGuides';
+import { fillGuide } from '../lib/typeGuides';
 
 const comboNichePath = (code: string, slug: string) => `/businesses-for-sale/${stateSlug(code)}/${slug}`;
 
@@ -14,18 +15,19 @@ export default function NichePage(p: NichePageProps) {
   const guide = p.state ? undefined : NICHE_GUIDES[p.slug];
   const multiple = s.median_multiple != null ? `, a median of ${fmtMultiple(s.median_multiple)} cash flow` : '';
   const full = !p.thin;
+  const fill = (tpl: string) => fillGuide(tpl, { n: fmtNum(n), b: fmtNum(s.brokers), p: fmtMoney(s.median_price) });
   return (
     <SeoPage
       path={path}
       noindex={p.thin}
       noCsv
       alert={{ state: p.state, vertical: p.slug, label: `${p.label}${where}` }}
-      title={guide && full ? guide.title.replace('{n}', fmtNum(n))
+      title={guide && full ? fill(guide.title)
         : `${p.label} for Sale${where}${n ? ` (${fmtNum(n)})` : ''} — DealLedger`}
       h1={guide?.h1 || `${p.label} for Sale${where}`}
       guide={guide}
       eyebrow={`${p.state || 'NATIONWIDE'} · ${p.label.toUpperCase()}`}
-      description={full
+      description={guide?.description && full ? fill(guide.description) : full
         ? `${fmtNum(n)} ${p.noun} for sale${where}, listed by ${fmtNum(s.brokers)} brokers. Median asking ${fmtMoney(s.median_price)}${multiple}. Evidence-based listing age and a direct link to each broker.`
         : `${p.label} for sale${where}, tracked from broker websites by DealLedger.`}
       intro={full

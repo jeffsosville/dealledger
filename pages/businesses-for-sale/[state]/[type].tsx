@@ -7,6 +7,7 @@ import {
   Row, Stats, STATES, TYPES, allStats, comboPath, fmtMoney, fmtMultiple, fmtNum, hasComboPage,
   hasStatePage, hasTypePage, listingsFor, stateFromSlug, statePath, typeFromSlug, typePath,
 } from '../../../lib/seo';
+import { stateNote } from '../../../lib/stateNotes';
 
 type ComboProps = {
   kind: 'type'; code: string; vertical: string; stats: Stats | null; thin: boolean; rows: Row[]; hasState: boolean; hasType: boolean;
@@ -68,6 +69,7 @@ function ComboPage(p: ComboProps) {
   const thinIntro = n === 0
     ? `DealLedger isn't tracking any ${t.noun} for sale in ${name} right now. We check broker websites daily; see nearby states and related business types below.`
     : `DealLedger is tracking ${n === 1 ? 'one' : fmtNum(n)} ${n === 1 ? t.noun.replace(/s$/, '') : t.noun} for sale in ${name} right now. Every listing below links to the broker who has it.`;
+  const note = stateNote(p.vertical, p.code);
   return (
     <SeoPage
       path={path}
@@ -79,9 +81,9 @@ function ComboPage(p: ComboProps) {
       description={s
         ? `${fmtNum(s.listings)} ${t.noun} for sale in ${name}, listed by ${fmtNum(s.brokers)} brokers. Median asking ${fmtMoney(s.median_price)}${multiple}. Evidence-based listing age and a direct link to each broker.`
         : `${t.label} for sale in ${name}, tracked from broker websites by DealLedger.`}
-      intro={s
+      intro={(s
         ? `${fmtNum(s.listings)} ${t.noun} are for sale in ${name} across ${fmtNum(s.brokers)} broker websites, with ${fmtNum(s.new_30d)} new in the last 30 days. Median asking price is ${fmtMoney(s.median_price)}${multiple}. Every listing below links to the broker who has it.`
-        : thinIntro}
+        : thinIntro) + (note ? ` ${note}` : '')}
       stats={s}
       rows={p.rows}
       crumbs={[

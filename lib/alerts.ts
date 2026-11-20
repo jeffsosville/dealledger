@@ -69,11 +69,11 @@ export const resultPage = (title: string, body: string, href: string, linkText: 
 
 /** Dropdown options for picker-mode signup (/alerts, 404). Server-side only. */
 export async function alertPickerOptions() {
-  const { NICHE_MIN, nicheCounts } = await import('./niches');
+  const { nicheMin, nicheCounts } = await import('./niches');
   const states = Object.entries(STATES)
     .map(([value, label]) => ({ value, label }))
     .sort((a, b) => a.label.localeCompare(b.label));
-  const niches = (await nicheCounts()).filter((c) => c.count >= NICHE_MIN).map((c) => ({ value: c.slug, label: c.label }));
+  const niches = (await nicheCounts()).filter((c) => c.count >= nicheMin(c.slug)).map((c) => ({ value: c.slug, label: c.label }));
   const types = [...Object.entries(TYPES).map(([value, t]) => ({ value, label: t.label })), ...niches]
     .sort((a, b) => a.label.localeCompare(b.label));
   return { states, types };

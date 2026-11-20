@@ -2,7 +2,7 @@
 // Built live from mv_seo_page_stats so it always matches the pages that exist.
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { allStats, comboPath, hasComboPage, hasStatePage, hasTypePage, pageUrl, statePath, stateSlug, typePath, STATES } from '../../lib/seo';
-import { NICHE_COMBO_MIN, NICHE_MIN, nicheCounts, nichePath } from '../../lib/niches';
+import { NICHE_COMBO_MIN, nicheCounts, nicheMin, nichePath } from '../../lib/niches';
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
   const [all, nc] = await Promise.all([allStats(), nicheCounts()]);
@@ -11,7 +11,7 @@ export default async function handler(_req: NextApiRequest, res: NextApiResponse
     ...all.filter(hasStatePage).map((s) => statePath(s.page_state!)),
     ...all.filter(hasTypePage).map((s) => typePath(s.page_vertical!)),
     ...all.filter(hasComboPage).map((s) => comboPath(s.page_state!, s.page_vertical!)),
-    ...nc.filter((c) => c.count >= NICHE_MIN).map((c) => nichePath(c.slug)),
+    ...nc.filter((c) => c.count >= nicheMin(c.slug)).map((c) => nichePath(c.slug)),
     ...nc.flatMap((c) => Object.entries(c.states)
       .filter(([code, n]) => n >= NICHE_COMBO_MIN && STATES[code])
       .map(([code]) => `/businesses-for-sale/${stateSlug(code)}/${c.slug}`)),
