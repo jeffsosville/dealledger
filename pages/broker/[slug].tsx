@@ -127,7 +127,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   if (removedErr) throw new Error(`broker ${slug}: removed listings query failed: ${removedErr.message}`);
 
   // The registry count and the listing query disagree (count > 0, rows = 0):
-  // render, but re-check within the hour rather than holding it for 6.
+  // render, but re-check within 6 hours rather than holding it for 24.
   const mismatch = firm.active_count > 0 && (activeRows || []).length === 0;
 
   const { data: clickRows } = await sb.rpc('dl_broker_clicks', { p_domain: firm.domain });
@@ -142,7 +142,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
       removed: (removedRows || []) as ListingRow[],
       removedShown: (removedRows || []).length,
     },
-    revalidate: mismatch ? 60 * 30 : 60 * 60 * 6,
+    revalidate: mismatch ? 60 * 60 * 6 : 60 * 60 * 24,
   };
 };
 

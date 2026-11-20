@@ -30,7 +30,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     .map((c) => ({ slug: c.slug, label: c.label, count: c.states[code] || 0 }))
     .filter((c) => c.count >= NICHE_COMBO_MIN)
     .sort((a, b) => b.count - a.count);
-  return { props: { code, stats, rows, types, others, niches }, revalidate: 60 * 60 * 6 };
+  return { props: { code, stats, rows, types, others, niches }, revalidate: 60 * 60 * 24 };
 };
 
 export default function StatePage({ code, stats, rows, types, others, niches }: InferGetStaticPropsType<typeof getStaticProps>) {

@@ -28,7 +28,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     // Unknown second segment under a real state (a city such as /california/los-angeles,
     // or a type slug an AI answer made up): send it to the state page, not a 404.
     if (!niche) return { redirect: { destination: `/businesses-for-sale/${String(params?.state)}`, permanent: false } };
-    return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+    return { props: { kind: 'niche', ...niche }, revalidate: 60 * 60 * 24 };
   }
   const all = await allStats();
   const found = all.find((s) => s.scope === 'vertical_state' && s.page_state === code && s.page_vertical === vertical);
@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
       hasState: all.some((s) => hasStatePage(s) && s.page_state === code),
       hasType: all.some((s) => hasTypePage(s) && s.page_vertical === vertical),
     },
-    revalidate: thin ? 60 * 60 * 24 : 60 * 60 * 6,
+    revalidate: 60 * 60 * 24,
   };
 };
 

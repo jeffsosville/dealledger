@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     const niche = await nichePageProps(slug, null);
     // Unknown type slug (often made up by an AI answer): browse hub, not a 404.
     if (!niche) return { redirect: { destination: '/businesses-for-sale', permanent: false } };
-    return { props: { kind: 'niche', ...niche }, revalidate: niche.thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+    return { props: { kind: 'niche', ...niche }, revalidate: 60 * 60 * 24 };
   }
   const all = await allStats();
   const found = all.find((s) => s.scope === 'vertical' && s.page_vertical === vertical);
@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     ? (await nicheCounts()).filter((c) => (groups.includes(c.group) || slugs.includes(c.slug)) && c.count >= nicheMin(c.slug))
         .sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count }))
     : [];
-  return { props: { kind: 'type', vertical, stats, thin, rows, byState, otherTypes, niches }, revalidate: thin ? 60 * 60 * 24 : 60 * 60 * 6 };
+  return { props: { kind: 'type', vertical, stats, thin, rows, byState, otherTypes, niches }, revalidate: 60 * 60 * 24 };
 };
 
 export default function TypeOrNichePage(p: InferGetStaticPropsType<typeof getStaticProps>) {

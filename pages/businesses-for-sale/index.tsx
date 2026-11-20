@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   const niches = NICHE_GROUP_ORDER
     .map((group) => ({ group, links: nc.filter((c) => c.group === group).sort((a, b) => b.count - a.count).map(({ slug, label, count }) => ({ slug, label, count })) }))
     .filter((g) => g.links.length);
-  return { props: { states, types, total, niches }, revalidate: 60 * 60 * 6 };
+  return { props: { states, types, total, niches }, revalidate: 60 * 60 * 24 };
 };
 
 export default function Hub({ states, types, total, niches }: InferGetStaticPropsType<typeof getStaticProps>) {

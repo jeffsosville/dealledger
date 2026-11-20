@@ -97,7 +97,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
     if (listingNumber < 10_000_000) {
       return { redirect: { destination: '/businesses-for-sale', permanent: true } };
     }
-    return { notFound: true, revalidate: 60 * 60 };
+    return { notFound: true, revalidate: 60 * 60 * 24 };
   }
   const listing = listingRow as Listing;
 
@@ -183,7 +183,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
   return {
     props: { listing, priceChanges, registryBroker, domPercentile, alert },
-    revalidate: 60 * 60 * 6,
+    revalidate: 60 * 60 * 24,
   };
 };
 
