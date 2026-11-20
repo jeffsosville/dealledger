@@ -1,0 +1,174 @@
+{
+  "started": "2026-11-20T10:25:46.143699+00:00",
+  "brokers_attempted": 740,
+  "brokers_success": 652,
+  "brokers_failed": 83,
+  "total_listings": 14344,
+  "listings_with_price": 13044,
+  "listings_with_cashflow": 5528,
+  "listings_with_state": 12530,
+  "detail_pages_fetched": 349,
+  "patterns_cached": 606,
+  "patterns_learned": 547,
+  "verticals": {
+    "restaurant": 3130,
+    "automotive": 1068,
+    "technology": 1718,
+    "other": 3319,
+    "manufacturing": 405,
+    "landscaping": 173,
+    "healthcare": 1169,
+    "retail": 1618,
+    "construction": 417,
+    "electrical": 124,
+    "hvac": 258,
+    "cleaning": 194,
+    "vending": 120,
+    "plumbing": 150,
+    "delivery_route": 132,
+    "pressure_washing": 9,
+    "laundromat": 141,
+    "roofing": 63,
+    "pest_control": 18,
+    "dry_cleaner": 56,
+    "pool_service": 5,
+    "junk_removal": 4,
+    "amusement": 7,
+    "atm": 46
+  },
+  "failure_types": {
+    "EMBED_BBS": 5,
+    "NO_PATTERN": 55,
+    "FETCH_ERROR": 6,
+    "HTTP_403": 16,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "shane torres",
+      "domain": "krbb.com",
+      "event": "stale_cache",
+      "selector": "div.ejYUwA.t1Z_7C"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    },
+    {
+      "broker": "terry espy",
+      "domain": "momentumprojects.com",
+      "event": "stale_cache",
+      "selector": "div.row.fl-post-image-beside-wrap",
+      "healed_to": "div.fl-post-text"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    }
+  ],
+  "site_pages_dropped": 28,
+  "slowest_brokers": [
+    [
+      2803,
+      "americanbussales.net",
+      108
+    ],
+    [
+      2374,
+      "tucsonbusinessbroker.com",
+      13
+    ],
+    [
+      2308,
+      "capitalbusinessbrokerage.biz",
+      27
+    ],
+    [
+      2294,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      2241,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      1812,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      1467,
+      "baystatebusinessbrokers.com",
+      38
+    ],
+    [
+      1211,
+      "thatbusinessbroker.com",
+      3
+    ],
+    [
+      1108,
+      "pacificrb.com",
+      7
+    ],
+    [
+      890,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      702,
+      "marlingroup.com",
+      20
+    ],
+    [
+      675,
+      "alpinebusinessbrokers.com",
+      40
+    ],
+    [
+      481,
+      "elitesalonsales.com",
+      13
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      459,
+      "buygasstations.com",
+      3
+    ]
+  ],
+  "seconds_total": 50328,
+  "completed": "2026-11-20T14:33:14.861342+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
