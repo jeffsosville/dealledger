@@ -2235,6 +2235,9 @@ class RoutesForSaleScraper:
 
     BASE = "https://www.routesforsale.net"
     URL = f"{BASE}/route-listings.html"
+    # Last run's broker count (route rows on the page, any status), read by
+    # run_specialized as the crawl_run displayed count.
+    last_displayed = None
 
     def __init__(self):
         self.session = self._make_session()
@@ -2278,9 +2281,22 @@ class RoutesForSaleScraper:
             print("Routes For Sale (routesforsale.net)")
             print('='*60)
 
-        html = self.session.get(self.URL, timeout=30).text
+        # 2026-11-20 (n1): the 07:41 GitHub run closed failed/EMPTY on Nov 18
+        # and 19 (0 rows on both tries, <1 s each) while the Mac run hours
+        # later read 292. This GET's status was never checked or logged, so
+        # what the server sent is unknown. Fail loud with what it was.
+        RoutesForSaleScraper.last_displayed = None
+        resp = self.session.get(self.URL, timeout=30)
+        html = resp.text or ""
         soup = BeautifulSoup(html, "html.parser")
+        n_tables = len(soup.find_all("table"))
+        if resp.status_code != 200 or n_tables == 0:
+            ttl = soup.title.get_text(" ", strip=True)[:80] if soup.title else ""
+            raise RuntimeError(
+                f"routesforsale.net index: HTTP {resp.status_code}, {len(html)} bytes, "
+                f"{n_tables} tables, title={ttl!r}, session={type(self.session).__module__}")
         items, seen = [], set()
+        route_rows = 0          # every route row, any status: the broker's count
 
         for table in soup.find_all("table"):
             category = self._category_for(table)
@@ -2322,6 +2338,8 @@ class RoutesForSaleScraper:
                 url = link["href"].strip() if link else None
                 if url and url.startswith("/"):
                     url = self.BASE + url
+                if url and route_type:
+                    route_rows += 1
 
                 # Filters: Active only; must have a cash-flow figure and a link.
                 if status and status.strip().lower() != "active":
@@ -2340,9 +2358,13 @@ class RoutesForSaleScraper:
                     location=loc, city=city, state=state,
                     business_type=category, cash_flow=parse_money(cf_txt)))
 
+        RoutesForSaleScraper.last_displayed = {
+            "count": route_rows, "source": "counted",
+            "note": f"route rows across {n_tables} route-type tables (any status)"}
         if verbose:
             with_price = sum(1 for l in items if l.get("price"))
-            print(f"\n✓ {len(items)} Routes For Sale listings ({with_price} with price)")
+            print(f"\n✓ {len(items)} Routes For Sale listings ({with_price} with price; "
+                  f"{route_rows} route rows on the page)")
         return items
 
 
@@ -2975,11 +2997,19 @@ class WPRestScraper:
     # broker-specific status taxonomy); combined with the built-in ones under
     # the same most-final-wins rule.
     status_handlers: list = []
+    # {domain: cards on the live index that link a REST post} from the last
+    # _apply_index; the broker's own count for a POST-grid index
+    # (listings.routeconsultant.com), which the runner cannot GET itself.
+    last_index_cards: Dict = {}
 
     def __init__(self, domain: str, rest_base: str, fetch_financials: bool = False,
                  index_url: Optional[str] = None, off_index: str = "inactive"):
         self.domain = domain.strip().strip("/")
         self.rest_base = rest_base.strip().strip("/")
+        # Several post types for one broker: 'pnd|linehaul' (usroutesales.com
+        # keeps P&D routes and linehaul runs in two custom post types).
+        self.rest_bases = [b.strip().strip("/") for b in self.rest_base.split("|") if b.strip()]
+        self._cur_base = self.rest_bases[0] if self.rest_bases else self.rest_base
         self.fetch_financials = fetch_financials
         # The broker's live "for sale" page (data/wp_rest_brokers.csv
         # index_url; several separated by '|'). When set, a REST post that is
@@ -2996,6 +3026,7 @@ class WPRestScraper:
             raise ValueError(f"off_index must be 'inactive' or 'drop', not {off_index!r}")
         self.off_index = off_index
         self.index_stats: Dict = {}
+        WPRestScraper.last_index_cards.pop(self.domain, None)
         self.session = self._make_session()
         self._proxies = self._build_proxies()   # used only if REST is blocked
         self._use_proxy = False
@@ -3026,7 +3057,7 @@ class WPRestScraper:
             return s
 
     def _api_url(self, page: int) -> str:
-        return (f"https://{self.domain}/wp-json/wp/v2/{self.rest_base}"
+        return (f"https://{self.domain}/wp-json/wp/v2/{self._cur_base}"
                 f"?per_page=100&page={page}"
                 f"&_fields=title,link,slug,date,modified,class_list,acf,meta")
 
@@ -3179,48 +3210,50 @@ class WPRestScraper:
             print('='*60)
 
         listings, seen = [], set()
-        total_pages = None
-        for page in range(1, max_pages + 1):
-            try:
-                r = self._get(self._api_url(page))
-                # Cloudflare-blocked endpoints return an HTML challenge instead
-                # of JSON — on page 1, retry once through the proxy.
-                if (page == 1 and not self._use_proxy and self._proxies
-                        and "json" not in r.headers.get("content-type", "").lower()):
-                    if verbose:
-                        print(f"[WP:{self.domain}] non-JSON on page 1 — retrying via proxy")
-                    self._use_proxy = True
-                    r = self._get(self._api_url(page))
-            except Exception as e:
-                if verbose:
-                    print(f"[WP:{self.domain}] page {page} error: {e}")
-                break
-            if r.status_code != 200:
-                # 400 rest_post_invalid_page_number = past the last page
-                if verbose and page == 1:
-                    print(f"[WP:{self.domain}] HTTP {r.status_code}: {r.text[:120]}")
-                break
-            if total_pages is None:
+        for base in (self.rest_bases or [self.rest_base]):
+            self._cur_base = base
+            total_pages = None
+            for page in range(1, max_pages + 1):
                 try:
-                    total_pages = int(r.headers.get("x-wp-totalpages", "1") or 1)
-                    print(f"[WP:{self.domain}] x-wp-total="
-                          f"{r.headers.get('x-wp-total','?')} pages={total_pages}")
-                except ValueError:
-                    total_pages = max_pages
-            try:
-                items = r.json()
-            except Exception:
-                break
-            if not isinstance(items, list) or not items:
-                break
-            for it in items:
-                rec = self._parse(it, broker_account)
-                if rec and rec["listing_url"] not in seen:
-                    seen.add(rec["listing_url"])
-                    listings.append(rec)
-            if total_pages and page >= total_pages:
-                break
-            time.sleep(0.2)
+                    r = self._get(self._api_url(page))
+                    # Cloudflare-blocked endpoints return an HTML challenge instead
+                    # of JSON — on page 1, retry once through the proxy.
+                    if (page == 1 and not self._use_proxy and self._proxies
+                            and "json" not in r.headers.get("content-type", "").lower()):
+                        if verbose:
+                            print(f"[WP:{self.domain}] non-JSON on page 1 — retrying via proxy")
+                        self._use_proxy = True
+                        r = self._get(self._api_url(page))
+                except Exception as e:
+                    if verbose:
+                        print(f"[WP:{self.domain}] page {page} error: {e}")
+                    break
+                if r.status_code != 200:
+                    # 400 rest_post_invalid_page_number = past the last page
+                    if verbose and page == 1:
+                        print(f"[WP:{self.domain}] HTTP {r.status_code}: {r.text[:120]}")
+                    break
+                if total_pages is None:
+                    try:
+                        total_pages = int(r.headers.get("x-wp-totalpages", "1") or 1)
+                        print(f"[WP:{self.domain}] x-wp-total="
+                              f"{r.headers.get('x-wp-total','?')} pages={total_pages}")
+                    except ValueError:
+                        total_pages = max_pages
+                try:
+                    items = r.json()
+                except Exception:
+                    break
+                if not isinstance(items, list) or not items:
+                    break
+                for it in items:
+                    rec = self._parse(it, broker_account)
+                    if rec and rec["listing_url"] not in seen:
+                        seen.add(rec["listing_url"])
+                        listings.append(rec)
+                if total_pages and page >= total_pages:
+                    break
+                time.sleep(0.2)
 
         if self.index_urls and listings:
             self._apply_index(listings, verbose)
@@ -3449,6 +3482,7 @@ class WPRestScraper:
                   f"statuses unchanged for {n_rest} posts; flagged index_check=failed")
             return
 
+        WPRestScraper.last_index_cards[self.domain] = len(on_index)
         sold_titles = {}
         for texts, st, badge in unlinked:
             for t in texts:

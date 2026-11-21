@@ -50,6 +50,9 @@ from buygasstations_scraper import BuyGasStationsScraper
 from broker_vertical import broker_default_vertical
 from carwashking_scraper import CarWashKingScraper
 from globalpetro_scraper import GlobalPetroScraper
+from commercialroutes_scraper import CommercialRoutesScraper
+from routebrokers_scraper import RouteBrokersScraper
+from routeworld_scraper import RouteWorldScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -276,7 +279,38 @@ BROKERS = {
         "display_name": "Global Petro Advisors",
         "fn": lambda: GlobalPetroScraper().scrape("globalpetro"),
     },
+    # Route brokers (2026-11-20, n1). Each "displayed" returns the broker's own
+    # count captured by the scraper on this run (see _scraper_displayed).
+    # commercialroutesforsale.com: one ASP.NET GridView (60 routes + a "call
+    # us" placeholder). V6 matched one of two row classes, then followed the
+    # header's Sort$ postbacks as pages and failed TITLE_REPETITION_REJECT.
+    "commercialroutes": {
+        "domain": "commercialroutesforsale.com",
+        "account": "30194",
+        "display_name": "Routes to Success (Tom Arceri)",
+        "fn": lambda: CommercialRoutesScraper().scrape("30194"),
+        "displayed": lambda: CommercialRoutesScraper.last_displayed,
+    },
+    # routebrokers.com: Duda accordion, one item per route, no detail pages.
+    "routebrokers": {
+        "domain": "routebrokers.com",
+        "account": "10708",
+        "display_name": "Route Brokers, Inc.",
+        "fn": lambda: RouteBrokersScraper().scrape("10708"),
+        "displayed": lambda: RouteBrokersScraper.last_displayed,
+    },
+    # routeworldbrokers.com: one WordPress page, <h1> + prose per listing.
+    "routeworld": {
+        "domain": "routeworldbrokers.com",
+        "account": "routeworldbrokers",
+        "display_name": "Route World Brokers Inc",
+        "fn": lambda: RouteWorldScraper().scrape("routeworldbrokers"),
+        "displayed": lambda: RouteWorldScraper.last_displayed,
+    },
 }
+# routesforsale.net: no stated count; the scraper counts every route row across
+# its route-type tables (any status) on each run.
+BROKERS["routesforsale"]["displayed"] = lambda: RoutesForSaleScraper.last_displayed
 
 
 def _register_wp_rest_brokers():
@@ -317,6 +351,13 @@ def _register_wp_rest_brokers():
                        WPRestScraper(d, rb, fetch_financials=ff, index_url=iu,
                                      off_index=oi).scrape(a, max_pages=60)),
             }
+            # A POST-grid index (routeconsultant) cannot be fetched by
+            # _displayed_count_for's GET: its count is the cards the scraper
+            # matched on that grid this run.
+            if index_url and index_url.upper().startswith("POST "):
+                BROKERS[key]["displayed"] = (lambda d=domain, u=index_url: (
+                    {"count": WPRestScraper.last_index_cards[d], "source": "counted",
+                     "note": f"cards on {u}"} if WPRestScraper.last_index_cards.get(d) else None))
 
 
 _register_wp_rest_brokers()
@@ -788,6 +829,9 @@ def _displayed_count_for(name: str, broker_meta: dict, listings: list[dict]) -> 
     """finish_run() kwargs for the broker's displayed count. Never raises;
     {} when no index page is known or it states no count."""
     try:
+        own = _scraper_displayed(name, broker_meta, listings)
+        if own is not None:
+            return own
         url = _index_url_for(name, broker_meta)
         if not url:
             return {}
@@ -814,6 +858,26 @@ def _displayed_count_for(name: str, broker_meta: dict, listings: list[dict]) -> 
     except Exception as e:                                  # never raise
         log.warning(f"[{name}] displayed count failed: {e}")
         return {}
+
+
+def _scraper_displayed(name: str, broker_meta: dict, listings: list[dict]) -> dict | None:
+    """The broker's count as the scraper itself captured it on this run
+    (broker_meta['displayed'] -> {'count', 'source', 'note'}): pages with no
+    stated count whose cards the scraper reads in full (routesforsale.net's
+    route-type tables, commercialroutesforsale.com's GridView, the
+    routeconsultant POST grid). None when there is no such hook or the
+    scraper captured nothing."""
+    hook = broker_meta.get("displayed")
+    if not hook:
+        return None
+    dc = hook()
+    if not dc or not dc.get("count"):
+        return None
+    active = sum(1 for l in listings if (l.get("status") or "active") == "active")
+    log.info(f"[{name}] broker shows {dc['count']} ({dc.get('source')}: {dc.get('note')}) "
+             f"vs {active} active seen of {len(listings)} -> {verdict_label(active, dc['count'])}")
+    return {"displayed_count": int(dc["count"]), "displayed_source": dc.get("source") or "counted",
+            "displayed_note": (dc.get("note") or "")[:500], "compared_count": active}
 
 
 def cleanup_stale_wesell_rows() -> int:

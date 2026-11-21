@@ -2348,6 +2348,12 @@ SPECIALIZED_DOMAINS = {
                                      # 'carwashking'; homepage cards, id-keyed)
     "globalpetroadvisors.com",       # GlobalPetroScraper (run_specialized key
                                      # 'globalpetro'; land/condos/terminal skipped)
+    "commercialroutesforsale.com",   # CommercialRoutesScraper (run_specialized key
+                                     # 'commercialroutes'; ASP.NET GridView, 2026-11-20)
+    "routebrokers.com",              # RouteBrokersScraper (run_specialized key
+                                     # 'routebrokers'; Duda accordion, 2026-11-20)
+    "routeworldbrokers.com",         # RouteWorldScraper (run_specialized key
+                                     # 'routeworld'; <h1> blocks, 2026-11-20)
 }
 
 
