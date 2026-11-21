@@ -227,10 +227,15 @@ input.ctl{width:104px}
 .about strong{color:var(--text)}
 
 footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 0;margin-top:20px}
-.foot{display:flex;flex-wrap:wrap;gap:14px 18px;justify-content:space-between;font-size:13px;color:var(--text-muted)}
-.foot-links{display:flex;flex-wrap:wrap;gap:8px 16px}
-.foot a{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);text-decoration:none}
-.foot a:hover{color:var(--text)}
+.foot{font-size:13px;color:var(--text-muted)}
+.foot-cols{display:grid;grid-template-columns:repeat(3,minmax(0,200px));gap:20px 48px;margin-bottom:22px}
+.foot-cols h3{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text);margin:0 0 10px}
+.foot-cols ul{list-style:none;margin:0;padding:0}
+.foot-cols li{margin:0 0 7px}
+.foot a{color:var(--text-muted);text-decoration:none}
+.foot a:hover{color:var(--text);text-decoration:underline}
+.foot-base{border-top:1px solid var(--border);padding-top:14px;font-size:12px}
+@media (max-width:640px){.foot-cols{grid-template-columns:1fr 1fr}}
 
 /* phones: table becomes a stacked list */
 @media (max-width:640px){
@@ -384,20 +389,36 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
 
 <footer>
   <div class="container foot">
-    <div class="foot-links">
-      <a href="/businesses-for-sale">Browse by state</a>
-      <a href="/alerts">Email alerts</a>
-      <a href="/businesses-for-sale/type/laundromats">Laundromats for sale</a>
-      <a href="/businesses-for-sale/type/hvac">HVAC businesses for sale</a>
-      <a href="/brokers">Brokers</a>
-      <a href="/price-changes">Price changes</a>
-      <a href="/writing">Pulse</a>
-      <a href="/why">Why we keep the record</a>
-      <a href="/methodology.html">Methodology</a>
-      <a href="mailto:info@dealledger.org?subject=Add%20our%20listings%20to%20DealLedger">Add your listings</a>
-      <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report an issue</a>
+    <div class="foot-cols">
+      <div>
+        <h3>Browse</h3>
+        <ul>
+          <li><a href="/businesses-for-sale">Businesses by state</a></li>
+          <li><a href="/brokers">Brokers</a></li>
+          <li><a href="/price-changes">Price changes</a></li>
+          <li><a href="/businesses-for-sale/type/laundromats">Laundromats</a></li>
+          <li><a href="/businesses-for-sale/type/hvac">HVAC businesses</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>The data</h3>
+        <ul>
+          <li><a href="/developers">API &amp; developers</a></li>
+          <li><a href="/methodology.html">Methodology</a></li>
+          <li><a href="/why">Why we keep the record</a></li>
+          <li><a href="/writing">Pulse</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Stay in touch</h3>
+        <ul>
+          <li><a href="/alerts">Email alerts</a></li>
+          <li><a href="mailto:info@dealledger.org?subject=Add%20our%20listings%20to%20DealLedger">Add your listings</a></li>
+          <li><a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report an issue</a></li>
+        </ul>
+      </div>
     </div>
-    <div>Open data, CC0. Source on <a href="https://github.com/jeffsosville/dealledger">GitHub</a>.</div>
+    <div class="foot-base">Open data, CC0. Source on <a href="https://github.com/jeffsosville/dealledger">GitHub</a>.</div>
   </div>
 </footer>
 

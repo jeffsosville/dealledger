@@ -579,7 +579,7 @@ export default function ListingPage({
           <footer className="footer">
             <div className="footer-rule" />
             <div className="footer-text">
-              DealLedger · Public record · CC0
+              DealLedger · Public record · CC0 · <a href="/developers">API</a>
               <br />
               An open public registry of business brokerage activity in the
               U.S. lower middle market.

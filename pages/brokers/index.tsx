@@ -385,7 +385,7 @@ export default function BrokersIndex({
           <footer className="footer">
             <div className="footer-rule" />
             <div className="footer-text">
-              DealLedger · Public record · CC0
+              DealLedger · Public record · CC0 · <a href="/developers">API</a>
               <br />
               An open registry of U.S. business brokers and the listings they publish.
             </div>

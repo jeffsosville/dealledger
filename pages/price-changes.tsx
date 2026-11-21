@@ -229,7 +229,7 @@ export default function PriceChanges({ changes, asOf }: InferGetServerSidePropsT
             <div className="footer-rule" />
             <div className="footer-text">
               DealLedger · Public record · CC0 · <a href="/businesses-for-sale">Browse</a> ·{' '}
-              <a href="/brokers">Brokers</a> · <a href="/methodology.html">Methodology</a>
+              <a href="/brokers">Brokers</a> · <a href="/methodology.html">Methodology</a> · <a href="/developers">API</a>
             </div>
           </footer>
         </main>

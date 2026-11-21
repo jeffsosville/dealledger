@@ -321,7 +321,7 @@ export default function SeoPage(p: Props) {
             <div className="footer-rule" />
             <div className="footer-text">
               DealLedger · Public record · CC0 · <a href="/businesses-for-sale">All states</a> ·{' '}
-              <a href="/brokers">All brokers</a>
+              <a href="/brokers">All brokers</a> · <a href="/developers">API</a>
             </div>
           </footer>
         </main>
