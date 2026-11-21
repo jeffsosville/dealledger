@@ -4,5 +4,4 @@
 # To remove one: it must run ok from GitHub two days in a row first (ops/SCHEDULES.md).
 # key                # domain                 # why
 sunbelt              # sunbeltnetwork.com     # GitHub runs return 0 (Nov 19-21)
-wp_bbofsa_com        # bbofsa.com             # GitHub runs return 0 (Nov 19-21)
 gasstationsusa       # gasstationsusa.com     # HTTP 403 from GitHub IPs (Nov 21)
