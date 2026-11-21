@@ -41,3 +41,14 @@ Lost once already: crontab was empty from ~Nov 18 to Nov 21 2026; Sunbelt (825 l
 - CRITICAL: pipeline missing, cron failed, broker not crawled ok within 36 h (specialized) / 9 d (V6) **that was ok in the last 7 days** (a regression), Mac-only broker not crawled in 30 h, watched change not verified.
 - WARN: drops, second schedule failing, stuck runs, blocked domain crawled.
 - BACKLOG: brokers with no ok crawl for 7+ days. The conductor's work queue — not an alarm.
+
+## The daily report (Nov 21)
+One report, posted as the `Today — date` issue at 16:07 UTC (pg_cron `gh-daily-report`), assigned to Jeff:
+1. What broke (CRITICAL health alerts, marked new / open since)
+2. Fixed and verified (change_watch verified + brokers back to OK)
+3. Core numbers vs yesterday / 7 days (brokers OK 7 d, brokers whose count matches, listings on site, price changes 7 d) + fix-queue size
+4. Needs your decision (`private.decisions_pending`, open rows)
+
+Built by `public.daily_ops_report()`; history in `private.daily_metrics`. Anything that needs Jeff
+(approval, credentials, a business call) goes in as a row in `private.decisions_pending`; his answer
+closes it (`closed_on`, `answer`). Nothing else interrupts him. The hand-written daily triage is retired.

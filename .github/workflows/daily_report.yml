@@ -1,9 +1,8 @@
 name: Daily report (Today issue)
 
-# Posts "Today — YYYY-MM-DD": the three-goal scoreboard plus health flags
-# (truncated crawls, frozen brokers, domains with no financials, pg_cron
-# failures), from the Supabase function daily_health(). Report only — it
-# changes no data. Closes yesterday's issue. Added 2026-10-06.
+# Posts "Today — YYYY-MM-DD" from public.daily_ops_report() (Nov 21 2026):
+# 1 what broke, 2 fixed and verified, 3 core numbers, 4 needs your decision.
+# Report only. Closes yesterday's issue. Decisions live in private.decisions_pending.
 #
 # 16:07 UTC: after the bridge (15:00) and homepage refresh (15:25).
 
@@ -34,10 +33,21 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         # report every credential here so a dead key shows up in the daily issue run
         run: python3 scripts/check_credentials.py --need supabase,proxy,anthropic
-      - name: Post Today issue
+      - name: Post daily report (replaces the old Today issue + triage)
         if: always()
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/daily_report.py --post
+        run: |
+          set -euo pipefail
+          curl -sf -X POST "$SUPABASE_URL/rest/v1/rpc/daily_ops_report" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            -H "Content-Type: application/json" -d '{}' | python3 -c 'import json,sys; print(json.load(sys.stdin))' > report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          gh label create today --color 0E8A16 --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          for n in $(gh issue list --repo "$GITHUB_REPOSITORY" --label today --state open --json number -q '.[].number'); do
+            gh issue close "$n" --repo "$GITHUB_REPOSITORY"
+          done
+          gh issue create --repo "$GITHUB_REPOSITORY" --label today --assignee jeffsosville \
+            --title "Today — $(date -u +%F)" --body-file report.md
