@@ -19,6 +19,10 @@
     {
       "source": "/writing/:slug",
       "destination": "/writing/:slug.html"
+    },
+    {
+      "source": "/developers",
+      "destination": "/developers.html"
     }
   ],
   "redirects": [

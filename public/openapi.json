@@ -1,0 +1,276 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DealLedger API",
+    "version": "1.0",
+    "description": "Read-only, public-domain (CC0) data on US businesses for sale observed on broker websites. No key needed.",
+    "license": {
+      "name": "CC0-1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://dealledger.org"
+    }
+  ],
+  "paths": {
+    "/api/v1/listings": {
+      "get": {
+        "operationId": "searchListings",
+        "summary": "Search public business-for-sale listings",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "description": "State code or name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Business type (see /api/v1/reference)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Words in the title",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "broker",
+            "in": "query",
+            "description": "Broker website domain",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "description": "Min asking price USD",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "description": "Max asking price USD",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "min_cash_flow",
+            "in": "query",
+            "description": "Min cash flow USD",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "min_age_days",
+            "in": "query",
+            "description": "Min observed days on market",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "relisted",
+            "in": "query",
+            "description": "true for possible relists",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "newest",
+                "oldest",
+                "price_desc",
+                "price_asc",
+                "cash_flow_desc",
+                "age_desc"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Results per page (JSON \u2264100, CSV \u22645000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip this many results; use next_offset",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "csv for CSV output",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of listings with total and next_offset"
+          },
+          "400": {
+            "description": "Invalid parameter"
+          }
+        }
+      }
+    },
+    "/api/v1/listings/{listing_number}": {
+      "get": {
+        "operationId": "getListingHistory",
+        "summary": "Full observed history of one listing",
+        "parameters": [
+          {
+            "name": "listing_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The listing"
+          },
+          "404": {
+            "description": "No such listing"
+          }
+        }
+      }
+    },
+    "/api/v1/price-changes": {
+      "get": {
+        "operationId": "searchPriceChanges",
+        "summary": "Reviewed asking-price changes",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "description": "State code or name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Business type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "down (default), up or any",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "down",
+                "up",
+                "any"
+              ]
+            }
+          },
+          {
+            "name": "min_pct",
+            "in": "query",
+            "description": "Minimum change in percent",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Changes observed on or after (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Results per page (JSON \u2264100, CSV \u22645000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip this many results; use next_offset",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "csv for CSV output",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of price changes with total and next_offset"
+          },
+          "400": {
+            "description": "Invalid parameter"
+          }
+        }
+      }
+    },
+    "/api/v1/reference": {
+      "get": {
+        "operationId": "getReference",
+        "summary": "Valid state codes and business types",
+        "responses": {
+          "200": {
+            "description": "Reference lists"
+          }
+        }
+      }
+    }
+  }
+}
