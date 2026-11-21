@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API — DealLedger</title>
+    <meta name="description" content="DealLedger's free, public-domain API: search US businesses for sale, listing history, observed age and reviewed price changes. JSON, CSV and MCP.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P8PBL3LPF2');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --accent: #c2410c;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+        .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+        .container-wide { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
+        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        nav a:hover { color: var(--text); }
+        nav a.active { color: var(--text); }
+        main { padding: 48px 0 64px; }
+        h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .lead { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; }
+        h2 { font-family: var(--mono); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text); margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+        h2:first-of-type { border-top: none; padding-top: 0; }
+        h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+        p { margin-bottom: 16px; color: var(--text); }
+        ul { margin: 0 0 16px 20px; }
+        li { margin-bottom: 8px; }
+        strong { font-weight: 600; }
+        .mono { font-family: var(--mono); font-size: 13px; }
+        .callout { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 24px 0; font-size: 14px; }
+        .callout strong { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 6px; }
+        .field-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+        .field-table th, .field-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .field-table th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 500; background: var(--bg-alt); }
+        .field-table td.f { font-family: var(--mono); white-space: nowrap; }
+        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 64px; background: var(--bg-alt); }
+        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: var(--text); }
+        a.inline { color: var(--link); text-decoration: underline; }
+        a.inline:hover { color: var(--accent); }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+<style>
+pre { background: var(--bg-alt); border: 1px solid var(--border); padding: 12px 16px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.5; margin: 0 0 16px; }
+code { font-family: var(--mono); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+    <div class="container-wide">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline">— An open ledger of every business for sale in America</span>
+            </div>
+            <nav>
+                <a href="/businesses-for-sale">Browse</a>
+                <a href="/brokers">Brokers</a>
+                <a href="/price-changes">Price Changes</a>
+                <a href="/writing">Pulse</a>
+                <a href="/#about">About</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<main><div class="container">
+<h1>DealLedger API</h1>
+<p class="lead">Free, read-only, public-domain (CC0) data on US businesses for sale, observed directly on broker websites. No key, no signup. JSON by default, CSV with <code>format=csv</code>, and an MCP server for AI assistants.</p>
+
+<div class="callout"><strong>Version 1 · first generation</strong>Endpoints, field names and listing numbers under <code>/api/v1</code> stay stable. Breaking changes will go to <code>/api/v2</code>, with v1 kept running.</div>
+
+<h2>Quick start</h2>
+<pre>curl "https://dealledger.org/api/v1/listings?state=TX&amp;type=laundromat&amp;limit=5"
+curl "https://dealledger.org/api/v1/listings/1157161293"
+curl "https://dealledger.org/api/v1/price-changes?state=FL&amp;min_pct=10"
+curl "https://dealledger.org/api/v1/listings?state=TX&amp;type=laundromat&amp;format=csv" &gt; tx-laundromats.csv</pre>
+
+<h2>Endpoints</h2>
+<h3>GET /api/v1/listings</h3>
+<p>Search the public listing index — the same set the site shows.</p>
+<table class="field-table"><tr><th>Parameter</th><th>Meaning</th></tr>
+<tr><td class="f">state</td><td>Code (<code>TX</code>) or name (<code>Texas</code>)</td></tr>
+<tr><td class="f">type</td><td>Business type, e.g. <code>laundromat</code>. Full list at <a href="/api/v1/reference">/api/v1/reference</a></td></tr>
+<tr><td class="f">q</td><td>Words in the listing title</td></tr>
+<tr><td class="f">broker</td><td>Broker website domain, e.g. <code>example-brokers.com</code></td></tr>
+<tr><td class="f">min_price, max_price</td><td>Asking price, USD</td></tr>
+<tr><td class="f">min_cash_flow</td><td>Reported cash flow, USD</td></tr>
+<tr><td class="f">min_age_days</td><td>Observed on the market at least this many days (dated evidence only)</td></tr>
+<tr><td class="f">relisted</td><td><code>true</code> for listings with a possible-relist signal</td></tr>
+<tr><td class="f">sort</td><td><code>newest</code> (default), <code>oldest</code>, <code>price_desc</code>, <code>price_asc</code>, <code>cash_flow_desc</code>, <code>age_desc</code></td></tr>
+<tr><td class="f">limit, offset</td><td>Paging. limit ≤ 100 for JSON, ≤ 5,000 for CSV</td></tr>
+<tr><td class="f">format</td><td><code>csv</code> for a spreadsheet-ready download</td></tr></table>
+
+<h3>GET /api/v1/listings/{listing_number}</h3>
+<p>Everything DealLedger has observed about one listing: price, cash flow, observed age with its evidence and confidence, reviewed price changes, relist signal, status and the broker&rsquo;s original page.</p>
+
+<h3>GET /api/v1/price-changes</h3>
+<p>Reviewed asking-price changes, newest first. Parameters: <code>state</code>, <code>type</code>, <code>direction</code> (<code>down</code> default, <code>up</code>, <code>any</code>), <code>min_pct</code>, <code>since</code> (YYYY-MM-DD), <code>limit</code>, <code>offset</code>, <code>format</code>.</p>
+
+<h3>GET /api/v1/reference</h3>
+<p>Valid state codes and business types.</p>
+
+<h2>Responses</h2>
+<p>Search endpoints return the full match count and a paging cursor. Keep requesting with <code>offset=next_offset</code> until it is <code>null</code> to get every match — results are never silently cut off.</p>
+<pre>{
+  "api_version": "1.0",
+  "results": [ ... ],
+  "total": 65,
+  "limit": 25,
+  "offset": 0,
+  "next_offset": 25,
+  "source": "DealLedger (dealledger.org) — CC0 public record ...",
+  "license": "CC0-1.0"
+}</pre>
+<p>Errors use HTTP status codes and one shape:</p>
+<pre>{ "api_version": "1.0", "error": { "code": "unknown_state", "message": "Unknown state \"Texsa\". Use a code (\"TX\") or name (\"Texas\")." } }</pre>
+
+<h2>How to read the data</h2>
+<ul>
+<li><strong>Observed age is a minimum.</strong> It comes from DealLedger&rsquo;s crawls of broker sites, not verified days on market. Each age carries its basis and confidence.</li>
+<li><strong>Price changes are windows.</strong> Both prices were observed on the broker&rsquo;s own page; the change happened between <code>changed_after</code> and <code>changed_on_or_before</code>. The exact day is unknown.</li>
+<li><strong>Relist signals are heuristics.</strong> A <code>possible_relist</code> is a match on state, price and title, never confirmed.</li>
+<li><strong>&ldquo;No longer listed&rdquo; is not &ldquo;sold.&rdquo;</strong> It means the ad disappeared from the broker site.</li>
+</ul>
+<p>Full detail on collection and evidence: <a href="/methodology.html">Methodology</a>.</p>
+
+<h2>For AI assistants (MCP)</h2>
+<p>Connect any MCP-capable assistant to <code>https://dealledger.org/api/mcp</code>. Tools: <code>search_listings</code>, <code>get_listing_history</code>, <code>search_price_changes</code>, <code>check_relisting</code>. They run the same queries as this API.</p>
+<p>Machine-readable spec: <a href="/openapi.json">/openapi.json</a>.</p>
+
+<h2>Terms</h2>
+<p>The data is public domain (CC0). Attribution to DealLedger is appreciated, not required. Responses are cached for up to an hour; data refreshes daily. Please keep automated use reasonable; heavy or commercial use: <a href="mailto:info@dealledger.org?subject=DealLedger%20API">info@dealledger.org</a>.</p>
+</div></main>
+<footer>
+    <div class="container-wide">
+        <div class="footer-content">
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
+            <div class="footer-links">
+                <a href="/methodology.html">Methodology</a>
+                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
