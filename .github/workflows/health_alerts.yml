@@ -34,13 +34,14 @@ jobs:
           import json, os
           rows = json.load(open("alerts.json"))
           crit = [r for r in rows if r["severity"] == "CRITICAL"]
+          backlog = [r for r in rows if r["severity"] == "BACKLOG"]
           lines = ["| severity | check | subject | detail |", "|---|---|---|---|"]
           lines += [f"| {r['severity']} | {r['check_name']} | {r['subject']} | {r['detail']} |" for r in rows]
-          body = (f"**{len(crit)} critical, {len(rows)-len(crit)} warnings**\n\n" + "\n".join(lines)) if rows else "All clear."
+          body = (f"**{len(crit)} critical, {len(rows)-len(crit)-len(backlog)} warnings, {len(backlog)} backlog (conductor queue)**\n\n" + "\n".join(lines)) if rows else "All clear."
           open("body.md", "w").write(body)
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f: f.write("### Health alerts\n\n" + body + "\n")
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"critical={len(crit)}\nwarn={len(rows)-len(crit)}\n")
+              f.write(f"critical={len(crit)}\nwarn={len(rows)-len(crit)-len(backlog)}\n")
           PY
       - name: Open or update the alert issue
         if: steps.q.outputs.critical != '0' || steps.q.outputs.warn != '0'

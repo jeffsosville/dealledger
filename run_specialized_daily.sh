@@ -22,5 +22,12 @@ try:
 except Exception as e:
     print(f'PROXY HEALTH: FAILED — {e}')
 " >> "$LOG" 2>&1
-$PY -u scrapers/run_specialized.py >> "$LOG" 2>&1
+# Mac runs only the brokers that fail from GitHub (data/mac_only_brokers.txt). FULL=1 runs everything.
+MAC_ONLY=$(grep -v '^\s*#' data/mac_only_brokers.txt | awk '{print $1}' | grep -v '^$' | paste -sd, -)
+if [ "${FULL:-0}" = "1" ] || [ -z "$MAC_ONLY" ]; then
+  $PY -u scrapers/run_specialized.py >> "$LOG" 2>&1
+else
+  echo "Mac-only brokers: $MAC_ONLY" >> "$LOG"
+  $PY -u scrapers/run_specialized.py --brokers "$MAC_ONLY" >> "$LOG" 2>&1
+fi
 echo "=== specialized run finished $(date) exit=$? ===" >> "$LOG"

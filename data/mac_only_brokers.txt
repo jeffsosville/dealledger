@@ -1,0 +1,8 @@
+# Brokers the Mac runs daily (run_specialized_daily.sh, cron 08:00 ET).
+# Only brokers that FAIL from GitHub go here. Mirror of Supabase private.mac_only_brokers
+# (health_alerts flags any of these with no ok crawl in 30 h as mac_run_missing).
+# To remove one: it must run ok from GitHub two days in a row first (ops/SCHEDULES.md).
+# key                # domain                 # why
+sunbelt              # sunbeltnetwork.com     # GitHub runs return 0 (Nov 19-21)
+wp_bbofsa_com        # bbofsa.com             # GitHub runs return 0 (Nov 19-21)
+gasstationsusa       # gasstationsusa.com     # HTTP 403 from GitHub IPs (Nov 21)
