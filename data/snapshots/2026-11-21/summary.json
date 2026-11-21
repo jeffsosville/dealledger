@@ -1,0 +1,175 @@
+{
+  "started": "2026-11-21T10:25:50.237127+00:00",
+  "brokers_attempted": 586,
+  "brokers_success": 506,
+  "brokers_failed": 75,
+  "total_listings": 11481,
+  "listings_with_price": 10520,
+  "listings_with_cashflow": 4544,
+  "listings_with_state": 10010,
+  "detail_pages_fetched": 275,
+  "patterns_cached": 597,
+  "patterns_learned": 421,
+  "verticals": {
+    "restaurant": 2495,
+    "automotive": 919,
+    "technology": 1349,
+    "other": 2513,
+    "manufacturing": 360,
+    "landscaping": 142,
+    "healthcare": 955,
+    "hvac": 223,
+    "electrical": 119,
+    "laundromat": 48,
+    "plumbing": 127,
+    "retail": 1313,
+    "construction": 374,
+    "roofing": 48,
+    "pest_control": 14,
+    "cleaning": 148,
+    "vending": 109,
+    "dry_cleaner": 32,
+    "delivery_route": 130,
+    "pool_service": 2,
+    "junk_removal": 1,
+    "pressure_washing": 7,
+    "amusement": 7,
+    "atm": 46
+  },
+  "failure_types": {
+    "EMBED_BBS": 4,
+    "NO_PATTERN": 53,
+    "FETCH_ERROR": 5,
+    "HTTP_403": 12,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "shane torres",
+      "domain": "krbb.com",
+      "event": "stale_cache",
+      "selector": "div.ejYUwA.t1Z_7C"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "michael mcgrath",
+      "domain": "homecarebuysell.com",
+      "event": "stale_cache",
+      "selector": "tr",
+      "healed_to": "tr[class*=\"element_row\"]"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    },
+    {
+      "broker": "matthew gorman",
+      "domain": "districtbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div._15gGoQK1",
+      "healed_to": "div._root_1w52m_1._minHeightFix_1w52m_5.container.builder-root"
+    }
+  ],
+  "site_pages_dropped": 51,
+  "slowest_brokers": [
+    [
+      2350,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      2303,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      2293,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      2293,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      2223,
+      "pacificrb.com",
+      7
+    ],
+    [
+      1010,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      896,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      464,
+      "alpinebusinessbrokers.com",
+      41
+    ],
+    [
+      314,
+      "businessforsaleinhudsonvalley.com",
+      25
+    ],
+    [
+      304,
+      "promed-financial.com",
+      4
+    ],
+    [
+      304,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      296,
+      "therockbridge.group",
+      7
+    ],
+    [
+      293,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      292,
+      "3cre.com",
+      3
+    ],
+    [
+      290,
+      "cchealthcareintermediary.com",
+      3
+    ]
+  ],
+  "seconds_total": 37217,
+  "completed": "2026-11-21T15:10:48.274452+00:00",
+  "interrupted": true,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
