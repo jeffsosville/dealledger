@@ -23,6 +23,10 @@
     {
       "source": "/developers",
       "destination": "/developers.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
     }
   ],
   "redirects": [

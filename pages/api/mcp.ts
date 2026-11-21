@@ -46,7 +46,7 @@ function resultCount(out: any): number | null {
 }
 
 function buildServer(client: string | null) {
-  const server = new McpServer({ name: 'dealledger', version: '1.3.0' });
+  const server = new McpServer({ name: 'dealledger', title: 'DealLedger', version: '1.3.1' });
   const sb = getSupabase();
 
   function logged<A>(tool: string, fn: (a: A) => Promise<any>) {
@@ -76,26 +76,37 @@ function buildServer(client: string | null) {
     };
   }
 
+  // Every tool only reads DealLedger's public record.
+  const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
+
   const paging = {
     limit: z.number().int().min(1).max(50).optional().describe('Number of results, default 20'),
     offset: z.number().int().min(0).optional().describe('Skip this many results; use next_offset from the previous answer to page'),
   };
 
-  server.tool(
+  server.registerTool(
     'get_listing_history',
-    'Everything DealLedger has observed about one business-for-sale listing: current asking price and cash flow, ' +
+    {
+      title: 'Get listing history',
+      description:
+        'Everything DealLedger has observed about one business-for-sale listing: current asking price and cash flow, ' +
       'observed listing age with its evidence and confidence, reviewed asking-price changes with dates, relist signal, ' +
       'whether it is still listed, the broker’s original page and the permanent DealLedger URL.',
-    { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
+      inputSchema: { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
+      annotations: READ_ONLY,
+    },
     logged('get_listing_history', async ({ listing }) => json({ ...(await getListing(listing)), source: SOURCE }))
   );
 
-  server.tool(
+  server.registerTool(
     'search_listings',
-    'Search US businesses for sale in DealLedger’s public record (observed on brokers’ own websites). ' +
+    {
+      title: 'Search listings',
+      description:
+        'Search US businesses for sale in DealLedger’s public record (observed on brokers’ own websites). ' +
       'Each result gives price, cash flow, observed listing age with evidence, relist signal, broker and the permanent DealLedger URL. ' +
       `total is the full number of matches; page with offset. Business types: ${TYPE_LIST}.`,
-    {
+      inputSchema: {
       state: z.string().optional().describe('US state, as a code ("TX") or name ("Texas")'),
       type: z.string().optional().describe('Business type, e.g. "laundromat", "restaurant"'),
       q: z.string().optional().describe('Words in the listing title, e.g. "car wash"'),
@@ -106,15 +117,20 @@ function buildServer(client: string | null) {
       sort: z.enum(['newest', 'oldest', 'price_desc', 'price_asc', 'cash_flow_desc', 'age_desc']).optional(),
       ...paging,
     },
+      annotations: READ_ONLY,
+    },
     logged('search_listings', async (a: any) => json({ ...(await searchListings({ ...a, limit: a.limit ?? 20 }, 50)), source: SOURCE }))
   );
 
-  server.tool(
+  server.registerTool(
     'search_price_changes',
-    'Search reviewed asking-price changes on US businesses for sale (cuts and increases observed on brokers’ own listing pages). ' +
+    {
+      title: 'Search price changes',
+      description:
+        'Search reviewed asking-price changes on US businesses for sale (cuts and increases observed on brokers’ own listing pages). ' +
       'Each result gives the old and new price, the date window in which the change happened, the listing and its permanent DealLedger URL. ' +
       `total is the full number of matches; page with offset. Business types: ${TYPE_LIST}.`,
-    {
+      inputSchema: {
       state: z.string().optional().describe('US state, as a code ("FL") or name ("Florida")'),
       type: z.string().optional().describe('Business type, e.g. "laundromat", "restaurant"'),
       direction: z.enum(['down', 'up', 'any']).optional().describe('"down" for price cuts (default), "up" for increases, "any"'),
@@ -122,14 +138,21 @@ function buildServer(client: string | null) {
       since: z.string().optional().describe('Only changes observed on or after this date (YYYY-MM-DD)'),
       ...paging,
     },
+      annotations: READ_ONLY,
+    },
     logged('search_price_changes', async (a: any) => json({ ...(await searchPriceChanges(a, 50)), source: SOURCE }))
   );
 
-  server.tool(
+  server.registerTool(
     'check_relisting',
-    'Check whether a business-for-sale listing shows evidence of having been listed before under a different listing. ' +
+    {
+      title: 'Check relisting',
+      description:
+        'Check whether a business-for-sale listing shows evidence of having been listed before under a different listing. ' +
       'Returns the signal, its confidence and how it was derived. A possible relist is never confirmed proof.',
-    { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
+      inputSchema: { listing: z.union([z.number(), z.string()]).describe('DealLedger listing number or a dealledger.org/listing/… URL') },
+      annotations: READ_ONLY,
+    },
     logged('check_relisting', async ({ listing }) => {
       const l = await getListing(listing);
       return json({ dealledger_url: l.dealledger_url, title: l.title, ...l.relist_signal, source: SOURCE });

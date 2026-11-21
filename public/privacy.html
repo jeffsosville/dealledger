@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — DealLedger</title>
+    <meta name="description" content="What DealLedger collects about visitors, API and AI-assistant users, and email subscribers, and what we do with it.">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P8PBL3LPF2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P8PBL3LPF2');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafaf9;
+            --bg-alt: #f5f5f4;
+            --border: #d4d4d4;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --link: #0c4a6e;
+            --accent: #c2410c;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'IBM Plex Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+        .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+        .container-wide { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { border-bottom: 1px solid var(--border); padding: 20px 0; background: var(--bg); }
+        .header-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+        .logo { font-family: var(--mono); font-size: 18px; font-weight: 600; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+        .tagline { font-size: 13px; color: var(--text-muted); }
+        nav { display: flex; gap: 24px; }
+        nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        nav a:hover { color: var(--text); }
+        nav a.active { color: var(--text); }
+        main { padding: 48px 0 64px; }
+        h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .lead { font-size: 16px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6; }
+        h2 { font-family: var(--mono); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text); margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+        h2:first-of-type { border-top: none; padding-top: 0; }
+        h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+        p { margin-bottom: 16px; color: var(--text); }
+        ul { margin: 0 0 16px 20px; }
+        li { margin-bottom: 8px; }
+        strong { font-weight: 600; }
+        .mono { font-family: var(--mono); font-size: 13px; }
+        .callout { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 20px; margin: 24px 0; font-size: 14px; }
+        .callout strong { display: block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 6px; }
+        .field-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+        .field-table th, .field-table td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .field-table th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 500; background: var(--bg-alt); }
+        .field-table td.f { font-family: var(--mono); white-space: nowrap; }
+        footer { border-top: 1px solid var(--border); padding: 24px 0; margin-top: 64px; background: var(--bg-alt); }
+        .footer-content { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+        .footer-text { font-size: 12px; color: var(--text-muted); }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: var(--text); }
+        a.inline { color: var(--link); text-decoration: underline; }
+        a.inline:hover { color: var(--accent); }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; align-items: flex-start; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container-wide">
+        <div class="header-content">
+            <div>
+                <a href="/" class="logo">DealLedger</a>
+                <span class="tagline">— An open ledger of every business for sale in America</span>
+            </div>
+            <nav>
+                <a href="/businesses-for-sale">Browse</a>
+                <a href="/brokers">Brokers</a>
+                <a href="/price-changes">Price Changes</a>
+                <a href="/writing">Pulse</a>
+                <a href="/#about">About</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<main><div class="container">
+<h1>Privacy</h1>
+<p class="lead">DealLedger publishes public information about businesses for sale. We collect as little as we can about the people who use it. Last updated November 21, 2026.</p>
+
+<h2>Who we are</h2>
+<p>DealLedger (dealledger.org) is run by Sosville Group, 10 Academy St, Skaneateles, NY 13152. Questions or requests: <a class="inline" href="mailto:info@dealledger.org?subject=Privacy">info@dealledger.org</a>.</p>
+
+<h2>What we collect</h2>
+<h3>Browsing the website</h3>
+<p>We use Google Analytics to count visits and see which pages are used: pages viewed, approximate location (city level), device and browser type, and the referring site. We don't run advertising and don't use this to build profiles of individuals. Our host, Vercel, keeps standard server logs, including IP addresses, for security and operations.</p>
+
+<h3>The API and the MCP server (AI assistants)</h3>
+<p>No account or key is needed, and we never ask who you are. For each request we log: which endpoint or tool was called, the search parameters sent (for example, state and business type), how many results came back, any error, how long it took, and the calling app's self-reported name (its user agent, such as "ChatGPT" or "Claude"). We do <strong>not</strong> store IP addresses in this log, and we receive nothing from your conversation beyond the parameters of the call itself. We use this log to fix problems and understand which data people need.</p>
+
+<h3>Email alerts</h3>
+<p>If you sign up for listing alerts, we store your email address, the searches you subscribed to, and when you confirmed or unsubscribed. Every alert email has a one-click unsubscribe.</p>
+
+<h3>Inquiries you send us</h3>
+<p>If you fill out a form (such as an SBA pre-qualification request) or email us, we keep what you send, such as your name, email, phone and the listing you asked about, and use it only to respond to your request.</p>
+
+<h2>What we don't do</h2>
+<ul>
+<li>We don't sell or rent personal information.</li>
+<li>We don't run ads or ad trackers.</li>
+<li>We don't ask for or store passwords, payment details or precise location.</li>
+</ul>
+
+<h2>Who processes data for us</h2>
+<p>Vercel (hosting), Supabase (database), Google Analytics (site analytics) and Resend (sending email). Each handles data only to provide its service to us.</p>
+
+<h2>How long we keep it</h2>
+<ul>
+<li>API and MCP request logs: up to 12 months.</li>
+<li>Alert subscriptions: until you unsubscribe, then up to 30 days.</li>
+<li>Inquiries: as long as needed to answer them, then up to 24 months.</li>
+<li>Google Analytics: its default retention period (14 months).</li>
+</ul>
+
+<h2>Your choices</h2>
+<p>Unsubscribe from alerts with the link in any alert email. To see, correct or delete anything we hold about you, email <a class="inline" href="mailto:info@dealledger.org?subject=Privacy%20request">info@dealledger.org</a> and we'll respond within 30 days. You can block Google Analytics with a browser extension or your browser's privacy settings; the site works the same without it.</p>
+
+<h2>The listing data itself</h2>
+<p>Listings on DealLedger are business advertisements that brokers publish on their own websites. We record and publish them as a public-domain (CC0) record; see <a class="inline" href="/methodology.html">Methodology</a>. Brokers who want a listing corrected or removed can email <a class="inline" href="mailto:info@dealledger.org?subject=Listing%20correction">info@dealledger.org</a>.</p>
+
+<h2>Changes</h2>
+<p>If this policy changes, we'll update the date at the top of this page.</p>
+</div></main>
+<footer>
+    <div class="container-wide">
+        <div class="footer-content">
+            <div class="footer-text">DealLedger observes and publishes. We don't rank, recommend, or broker.<br>Data: CC0.</div>
+            <div class="footer-links">
+                <a href="/methodology.html">Methodology</a>
+                <a href="/developers">API</a>
+                <a href="mailto:info@dealledger.org?subject=DealLedger%20Issue">Report Issue</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
