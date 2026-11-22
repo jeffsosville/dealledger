@@ -52,3 +52,10 @@ One report, posted as the `Today — date` issue at 16:07 UTC (pg_cron `gh-daily
 Built by `public.daily_ops_report()`; history in `private.daily_metrics`. Anything that needs Jeff
 (approval, credentials, a business call) goes in as a row in `private.decisions_pending`; his answer
 closes it (`closed_on`, `answer`). Nothing else interrupts him. The hand-written daily triage is retired.
+
+## Claude Code job runner (Nov 22)
+Mac crontab: `30 8 * * * /bin/zsh -lc "$HOME/dealledger-repo/ops/nightly_conductor.sh"` — after the 8:00 scraper run.
+Takes the top line of `claude/staging/queue.txt`, runs it headless (Opus conductor, Sonnet workers),
+Supabase keys blanked, git commit/push blocked. Writes `claude/staging/<date>/SUMMARY_<job>.md`; the job
+leaves the queue only when that summary exists. Log: `logs/conductor_<date>.log`. Jeff reviews and pushes;
+chat applies SQL and inserts change_watch rows.
