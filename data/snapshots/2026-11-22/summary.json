@@ -1,0 +1,168 @@
+{
+  "started": "2026-11-22T10:25:39.500305+00:00",
+  "brokers_attempted": 723,
+  "brokers_success": 646,
+  "brokers_failed": 73,
+  "total_listings": 14608,
+  "listings_with_price": 13310,
+  "listings_with_cashflow": 5725,
+  "listings_with_state": 12711,
+  "detail_pages_fetched": 287,
+  "patterns_cached": 603,
+  "patterns_learned": 540,
+  "verticals": {
+    "restaurant": 3167,
+    "automotive": 1105,
+    "technology": 1762,
+    "other": 3347,
+    "manufacturing": 423,
+    "landscaping": 177,
+    "construction": 436,
+    "retail": 1634,
+    "plumbing": 156,
+    "healthcare": 1205,
+    "cleaning": 194,
+    "hvac": 267,
+    "dry_cleaner": 55,
+    "roofing": 65,
+    "vending": 120,
+    "laundromat": 135,
+    "electrical": 137,
+    "pest_control": 20,
+    "delivery_route": 131,
+    "pressure_washing": 9,
+    "amusement": 8,
+    "junk_removal": 4,
+    "pool_service": 5,
+    "atm": 46
+  },
+  "failure_types": {
+    "EMBED_BBS": 4,
+    "NO_PATTERN": 47,
+    "FETCH_ERROR": 6,
+    "HTTP_403": 14,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "shane torres",
+      "domain": "krbb.com",
+      "event": "stale_cache",
+      "selector": "div.ejYUwA.t1Z_7C"
+    },
+    {
+      "broker": "randy bernard",
+      "domain": "proformapartners.com",
+      "event": "stale_cache",
+      "selector": "div.e-con-inner",
+      "rejected": "div[class*=\"elementor-inner-column\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    },
+    {
+      "broker": "matthew gorman",
+      "domain": "districtbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div._15gGoQK1",
+      "healed_to": "div._root_1w52m_1._minHeightFix_1w52m_5.container.builder-root"
+    }
+  ],
+  "site_pages_dropped": 33,
+  "slowest_brokers": [
+    [
+      2306,
+      "jmrichardson.com",
+      4
+    ],
+    [
+      2295,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      1559,
+      "commercialindustrialconsultants.com",
+      4
+    ],
+    [
+      901,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      802,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      570,
+      "absolutenetproperties.com",
+      3
+    ],
+    [
+      460,
+      "konablueplantations.com",
+      5
+    ],
+    [
+      460,
+      "blackbookadvisers.com",
+      18
+    ],
+    [
+      457,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      366,
+      "progressivepracticesales.com",
+      91
+    ],
+    [
+      313,
+      "bhhsneproperties.com",
+      3
+    ],
+    [
+      303,
+      "promed-financial.com",
+      4
+    ],
+    [
+      303,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      297,
+      "lacountyrealestate.us",
+      2
+    ],
+    [
+      296,
+      "therockbridge.group",
+      7
+    ]
+  ],
+  "seconds_total": 39598,
+  "completed": "2026-11-22T13:30:18.882972+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
