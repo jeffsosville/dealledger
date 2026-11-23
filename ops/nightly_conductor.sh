@@ -18,6 +18,8 @@ export SUPABASE_SERVICE_KEY= SUPABASE_SERVICE_ROLE_KEY= SUPABASE_KEY=
 unset ANTHROPIC_API_KEY
 # cron's PATH is minimal: look in the usual install spots too.
 export PATH="$HOME/.local/bin:$HOME/.claude/local:/opt/homebrew/bin:/usr/local/bin:$HOME/.npm-global/bin:$PATH"
+# claude -p stops background workers 10 min after the conductor's last turn; let them finish.
+export CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0
 CLAUDE=$(command -v claude)
 [ -z "$CLAUDE" ] && { echo "$(date) claude not on PATH" >> "$LOG"; exit 1; }
 
