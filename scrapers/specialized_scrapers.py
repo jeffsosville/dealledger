@@ -117,22 +117,6 @@ def _proxy_creds():
     return user, pw, host
 
 
-def _ci_proxies(tag: str):
-    """GitHub Actions only: DataImpulse US sticky-session proxy, else None.
-    From GitHub runner IPs tworld returns 0 listings, sunbelt 0, routesforsale
-    a 401 "Security Verification" page (Nov 2026); from Jeff's Mac (home IP,
-    no proxy) all three work. So route them through the proxy in CI and leave
-    the Mac run direct."""
-    if os.environ.get("GITHUB_ACTIONS") != "true":
-        return None
-    user, pw, host = _proxy_creds()
-    if not (user and pw):
-        return None
-    sid = f"{tag}{random.randint(100000, 999999)}"
-    url = f"http://{user}__cr.us;sessid.{sid}:{pw}@{host}"
-    return {"http": url, "https": url}
-
-
 def extract_city_state(location: str) -> tuple:
     """
     Extract city and state from location string.
@@ -755,8 +739,6 @@ class TransworldScraper:
 
     def __init__(self):
         self.session = requests.Session(impersonate="chrome124")
-        if (_p := _ci_proxies("tw")):
-            self.session.proxies = _p
         self.api_headers = {
             "Accept": "application/json, text/plain, */*",
             "Content-Type": "application/json;charset=UTF-8",
@@ -1028,8 +1010,6 @@ class SunbeltScraper:
 
     def __init__(self):
         self.session = requests.Session(impersonate="chrome120")
-        if (_p := _ci_proxies("sb")):
-            self.session.proxies = _p
         # Init cookies
         try:
             self.session.get(f"{self.BASE}/business-search/business-results/", timeout=20)
@@ -2266,15 +2246,11 @@ class RoutesForSaleScraper:
     def _make_session(cls):
         try:
             s = requests.Session(impersonate="chrome120")
-            if (_p := _ci_proxies("rf")):
-                s.proxies = _p
             s.get(cls.BASE, timeout=15)
             return s
         except Exception:
             import requests as _std
             s = _std.Session()
-            if (_p := _ci_proxies("rf")):
-                s.proxies = _p
             s.headers.update({
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                               "AppleWebKit/537.36 (KHTML, like Gecko) "
