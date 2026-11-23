@@ -37,6 +37,7 @@ export default function NichePage(p: NichePageProps) {
           : `DealLedger is tracking ${fmtNum(n)} of these for sale${where} right now. Every listing below links to the broker who has it.`}
       stats={full ? s : null}
       rows={p.rows}
+      finder={{ state: p.state }}
       showState={!p.state}
       crumbs={[
         { href: '/', label: 'DealLedger' },

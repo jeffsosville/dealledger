@@ -86,6 +86,8 @@ function ComboPage(p: ComboProps) {
         : thinIntro) + (note ? ` ${note}` : '')}
       stats={s}
       rows={p.rows}
+      finder={{ state: p.code, vertical: p.vertical }}
+      query={{ state: p.code, vertical: p.vertical }}
       crumbs={[
         { href: '/', label: 'DealLedger' },
         { href: '/businesses-for-sale', label: 'Businesses for sale' },

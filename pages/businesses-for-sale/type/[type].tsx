@@ -77,6 +77,8 @@ function TypePage({ vertical, stats: s, thin, rows, byState, otherTypes, niches 
           : `DealLedger is tracking ${fmtNum(n)} ${t.noun} for sale right now. Every listing below links to the broker who has it.`}
       stats={s}
       rows={rows}
+      finder={{ vertical }}
+      query={{ vertical }}
       showState
       crumbs={[{ href: '/', label: 'DealLedger' }, { href: '/businesses-for-sale', label: 'Businesses for sale' }, { href: path, label: t.label }]}
       groups={[

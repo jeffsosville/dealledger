@@ -131,13 +131,21 @@ export async function allStats(): Promise<Stats[]> {
   }
 }
 
-export async function listingsFor(filter: { state?: string; vertical?: string }): Promise<Row[]> {
+export type ListOrder = 'newest' | 'price-desc' | 'price-asc';
+
+// Also called from the browser (SeoPage) when a visitor sorts a page by price
+// and the page holds more listings than it shows.
+export async function listingsFor(
+  filter: { state?: string; vertical?: string },
+  order: ListOrder = 'newest',
+): Promise<Row[]> {
   let q = getSupabase().from('mv_seo_listings_v2').select(ROW_COLS);
   if (filter.state) q = q.eq('state_code', filter.state);
   if (filter.vertical) q = q.eq('vertical', filter.vertical);
-  const { data } = await q
-    .order('estimated_listed_date', { ascending: false, nullsFirst: false })
-    .range(0, LIST_LIMIT - 1);
+  q = order === 'newest'
+    ? q.order('estimated_listed_date', { ascending: false, nullsFirst: false })
+    : q.order('price', { ascending: order === 'price-asc', nullsFirst: false });
+  const { data } = await q.range(0, LIST_LIMIT - 1);
   return (data || []) as Row[];
 }
 

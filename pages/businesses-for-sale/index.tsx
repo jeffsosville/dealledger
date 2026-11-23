@@ -38,6 +38,7 @@ export default function Hub({ states, types, total, niches }: InferGetStaticProp
       intro={`${fmtNum(total)} businesses for sale, collected directly from business broker websites and sorted by state and type. Every listing shows how long it has really been listed and links straight to the broker. No accounts, no gated contact forms.`}
       stats={null}
       rows={[]}
+      finder={{}}
       crumbs={[{ href: '/', label: 'DealLedger' }, { href: '/businesses-for-sale', label: 'Businesses for sale' }]}
       groups={[
         { title: 'By state', links: states.map((s) => ({ href: statePath(s.code), label: STATES[s.code], count: s.count })) },

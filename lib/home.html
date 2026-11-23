@@ -162,6 +162,27 @@ h1{font-size:clamp(26px,6.5vw,34px);line-height:1.15;font-weight:600;letter-spac
 .lookup button{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:13px 22px;background:var(--text);color:var(--bg);border:2px solid var(--text);border-radius:0;cursor:pointer}
 .lookup button:disabled{opacity:.5;cursor:default}
 .lk-msg{font-family:var(--mono);font-size:12px;color:var(--text-muted);min-height:18px;margin-top:8px}
+.lk-msg:empty{min-height:0;margin-top:0}
+/* finder: business type + state, the primary search */
+.finder{margin-top:22px;border:1px solid var(--border);background:#fff;padding:16px 18px 18px}
+.finder-k{font-size:15px;font-weight:600;margin-bottom:8px}
+.finder-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.fsel{font-family:var(--mono);font-size:13px;padding:12px 30px 12px 12px;border:2px solid var(--text);border-radius:0;background-color:#fff;width:100%;min-width:0;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--text) 50%),linear-gradient(135deg,var(--text) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.finder-go{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:13px 22px;background:var(--text);color:var(--bg);border:2px solid var(--text);border-radius:0;cursor:pointer;white-space:nowrap}
+/* listing-history lookup: secondary tool */
+.lk-box{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.lk-title{font-size:14px;font-weight:600}
+.lk-help{font-size:13px;color:var(--text-muted);margin-top:2px}
+.lk-box .lookup{margin-top:8px}
+.lk-box .lookup input{border-width:1px;padding:10px 12px;font-size:12px}
+.lk-box .lookup button{background:#fff;color:var(--text);border-width:1px;padding:10px 16px}
+/* results bar: count + sort */
+.results-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 8px}
+.results-bar .count{margin:0}
+.sortby{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--text-muted)}
+.alert-cta.after{margin:28px 0 0}
 .lk-msg.err{color:#991b1b}
 .lk-card{border:1px solid var(--border);background:#fff;padding:18px 20px;margin-top:10px;overflow-wrap:anywhere}
 .lk-kind{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:6px}
@@ -245,6 +266,10 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   nav{gap:6px 16px}
   .lookup input,.search-bar,.ctl{font-size:16px} /* stops iOS zoom-on-focus */
   .lookup button{flex:1 1 100%}
+  .finder-row{grid-template-columns:1fr}
+  .finder-go{width:100%}
+  .fsel{font-size:16px}
+  .sortby{width:100%;justify-content:space-between}
   .stats{grid-template-columns:1fr}
   .stat{display:flex;align-items:baseline;gap:10px}
   .stat-l{margin-top:0}
@@ -255,7 +280,6 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
   .controls select.ctl{padding-right:24px}
   .chips{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
   .chip{padding:9px 4px;text-align:center}
-  .sort-sm{display:block;grid-column:1/3}
   .reset{justify-self:end}
 
   .ledger,.ledger tbody,.ledger tr,.ledger td{display:block;width:100%}
@@ -303,13 +327,27 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <div class="eyebrow">The public record · Open data · Updated daily · No logins, no lead forms</div>
     <h1>The market has no memory.<br> We give it one.</h1>
     <p class="lede">Business listings appear, change, disappear and come back, and nobody keeps the record. We read every broker website we can find, every day, and write down what we see: when a listing appeared, what changed, when it came down.</p>
-    <form class="lookup" id="lkForm" role="search">
-      <input id="lkInput" type="search" autocomplete="off" aria-label="Paste a listing link or search listings"
-             placeholder="Search or paste a listing link">
-      <button id="lkGo" type="submit">Search</button>
+    <form class="finder" id="findForm" role="search" action="/businesses-for-sale">
+      <div class="finder-k">Find businesses for sale</div>
+      <div class="finder-row">
+        <label class="fld"><span>Business type</span>
+          <select id="fType" class="fsel"><option value="">All business types</option><!--DL:TYPEOPTS--></select></label>
+        <label class="fld"><span>State</span>
+          <select id="fFindState" class="fsel"><option value="">All states</option></select></label>
+        <button class="finder-go" type="submit">Search listings</button>
+      </div>
     </form>
-    <div class="lk-msg" id="lkMsg"></div>
-    <div id="lkOut"></div>
+
+    <section class="lk-box" aria-labelledby="lkTitle">
+      <div class="lk-title" id="lkTitle">Check a listing’s history</div>
+      <p class="lk-help">Have a listing URL? Look up when DealLedger first observed it and what changed.</p>
+      <form class="lookup" id="lkForm">
+        <input id="lkInput" type="search" autocomplete="off" aria-label="Listing link" placeholder="Paste a broker listing URL">
+        <button id="lkGo" type="submit">Look up</button>
+      </form>
+      <div class="lk-msg" id="lkMsg"></div>
+      <div id="lkOut"></div>
+    </section>
 
     <div class="stats">
       <div class="stat"><div class="stat-n" id="nHero"><!--DL:TOTAL--></div><div class="stat-l">listings on the record</div></div>
@@ -318,17 +356,12 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     </div>
     <p class="proof">Counted from <a href="/brokers">brokers' own websites</a>. A listing we stop seeing is recorded as gone, not sold. Data is CC0, the code is public. <a href="/methodology.html">How it works →</a></p>
 
-    <div class="alert-cta">
-      <div class="alert-cta-k">— New listing alerts</div>
-      <p class="alert-cta-h">Get new listings in your niche and state by email, often before they reach the big marketplaces.</p>
-      <p class="alert-cta-p">Free, weekly, no account. <a class="alert-cta-btn" href="/alerts">Set up an alert →</a></p>
-      <p class="alert-cta-q">Popular: <a href="/alerts?type=laundromat">Laundromats</a> · <a href="/alerts?type=pizzerias">Pizzerias</a> · <a href="/alerts?type=cleaning">Cleaning</a> · <a href="/alerts?type=hvac">HVAC</a> · <a href="/alerts?type=vending">Vending</a> · <a href="/alerts?type=dental-practices">Dental</a> · <a href="/alerts?type=auto-repair-shops">Auto repair</a></p>
-    </div>
 
     <div class="rule">or browse the ledger</div>
 
     <div class="search-wrap">
       <div class="controls">
+        <input id="fKw" class="ctl" type="search" aria-label="Keyword" placeholder="Keyword" autocomplete="off">
         <select id="fState" class="ctl" aria-label="State"><option value="">All states</option></select>
         <input id="fMin" class="ctl" type="text" aria-label="Minimum price" placeholder="Min $" inputmode="numeric">
         <input id="fMax" class="ctl" type="text" aria-label="Maximum price" placeholder="Max $" inputmode="numeric">
@@ -338,20 +371,24 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
           <button class="chip" data-dom="recent" aria-pressed="false">90 days</button>
           <button class="chip" data-dom="stale" aria-pressed="false">90d+</button>
         </div>
-        <select id="fSort" class="ctl sort-sm" aria-label="Sort">
-          <option value="days:1">Newest first</option>
-          <option value="days:-1">Oldest first</option>
-          <option value="price:-1">Price, high to low</option>
-          <option value="price:1">Price, low to high</option>
-          <option value="cut:-1">Recently reduced</option>
-        </select>
         <label class="ctl-check"><input id="fPriced" type="checkbox" checked> Only listings with an asking price</label>
         <button id="reset" class="reset" type="button">Reset</button>
       </div>
     </div>
   </section>
 
-  <div class="count" id="ledger"><strong id="n"><!--DL:SHOWN--></strong> listings<span id="nPriced"> with an asking price</span><span id="qShow"></span></div>
+  <div class="results-bar">
+    <div class="count" id="ledger"><strong id="n"><!--DL:SHOWN--></strong> listings<span id="nPriced"> with an asking price</span><span id="qShow"></span></div>
+    <label class="sortby">Sort by
+      <select id="fSort" class="ctl" aria-label="Sort by">
+        <option value="days:1">Newest</option>
+        <option value="price:-1">Price: High to Low</option>
+        <option value="price:1">Price: Low to High</option>
+        <option value="days:-1">Oldest</option>
+        <option value="cut:-1">Recently reduced</option>
+      </select>
+    </label>
+  </div>
 
   <table class="ledger">
     <thead>
@@ -360,7 +397,7 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
         <th>Business</th>
         <th>State</th>
         <th class="num sortable" data-sort="price">Price<span class="sort-arrow" data-for="price"></span></th>
-        <th class="num sortable" data-sort="days">Days<span class="sort-arrow" data-for="days"></span><span class="th-sub">known age</span></th>
+        <th class="num sortable" data-sort="days">Observed age<span class="sort-arrow" data-for="days"></span><span class="th-sub">days</span></th>
       </tr>
     </thead>
     <tbody id="rows"><!--DL:ROWS--></tbody>
@@ -371,6 +408,13 @@ footer{border-top:1px solid var(--border);background:var(--bg-alt);padding:26px 
     <button id="prev">← Prev</button>
     <span id="pageInfo"><!--DL:PAGEINFO--></span>
     <button id="next">Next →</button>
+  </div>
+
+  <div class="alert-cta after">
+    <div class="alert-cta-k">— New listing alerts</div>
+    <p class="alert-cta-h">Get new listings in your niche and state by email, often before they reach the big marketplaces.</p>
+    <p class="alert-cta-p">Free, weekly, no account. <a class="alert-cta-btn" href="/alerts">Set up an alert →</a></p>
+    <p class="alert-cta-q">Popular: <a href="/alerts?type=laundromat">Laundromats</a> · <a href="/alerts?type=pizzerias">Pizzerias</a> · <a href="/alerts?type=cleaning">Cleaning</a> · <a href="/alerts?type=hvac">HVAC</a> · <a href="/alerts?type=vending">Vending</a> · <a href="/alerts?type=dental-practices">Dental</a> · <a href="/alerts?type=auto-repair-shops">Auto repair</a></p>
   </div>
 
   <section class="types" aria-label="Browse by business type">
@@ -491,11 +535,12 @@ function daysCell(r){
   if (r.dom_basis === 'window' && r.dom_days_max != null) {
     const hi = r.dom_days_max;
     return '<span class="days ' + dayClass(d) + '" title="Listed between these many days ago, from complete crawls of the broker’s site">' +
-      (hi === d ? d : d + '–' + hi) + '</span>';
+      (hi === d ? (d === 0 ? 'Today' : d) : d + '–' + hi) + '</span>';
   }
   const title = r.dom_basis === 'in_db'
     ? 'In DealLedger at least this long (date the record was first written to our database)'
     : 'Observed by DealLedger at least this long (first dated sighting in our crawl)';
+  if (d === 0) return '<span class="days ' + dayClass(d) + '" title="' + title + '">Today</span>';
   return '<span class="days ' + dayClass(d) + '" title="' + title + '">' + rnd(d) + '+</span>';
 }
 function fmtD(s){
@@ -592,7 +637,7 @@ function paint(rows){
   $('qShow').innerHTML = q
     ? ' matching “' + esc(q) + '”' + (parseQuery(q).state && !$('fState').value ? ' in ' + esc(parseQuery(q).state) : '') + ' · <button type="button" id="qClear">clear</button>'
     : '';
-  if (q) $('qClear').addEventListener('click', () => { q = ''; lkInput.value = ''; refresh(); });
+  if (q) $('qClear').addEventListener('click', () => { q = ''; $('fKw').value = ''; refresh(); });
   // The same business is often posted on two sites of one brokerage;
   // show it once per page.
   const seen = new Set();
@@ -629,9 +674,55 @@ function paint(rows){
   });
 }
 
-function refresh(){ page = 1; cache.clear(); load(); }
+function refresh(){ page = 1; cache.clear(); syncUrl(); load(); }
+
+// Filters live in the address bar (?state=TX&sort=price-desc&q=roofing), so a
+// reload, the back button or a shared link keeps them, and the finder above
+// carries the sort into the browse pages.
+const SORT_KEYS = { 'days:1':'newest', 'price:-1':'price-desc', 'price:1':'price-asc', 'days:-1':'oldest', 'cut:-1':'reduced' };
+const sortKey = () => SORT_KEYS[sortField + ':' + sortDir] || 'newest';
+function syncUrl(){
+  try {
+    const u = new URL(location.href), sp = u.searchParams;
+    const set = (k, v) => v ? sp.set(k, v) : sp.delete(k);
+    set('state', $('fState').value); set('q', q); set('min', $('fMin').value.trim()); set('max', $('fMax').value.trim());
+    set('sort', sortKey() === 'newest' ? '' : sortKey());
+    history.replaceState(null, '', u.pathname + (sp.toString() ? '?' + sp : '') + u.hash);
+  } catch (e) {}
+}
+function readUrl(){
+  const sp = new URLSearchParams(location.search);
+  const st = (sp.get('state') || '').toUpperCase();
+  if (STATE_NAME[st]) { $('fState').value = st; $('fFindState').value = st; }
+  q = (sp.get('q') || '').slice(0, 80); $('fKw').value = q;
+  if (sp.get('min')) $('fMin').value = sp.get('min');
+  if (sp.get('max')) $('fMax').value = sp.get('max');
+  const want = Object.entries(SORT_KEYS).find(([, k]) => k === sp.get('sort'));
+  if (want) { const [f, d] = want[0].split(':'); sortField = f; sortDir = parseInt(d, 10); }
+}
 
 STATES.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; $('fState').appendChild(o); });
+STATES.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = STATE_NAME[s]; $('fFindState').appendChild(o); });
+
+/* ---- finder: type + state open the matching browse page ------------ */
+const stateSlug = c => c === 'DC' ? 'washington-dc' : STATE_NAME[c].toLowerCase().replace(/[^a-z]+/g, '-');
+$('findForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('fType').value, st = $('fFindState').value;
+  if (!t && !st) { $('ledger').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  const path = t && st ? '/businesses-for-sale/' + stateSlug(st) + '/' + t
+    : t ? '/businesses-for-sale/type/' + t
+    : '/businesses-for-sale/' + stateSlug(st);
+  const k = sortKey();
+  if (window.gtag) gtag('event', 'search', { search_term: [t, st].filter(Boolean).join(' ') });
+  location.href = path + (k === 'price-desc' || k === 'price-asc' ? '?sort=' + k : '');
+});
+$('fKw').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+$('fKw').addEventListener('change', e => {
+  q = e.target.value.replace(/\s+/g, ' ').trim().slice(0, 80);
+  if (q && window.gtag) gtag('event', 'search', { search_term: q });
+  refresh();
+});
 
 ['fState','fMin','fMax','fPriced'].forEach(id => $(id).addEventListener('change', refresh));
 document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => {
@@ -650,7 +741,7 @@ $('fSort').addEventListener('change', e => {
   refresh();
 });
 $('reset').addEventListener('click', () => {
-  q = ''; lkInput.value = ''; $('fPriced').checked = true; lkOut.innerHTML = ''; lkMsg.textContent = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
+  q = ''; lkInput.value = ''; $('fKw').value = ''; $('fPriced').checked = true; lkOut.innerHTML = ''; lkMsg.textContent = ''; $('fState').value = ''; $('fMin').value = ''; $('fMax').value = '';
   domFilter = 'all';
   document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dom === 'all')));
   sortField = 'days'; sortDir = 1;
@@ -719,10 +810,11 @@ lkForm.addEventListener('submit', async e => {
   const v = lkInput.value.trim();
   lkOut.innerHTML = '';
   lkMsg.className = 'lk-msg';
-  if (!v) { lkMsg.textContent = 'Paste a listing link or type a search.'; return; }
+  if (!v) { lkMsg.textContent = 'Paste a listing link.'; return; }
   const isUrl = /^(https?:\/\/|www\.)/i.test(v) || /^[a-z0-9-]+(\.[a-z0-9-]+)+\/\S/i.test(v);
   if (!isUrl) {
     q = v.replace(/\s+/g, ' ').slice(0, 80);
+    $('fKw').value = q; lkInput.value = '';
     if (window.gtag) gtag('event', 'search', { search_term: q });
     refresh();
     $('ledger').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -752,10 +844,12 @@ lkForm.addEventListener('submit', async e => {
 // The server sends page one already rendered (see pages/index.tsx);
 // reuse it instead of fetching it again.
 const INITIAL = window.__DL_INITIAL__;
+const DEFAULT_QUERY = query();
+readUrl();
 if (INITIAL && Array.isArray(INITIAL.rows)) {
   total = INITIAL.total;
-  cache.set(query() + '|0', { rows: INITIAL.rows, total });
-  paint(INITIAL.rows);
+  cache.set(DEFAULT_QUERY + '|0', { rows: INITIAL.rows, total });
+  if (query() === DEFAULT_QUERY) paint(INITIAL.rows); else load();
 } else {
   load();
   // No server data: at least fill in the headline count.

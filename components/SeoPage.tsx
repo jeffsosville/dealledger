@@ -1,7 +1,11 @@
 // components/SeoPage.tsx — shared layout for the /businesses-for-sale browse pages.
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
 import { goListing } from '../lib/clickout';
-import { Row, Stats, STATES, displayTitle, fmtAsOf, fmtMoney, fmtMultiple, fmtNum, pageUrl } from '../lib/seo';
+import {
+  ListOrder, Row, Stats, STATES, TYPES, comboPath, displayTitle, fmtAsOf, fmtMoney, fmtMultiple, fmtNum,
+  listingsFor, pageUrl, statePath, typePath,
+} from '../lib/seo';
 import type { TypeGuide } from '../lib/typeGuides';
 import AlertSignup from './AlertSignup';
 
@@ -28,7 +32,27 @@ type Props = {
   noindex?: boolean;        // thin pages: render for visitors, keep out of the index
   alert?: Omit<React.ComponentProps<typeof AlertSignup>, 'path'>; // new-listing email signup
   noCsv?: boolean;          // niche pages: no CSV route yet
+  finder?: { state?: string | null; vertical?: string | null }; // type + state picker, preset to this page
+  query?: { state?: string; vertical?: string };                // what rows holds, to fetch it sorted by price
 };
+
+const SORTS: { key: ListOrder; label: string }[] = [
+  { key: 'newest', label: 'Newest' },
+  { key: 'price-desc', label: 'Price: High to Low' },
+  { key: 'price-asc', label: 'Price: Low to High' },
+];
+const isSort = (v: string | null): v is ListOrder => SORTS.some((s) => s.key === v);
+const TYPE_OPTS = Object.keys(TYPES).sort((a, b) => TYPES[a].label.localeCompare(TYPES[b].label));
+const STATE_OPTS = Object.keys(STATES).sort((a, b) => STATES[a].localeCompare(STATES[b]));
+
+// Listings without an asking price go last either way.
+const byPrice = (rows: Row[], order: ListOrder) =>
+  [...rows].sort((a, b) => {
+    const x = a.price && a.price > 0 ? a.price : null;
+    const y = b.price && b.price > 0 ? b.price : null;
+    if (x == null || y == null) return x == null ? (y == null ? 0 : 1) : -1;
+    return order === 'price-asc' ? x - y : y - x;
+  });
 
 const place = (r: Row, showState: boolean) => {
   const city = (r.city || '').replace(/^\s*(location|city|of)[:\s]+/i, '').trim();
@@ -56,6 +80,54 @@ export default function SeoPage(p: Props) {
   const total = p.stats?.listings ?? shown;
   const asOf = fmtAsOf(p.stats?.refreshed_at);
   const csv = p.stats && !p.noCsv ? `${p.path}.csv` : null;
+  const partial = total > shown;
+
+  // Sort lives in ?sort= so it survives reloads and carries across the browse pages.
+  const [sort, setSort] = useState<ListOrder>('newest');
+  const [fetched, setFetched] = useState<{ key: ListOrder; rows: Row[] } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [fType, setFType] = useState(p.finder?.vertical || '');
+  const [fState, setFState] = useState(p.finder?.state || '');
+  useEffect(() => {
+    const v = new URLSearchParams(window.location.search).get('sort');
+    if (isSort(v)) setSort(v);
+  }, []);
+  useEffect(() => {
+    try {
+      const u = new URL(window.location.href);
+      if (sort === 'newest') u.searchParams.delete('sort');
+      else u.searchParams.set('sort', sort);
+      window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash);
+    } catch (e) { /* ignore */ }
+    // The page holds the most recent LIST_LIMIT rows; when there are more, ask for the
+    // highest- or lowest-priced ones instead of sorting a partial list.
+    if (sort === 'newest' || !partial || !p.query || fetched?.key === sort) return;
+    let live = true;
+    setBusy(true);
+    listingsFor(p.query, sort)
+      .then((r) => { if (live && r.length) setFetched({ key: sort, rows: r }); })
+      .catch(() => {})
+      .finally(() => { if (live) setBusy(false); });
+    return () => { live = false; };
+  }, [sort]); // eslint-disable-line react-hooks/exhaustive-deps
+  const exact = sort !== 'newest' && fetched?.key === sort;
+  const rows = sort === 'newest' ? p.rows : exact ? fetched!.rows : byPrice(p.rows, sort);
+  const withSort = (href: string) => (sort === 'newest' ? href : `${href}?sort=${sort}`);
+  const listTitle = !partial
+    ? `All ${fmtNum(total)} listings`
+    : sort === 'newest'
+      ? `${fmtNum(shown)} most recently listed of ${fmtNum(total)}`
+      : exact
+        ? `${fmtNum(rows.length)} ${sort === 'price-desc' ? 'highest' : 'lowest'}-priced of ${fmtNum(total)}`
+        : `${fmtNum(shown)} most recently listed of ${fmtNum(total)}, by price`;
+  const find = (e: React.FormEvent) => {
+    e.preventDefault();
+    const path = fType && fState ? comboPath(fState, fType)
+      : fType ? typePath(fType)
+      : fState ? statePath(fState)
+      : '/businesses-for-sale';
+    window.location.href = withSort(path);
+  };
 
   const ld = [
     {
@@ -186,6 +258,26 @@ export default function SeoPage(p: Props) {
             {asOf && <span className="asof"> Data as of {asOf}.</span>}
           </p>
 
+          {p.finder && (
+            <form className="finder" role="search" onSubmit={find}>
+              <label className="fld">
+                <span>Business type</span>
+                <select value={fType} onChange={(e) => setFType(e.target.value)}>
+                  <option value="">All business types</option>
+                  {TYPE_OPTS.map((v) => <option key={v} value={v}>{TYPES[v].label}</option>)}
+                </select>
+              </label>
+              <label className="fld">
+                <span>State</span>
+                <select value={fState} onChange={(e) => setFState(e.target.value)}>
+                  <option value="">All states</option>
+                  {STATE_OPTS.map((c) => <option key={c} value={c}>{STATES[c]}</option>)}
+                </select>
+              </label>
+              <button type="submit">Show listings</button>
+            </form>
+          )}
+
           {p.stats && (
             <div className="stats">
               <div className="stat">
@@ -211,15 +303,21 @@ export default function SeoPage(p: Props) {
             </div>
           )}
 
-          {ALERTS_ENABLED && p.alert && <AlertSignup empty={shown === 0} {...p.alert} path={p.path} />}
+          {ALERTS_ENABLED && p.alert && shown === 0 && <AlertSignup empty {...p.alert} path={p.path} />}
 
           {shown > 0 && (
             <section className="section">
               <div className="section-eyebrow">— LISTINGS</div>
-              <h2 className="section-title">
-                {total > shown ? `${fmtNum(shown)} most recently listed of ${fmtNum(total)}` : `All ${fmtNum(total)} listings`}
-              </h2>
-              <div className="table">
+              <div className="list-head">
+                <h2 className="section-title">{listTitle}</h2>
+                <label className="sortby">
+                  Sort by
+                  <select value={sort} onChange={(e) => setSort(e.target.value as ListOrder)}>
+                    {SORTS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+                  </select>
+                </label>
+              </div>
+              <div className={busy ? 'table busy' : 'table'}>
                 <div className="t-head">
                   <div>Business</div>
                   <div>Location</div>
@@ -227,7 +325,7 @@ export default function SeoPage(p: Props) {
                   <div className="num">Cash flow</div>
                   <div className="num">Listing age</div>
                 </div>
-                {p.rows.map((r) => (
+                {rows.map((r) => (
                   <div className="t-row" key={r.listing_number}>
                     <div className="t-title">
                       <a href={`/listing/${r.listing_number}`}>{displayTitle(r)}</a>
@@ -257,6 +355,9 @@ export default function SeoPage(p: Props) {
               )}
             </section>
           )}
+
+          {/* Below the first results so it doesn't sit between searching and the listings. */}
+          {ALERTS_ENABLED && p.alert && shown > 0 && <AlertSignup {...p.alert} path={p.path} />}
 
           {p.guide &&
             p.guide.sections.map((sec) => (
@@ -293,7 +394,7 @@ export default function SeoPage(p: Props) {
               <ul className="links">
                 {g.links.map((l) => (
                   <li key={l.href}>
-                    <a href={l.href}>{l.label}</a>
+                    <a href={withSort(l.href)}>{l.label}</a>
                     {l.count != null && <span className="count"> {fmtNum(l.count)}</span>}
                   </li>
                 ))}
@@ -355,7 +456,22 @@ export default function SeoPage(p: Props) {
         .section { margin-top: 56px; }
         .section-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 8px; }
         .section-title { font-weight: 500; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px 0; }
-        .table { border: 1px solid var(--rule); background: var(--bg-card); font-size: 14px; }
+        .table { border: 1px solid var(--rule); background: var(--bg-card); font-size: 14px; transition: opacity .15s; }
+        .table.busy { opacity: .5; }
+        .finder { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; margin: 0 0 28px 0; max-width: 760px; }
+        .fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .fld span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); }
+        .finder select, .sortby select {
+          font-family: var(--mono); font-size: 13px; padding: 10px 12px; border: 1px solid var(--ink); border-radius: 0;
+          background: #fff; color: var(--ink); width: 100%; min-width: 0;
+        }
+        .finder button {
+          font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+          padding: 11px 20px; background: var(--ink); color: var(--bg); border: 1px solid var(--ink); border-radius: 0; cursor: pointer; white-space: nowrap;
+        }
+        .list-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+        .sortby { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink-mute); margin-bottom: 16px; }
+        .sortby select { width: auto; padding: 7px 10px; font-size: 12px; border-color: var(--rule); }
         .t-head, .t-row {
           display: grid; grid-template-columns: 1fr 170px 90px 90px 140px;
           gap: 14px; padding: 10px 18px; border-bottom: 1px solid var(--rule); align-items: baseline;
@@ -390,6 +506,8 @@ export default function SeoPage(p: Props) {
           .links { columns: 2; }
         }
         @media (max-width: 720px) {
+          .finder { grid-template-columns: 1fr; }
+          .finder select, .sortby select { font-size: 16px; }
           .headline { font-size: 30px; }
           .content { padding: 28px 16px 64px 16px; }
           .masthead-inner { padding: 0 16px 18px 16px; }
