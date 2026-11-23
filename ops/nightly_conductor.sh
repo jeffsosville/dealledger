@@ -2,7 +2,8 @@
 # Runs up to MAX_JOBS (default 3) waiting Claude Code jobs unattended (headless), one after another.
 # Queue: claude/staging/queue.txt — one job file path per line, top = next. Done jobs move to queue_done.txt.
 # A job that ends without a summary stays in the queue; the runner moves on to the next one.
-# Safety: Supabase keys are blanked (no DB writes possible), git commit/push are blocked.
+# Safety: Supabase keys are blanked, git commit/push are blocked, and all connectors (MCP) are off:
+# unattended runs get local tools only (files, shell, proxy), so they cannot read live Supabase either.
 # Output: claude/staging/<today>/SUMMARY_<job>.md + patches + SQL, for Jeff to review and push.
 # Cron (Jeff's Mac): 30 8 * * * /bin/zsh -lc "$HOME/dealledger-repo/ops/nightly_conductor.sh"
 cd "$(dirname "$0")/.." || exit 1
@@ -12,6 +13,20 @@ Q=claude/staging/queue.txt; DONE=claude/staging/queue_done.txt
 touch "$Q" "$DONE"
 LOG="logs/conductor_$(date +%Y%m%d).log"
 TODAY=$(date +%Y-%m-%d); mkdir -p "claude/staging/$TODAY"
+
+# One conductor at a time: runs share the proxy and the queue. A lock whose process is gone is stale.
+LOCK=logs/conductor.lock
+if ! mkdir "$LOCK" 2>/dev/null; then
+  OLD=$(cat "$LOCK/pid" 2>/dev/null)
+  if [ -n "$OLD" ] && kill -0 "$OLD" 2>/dev/null; then
+    echo "$(date) conductor already running (pid $OLD); this start exits" >> "$LOG"; exit 0
+  fi
+  echo "$(date) clearing stale conductor lock (pid ${OLD:-none})" >> "$LOG"
+  rm -f "$LOCK/pid"; rmdir "$LOCK" 2>/dev/null
+  mkdir "$LOCK" 2>/dev/null || { echo "$(date) could not take conductor lock" >> "$LOG"; exit 1; }
+fi
+echo $$ > "$LOCK/pid"
+trap 'rm -f "$LOCK/pid"; rmdir "$LOCK" 2>/dev/null' EXIT
 
 set -a; source "$HOME/.dealledger.env"; set +a
 export SUPABASE_SERVICE_KEY= SUPABASE_SERVICE_ROLE_KEY= SUPABASE_KEY=
@@ -43,8 +58,9 @@ top of the summary under 'NEEDS JEFF' and stop that part."
 
   echo "=== conductor run $(date) job=$JOB ===" >> "$LOG"
   caffeinate -i "$CLAUDE" -p "$PROMPT" --model opus \
-    --permission-mode bypassPermissions \
+    --permission-mode bypassPermissions --strict-mcp-config \
     --disallowedTools "Bash(git commit:*)" "Bash(git push:*)" "Bash(git reset:*)" "Bash(git checkout:*)" \
+      "mcp__claude_ai_Supabase" RemoteTrigger PushNotification CronCreate CronDelete DesignSync WebSearch \
     >> "$LOG" 2>&1 < /dev/null
   RC=$?
   echo "=== exit $RC $(date) job=$JOB ===" >> "$LOG"
