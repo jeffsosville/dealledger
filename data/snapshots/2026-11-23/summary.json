@@ -1,0 +1,155 @@
+{
+  "started": "2026-11-23T10:25:46.569119+00:00",
+  "brokers_attempted": 731,
+  "brokers_success": 629,
+  "brokers_failed": 79,
+  "total_listings": 14060,
+  "listings_with_price": 12799,
+  "listings_with_cashflow": 5545,
+  "listings_with_state": 12294,
+  "detail_pages_fetched": 270,
+  "patterns_cached": 598,
+  "patterns_learned": 523,
+  "verticals": {
+    "restaurant": 3046,
+    "automotive": 1077,
+    "technology": 1608,
+    "other": 3211,
+    "manufacturing": 417,
+    "landscaping": 171,
+    "retail": 1615,
+    "healthcare": 1165,
+    "roofing": 63,
+    "hvac": 264,
+    "construction": 427,
+    "electrical": 131,
+    "delivery_route": 130,
+    "cleaning": 186,
+    "plumbing": 154,
+    "laundromat": 135,
+    "vending": 119,
+    "junk_removal": 2,
+    "pressure_washing": 9,
+    "pest_control": 19,
+    "dry_cleaner": 53,
+    "atm": 46,
+    "amusement": 7,
+    "pool_service": 5
+  },
+  "failure_types": {
+    "EMBED_BBS": 23,
+    "NO_PATTERN": 54,
+    "FETCH_ERROR": 7,
+    "HTTP_403": 13,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "Lonestar Business Advisor",
+      "domain": "lonestarba.com",
+      "event": "stale_cache",
+      "selector": "div.listing-card",
+      "rejected": "div.listing-card: 0 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    },
+    {
+      "broker": "matthew gorman",
+      "domain": "districtbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div._15gGoQK1",
+      "healed_to": "div._root_1w52m_1._minHeightFix_1w52m_5.container.builder-root"
+    }
+  ],
+  "site_pages_dropped": 28,
+  "slowest_brokers": [
+    [
+      2784,
+      "www.315gasguyz.com",
+      15
+    ],
+    [
+      2244,
+      "thatbusinessbroker.com",
+      3
+    ],
+    [
+      2192,
+      "springfieldstrategies.com",
+      4
+    ],
+    [
+      1555,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      1460,
+      "pinnaclepartnerservice.com",
+      7
+    ],
+    [
+      892,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      393,
+      "progressivepracticesales.com",
+      90
+    ],
+    [
+      332,
+      "alpinebusinessbrokers.com",
+      41
+    ],
+    [
+      307,
+      "promed-financial.com",
+      4
+    ],
+    [
+      303,
+      "thesmithpro.com",
+      12
+    ],
+    [
+      298,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      295,
+      "therockbridge.group",
+      7
+    ],
+    [
+      294,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      293,
+      "3cre.com",
+      3
+    ],
+    [
+      287,
+      "hawaiibusinesssales.com",
+      6
+    ]
+  ],
+  "seconds_total": 40036,
+  "completed": "2026-11-23T13:42:34.329589+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
