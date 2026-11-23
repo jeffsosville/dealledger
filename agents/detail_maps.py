@@ -191,9 +191,20 @@ def _by_label(soup, label):
     return None
 
 
+def _map_path(domain):
+    """The domain's map file, trying the www / bare spelling too (as V6's _fin_map does).
+    companysellers.com rows use the map www.companysellers.com.json."""
+    d = (domain or "").lower()
+    for cand in (d, d[4:] if d.startswith("www.") else "www." + d):
+        path = MAP_DIR / f"{cand}.json"
+        if path.exists():
+            return path
+    return MAP_DIR / f"{d}.json"
+
+
 def apply_detail_map(domain, html):
     """Return {field: value} for fields the map can find on this page. Used by V6 and backfill."""
-    path = MAP_DIR / f"{domain}.json"
+    path = _map_path(domain)
     if not path.exists():
         return {}
     m = json.loads(path.read_text())
@@ -297,7 +308,7 @@ def backfill(domain, limit, write, repair=False, fix_price=False):
     else:
         rows = q.or_("revenue.is.null,cash_flow.is.null,state.is.null").limit(limit).execute().data
     filled, price_diffs, to_clear = 0, [], []
-    mp = MAP_DIR / f"{domain}.json"
+    mp = _map_path(domain)
     nd = {f for f, sp in json.loads(mp.read_text())["fields"].items() if sp.get("not_disclosed")} if mp.exists() else set()
     for r in rows:
         try:
@@ -353,7 +364,7 @@ def backfill(domain, limit, write, repair=False, fix_price=False):
             for pid, url, old, new, _ in other:
                 print(f"  {pid}  stored {old}  page {new}  {url}")
         if fix_price and write and mis:
-            mp = MAP_DIR / f"{domain}.json"
+            mp = _map_path(domain)
             m = json.loads(mp.read_text())
             m["price_from_map"] = True
             mp.write_text(json.dumps(m, indent=2))

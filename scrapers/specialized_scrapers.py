@@ -2792,7 +2792,11 @@ _WP_PRICE_HIDDEN = re.compile(
     r"tbd|confidential|negotiable|inquire|upon\s+request|undisclosed|"
     r"not\s+disclosed)\b", re.I)
 _WP_DOWN_PAYMENT = re.compile(r"\$\s?[\d,.]+\s*[kKmM]?\s+down\b", re.I)
-_WP_LABELLED_MONEY = r"\s*[:\-]?\s*(\$\s?\d[\d,]*(?:\.\d+)?\s*(?:[kK]|[mM]{1,2}|million)?)"
+#
+# The k/M/MM/million suffix must END the word: "$443,000 Multiple Offers" used
+# to capture "$443,000 M" and scale it x1e6 (synergybb cash flow 4.43e11).
+_WP_LABELLED_MONEY = (r"\s*[:\-]?\s*(\$\s?\d[\d,]*(?:\.\d+)?"
+                      r"(?:\s*(?:[kK]|[mM]{1,2}|million)(?![A-Za-z]))?)")
 
 
 def wp_status(raw) -> Optional[tuple]:

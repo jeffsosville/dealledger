@@ -2012,10 +2012,39 @@ def canonical_url(url):
 # jennessey.com (2026-11-12, j3-nopattern): Wix cards print "Asking Price:
 # $700,000" beside sales figures, and the largest-figure rule stored $1.3M.
 # It had no rows yet (NO_PATTERN every night), so no price change is recorded.
-LABELLED_PRICE_DOMAINS = {"calhouncompanies.com", "jennessey.com"}
+# 2026-11-22 (w1-v6-a, revenue-as-price): brokers whose pages print a labelled
+# price ("Asking Price", "Business Price", "Listed Price", "Price:") beside a
+# larger Gross Sales/Revenue figure, or print no price at all (acctsales.com:
+# "Gross Revenue: $300,000" only). The largest-$ rule stored revenue as price.
+LABELLED_PRICE_DOMAINS = {"calhouncompanies.com", "jennessey.com",
+                          "acctsales.com", "armennazarian.com",
+                          "bluegrassbusinessadvisors.com", "business-team.com",
+                          "businessforsaleinrichmondva.com", "capitalbbw.com",
+                          "franchiseintermediary.com",
+                          # card: Revenue / SDE spans, then <p class=top>Business
+                          # Price</p><h3>$500,000</h3>; text reads "Business Price $500,000"
+                          "capitalbusinessbrokerage.biz",
+                          # publishes revenue and EBITDA only, never an asking
+                          # price (data/detail_maps/gottesman-company.com.json)
+                          "gottesman-company.com",
+                          # merged from w4-v6-b: labelled Price beside a larger
+                          # Revenue/Sales, or no price printed at all (ibexbeyond,
+                          # tinsley, edisonba "PRICE Undisclosed")
+                          "alpinebusinessbrokers.com", "atlasbrokers.net",
+                          "benchmarkbusinessgroup.com", "edisonba.com",
+                          "ibexbeyond.com", "tinsleymedicalpracticebrokers.com",
+                          "abausa.com", "biz-match.com", "salonspaconnection.com",
+                          # card prints "$5,500,00" (malformed), rejected by
+                          # labelled_asking_price; the detail page reads $5,500,000
+                          "archstonebrokers.com"}
 _LABELLED_PRICE_RE = re.compile(
-    r"(?<![a-z])(?:asking\s+price|list\s+price|price)\s*:?\s*\$\s*([\d,]+(?:\.\d+)?)",
+    r"(?<![a-z])(?:asking\s+price|list\s+price|price)\s*:?\s*\$\s*"
+    r"(\d[\d,]*(?:\.\d+)?)(?:\s?(million|mm|m|k)(?![A-Za-z0-9]))?",
     re.I)
+_PRICE_SUFFIX = {"k": 1_000, "m": 1_000_000, "mm": 1_000_000, "million": 1_000_000}
+# Well-formed digits: plain, or 1-3 digits then ,ddd groups. "$5,500,00" is a
+# typo (Archstone card): reject, do not guess a value.
+_WELL_FORMED_NUM = re.compile(r"^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$")
 
 
 # "Equipment Price $1,000,000" on a calhoun detail page is not the ask. Only
@@ -2031,10 +2060,15 @@ def labelled_asking_price(text, skip_qualified=False):
         prev = text[max(0, m.start() - 20):m.start()].split()
         if skip_qualified and prev and prev[-1].lower().strip(":|-") in _PRICE_QUALIFIERS:
             continue
+        num = m.group(1)
+        if not _WELL_FORMED_NUM.match(num):
+            continue                 # malformed grouping: never guess; a later label may be clean
         try:
-            v = float(m.group(1).replace(",", ""))
+            v = float(num.replace(",", ""))
         except ValueError:
             continue
+        if m.group(2):
+            v *= _PRICE_SUFFIX[m.group(2).lower()]
         if 1_000 <= v <= 100_000_000:
             return v
     return None
@@ -2137,6 +2171,14 @@ MAX_DETAIL_PAGES = 50
 
 # Incomplete certificate chain on the broker's server (curl error 60).
 INSECURE_TLS_DOMAINS = {"goldstarbbaz.com"}
+
+
+def _as_float(v):
+    """Stored numerics may arrive from PostgREST as str, int or float."""
+    try:
+        return float(v) if v not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
 
 
 def _bare(netloc):
@@ -2277,6 +2319,15 @@ BLOCKLIST_DOMAINS = {
     # just "nebba.com", since businessesforsale.nebba.com never carries a
     # "www." prefix to strip.
     "businessesforsale.nebba.com",
+    # VR office sites (2026-11-22, w1-v6-a): their real /listing/ rows are
+    # written by VRScraper (run_specialized.py "vr"), which never calls
+    # is_blocked(). broker_sources lists each one at its homepage (4_producing),
+    # so generic V6 crawled the franchise-marketing pages and wrote them as
+    # listings (first_seen 2026-10-06; 25-29 per domain, price = revenue =
+    # 250000). Blocking here stops only the V6 path.
+    "vrsavannah.com",
+    "vrsouthshore.com",
+    "vrvgpi.com",
 }
 
 
@@ -3340,8 +3391,12 @@ class ListingExtractor:
             labelled = labelled_asking_price(text)
             if labelled:
                 asking_price = labelled
-            elif asking_price and asking_price == revenue:
-                asking_price = None      # no Price field: undisclosed, not revenue
+            else:
+                # No Price field on the card: the largest $ is revenue, a
+                # build-out cost or a down payment (businessforsaleinrichmondva
+                # "$500,000+ build-out" on a $199,000 listing). enrich_from_detail
+                # fills the price from the page's own label if there is one.
+                asking_price = None
         asking_price, cash_flow, revenue = _sane_financials(
             asking_price, cash_flow, revenue)
         location     = LocationExtractor.extract(text)
@@ -3485,6 +3540,12 @@ class ListingExtractor:
                 listing["revenue"] = rv = None
         if rv is not None and price and rv < 0.05 * price:
             listing["revenue"] = None
+        # LABELLED_PRICE_DOMAINS only: a cash flow equal to the final asking
+        # price is the ask read under the cash-flow label (atlasbrokers.net,
+        # archstonebrokers.com). Not a full _sane_financials pass (inbargroup).
+        if (_bare(listing.get("broker_domain")) in LABELLED_PRICE_DOMAINS
+                and price and listing.get("cash_flow") == price):
+            listing["cash_flow"] = None
 
         # Location — the key reason we fetch detail pages
         if not listing.get("state"):
@@ -6052,9 +6113,27 @@ class DealLedgerScraper:
             fin_map = _fin_map(urlparse(url).netloc)
             reused = 0
             fresh = []
+            reread = []
+            labelled_dom = _bare(urlparse(url).netloc) in LABELLED_PRICE_DOMAINS
             for c in with_detail:
                 prev = stored.get(c["id"])
                 prev_desc = (prev or {}).get("description") or ""
+                # LABELLED_PRICE_DOMAINS broker whose card carries no labelled
+                # price and whose stored price equals its stored revenue: that
+                # is the old largest-$ rule's signature (revenue-as-price,
+                # 2026-11-22). Do not carry the price forward; read the detail
+                # page for the labelled value. A corrected row no longer has
+                # price == revenue, so it drops out by itself and keeps normal
+                # reuse. Every other no-label row keeps its stored price.
+                # Brokers that publish no price at all (acctsales, gottesman)
+                # never self-correct: the keep_filled trigger keeps the old
+                # NULL-overwritten value, so those rows match every night
+                # (capped by MAX_DETAIL_PAGES) until SQL clears them.
+                _sp, _sr = _as_float((prev or {}).get("asking_price")), _as_float((prev or {}).get("revenue"))
+                suspect_price = bool(labelled_dom and prev and not c.get("asking_price")
+                                     and _sp and _sp == _sr)
+                if suspect_price:
+                    c["_reread_url"] = c["_detail_url"]
                 if prev and (prev.get("state") or len(prev_desc) > len(c.get("description") or "")):
                     if len(prev_desc) > len(c.get("description") or ""):
                         c["description"] = prev_desc
@@ -6062,6 +6141,8 @@ class DealLedgerScraper:
                         c["title"] = prev["title"]
                         restatus_from_title(c)     # status was decided on the card title
                     for f in ("asking_price", "cash_flow", "revenue", "state"):
+                        if f == "asking_price" and suspect_price:
+                            continue
                         if not c.get(f) and prev.get(f):
                             c[f] = prev[f]
                     if fin_map:
@@ -6070,16 +6151,26 @@ class DealLedgerScraper:
                                 c[f] = prev[f]
                     if not c.get("city") and prev.get("city"):
                         c["city"] = prev["city"]
+                    if (labelled_dom and c.get("asking_price")
+                            and _as_float(c.get("cash_flow")) == _as_float(c.get("asking_price"))):
+                        c["cash_flow"] = None      # stored cash flow was the ask
                     c["url"] = c.pop("_detail_url")
                     c["vertical"] = ListingExtractor.classify_vertical(
                         (c.get("description") or "") + " " + (c.get("title") or ""),
                         c.get("title"))
                     reused += 1
+                    if suspect_price:
+                        reread.append(c)
                 else:
                     fresh.append(c)
             if reused:
                 print(f"   ♻️  {reused} known listings reuse stored details")
+            if reread:
+                print(f"   🔁 {len(reread)} known listings re-read for a labelled price")
             detail_candidates = fresh[:MAX_DETAIL_PAGES]
+            for c in reread[:max(0, MAX_DETAIL_PAGES - len(detail_candidates))]:
+                c["_detail_url"] = c.pop("_reread_url")
+                detail_candidates.append(c)
 
             # A list page that came back fine over plain HTTP doesn't need a
             # headless browser for its detail pages; fetch() would escalate
@@ -6131,6 +6222,7 @@ class DealLedgerScraper:
             # Strip remaining internal fields
             for l in unique_cards:
                 l.pop("_detail_url", None)
+                l.pop("_reread_url", None)
                 l.pop("_fin_from_map", None)
                 l.pop("_status_from_field", None)
 

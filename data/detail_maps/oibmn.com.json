@@ -37,7 +37,6 @@
   "status": "partial",
   "generated_at": "2026-11-09T14:22:09Z",
   "weak_fields": [
-    "asking_price",
     "state"
   ]
 }
