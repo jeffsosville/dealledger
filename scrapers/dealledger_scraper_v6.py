@@ -2036,7 +2036,18 @@ LABELLED_PRICE_DOMAINS = {"calhouncompanies.com", "jennessey.com",
                           "abausa.com", "biz-match.com", "salonspaconnection.com",
                           # card prints "$5,500,00" (malformed), rejected by
                           # labelled_asking_price; the detail page reads $5,500,000
-                          "archstonebrokers.com"}
+                          "archstonebrokers.com",
+                          # publish revenue only, never an asking price; the old
+                          # rule stored "$65M+ in revenue" / "Gross Revenue: $2.16M"
+                          "stoneridgepartners.com", "psbroker.com",
+                          # detail page labels the ask "Purchase Price"
+                          "ctc-associates.com"}
+# Brokers whose detail page uses "Purchase Price" for the whole-business ask.
+PURCHASE_PRICE_DOMAINS = {"ctc-associates.com"}
+# "Purchase Price $539,000 (1/4 partnership for sale)" prices a stake, not the
+# business. Stored as the ask it would give a false multiple, so it is skipped.
+_PARTIAL_STAKE_RE = re.compile(
+    r"^\s*\(?\s*(?:\d+\s*/\s*\d+|\d+(?:\.\d+)?\s*%)\s+(?:partnership|interest|stake|ownership)", re.I)
 _LABELLED_PRICE_RE = re.compile(
     r"(?<![a-z])(?:asking\s+price|list\s+price|price)\s*:?\s*\$\s*"
     r"(\d[\d,]*(?:\.\d+)?)(?:\s?(million|mm|m|k)(?![A-Za-z0-9]))?",
@@ -2054,11 +2065,14 @@ _PRICE_QUALIFIERS = {"equipment", "inventory", "estate", "building", "property",
                      "land", "lease", "ff&e", "furniture", "stock", "purchase"}
 
 
-def labelled_asking_price(text, skip_qualified=False):
+def labelled_asking_price(text, skip_qualified=False, allow_purchase=False):
     text = text or ""
+    qualifiers = _PRICE_QUALIFIERS - {"purchase"} if allow_purchase else _PRICE_QUALIFIERS
     for m in _LABELLED_PRICE_RE.finditer(text):
         prev = text[max(0, m.start() - 20):m.start()].split()
-        if skip_qualified and prev and prev[-1].lower().strip(":|-") in _PRICE_QUALIFIERS:
+        if skip_qualified and prev and prev[-1].lower().strip(":|-") in qualifiers:
+            continue
+        if allow_purchase and _PARTIAL_STAKE_RE.match(text[m.end():m.end() + 40]):
             continue
         num = m.group(1)
         if not _WELL_FORMED_NUM.match(num):
@@ -3517,7 +3531,9 @@ class ListingExtractor:
         if not labelled and not listing.get("asking_price"):
             if _bare(listing.get("broker_domain")) in LABELLED_PRICE_DOMAINS:
                 listing["asking_price"] = positive_or_none(
-                    labelled_asking_price(full_text, skip_qualified=True))
+                    labelled_asking_price(
+                        full_text, skip_qualified=True,
+                        allow_purchase=_bare(listing.get("broker_domain")) in PURCHASE_PRICE_DOMAINS))
             else:
                 listing["asking_price"] = positive_or_none(cls.extract_price(full_text))
         if not labelled and not listing.get("cash_flow"):
