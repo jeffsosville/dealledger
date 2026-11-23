@@ -16,6 +16,8 @@ TODAY=$(date +%Y-%m-%d); mkdir -p "claude/staging/$TODAY"
 set -a; source "$HOME/.dealledger.env"; set +a
 export SUPABASE_SERVICE_KEY= SUPABASE_SERVICE_ROLE_KEY= SUPABASE_KEY=
 unset ANTHROPIC_API_KEY
+# cron's PATH is minimal: look in the usual install spots too.
+export PATH="$HOME/.local/bin:$HOME/.claude/local:/opt/homebrew/bin:/usr/local/bin:$HOME/.npm-global/bin:$PATH"
 CLAUDE=$(command -v claude)
 [ -z "$CLAUDE" ] && { echo "$(date) claude not on PATH" >> "$LOG"; exit 1; }
 
