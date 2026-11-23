@@ -38,5 +38,6 @@
   "generated_at": "2026-11-09T14:22:09Z",
   "weak_fields": [
     "state"
-  ]
+  ],
+  "price_from_map": true
 }

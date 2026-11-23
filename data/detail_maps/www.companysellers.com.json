@@ -40,5 +40,6 @@
     "revenue",
     "cash_flow",
     "state"
-  ]
+  ],
+  "price_from_map": true
 }
