@@ -2,6 +2,7 @@
 
 Rule 1: **Supabase pg_cron is the only clock.** Every scheduled GitHub workflow is started by a pg_cron `gh-*` job via `dispatch_workflow()`. GitHub's own `schedule:` lines are backups only.
 Rule 2: **The Mac runs only `data/mac_only_brokers.txt`** (brokers that fail from GitHub), via `run_specialized_daily.sh` from the Mac crontab at 08:00 ET, with `pmset` waking the Mac at 07:55. `FULL=1 bash run_specialized_daily.sh` runs every specialized broker (catch-up only).
+Rule 2b: **No proxy to get around a block (Nov 23).** If a site turns away GitHub's IPs (0 listings, 401/403, a verification page), the broker goes on the Mac list and runs over the home connection. We don't route it through DataImpulse to dodge the block (tried and reverted, 6f9b7f1). Mac-only now: sunbelt, gasstationsusa, transworld, routesforsale.
 Rule 3: **Nothing leaves the Mac until it has run ok from GitHub two days in a row.** Check `crawl_run` for the domain before deleting a line from the list or a cron entry.
 Rule 4: **Every change is watched.** When a scraper patch lands, add its domains to `private.change_watch` (domain, change_ref, landed_at). Health alerts go CRITICAL if a watched domain has no ok crawl 30 h after landing.
 
