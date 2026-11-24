@@ -1,0 +1,148 @@
+{
+  "started": "2026-11-24T10:25:51.616443+00:00",
+  "brokers_attempted": 776,
+  "brokers_success": 636,
+  "brokers_failed": 127,
+  "total_listings": 14027,
+  "listings_with_price": 12478,
+  "listings_with_cashflow": 5572,
+  "listings_with_state": 12216,
+  "detail_pages_fetched": 622,
+  "patterns_cached": 606,
+  "patterns_learned": 533,
+  "verticals": {
+    "landscaping": 173,
+    "manufacturing": 409,
+    "construction": 417,
+    "restaurant": 3052,
+    "automotive": 1070,
+    "amusement": 7,
+    "technology": 1665,
+    "healthcare": 1186,
+    "other": 3122,
+    "retail": 1620,
+    "plumbing": 156,
+    "roofing": 60,
+    "cleaning": 187,
+    "pool_service": 5,
+    "hvac": 255,
+    "laundromat": 134,
+    "electrical": 130,
+    "vending": 117,
+    "pest_control": 18,
+    "delivery_route": 134,
+    "dry_cleaner": 54,
+    "atm": 46,
+    "pressure_washing": 8,
+    "junk_removal": 2
+  },
+  "failure_types": {
+    "EMBED_BBS": 13,
+    "FETCH_ERROR": 13,
+    "HTTP_403": 17,
+    "NO_PATTERN": 88,
+    "TITLE_REPETITION_REJECT": 2
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "Lonestar Business Advisor",
+      "domain": "lonestarba.com",
+      "event": "stale_cache",
+      "selector": "div.listing-card",
+      "rejected": "div.listing-card: 0 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "brian naab",
+      "domain": "www.naabconsulting.com",
+      "event": "stale_cache",
+      "selector": "article[class*=\"fusion-portfolio-post\"]"
+    }
+  ],
+  "site_pages_dropped": 54,
+  "slowest_brokers": [
+    [
+      2310,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      2294,
+      "bwbrokerage.com",
+      16
+    ],
+    [
+      894,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      623,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      620,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      513,
+      "thatbusinessbroker.com",
+      3
+    ],
+    [
+      491,
+      "dental360advisors.com",
+      5
+    ],
+    [
+      460,
+      "vistapoolroutes.com",
+      4
+    ],
+    [
+      460,
+      "naz-business.com",
+      25
+    ],
+    [
+      460,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      459,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      326,
+      "alpinebusinessbrokers.com",
+      41
+    ],
+    [
+      305,
+      "promed-financial.com",
+      4
+    ],
+    [
+      305,
+      "progressivepracticesales.com",
+      90
+    ],
+    [
+      294,
+      "therockbridge.group",
+      7
+    ]
+  ],
+  "seconds_total": 40249,
+  "completed": "2026-11-24T13:42:25.919308+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
