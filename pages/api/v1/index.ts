@@ -7,7 +7,8 @@ export default route('index', async () => ({
     name: 'DealLedger API',
     description:
       'Read-only, public-domain (CC0) data on US businesses for sale, observed directly on broker websites: listings, ' +
-      'observed listing age with evidence, reviewed asking-price changes and relist signals. No key needed.',
+      'observed listing age with evidence, reviewed asking-price changes and relist signals. ' +
+      'Free API key required beyond 50 calls a day: POST /api/v1/keys or sign up at /developers#keys. Send it as the X-API-Key header.',
     docs: `${SITE}/developers`,
     openapi: `${SITE}/openapi.json`,
     mcp: `${SITE}/api/mcp`,
@@ -16,6 +17,7 @@ export default route('index', async () => ({
       'GET /api/v1/listings/{listing_number}': 'Full history of one listing: price, observed age with evidence, price changes, relist signal.',
       'GET /api/v1/price-changes': 'Reviewed asking-price changes. Filters: state, type, direction (down|up|any), min_pct, since. limit (≤100), offset. format=csv.',
       'GET /api/v1/reference': 'Valid state codes and business types.',
+      'POST /api/v1/keys': 'Get a free API key by email. JSON body: email (required), name, use_case.',
     },
     rules: [
       'Observed age is a minimum from DealLedger crawls, not verified days on market.',
