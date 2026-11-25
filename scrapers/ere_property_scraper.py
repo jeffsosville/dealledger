@@ -233,6 +233,93 @@ def price_conflict(header_price: Optional[float], excerpt: Optional[str]) -> Opt
             f"header kept as asking_price")
 
 
+# --- reputedbrokerage.com scope filter (Jeff, 2026-11-23) --------------------
+# Titles of land-only / multifamily / strip-center / building-only posts. Only
+# applied to reputedbrokerage.com (SCOPE_DOMAINS): the same theme on another
+# broker would need its own decision. A gas station / motel / liquor store
+# sold WITH a retail plaza, strip center or house is an operating business with
+# property and stays in (SCOPE_KEEP_RE).
+SCOPE_DOMAINS = frozenset({"reputedbrokerage.com"})
+SCOPE_TITLE_RE = re.compile(
+    r"^\s*land\b|land (?:for|approved)|gas station land|pre-approved land|multi.?family|"
+    r"strip cent(?:er|re)|free standing building", re.I)
+SCOPE_KEEP_RE = re.compile(
+    r"\b(?:gas[\s-]?stations?|c[\s-]?stores?|convenience[\s-]?stores?|liquor[\s-]?stores?|"
+    r"motels?|hotels?|truck[\s-]?stops?|car[\s-]?wash(?:es)?|restaurants?)\b"
+    r".{0,40}?(?:\+|\bwith\b|\band\b|&|\bplus\b)\s*(?:a\s+|an\s+|the\s+)?"
+    r"(?:retail[\s-]?plaza|strip[\s-]?cent(?:er|re)|house|home|residence)\b", re.I)
+
+
+def scope_reason(title: Optional[str], domain: Optional[str]) -> Optional[str]:
+    """Why a for-sale card is out of scope for this broker, or None to keep it."""
+    d = (domain or "").lower()
+    d = d[4:] if d.startswith("www.") else d
+    if d not in SCOPE_DOMAINS or not title:
+        return None
+    m = SCOPE_TITLE_RE.search(title)
+    if not m or SCOPE_KEEP_RE.search(title):
+        return None
+    return f"title matches scope filter ('{m.group(0).strip()}')"
+
+
+# --- state from the card's own words (title / excerpt) ----------------------
+_STATE_CODE_TOKEN = re.compile(r"(?:,|\s)\s*(TX|Tx|OK|LA|AR|NM|KS|MO|MS|AL|TN|FL|GA|CO)\b(?!\w)")
+_STATE_NAME_TOKEN = re.compile(r"\b(texas|oklahoma|louisiana|arkansas|new mexico|kansas|missouri|colorado)\b", re.I)
+# towns the broker writes without a state (TX / OK only; ambiguous names left out)
+_TOWN_STATE = {
+    "tulsa": "OK", "oklahoma city": "OK", "atoka": "OK", "durant": "OK", "mcalester": "OK",
+    "norman": "OK", "edmond": "OK", "lawton": "OK", "muskogee": "OK", "ardmore": "OK",
+    "jenks": "OK", "broken arrow": "OK", "sapulpa": "OK", "claremore": "OK", "enid": "OK",
+    "dallas": "TX", "houston": "TX", "austin": "TX", "san antonio": "TX", "fort worth": "TX",
+    "tyler": "TX", "orange": "TX", "beaumont": "TX", "waco": "TX", "amarillo": "TX",
+    "lubbock": "TX", "el paso": "TX", "corpus christi": "TX", "laredo": "TX", "conroe": "TX",
+    "katy": "TX", "plano": "TX", "arlington": "TX", "irving": "TX", "garland": "TX",
+    "mesquite": "TX", "palestine": "TX", "longview": "TX", "texarkana": "TX", "paris": "TX",
+    "sherman": "TX", "denison": "TX", "nacogdoches": "TX", "lufkin": "TX", "huntsville": "TX",
+    "denver": "CO", "brownsville": "TX", "mcallen": "TX", "midland": "TX", "odessa": "TX", "abilene": "TX",
+}
+
+
+def infer_state(title: Optional[str], excerpt: Optional[str] = None,
+                url: Optional[str] = None) -> Tuple[Optional[str], Optional[str]]:
+    """(state, how) read from the title (then the excerpt); (None, None) when
+    the words say nothing. Used only when the property-state archive gave none."""
+    slug = re.sub(r"[-_]+", " ", (url or "").rstrip("/").rsplit("/", 1)[-1])
+    for src_name, text in (("title", title or ""), ("excerpt", excerpt or ""), ("url slug", slug)):
+        if not text:
+            continue
+        m = _STATE_CODE_TOKEN.search(text) if src_name != "url slug" else None
+        if m and m.group(1) == "Tx":
+            return "TX", f"{src_name} code 'Tx'"
+        if m:
+            return m.group(1), f"{src_name} code '{m.group(1)}'"
+        n = _STATE_NAME_TOKEN.search(text)
+        if n:
+            return US_STATES[n.group(1).lower().replace(" ", "-")], f"{src_name} name '{n.group(1)}'"
+        low = text.lower()
+        for town in sorted(_TOWN_STATE, key=len, reverse=True):
+            if re.search(r"(?<![a-z])" + re.escape(town) + r"(?![a-z])", low):
+                return _TOWN_STATE[town], f"{src_name} town '{town}'"
+    return None, None
+
+
+# --- header prices missing their K / M ("$599" for $599K) --------------------
+IMPLAUSIBLE_PRICE = 10_000      # an operating business is not for sale at < $10,000
+
+
+def recover_suffixed_price(header: float, detail_text: Optional[str]) -> Optional[float]:
+    """The header printed '$599' where the page's own description says 'Asking
+    Price: $599K'. Accept the description only when it is exactly the header x1,000
+    or x1,000,000 (the dropped K / M), never an unrelated figure."""
+    d, _said = asking_in_text(detail_text)
+    if not header or not d:
+        return None
+    for mult in (1_000, 1_000_000):
+        if abs(d - header * mult) < 0.5:
+            return d
+    return None
+
+
 def parse_ere_price(raw: Optional[str]) -> Tuple[Optional[float], Optional[str]]:
     """'$2,990,000' -> (2990000.0, None)
     '$6,500,000 / Net Income of Casino: $35 k' -> (6500000.0, 'Net Income of Casino: $35 k')
@@ -459,12 +546,23 @@ class EREPropertyScraper:
         label_sold: Counter = Counter()
         conflicts: List[Dict] = []
         cre_for_sale = 0
+        dropped_scope: List[Dict] = []
+        state_inferred: List[Dict] = []
+        price_fixed: List[Dict] = []
+        price_flagged: List[Dict] = []
         label_dropped_for_sale = 0
         cre_overrides: List[Dict] = []
         label_moved: Counter = Counter()
         unknown_label: Counter = Counter()
         for k in sorted(active | retire, key=str):
             c = cards_by_key[k]
+            if k in active:
+                why = scope_reason(c.get("title"), self.domain)
+                if why:
+                    dropped_scope.append({"url": c.get("url"), "title": c.get("title"), "reason": why})
+                    if verbose:
+                        print(f"[ERE:{self.domain}] SCOPE (not emitted): '{c.get('title')}' {c.get('url')}: {why}")
+                    continue
             types = list(c.get("types") or [])
             if type_of.get(k) and type_of[k] not in types:
                 types.append(type_of[k])
@@ -507,6 +605,26 @@ class EREPropertyScraper:
                                        business_type=type_of.get(k))
             if not rec:
                 continue
+            if not rec.get("state"):
+                st_guess, how = infer_state(c.get("title"), c.get("excerpt"), c.get("url"))
+                if st_guess:
+                    rec["state"] = st_guess
+                    rec["location"] = ", ".join(x for x in (rec.get("city"), st_guess) if x)
+                    state_inferred.append({"url": rec["listing_url"], "title": c.get("title"),
+                                           "state": st_guess, "how": how})
+            if rec.get("price") and rec["price"] < IMPLAUSIBLE_PRICE:
+                fixed = self._price_from_detail(rec["listing_url"], rec["price"])
+                if fixed:
+                    price_fixed.append({"url": rec["listing_url"], "header": rec["price"], "price": fixed})
+                    rec["price"], rec["price_text"] = fixed, f"${fixed:,.0f}"
+                    rec["price_not_disclosed"] = False
+                else:
+                    price_flagged.append({"url": rec["listing_url"], "title": c.get("title"),
+                                          "header": rec["price"]})
+                    rec["price_note"] = (f"header price ${rec['price']:,.0f} is not a plausible asking price "
+                                         f"and the detail page does not confirm a K/M; stored as no price")
+                    rec["price"], rec["price_not_disclosed"] = None, True
+                    print(f"[ERE:{self.domain}] PRICE_FLAG {rec['listing_url']}: {rec['price_note']}")
             if status_text:
                 rec["broker_status_text"] = status_text      # verbatim ("Sold", "Under Contract" ...)
                 rec["status_source"] = "card_label"
@@ -533,6 +651,10 @@ class EREPropertyScraper:
             "dropped_cre_by_type": dict(dropped_cre),
             "cre_overrides": cre_overrides,
             "dropped_label": dict(dropped_label),
+            "dropped_scope": dropped_scope,
+            "state_inferred": state_inferred,
+            "price_fixed_from_detail": price_fixed,
+            "price_flagged": price_flagged,
             "price_conflicts": conflicts,
             "with_price": sum(1 for l in listings if l.get("price")),
             "price_not_disclosed": sum(1 for l in listings if l.get("price_not_disclosed")),
@@ -553,17 +675,35 @@ class EREPropertyScraper:
             if exp is not None and got != exp:
                 print(f"[ERE:{self.domain}] WARNING {t}: site says {exp}, collected {got}")
         self.stats["dropped_cre_for_sale"] = cre_for_sale
+        self.stats["dropped_scope_n"] = len(dropped_scope)
         self.stats["dropped_label_for_sale"] = label_dropped_for_sale
         # one line that must add up: for-sale = active + sold + CRE + label-dropped
         print(f"[ERE:{self.domain}] for-sale {len(active)} = active {self.stats['emitted_active']}"
               f" + moved by label {sum(label_moved.values())} {dict(label_moved)}"
-              f" + CRE not emitted {cre_for_sale} + label-dropped {label_dropped_for_sale};"
+              f" + CRE not emitted {cre_for_sale} + scope-filtered {len(dropped_scope)}"
+              f" + label-dropped {label_dropped_for_sale};"
               f" CRE overrides emitted {len(cre_overrides)};"
               f" CRE by type {dict(dropped_cre)}; price conflicts {len(conflicts)};"
               f" vocabulary {self.stats['status_vocabulary']}")
         if verbose:
             print(f"[ERE:{self.domain}] {self.stats}")
         return listings
+
+    def _price_from_detail(self, url: str, header: float) -> Optional[float]:
+        """Fetch the property's own page (only for an implausible header price)
+        and look for 'Asking Price: $<header>K/M' in its description."""
+        try:
+            r = self._get(url)
+            if r.status_code != 200:
+                return None
+            soup = BeautifulSoup(r.text, "html.parser")
+            el = soup.select_one(".ere__single-property-description, .property-description")
+            if el is None:
+                el = next((e for e in soup.find_all(class_=re.compile("description"))), None)
+            text = re.sub(r"\s+", " ", el.get_text(" ")) if el is not None else None
+            return recover_suffixed_price(header, text)
+        except Exception:
+            return None
 
     @staticmethod
     def card_to_listing(card: Dict, broker_account: str, status: str = "active",

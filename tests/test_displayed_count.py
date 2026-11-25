@@ -248,3 +248,91 @@ def test_sectioned_pending_and_loi_variants_add():
 def test_all_listings_total_not_double_counted():
     body = "<ul><li>All Listings (88)</li><li>Under Contract (16)</li></ul>"
     assert parse_stated_count(page(body))["count"] == 88
+
+
+# --- count readings, 2026-11-21 ---------------------------------------------
+@pytest.mark.parametrize("text,want", [
+    ("Showing 12 of 221 properties — page 1 of 19", 221),   # eastcoastbusinessbrokers
+    ("Showing 20 of 355 businesses Sort by", 355),          # synergybb
+    ("Showing 12 of 31 listings", 31),                      # sunbeltofflorida
+    ("Showing 8 of 8 listings", 8),                         # duranadvisors
+    ("Displaying 10 of 64 results", 64),
+])
+def test_showing_n_of_total_takes_total(text, want):
+    assert parse_stated_count(page(f"<p>{text}</p>"))["count"] == want
+
+
+@pytest.mark.parametrize("text", [
+    "Page 1 Page 2 Page 3 … Page 10 Listings Search",       # dellingco
+    "international buyers pursuing E-2 opportunities",      # lobobusinesssales
+    "HUGE Revenue(2 Businesses)3 units of Commercial",      # loyaltybusinessbrokers
+])
+def test_non_counts_are_rejected(text):
+    assert parse_stated_count(page(f"<p>{text}</p>")) is None
+
+
+@pytest.mark.parametrize("text,want", [                     # must still pass (principle 8)
+    ("Your query has returned 2 listings.", 2),             # colepartners
+    ("Florida (45 listings)", 45),
+    ("Showing 62 items", 62),
+    ("Showing 1-12 of 85", 85),
+    ("Showing 1 to 12 of 85 results", 85),
+    ("48 businesses for sale", 48),
+    ("Found 1085 Business Listings", 1085),
+])
+def test_real_counts_still_read(text, want):
+    assert parse_stated_count(page(f"<p>{text}</p>"))["count"] == want
+
+
+# ── single unpaginated page whose stated total overcounts (w1-count-reader, 2026-11-23) ──
+def _cards(n):
+    return "".join(f"<div class='card'><a href='/deal/{i}'>Biz {i}</a> Asking Price: ${i}00,000</div>"
+                   for i in range(1, n + 1))
+
+
+def _tracker(html, seen):
+    t = DisplayedCountTracker()
+    t.add_page(html)
+    return t.result(seen=seen)
+
+
+def test_overstated_single_page_records_cards_as_counted():
+    # zoombusinessbrokers.com: "returned 54 listings", 43 cards, no pager
+    r = _tracker(page("<p>Your query has returned 54 listings.</p>" + _cards(43)), 43)
+    assert r["count"] == 43 and r["source"] == "counted" and "54" in r["note"]
+
+
+def test_overstated_single_page_keeps_stated_with_pager():
+    pager = "<a rel='next' href='/x?page=2'>Next</a>"
+    r = _tracker(page("<p>Your query has returned 54 listings.</p>" + _cards(43) + pager), 43)
+    assert r["count"] == 54 and r["source"] == "stated"
+
+
+def test_page_size_phrase_is_never_collapsed_to_cards():
+    # "Showing 12 of 221": 12 cards is a page size; truncation must stay visible
+    r = _tracker(page("<p>Showing 12 of 221 properties</p>" + _cards(12)), 12)
+    assert r["count"] == 221 and r["source"] == "stated"
+
+
+def test_overstated_single_page_needs_most_of_the_stated_total():
+    r = _tracker(page("<p>Your query has returned 200 listings.</p>" + _cards(20)), 20)
+    assert r["count"] == 200
+
+
+def test_overstated_single_page_needs_seen_to_match_cards():
+    r = _tracker(page("<p>Your query has returned 54 listings.</p>" + _cards(43)), 10)
+    assert r["count"] == 54
+
+
+def test_stated_below_cards_unchanged():
+    # colepartners.net: "2 listings" beside 3 filter-widget labels, stays stated
+    r = _tracker(page("<p>Your query has returned 2 listings.</p>" + _cards(3)), 5)
+    assert r["count"] == 2 and r["source"] == "stated"
+
+
+def test_has_pager_ignores_css_js_and_head_shortlink():
+    from displayed_count import has_pager
+    assert not has_pager("<head><link rel='shortlink' href='/?page=2'></head>"
+                         "<style>nav.pagination{}</style><script>var a='load more';</script><body>x</body>")
+    assert has_pager("<body><ul class='pagination'><li>1</li></ul></body>")
+    assert has_pager("<body><a href='/l?paged=3'>3</a></body>")

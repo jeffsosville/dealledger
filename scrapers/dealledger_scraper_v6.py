@@ -106,6 +106,29 @@ from displayed_count import DisplayedCountTracker, verdict_label
 # Single-vertical brokers (car wash only / gas station only): one rule shared
 # with run_specialized.upsert_listings (principle 15). T1 2026-11-20, proposed.
 from broker_vertical import broker_default_vertical
+# W2 count-readings helpers (hscbrokers URL-path status, negocios / arthurberry handlers).
+try:
+    import cr_w2_wp_status_identity as _crw2
+except ImportError:
+    _crw2 = None
+# Per-broker card readers + the shared error-page guard (count readings,
+# 2026-11-23, w4-card-fields). Optional: without it V6 behaves as before.
+try:
+    import cr_card_fields
+except ImportError:
+    cr_card_fields = None
+# Card fields read by label (job-review 2026-11-24, rv-cards-a): b3brokers,
+# coastalbizbrokers, biz-match, cbb-tristate. Optional like cr_card_fields.
+try:
+    import rv_cards_a
+except ImportError:
+    rv_cards_a = None
+# rv-cards-b (2026-11-24): routeadvisors.com, bizbrokeragehub.com,
+# number1businessbroker.com card readers. Optional, domain-scoped.
+try:
+    import rv_cards_b as _rv_b
+except ImportError:
+    _rv_b = None
 try:
     from classify_verticals import rule_match as _cv_rule_match
 except ImportError:                                   # run as package
@@ -1124,6 +1147,19 @@ def title_status(title, domain=None):
     return max(hits, key=lambda h: {"active": 0, _LS_DROP: 2, "sold": 3}[h[0]])
 
 
+# Per-domain extra badge elements (rv-tbx-label, 2026-11-24). tbxllc.com marks
+# 6 of its 29 index cards <div class="contractButton">UNDER CONTRACT</div>;
+# "contractButton" matches none of the generic badge/ribbon/status/label/flag/
+# overlay class fragments, so the label was never read (28-29 cards active,
+# no label). Opt-in per domain: a generic "[class*='contract']" selector would
+# change every other broker, and none of them has been measured.
+BADGE_EXTRA_SELECTORS = {"tbxllc.com": "[class*='contractButton']"}
+
+
+def _extra_badge_selector(domain):
+    return BADGE_EXTRA_SELECTORS.get((domain or "").lower().removeprefix("www."))
+
+
 def badge_status(element, domain=None):
     """looks_sold()'s detection, returning (status, verbatim badge text) via
     listing_status instead of a bool; None when no badge/class/img marker."""
@@ -1135,8 +1171,12 @@ def badge_status(element, domain=None):
             m = _SOLD_CLASS_RE.search(c)
             if m:
                 hits.append(_ls_lookup(m.group(1), domain) or ("sold", c))
-    for el in element.select("[class*='badge'], [class*='ribbon'], [class*='status'], "
-                             "[class*='label'], [class*='flag'], [class*='overlay']"):
+    _sel = ("[class*='badge'], [class*='ribbon'], [class*='status'], "
+            "[class*='label'], [class*='flag'], [class*='overlay']")
+    _extra = _extra_badge_selector(domain)
+    if _extra:
+        _sel += ", " + _extra
+    for el in element.select(_sel):
         txt = el.get_text(" ", strip=True)
         m = _SOLD_TEXT_RE.search(txt)
         if m:
@@ -1706,19 +1746,67 @@ def _title_matches_link(title, href):
 ID_KEY_RULES = {
     "restaurantrealty.com": (re.compile(r"[?&]listing=(\d+)"),
                              "https://restaurantrealty.com/listing/?listing={}"),
+    # DealRelations widget links carry ?back=..dl_page=N..json_url=..: the path is the identity
+    "sunbeltofflorida.com": (re.compile(r"/deal-listing/([^/?#]+)"),
+                             "https://sunbeltofflorida.com/deal-listing/{}/"),
+    # rv-cards-b: same BBCRM backend as restaurantrealty.com. The link is
+    # /listing/?listing=<number>-<title>; a retitle made a new url and a new id.
+    "number1businessbroker.com": (re.compile(r"[?&]listing=(\d+)"),
+                                  "https://number1businessbroker.com/listing/?listing={}"),
+    # rv-cards-b: the stored link carried ?back=..dl_page=N.. (position on the
+    # grid). The key is the page's slug, in the exact form the ids minted on
+    # 2026-09-20..23 were hashed from (12 of the 14 held rows reproduce), so
+    # the held rows are the ones the next crawl updates.
+    "bizbrokeragehub.com": (re.compile(r"/deal-listing/([^/?#]+)"),
+                            "https://bizbrokeragehub.com/deal-listing/{0}/?back=https%3A%2F%2Fbizbrokeragehub.com%2Flistings%2F&source&listing_button_text=Inquire%20About%20This%20Listing&listing_button_color&css_source=2105&json_url=https://bizbrokeragehub.dealrelations.com/listings/{0}.json?item_id=5434"),
 }
 
 
+# Cache-buster query params (rv-v6-misc, 2026-11-24). pacificrb.com links each
+# card to a GoDaddy-hosted PDF ".../downloads/<file-id>/<name>.pdf?ver=<epoch-ms>";
+# ver changes whenever the site republishes, so every crawl minted a new id
+# (47 active rows for 6 listings). A param in this set whose value is a long
+# number (>= 6 digits) is a timestamp, not identity. Identity-only: the stored
+# url keeps the link the site publishes.
+CACHE_BUSTER_PARAMS = frozenset({"ver", "v", "t", "ts", "cb", "_"})
+_LONG_NUM = re.compile(r"\d{6,}")
+_WSIMG_FILE = re.compile(r"^/blobby/go/[^/]+/downloads/([^/]+)/[^/]+$")
+
+
+def strip_cache_busters(url):
+    """(url, changed): url without long-number cache-buster params. A URL with
+    none of them comes back untouched (same string, so its id never moves)."""
+    if not url or "?" not in url:
+        return url, False
+    from urllib.parse import parse_qsl, urlencode
+    pu = urlparse(url)
+    pairs = parse_qsl(pu.query, keep_blank_values=True)
+    keep = [(k, v) for k, v in pairs
+            if not (k in CACHE_BUSTER_PARAMS and _LONG_NUM.fullmatch(v))]
+    if len(keep) == len(pairs):
+        return url, False
+    return urlunparse(pu._replace(query=urlencode(keep))), True
+
+
 def listing_id_key(url):
-    """url reduced to its stable identity form for ID_KEY_RULES domains."""
+    """url reduced to its stable identity form (ID_KEY_RULES domains, then
+    cache-buster stripping; img1.wsimg.com downloads -> the <file-id> segment)."""
     if not url:
         return url
     host = urlparse(url).netloc.lower()
     rule = ID_KEY_RULES.get(host[4:] if host.startswith("www.") else host)
-    if not rule:
+    if rule:
+        m = rule[0].search(url)
+        return rule[1].format(m.group(1)) if m else url
+    clean, changed = strip_cache_busters(url)
+    if not changed:
         return url
-    m = rule[0].search(url)
-    return rule[1].format(m.group(1)) if m else url
+    pu = urlparse(clean)
+    if pu.netloc.lower().endswith("wsimg.com"):
+        m = _WSIMG_FILE.match(pu.path)
+        if m:
+            return f"wsimg-file:{m.group(1)}"
+    return clean
 
 
 def stable_listing_id(title: str, url: str, base_url: str, broker_domain: str) -> str:
@@ -3171,12 +3259,31 @@ _ADDR_TITLE  = re.compile(r"^[^,]{2,40},\s*[A-Za-z]{2}\s*[-\u2013]\s*\d+\s+\w", 
 _BDBA_TITLE  = re.compile(r"\b\d+\s*(?:bd|br|beds?|bedrooms?)\b.*\b(?:ba|baths?)\b", re.I)
 
 
+_BUSINESS_TITLE = re.compile(
+    r"\b(?:restaurants?|caf[e\u00e9]s?|diner|bistro|pizzeria|bakery|"
+    r"stores?|markets?|hotels?|motels?|inn|b&b|campground|"
+    r"gas\s+station|convenience|liquor|laundromat|car\s+wash)\b", re.I)
+
+
 def looks_residential(title: str, text: str) -> bool:
     """True when a card is a residential property listing, not a business."""
     t = title or ""
     body = text or ""
-    return bool(_ADDR_TITLE.search(t) or _BDBA_TITLE.search(t)
-                or _MLS_RE.search(body) or _BEDBATH_RE.search(body))
+    if _ADDR_TITLE.search(t) or _BDBA_TITLE.search(t) or _MLS_RE.search(body):
+        return True
+    if _BEDBATH_RE.search(body):
+        # rv-v6-misc (2026-11-24): an operating business sold with a house or
+        # apartment ("Free Standing Restaurant w/ 3 Bedroom home", tbxllc.com,
+        # $1.95M) is in scope (Nov 11 rule). The bedroom count alone is not
+        # enough to call a card residential when its TITLE names a business.
+        # MLS numbers, "N bd ... ba" titles and street-address titles above
+        # still reject outright.
+        # A business word after "near / next to / across from ..." describes the
+        # neighbourhood of a house, not what is for sale.
+        head = re.split(r"\b(?:near|next\s+to|across|steps\s+from|minutes\s+from|close\s+to|by\s+the)\b",
+                        t, maxsplit=1, flags=re.I)[0]
+        return not _BUSINESS_TITLE.search(head)
+    return False
 
 
 # ============================================================
@@ -3460,6 +3567,13 @@ class ListingExtractor:
                 _STATUS_FIELD_DROPS[_bare(domain)][st_hit[1]].add((title, detail_url))
                 return None
             status, status_marker, from_field = st_hit[0], st_hit[1], True
+        # Broker's own status in the detail URL path (hscbrokers.com
+        # /property-listings/<status>/<slug>/); the index-page card is no listing.
+        if _crw2 and _crw2.is_index_card(detail_url, domain):
+            return None
+        _ups = _crw2.url_path_status(detail_url, domain) if (_crw2 and detail_url) else None
+        if _ups:
+            status, status_marker, from_field = _ups[0], _ups[1], True
         if status == _LS_DROP:
             cls.status_drops.append((title[:80], status_marker))
             return None
@@ -3643,6 +3757,11 @@ def _tupelo_detail_url(index_url, listing_id):
     return f"{page}?listingId={quote(lid, safe='')}"
 
 
+# Tupelo brokers whose SOLD cards are recorded as broker-marked sold
+# (kcapex.com, businessmodificationgroup.com: Jeff, 22 Nov). Others unchanged.
+TUPELO_EMIT_SOLD_DOMAINS = frozenset({"kcapex.com", "businessmodificationgroup.com"})
+
+
 def _handler_tupelosmb(url, html, broker_name, fetcher):
     """
     Tupelo SMB CRM platform. The broker page loads listings from
@@ -3675,11 +3794,19 @@ def _handler_tupelosmb(url, html, broker_name, fetcher):
         return None
     org_id = m.group(1)
     out, seen, page, take = [], set(), 1, 100
+    # cr_w3_platforms (2026-11-23): SALE_PENDING is a public, for-sale card -
+    # active + the broker's label, never dropped (kcapex.com lost 4 of 29,
+    # businessmodificationgroup.com 13 of 35). The feed's statuses=ACTIVE
+    # filter already returns ACTIVE + SALE_PENDING. Domains in
+    # TUPELO_EMIT_SOLD_DOMAINS also get their SOLD cards (no status filter),
+    # emitted as broker-marked sold, never as active.
+    emit_sold = _bare(urlparse(url).netloc) in TUPELO_EMIT_SOLD_DOMAINS
+    status_q = "" if emit_sold else "&statuses=ACTIVE"
     while True:
         try:
             r = fetcher.session.get(
                 "https://crm.tupelosmb.com/api/public/listings"
-                f"?organizationId={org_id}&statuses=ACTIVE"
+                f"?organizationId={org_id}{status_q}"
                 f"&take={take}&page={page}",
                 timeout=REQ_TIMEOUT)
             if r.status_code != 200:
@@ -3697,10 +3824,17 @@ def _handler_tupelosmb(url, html, broker_name, fetcher):
                     continue
                 seen.add(lid)
             new += 1
-            if str(it.get("status", "")).upper() not in ("ACTIVE", ""):
+            st_up = str(it.get("status", "")).upper()
+            if st_up in ("ACTIVE", ""):
+                st, label = "active", None
+            elif st_up == "SALE_PENDING":
+                st, label = "active", "Sale Pending"
+            elif st_up == "SOLD" and emit_sold:
+                st, label = "sold", "SOLD"
+            else:
                 continue
             loc = it.get("locationStringShort") or it.get("locationString") or ""
-            out.append(_make_api_listing(
+            row = _make_api_listing(
                 url, broker_name,
                 title=it.get("headline"),
                 detail_url=_tupelo_detail_url(url, it.get("id")),
@@ -3709,10 +3843,19 @@ def _handler_tupelosmb(url, html, broker_name, fetcher):
                 revenue=it.get("revenue"),
                 state=_state_from_location(loc),
                 city=(loc.split(",")[0].strip() if loc else None),
-                description=it.get("headline")))
+                description=it.get("headline"))
+            row["status"] = st
+            if label:
+                row["broker_status_text"] = label
+            out.append(row)
         if not items or not new or page * take >= total:
             break
         page += 1
+    # cards the broker shows = rows we emit (SOLD ones included for the
+    # emit-sold domains), so seen vs displayed compares like with like
+    _n_sold = sum(1 for r in out if r.get("status") == "sold")
+    _cr_w3.note_displayed(urlparse(url).netloc, len(out), "tupelo feed cards",
+                          f"{len(out) - _n_sold} active/sale-pending + {_n_sold} SOLD")
     return out or None
 
 
@@ -3946,12 +4089,61 @@ API_HANDLERS = [
     ("base44", _handler_base44),
     ('id="lx-data"', _handler_lx_data),
 ]
+if _crw2:   # negociosenflorida.com, arthurberry.com
+    API_HANDLERS.extend(_crw2.v6_handlers(_make_api_listing))
+# cr_w3_platforms (2026-11-23): per-platform readers, each scoped to its named domains
+import cr_w3_platforms as _cr_w3
+_cr_w3.install(API_HANDLERS, {"make": _make_api_listing, "status": _ls_lookup,
+                              "needs_proxy": _needs_proxy, "user_agents": USER_AGENTS,
+                              "stable_id": stable_listing_id})
+import rv_dealrelations as _rv_dr   # rv-dealrelations (2026-11-24): hosted DealRelations pages
+_rv_dr.install(API_HANDLERS)
+# rv_nodetail (2026-11-24): nerestaurantbrokers.com, newbizbrokers.com, marigoldresources.com
+try:
+    import rv_nodetail as _rv_nodetail
+    _rv_nodetail.install(API_HANDLERS, {"make": _make_api_listing, "status": _ls_lookup})
+except ImportError:
+    _rv_nodetail = None
+import rv_detail as _rv_detail   # rv-detail (2026-11-24): progressivepracticesales.com detail pages
+API_HANDLERS.append(("e-loop-item-", _rv_detail.handler_pps))
 
 
 def extract_via_api(url, html, broker_name, fetcher):
     """If the page is a known JS platform with a JSON feed, pull listings
     from the API directly. Returns a list of listing dicts, or None."""
     low = (html or "").lower()
+    if rv_cards_a is not None:
+        got = rv_cards_a.read_index(url, html, broker_name, fetcher, dict(
+            make_row=_make_api_listing, state_from_location=_state_from_location,
+            norm_url=lambda u: drop_volatile_params(canonical_url(u)),
+            title_status=title_status))
+        if got is not None:
+            rows, drops = got
+            for t, lab in drops:
+                print(f"   🚫 status/scope DROP: not emitted: {t} ({lab})")
+            clean = [l for l in rows if not is_junk_listing(l.get("title"), l.get("url"))]
+            if clean:
+                return clean
+            print("   ⚠️  rv_cards_a reader returned no rows - falling back to the generic path")
+    if _rv_b is not None:               # rv-cards-b: three named domains, else None
+        rows = _rv_b.read(url, html, broker_name, fetcher, dict(
+            make_row=_make_api_listing, state_from_location=_state_from_location,
+            needs_proxy=_needs_proxy))
+        if rows:
+            return rows
+    if cr_card_fields is not None:
+        got = cr_card_fields.read_index(url, html, broker_name, fetcher, dict(
+            make_row=_make_api_listing, state_from_location=_state_from_location,
+            norm_url=lambda u: drop_volatile_params(canonical_url(u)),
+            title_from_slug=title_from_slug, title_status=title_status))
+        if got is not None:
+            rows, drops = got
+            for t, lab in drops:
+                print(f"   🚫 status/scope DROP: not emitted: {t} ({lab})")
+            clean = [l for l in rows if not is_junk_listing(l.get("title"), l.get("url"))]
+            if clean:
+                return clean
+            print("   ⚠️  cr_card_fields reader returned no rows - falling back to the generic path")
     for signature, handler in API_HANDLERS:
         if signature in low:
             try:
@@ -5560,6 +5752,10 @@ class DealLedgerScraper:
         except Exception as e:                       # inner shouldn't raise, but
             finish_run(run_id, "failed", error=str(e))
             raise
+        # never a row whose url is the listings index (blbrokers.com: 20 such rows)
+        listings, _idx_dropped = _cr_w3.drop_index_url_rows(listings, broker.get("url"))
+        if _idx_dropped:
+            print(f"   dropped {_idx_dropped} row(s) whose url is the listings index")
 
         # seen = one more plausibility signal for a weak stated count (j3-polish)
         dc = self._displayed.result(seen=len(listings)) or {}
@@ -5637,6 +5833,8 @@ class DealLedgerScraper:
             api_listings = extract_via_api(url, html, name, self.fetcher)
             if api_listings:
                 print(f"   🔌 API handler → {len(api_listings)} listings")
+                if cr_card_fields is not None:
+                    cr_card_fields.adjust_stated(getattr(self, "_displayed", None), domain)
                 p  = sum(1 for l in api_listings if l.get("asking_price"))
                 st = sum(1 for l in api_listings if l.get("state"))
                 print(f"   💰 price={p}  state={st}/{len(api_listings)}")
@@ -5646,6 +5844,7 @@ class DealLedgerScraper:
                           f"(slug collisions left {syn['unresolved_collisions']})")
                 self.stats["brokers_success"] += 1
                 self.stats["detail_pages_fetched"] += 0
+                _cr_w3.feed_displayed(self._displayed, url)   # the handler's own broker count
                 return api_listings
 
             # ── Pattern detection ─────────────────────────────────────────
@@ -6208,6 +6407,13 @@ class DealLedgerScraper:
                         detail_html = self.fetcher._fetch_http(detail_url, use_proxy=use_proxy)
                     else:
                         detail_html, _ = self.fetcher.fetch(detail_url, use_proxy=use_proxy)
+                    # A detail fetch that came back as an error / WAF page
+                    # (403 - Forbidden, Access Denied) is not the listing: keep
+                    # the card's own title and fields (greenandco.biz).
+                    if cr_card_fields is not None and cr_card_fields.is_error_page(detail_html):
+                        listing["url"] = detail_url
+                        print(f"   ⚠️  detail page is an error page - card fields kept: {detail_url[-60:]}")
+                        continue
                     had_state = bool(listing.get("state"))
                     listing = ListingExtractor.enrich_from_detail(listing, detail_html)
                     restatus_from_title(listing)   # the detail <h1> may carry "(SOLD)"
@@ -6234,6 +6440,9 @@ class DealLedgerScraper:
                         for f in ("asking_price", "cash_flow", "revenue"):
                             if prev.get(f):
                                 c[f] = prev[f]
+
+            if cr_card_fields is not None:
+                cr_card_fields.finalize_cards(domain, unique_cards)
 
             # Strip remaining internal fields
             for l in unique_cards:

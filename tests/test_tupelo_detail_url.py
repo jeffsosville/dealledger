@@ -152,7 +152,10 @@ def test_client_side_status_filter_when_api_ignores_statuses():
     items = [_item(1), _item(2, "SALE_PENDING"), _item(3, "SOLD"), _item(4)]
     out = v6._handler_tupelosmb("https://x.com/listings", PAGE, "x",
                                 _FakeTupeloAPI(items, honour_status=False))
-    assert sorted(l["title"] for l in out) == ["Listing 1", "Listing 4"]
+    # SALE_PENDING stays active with the broker's label (Jeff, 22 Nov); SOLD is not emitted
+    assert sorted(l["title"] for l in out) == ["Listing 1", "Listing 2", "Listing 4"]
+    pend = [l for l in out if l["title"] == "Listing 2"][0]
+    assert pend["status"] == "active" and pend["broker_status_text"] == "Sale Pending"
 
 
 def test_repeated_page_stops_without_duplicates():

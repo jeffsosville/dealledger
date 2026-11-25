@@ -38,7 +38,7 @@ def test_every_heading_is_a_row_with_a_stable_url():
 
 def test_status_counts():
     c = Counter(r["status"] for r in _rows().values())
-    assert c == {"sold": 112, "active": 22, "inactive": 20}
+    assert c == {"sold": 112, "active": 19, "inactive": 23}
 
 
 def test_sold_keeps_the_year_verbatim():
@@ -49,10 +49,10 @@ def test_sold_keeps_the_year_verbatim():
     assert _rows()["29"]["status"] == "sold"            # Sold by 3rd party 2023
 
 
-def test_under_deposit_and_off_market_stay_listed_with_label():
+def test_under_deposit_and_accepted_offer_stay_listed_with_label():
     r = _rows()
     assert (r["137"]["status"], r["137"]["broker_status_text"]) == ("active", "Under Deposit 2026")
-    assert (r["130"]["status"], r["130"]["broker_status_text"]) == ("active", "OFF Market")
+    assert (r["130"]["status"], r["130"]["broker_status_text"]) == ("inactive", "OFF Market")
     assert (r["22"]["status"], r["22"]["broker_status_text"]) == ("active", "Has Accepted Offer 2024")
 
 
@@ -100,3 +100,16 @@ def test_types_and_cash_flow():
 
 def test_non_listing_heading_ignored():
     assert parse_heading("Contact John today") is None
+
+
+def test_bare_off_market_is_inactive_in_any_case_and_pending_labels_stay_active():
+    from laundromat_broker_scraper import status_of
+    for label in ("OFF Market", "Off Market", "off market", "Temporarily Off Market", "OFF MARKET 2026",
+                  "Off-Market"):
+        assert status_of(label) == "inactive", label
+    for label in ("Under Deposit 2026", "Has Accepted Offer 2024", "Under Contract", "Pending"):
+        assert status_of(label) == "active", label
+    assert status_of(None) == "active"
+    r = _rows()
+    for n in ("130", "132", "134"):                      # Greenville NC, Package of 3, Dallas TX
+        assert (r[n]["status"], r[n]["broker_status_text"].lower()) == ("inactive", "off market"), n

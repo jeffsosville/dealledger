@@ -1,0 +1,364 @@
+<div class="results"><a class="bl-jump-down sp-relative sp-xs-show sp-s-hide sp-m-hide sp-l-hide sp-w-xl-hide bl-bck-white bl-shadow-bottom-sm bl-shadow-hover-md sp-grid-align-stretch sp-m-bottom-lg ng-scope" href="/businesses-for-sale/machine-refurbishment-company-supporting-the-semiconductor-industry-2538" ng-href="/businesses-for-sale/machine-refurbishment-company-supporting-the-semiconductor-industry-2538" ng-repeat="listing in result.page" target="_self">
+<div class="sp-relative sp-overflow-hidden bl-bck-dark-smoke bl-bck-repeat-none sp-w-3-of-3" ng-style="{height:150}" style="height: 150px;">
+<!-- ngIf: listing.photos.length --><img alt="Machine Refurbishment Company Supporting the Semiconductor Industry" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&amp;versionId=0686O00000XqvgTQAR" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&amp;versionId=0686O00000XqvgTQAR"/><!-- end ngIf: listing.photos.length -->
+<div>
+<!-- ngIf: listing.status -->
+<!-- ngIf: listing.photoCount --><div class="sp-absolute sp-dock-right sp-dock-bottom sp-txt-truncate bl-txt-white sp-txt-all-caps bl-bck-black-opaque sp-z-index-1 sp-p-vert-xx-sm sp-p-hor-sm bl-h6 ng-scope" ng-if="listing.photoCount">
+<b class="sp-m-right-xx-sm sp-inline-block bl-h5">
+<i class="bl-icon-camera"></i>
+</b>
+<!-- ngIf: listing.photoCount --><span class="ng-binding ng-scope" ng-bind="(currIndex + 1) +           '/' + listing.photoCount" ng-if="listing.photoCount">1/1</span><!-- end ngIf: listing.photoCount -->
+<!-- ngIf: !listing.photoCount -->
+</div><!-- end ngIf: listing.photoCount -->
+</div>
+<!-- ngIf: listing.hasVideo -->
+</div>
+<div class="sp-relative">
+<div class="sp-grid-item-grow sp-p-sm">
+<div class="bl-h3 bl-txt-blue sp-txt-truncate sp-m-bottom-x-sm ng-binding" ng-bind="listing.listingName">Machine Refurbishment Company Supporting the Semiconductor Industry</div>
+<div class="sp-grid sp-m-bottom-sm">
+<div class="sp-w-5-of-12">
+<!-- ngIf: listing.street -->
+<div class="bl-h5 bl-txt-dark-blue sp-m-bottom-x-sm ng-binding" ng-bind="[{            show: listing.city,            label: listing.city           }, {            show: listing.county,            label: listing.county           }, {            show: listing.state,            label: listing.state           }, {            show: listing.zip,            label: listing.zip           }] | join:', '">CA</div>
+<!-- ngIf: listing.actionPhrase --><div class="sp-txt-all-caps sp-grid sp-grid-no-wrap ng-scope" ng-if="listing.actionPhrase">
+<div class="bl-h6 sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white sp-txt-truncate">
+<span class="ng-binding" ng-bind="listing.actionPhrase">Very Profitable</span>
+											 
+										</div>
+<div class="bl-h6 bl-tail sp-relative bl-bck-dark-blue"> </div>
+</div><!-- end ngIf: listing.actionPhrase -->
+</div>
+<div class="sp-w-7-of-12">
+<!-- ngIf: listing.price != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.price != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right"></div>
+<div class="bl-h3 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm ng-binding" ng-bind="listing.price | currency:'$':0">$16,000,000</div>
+</div><!-- end ngIf: listing.price != null -->
+<!-- ngIf: !listing.overrideTotalSales &&            listing.totalSales != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="!listing.overrideTotalSales &amp;&amp;            listing.totalSales != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+											Total Sales</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.totalSales               | currency:'$':0">$10,374,498</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">Annually</span>
+</div>
+</div><!-- end ngIf: !listing.overrideTotalSales &&            listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome --><div class="ng-scope" ng-if="!listing.overrideIncome" ng-switch="listing.profitability">
+<!-- ngSwitchWhen: Profitable --><!-- ngIf: listing.income != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.income != null" ng-switch-when="Profitable">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+												Income</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.income                | currency:'$':0">$2,946,060</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">Annually</span>
+</div>
+</div><!-- end ngIf: listing.income != null --><!-- end ngSwitchWhen: -->
+<!-- ngSwitchDefault: true -->
+</div><!-- end ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome -->
+</div>
+</div>
+<!-- ngIf: listing.description != null --><div class="bl-pre sp-relative sp-m-bottom-lg ng-scope" ng-if="listing.description != null">
+<pre bl-adjust-next="true" bl-lines="2" class="ng-binding ng-isolate-scope" ng-bind-html="(listing.description | html)" style="max-height: 38px; overflow-y: hidden; clip-path: polygon(0px 0px, 100% 0px, 100% calc(100% - 19px), calc(100% + 0px) calc(100% - 19px), calc(100% + 0px) 100%, 0px 100%);"><p>This engineering company provides consumable and non-consumable modules for semiconductor manufacturing systems. They offer a full range of refurbished parts as well as service, support, and maintenance products customized to meet the specific needs of each customer. They currently support multiple lines of DUV and XeCl lasers from major equipment manufacturers. </p><p><br/></p><p>Semiconductors continue to be one of the hottest sectors globally; a steady chip supply is required by nearly every modern manufacturer. Governments around the world are investing billions into the industry to maintain a competitive advantage, as a guaranteed semiconductor supply is considered a matter of both national interest and security. Chips are manufactured in specialized fabrication facilities (“fabs”) around the world, on expensive laser lithography machines whose purchase prices range from $20 to $200 million dollars.</p><p><br/></p><p>This is a difficult industry to penetrate, so new competition is scarce. The business requires technical experience, which means engineering talent on staff. The business also requires a stellar reputation; since manufacturing equipment cannot be down, they are very selective about their vendors. This company has the deep bench, industry connections, and a well-earned reputation as a trusted/reliable partner. That winning combination allows them to not only service existing customers around the world, but to knock on new customers' doors with confidence.</p><p><br/></p><p>Over the last 17+ years, the founders have built an extremely profitable, well-organized business in a fast-growing industry. However, they have reached the age where it’s time to start considering retirement, so they’re on the hunt for their successors. This company has massive growth potential, as society continues to rely on semiconductors and displays in nearly every product manufactured today. If this opportunity is of interest, reach out to the Agent today for further details.</p></pre>
+<div class="sp-absolute sp-dock-right sp-dock-bottom sp-p-right-lg ng-hide"> ...</div>
+</div><!-- end ngIf: listing.description != null -->
+<div class="sp-grid sp-grid-no-wrap sp-grid-align-middle">
+<div class="bl-flag sp-m-right-md bl-h7 bl-txt-white bl-round-md sp-txt-center bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">NDA</div>
+<!-- ngIf: listing.listingNo --><div class="bl-h5 sp-m-right-sm ng-scope" ng-if="listing.listingNo">
+<span>Listing #</span>
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.listingNo">2538</span>
+</div><!-- end ngIf: listing.listingNo -->
+<div class="bl-h5 bl-txt-dark-blue sp-grid-item-grow ng-binding" ng-bind="[{           show: listing.leaseType == 'Home-Based',           label: 'Home-Based'          }, {           show: listing.isFranchise,           label: 'Franchise'          }, {           show: listing.isDistressed,           label: 'Distressed'          }, {           show: listing.isRelocatable,           label: 'Relocatable'          }, {           show: listing.isAbsenteeRun,           label: 'Absentee Run'          }, {           show: listing.isRealEstateAvailabel,           label: 'Real Estate Available'          }] | join:' • '"></div>
+<!-- ngIf: listing.isBookmarked != null -->
+</div>
+</div>
+</div>
+</a><a class="bl-jump-down sp-relative sp-xs-show sp-s-hide sp-m-hide sp-l-hide sp-w-xl-hide bl-bck-white bl-shadow-bottom-sm bl-shadow-hover-md sp-grid-align-stretch sp-m-bottom-lg ng-scope" href="/businesses-for-sale/historical-restaurant-hotel-and-multi-use-property-2703" ng-href="/businesses-for-sale/historical-restaurant-hotel-and-multi-use-property-2703" ng-repeat="listing in result.page" target="_self">
+<div class="sp-relative sp-overflow-hidden bl-bck-dark-smoke bl-bck-repeat-none sp-w-3-of-3" ng-style="{height:150}" style="height: 150px;">
+<!-- ngIf: listing.photos.length --><img alt="Historical Restaurant, Hotel and Multi-Use Property!" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf00000lSXQzIAO" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf00000lSXQzIAO"/><!-- end ngIf: listing.photos.length -->
+<div>
+<!-- ngIf: listing.status -->
+<!-- ngIf: listing.photoCount --><div class="sp-absolute sp-dock-right sp-dock-bottom sp-txt-truncate bl-txt-white sp-txt-all-caps bl-bck-black-opaque sp-z-index-1 sp-p-vert-xx-sm sp-p-hor-sm bl-h6 ng-scope" ng-if="listing.photoCount">
+<b class="sp-m-right-xx-sm sp-inline-block bl-h5">
+<i class="bl-icon-camera"></i>
+</b>
+<!-- ngIf: listing.photoCount --><span class="ng-binding ng-scope" ng-bind="(currIndex + 1) +           '/' + listing.photoCount" ng-if="listing.photoCount">1/1</span><!-- end ngIf: listing.photoCount -->
+<!-- ngIf: !listing.photoCount -->
+</div><!-- end ngIf: listing.photoCount -->
+</div>
+<!-- ngIf: listing.hasVideo -->
+</div>
+<div class="sp-relative">
+<div class="sp-grid-item-grow sp-p-sm">
+<div class="bl-h3 bl-txt-blue sp-txt-truncate sp-m-bottom-x-sm ng-binding" ng-bind="listing.listingName">Historical Restaurant, Hotel and Multi-Use Property!</div>
+<div class="sp-grid sp-m-bottom-sm">
+<div class="sp-w-5-of-12">
+<!-- ngIf: listing.street -->
+<div class="bl-h5 bl-txt-dark-blue sp-m-bottom-x-sm ng-binding" ng-bind="[{            show: listing.city,            label: listing.city           }, {            show: listing.county,            label: listing.county           }, {            show: listing.state,            label: listing.state           }, {            show: listing.zip,            label: listing.zip           }] | join:', '">San Bernardino County, CA</div>
+<!-- ngIf: listing.actionPhrase --><div class="sp-txt-all-caps sp-grid sp-grid-no-wrap ng-scope" ng-if="listing.actionPhrase">
+<div class="bl-h6 sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white sp-txt-truncate">
+<span class="ng-binding" ng-bind="listing.actionPhrase">SELLER FINANCING AVAILABLE FOR A QUALIFIED BUYER!!</span>
+											 
+										</div>
+<div class="bl-h6 bl-tail sp-relative bl-bck-dark-blue"> </div>
+</div><!-- end ngIf: listing.actionPhrase -->
+</div>
+<div class="sp-w-7-of-12">
+<!-- ngIf: listing.price != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.price != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right"></div>
+<div class="bl-h3 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm ng-binding" ng-bind="listing.price | currency:'$':0">$3,750,000</div>
+</div><!-- end ngIf: listing.price != null -->
+<!-- ngIf: !listing.overrideTotalSales &&            listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.overrideTotalSales">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+											Total Sales</div>
+<div class="bl-h4 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm">
+											Asset Sale</div>
+</div><!-- end ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.overrideIncome">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+											Income</div>
+<div class="bl-h4 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm">
+											Asset Sale</div>
+</div><!-- end ngIf: listing.overrideIncome -->
+</div>
+</div>
+<!-- ngIf: listing.description != null --><div class="bl-pre sp-relative sp-m-bottom-lg ng-scope" ng-if="listing.description != null">
+<pre bl-adjust-next="true" bl-lines="2" class="ng-binding ng-isolate-scope" ng-bind-html="(listing.description | html)" style="max-height: 38px; overflow-y: hidden; clip-path: polygon(0px 0px, 100% 0px, 100% calc(100% - 19px), calc(100% + 0px) calc(100% - 19px), calc(100% + 0px) 100%, 0px 100%);"><p><strong><u>Arrowhead Villas: A Rare Offering of Three Prohibition-Era Icons</u></strong></p><p><br/></p><p>Step into the romance, intrigue, and architectural grandeur of California’s Golden Age with a rare opportunity to own a legendary mountain enclave. Nestled in the San Bernardino Mountains, Arrowhead Villas was originally envisioned in the 1920s as “Club Arrowhead in the Pines”, a secluded playground for Hollywood’s elite. Originally developed across 45 acres and powered by its own artesian wells and early electric infrastructure, the resort quickly became synonymous with privacy, luxury, and notoriety. At its height in 1929, under the rumored influence of Benjamin “Bugsy” Siegel, this hidden retreat earned a reputation as a “Little Las Vegas” of the mountains—complete with gambling, speakeasies, moonshine crafted from pristine well water, and whispered tales of secret tunnels and celebrity escapades. </p><p><br/></p><p>Today, this storied past lives on in a remarkable trio of properties known collectively as “Tudorville.” The Tudor House (currently a restaurant, bar, and playhouse) and Bracken Fern Manor (currently a 10-room hotel) are offered together, while The Clubhouse is available separately – each fully restored and reimagined for modern use while honoring its extraordinary heritage. Located in San Bernardino County, an hour drive up the scenic mountain, these properties are very close to the Lake Arrowhead, Sky Park at Santa's Village, Wildhaven Ranch Wildlife Sanctuary, seasonal water sports, and much more!</p><p> </p><p><br/></p><p><strong><u>The Tudor House &amp; Bracken Fern Manor (Offered Together)</u></strong></p><p><br/></p><p>The Tudor House stands as the crown jewel of Arrowhead Villas. Designed in striking half-timbered English Tudor architecture, this landmark structure originally served as an exclusive, members-only casino and speakeasy. Its magnificent Grand Hall—crafted in a rare “King and His Court” design—features soaring vaulted ceilings, a dramatic stone fireplace, a raised professional stage with a greenroom, and extraordinary acoustics so refined that performers often forgo amplification. The hall now thrives as a restaurant, live entertainment venue, and wedding destination, complete with a sound and lighting system, and a bar (with a 41 beer and wine license; see Agent). In addition, there are two adjoining private apartments, each featuring its own bedroom, bath, living area, and kitchen, offering endless possibilities. Located at 800 Arrowhead Villa Road, this 11,011 sf building sits on a 36,958sf lot (APN#332-104-02, zoned CN) and is listed at $1,975,000 </p><p><br/></p><p>Across the street, Bracken Fern Manor— once known as “The Market” and later “The Crib”—served as the luxurious guest quarters for the resort’s most discreet visitors. The Manor is now an enchanting 10-room historic inn rich with storybook charm. Each guest suite is unique and features an attached private bathroom. The property features a guest kitchen, dining room, library, sauna, cozy fireplace lobby, and expansive outdoor decks on both levels, the Manor is now a sought-after lodging and special event venue for weddings, retreats, reunions, and private gatherings. Featured on television and YouTube (Google "Bracken Fern Manor and ghost adventures"), it remains one of the mountain’s most distinctive and atmospheric destinations. Located at 815 Arrowhead Villa Road, this 3,840 sf building sits on an 8,550sf lot (APN#332-062-34, zoned CN) and is listed at $950,000. NOTE: SELLER WILL CARRY A NOTE WITH CASH DOWN AND WELL QUALIFIED BUYER</p><p><br/></p><p>The Tudor House and Bracken Fern Manor represent a rare chance to steward two interwoven pieces of California history—fully restored, income-producing, and poised to celebrate the Tudor House’s centennial anniversary. From rumored underground passageways and Hollywood hideaways to modern film nights and community events, these properties seamlessly blend legacy and vision. You can see these properties now; click here for a tour of the Tudor House, and click here for a tour of the Bracken Fern Manor. </p><p><br/></p><p> </p><p><br/></p><p><strong><u>The Clubhouse (Available Separately)</u></strong></p><p><br/></p><p>Completing the historic triad is The Clubhouse, the original sports and social epicenter of the resort. In its heyday, the surrounding grounds featured an Olympic-sized swimming pool, tennis courts, ski access, stables, and artisan well water that supported the entire development. Today, this two-story building with basement has been remodeled for versatile commercial or residential use. The renovated upper loft includes a bath, while the main level features two bedrooms, two baths, a living room, and a kitchen. </p><p><br/></p><p>The finished basement—equipped with two restrooms—has been redesigned to accommodate a brewery, wine tasting room, card room, cigar lounge, or intimate black box theater. A spacious rear patio provides an inviting setting for entertainment and special events, complemented by front parking areas and an additional adjoining lot. Adjacent to Bracken Fern Manor and directly across from the Tudor House, The Clubhouse offers exceptional standalone potential while remaining connected to the legacy of the greater estate. Located at 850 Arrowhead Villa Road, this 3,366 sf building sits on a 28,120sf lot (APN#332-104-01, zoned CN) and is listed at $825,000. </p><p><br/></p><p> </p><p><strong><u>An Enduring Legacy</u></strong></p><p><br/></p><p>Arrowhead Villas has always been a place of vision and vitality; after nearly a century of colorful lore, these properties embody architectural significance, cultural intrigue, and commercial opportunity. Whether acquired together as a landmark hospitality and event compound or individually as a dynamic commercial venture, this is a once-in-a-generation opportunity to own a fully restored and interconnected piece of American history—where the echoes of the Roaring Twenties still linger in every beam, stone, and mountain breeze. This is a piece of history and ready for a qualified successor to bring back its luster! The property is being sold as-is and has many grandfathered conditions. For the right buyer, the seller will offer generous financing; speak with Agent regarding terms.  If you're looking to learn more about this historic Mobster Era Property, reach out to the Agent today!</p></pre>
+<div class="sp-absolute sp-dock-right sp-dock-bottom sp-p-right-lg ng-hide"> ...</div>
+</div><!-- end ngIf: listing.description != null -->
+<div class="sp-grid sp-grid-no-wrap sp-grid-align-middle">
+<div class="bl-flag sp-m-right-md bl-h7 bl-txt-white bl-round-md sp-txt-center bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">NDA</div>
+<!-- ngIf: listing.listingNo --><div class="bl-h5 sp-m-right-sm ng-scope" ng-if="listing.listingNo">
+<span>Listing #</span>
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.listingNo">2703</span>
+</div><!-- end ngIf: listing.listingNo -->
+<div class="bl-h5 bl-txt-dark-blue sp-grid-item-grow ng-binding" ng-bind="[{           show: listing.leaseType == 'Home-Based',           label: 'Home-Based'          }, {           show: listing.isFranchise,           label: 'Franchise'          }, {           show: listing.isDistressed,           label: 'Distressed'          }, {           show: listing.isRelocatable,           label: 'Relocatable'          }, {           show: listing.isAbsenteeRun,           label: 'Absentee Run'          }, {           show: listing.isRealEstateAvailabel,           label: 'Real Estate Available'          }] | join:' • '"></div>
+<!-- ngIf: listing.isBookmarked != null -->
+</div>
+</div>
+</div>
+</a><a class="bl-jump-down sp-relative sp-xs-show sp-s-hide sp-m-hide sp-l-hide sp-w-xl-hide bl-bck-white bl-shadow-bottom-sm bl-shadow-hover-md sp-grid-align-stretch sp-m-bottom-lg ng-scope" href="/businesses-for-sale/top-art-school-in-orange-county-2625" ng-href="/businesses-for-sale/top-art-school-in-orange-county-2625" ng-repeat="listing in result.page" target="_self">
+<div class="sp-relative sp-overflow-hidden bl-bck-dark-smoke bl-bck-repeat-none sp-w-3-of-3" ng-style="{height:150}" style="height: 150px;">
+<!-- ngIf: listing.photos.length --><img alt="Top Art School in Orange County" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf000000s4ZjIAI" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf000000s4ZjIAI"/><!-- end ngIf: listing.photos.length -->
+<div>
+<!-- ngIf: listing.status -->
+<!-- ngIf: listing.photoCount --><div class="sp-absolute sp-dock-right sp-dock-bottom sp-txt-truncate bl-txt-white sp-txt-all-caps bl-bck-black-opaque sp-z-index-1 sp-p-vert-xx-sm sp-p-hor-sm bl-h6 ng-scope" ng-if="listing.photoCount">
+<b class="sp-m-right-xx-sm sp-inline-block bl-h5">
+<i class="bl-icon-camera"></i>
+</b>
+<!-- ngIf: listing.photoCount --><span class="ng-binding ng-scope" ng-bind="(currIndex + 1) +           '/' + listing.photoCount" ng-if="listing.photoCount">1/1</span><!-- end ngIf: listing.photoCount -->
+<!-- ngIf: !listing.photoCount -->
+</div><!-- end ngIf: listing.photoCount -->
+</div>
+<!-- ngIf: listing.hasVideo -->
+</div>
+<div class="sp-relative">
+<div class="sp-grid-item-grow sp-p-sm">
+<div class="bl-h3 bl-txt-blue sp-txt-truncate sp-m-bottom-x-sm ng-binding" ng-bind="listing.listingName">Top Art School in Orange County</div>
+<div class="sp-grid sp-m-bottom-sm">
+<div class="sp-w-5-of-12">
+<!-- ngIf: listing.street -->
+<div class="bl-h5 bl-txt-dark-blue sp-m-bottom-x-sm ng-binding" ng-bind="[{            show: listing.city,            label: listing.city           }, {            show: listing.county,            label: listing.county           }, {            show: listing.state,            label: listing.state           }, {            show: listing.zip,            label: listing.zip           }] | join:', '">Orange County, CA</div>
+<!-- ngIf: listing.actionPhrase --><div class="sp-txt-all-caps sp-grid sp-grid-no-wrap ng-scope" ng-if="listing.actionPhrase">
+<div class="bl-h6 sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white sp-txt-truncate">
+<span class="ng-binding" ng-bind="listing.actionPhrase">High Revenue</span>
+											 
+										</div>
+<div class="bl-h6 bl-tail sp-relative bl-bck-dark-blue"> </div>
+</div><!-- end ngIf: listing.actionPhrase -->
+</div>
+<div class="sp-w-7-of-12">
+<!-- ngIf: listing.price != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.price != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right"></div>
+<div class="bl-h3 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm ng-binding" ng-bind="listing.price | currency:'$':0">$1,800,000</div>
+</div><!-- end ngIf: listing.price != null -->
+<!-- ngIf: !listing.overrideTotalSales &&            listing.totalSales != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="!listing.overrideTotalSales &amp;&amp;            listing.totalSales != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+											Total Sales</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.totalSales               | currency:'$':0">$1,422,388</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">Annually</span>
+</div>
+</div><!-- end ngIf: !listing.overrideTotalSales &&            listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome --><div class="ng-scope" ng-if="!listing.overrideIncome" ng-switch="listing.profitability">
+<!-- ngSwitchWhen: Profitable --><!-- ngIf: listing.income != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.income != null" ng-switch-when="Profitable">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+												Income</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.income                | currency:'$':0">$450,000</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">Annually</span>
+</div>
+</div><!-- end ngIf: listing.income != null --><!-- end ngSwitchWhen: -->
+<!-- ngSwitchDefault: true -->
+</div><!-- end ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome -->
+</div>
+</div>
+<!-- ngIf: listing.description != null --><div class="bl-pre sp-relative sp-m-bottom-lg ng-scope" ng-if="listing.description != null">
+<pre bl-adjust-next="true" bl-lines="2" class="ng-binding ng-isolate-scope" ng-bind-html="(listing.description | html)" style="max-height: 38px; overflow-y: hidden; clip-path: polygon(0px 0px, 100% 0px, 100% calc(100% - 19px), calc(100% + 0px) calc(100% - 19px), calc(100% + 0px) 100%, 0px 100%);"><p>This is a flourishing art school with a track record for nurturing budding talents. The school is located in one of the most sought-after areas of Orange County. Built on excellence, dedication to students and a team of experienced instructors passionate about art education, it attracts students seeking quality arts education, from affluent nearby cities.</p><p><br/></p><p>The curriculum is designed for various age groups and skill levels. Every child ages four and up will have several options of class offerings from sketching, oil painting, book publishing, digital art and more. They offer group classes as well as private classes. The school is fully furnished with high quality art supplies and top of the line equipment.</p><p><br/></p><p>The owner has built a phenomenal business, with many systems in place to run the business very efficiently with high profit margins. The current owner is relocating and looking for a capable individual to take the business to the next level. The business is already very profitable, however, there are still opportunities to expand by adding parties and corporate events or other avenues.</p><p><br/></p><p>Are you passionate about art and education? Seize the opportunity to own a renowned art school that's already established and ready to inspire the next generation of creative minds!<span> </span>Owning this art school means stepping into a canvas where your vision and passion for art education can flourish. You'll inherit a thriving business with a loyal student base and a respected brand name, ready for your innovative touch to elevate it to new heights.  Don't miss this chance to own a gem in the world of art education. Whether you're an artist, educator, or entrepreneur seeking a fulfilling venture, this art school is your canvas to create an inspiring future. Question?  Reach out to the Agent today!</p></pre>
+<div class="sp-absolute sp-dock-right sp-dock-bottom sp-p-right-lg ng-hide"> ...</div>
+</div><!-- end ngIf: listing.description != null -->
+<div class="sp-grid sp-grid-no-wrap sp-grid-align-middle">
+<div class="bl-flag sp-m-right-md bl-h7 bl-txt-white bl-round-md sp-txt-center bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">NDA</div>
+<!-- ngIf: listing.listingNo --><div class="bl-h5 sp-m-right-sm ng-scope" ng-if="listing.listingNo">
+<span>Listing #</span>
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.listingNo">2625</span>
+</div><!-- end ngIf: listing.listingNo -->
+<div class="bl-h5 bl-txt-dark-blue sp-grid-item-grow ng-binding" ng-bind="[{           show: listing.leaseType == 'Home-Based',           label: 'Home-Based'          }, {           show: listing.isFranchise,           label: 'Franchise'          }, {           show: listing.isDistressed,           label: 'Distressed'          }, {           show: listing.isRelocatable,           label: 'Relocatable'          }, {           show: listing.isAbsenteeRun,           label: 'Absentee Run'          }, {           show: listing.isRealEstateAvailabel,           label: 'Real Estate Available'          }] | join:' • '"></div>
+<!-- ngIf: listing.isBookmarked != null -->
+</div>
+</div>
+</div>
+</a><a class="bl-jump-down sp-relative sp-xs-show sp-s-hide sp-m-hide sp-l-hide sp-w-xl-hide bl-bck-white bl-shadow-bottom-sm bl-shadow-hover-md sp-grid-align-stretch sp-m-bottom-lg ng-scope" href="/businesses-for-sale/stone-fabricator-to-the-luxury-home-market-2707" ng-href="/businesses-for-sale/stone-fabricator-to-the-luxury-home-market-2707" ng-repeat="listing in result.page" target="_self">
+<div class="sp-relative sp-overflow-hidden bl-bck-dark-smoke bl-bck-repeat-none sp-w-3-of-3" ng-style="{height:150}" style="height: 150px;">
+<!-- ngIf: listing.photos.length --><img alt="Stone Fabricator to the Luxury Home Market" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf00000exYrRIAU" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_jpg&amp;versionId=068Uf00000exYrRIAU"/><!-- end ngIf: listing.photos.length -->
+<div>
+<!-- ngIf: listing.status -->
+<!-- ngIf: listing.photoCount --><div class="sp-absolute sp-dock-right sp-dock-bottom sp-txt-truncate bl-txt-white sp-txt-all-caps bl-bck-black-opaque sp-z-index-1 sp-p-vert-xx-sm sp-p-hor-sm bl-h6 ng-scope" ng-if="listing.photoCount">
+<b class="sp-m-right-xx-sm sp-inline-block bl-h5">
+<i class="bl-icon-camera"></i>
+</b>
+<!-- ngIf: listing.photoCount --><span class="ng-binding ng-scope" ng-bind="(currIndex + 1) +           '/' + listing.photoCount" ng-if="listing.photoCount">1/1</span><!-- end ngIf: listing.photoCount -->
+<!-- ngIf: !listing.photoCount -->
+</div><!-- end ngIf: listing.photoCount -->
+</div>
+<!-- ngIf: listing.hasVideo -->
+</div>
+<div class="sp-relative">
+<div class="sp-grid-item-grow sp-p-sm">
+<div class="bl-h3 bl-txt-blue sp-txt-truncate sp-m-bottom-x-sm ng-binding" ng-bind="listing.listingName">Stone Fabricator to the Luxury Home Market</div>
+<div class="sp-grid sp-m-bottom-sm">
+<div class="sp-w-5-of-12">
+<!-- ngIf: listing.street -->
+<div class="bl-h5 bl-txt-dark-blue sp-m-bottom-x-sm ng-binding" ng-bind="[{            show: listing.city,            label: listing.city           }, {            show: listing.county,            label: listing.county           }, {            show: listing.state,            label: listing.state           }, {            show: listing.zip,            label: listing.zip           }] | join:', '">Orange County, CA</div>
+<!-- ngIf: listing.actionPhrase --><div class="sp-txt-all-caps sp-grid sp-grid-no-wrap ng-scope" ng-if="listing.actionPhrase">
+<div class="bl-h6 sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white sp-txt-truncate">
+<span class="ng-binding" ng-bind="listing.actionPhrase">Rare Opportunity</span>
+											 
+										</div>
+<div class="bl-h6 bl-tail sp-relative bl-bck-dark-blue"> </div>
+</div><!-- end ngIf: listing.actionPhrase -->
+</div>
+<div class="sp-w-7-of-12">
+<!-- ngIf: listing.price != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.price != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right"></div>
+<div class="bl-h3 sp-w-6-of-10 bl-txt-dark-blue sp-p-left-sm ng-binding" ng-bind="listing.price | currency:'$':0">$1,690,000</div>
+</div><!-- end ngIf: listing.price != null -->
+<!-- ngIf: !listing.overrideTotalSales &&            listing.totalSales != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="!listing.overrideTotalSales &amp;&amp;            listing.totalSales != null">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+											Total Sales</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.totalSales               | currency:'$':0">$2,310,073</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">(3-year average)</span>
+</div>
+</div><!-- end ngIf: !listing.overrideTotalSales &&            listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome --><div class="ng-scope" ng-if="!listing.overrideIncome" ng-switch="listing.profitability">
+<!-- ngSwitchWhen: Profitable --><!-- ngIf: listing.income != null --><div class="sp-grid sp-grid-align-bottom ng-scope" ng-if="listing.income != null" ng-switch-when="Profitable">
+<div class="bl-h6 sp-w-4-of-10 sp-txt-right">
+												Income</div>
+<div class="bl-h4 sp-w-6-of-10 sp-p-left-sm sp-txt-truncate">
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.income                | currency:'$':0">$572,497</span>
+<span class="bl-h7 bl-txt-gray ng-binding" ng-bind="listing.revenueTerm">(3-year average)</span>
+</div>
+</div><!-- end ngIf: listing.income != null --><!-- end ngSwitchWhen: -->
+<!-- ngSwitchDefault: true -->
+</div><!-- end ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome -->
+</div>
+</div>
+<!-- ngIf: listing.description != null --><div class="bl-pre sp-relative sp-m-bottom-lg ng-scope" ng-if="listing.description != null">
+<pre bl-adjust-next="true" bl-lines="2" class="ng-binding ng-isolate-scope" ng-bind-html="(listing.description | html)" style="max-height: 38px; overflow-y: hidden; clip-path: polygon(0px 0px, 100% 0px, 100% calc(100% - 19px), calc(100% + 0px) calc(100% - 19px), calc(100% + 0px) 100%, 0px 100%);"><p>For almost 40 years, this company has designed, fabricated, and installed stone and tile in high-end luxury homes ($20M+). They do hard surfaces, tile walls, floors, fireplaces, water fountains, pools, etc., with a reputation of bringing elegance and craftsmanship to homes via their network of designers, architects, &amp; contractors. They have a history of steady revenue and profits; even in the 2008 recession and COVID, it was business as usual.  </p><p><br/></p><p>Jobs are large, ranging from $50K to $1.5M, involve detailed craftsmanship, and often span several years. Owner hires with an eye for talent; most employees have 5+ years tenure; many have 20+ years at the company. The crew leaders, shop foreman, fabrication supervisor, down to the installers are the best in the business. The staff handles the day-to-day job site details. Owner schedules jobs, interfaces with supervisors and subcontractors (as required), handles preliminary job specifications, and performs administrative duties. The building is tailored to stone fabrication: the large storage yard is ideal for material loading and storage, and all fabrication onsite equipment is state-of-the art and maintained with care.</p><p><br/></p><p>The owner is retiring and is searching for his successor. The ideal buyer has the right mix of business acumen and design chops to take the company to the next level. New ownership can continue to expand in the high-end markets or branch out to new markets (tract, apartment, etc.). But the real growth opportunity is to scale up advertising and marketing – the business gets all work via referral; they do no advertising, no social media, and don’t even have a website!! For the right buyer, the owner is willing to stay on for an extended transition period to ensure their success.</p><p><br/></p><p>If you've ever considered entering the industry, expanding to stonework, or branching out on your own, This may be the perfect opportunity. Fabricators with this level of reputation, history, and profitability rarely come to market. Interested? Questions? Reach out to the Agent today!</p></pre>
+<div class="sp-absolute sp-dock-right sp-dock-bottom sp-p-right-lg ng-hide"> ...</div>
+</div><!-- end ngIf: listing.description != null -->
+<div class="sp-grid sp-grid-no-wrap sp-grid-align-middle">
+<div class="bl-flag sp-m-right-md bl-h7 bl-txt-white bl-round-md sp-txt-center bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">NDA</div>
+<!-- ngIf: listing.listingNo --><div class="bl-h5 sp-m-right-sm ng-scope" ng-if="listing.listingNo">
+<span>Listing #</span>
+<span class="bl-txt-dark-blue ng-binding" ng-bind="listing.listingNo">2707</span>
+</div><!-- end ngIf: listing.listingNo -->
+<div class="bl-h5 bl-txt-dark-blue sp-grid-item-grow ng-binding" ng-bind="[{           show: listing.leaseType == 'Home-Based',           label: 'Home-Based'          }, {           show: listing.isFranchise,           label: 'Franchise'          }, {           show: listing.isDistressed,           label: 'Distressed'          }, {           show: listing.isRelocatable,           label: 'Relocatable'          }, {           show: listing.isAbsenteeRun,           label: 'Absentee Run'          }, {           show: listing.isRealEstateAvailabel,           label: 'Real Estate Available'          }] | join:' • '"></div>
+<!-- ngIf: listing.isBookmarked != null -->
+</div>
+</div>
+</div>
+</a></div><div><div class="sp-txt-center sp-p-top-md sp-m-bottom-xx-lg">
+<!-- ngIf: result.page.length --><button aria-label="View More" class="sp-relative sp-txt-all-caps sp-p-hor-sm sp-p-vert-x-sm bl-bck-blue bl-bck-hover-dark-blue bl-txt-white bl-button bl-round-xx-sm ng-scope" name="nestBtn" ng-click="next()" ng-disabled="status.busy ||        result.page.length &gt;= result.totalRecords" ng-if="result.page.length" type="button">
+<!-- ngIf: status.busy && status.jobType == 'page' -->
+<span class="ng-binding" ng-bind="result.page.length">12</span> of
+						<span class="ng-binding" ng-bind="result.totalRecords">18</span>
+<span ng-show="result.page.length &lt; result.totalRecords">
+							· View More</span>
+</button><!-- end ngIf: result.page.length -->
+</div></div><div class="also"><a class="sp-block bl-shadow-bottom-sm bl-shadow-hover-md bl-bck-white sp-m-right-lg ng-scope" href="/businesses-sold/well-established-highly-profitable-fire-protection-company-2592" ng-href="/businesses-sold/well-established-highly-profitable-fire-protection-company-2592" ng-repeat="listing in result.extraPage" ng-style="{'width':234,'min-width':234}" style="width: 234px; min-width: 234px;" target="_self">
+<div class="sp-relative sp-w-3-of-3">
+<div class="bl-media bl-media-md sp-overflow-hidden bl-bck-repeat-none bl-bck-dark-smoke">
+<!-- ngIf: listing.photos.length --><img alt="Well-Established, Highly Profitable Fire Protection Company" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_png&amp;versionId=0686O00000euv6uQAA" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_png&amp;versionId=0686O00000euv6uQAA"/><!-- end ngIf: listing.photos.length -->
+<div class="sp-absolute sp-z-index-1 sp-w-6-of-6" ng-style="{left: 0, bottom: 0}" style="left: 0px; bottom: 0px;">
+<!-- ngIf: listing.status --><div class="sp-txt-truncate sp-p-vert-xx-sm sp-p-hor-sm bl-txt-white bl-h6 sp-float-left sp-clear-both ng-binding ng-scope" ng-bind="listing.status" ng-if="listing.status" ng-style="{'background-color':             listing.statusColor}" style="background-color: rgb(162, 26, 48);">Sold!</div><!-- end ngIf: listing.status -->
+</div>
+</div>
+</div>
+<div class="sp-w-3-of-3 sp-p-hor-x-sm sp-p-top-x-sm sp-p-bottom-md sp-grid">
+<div class="sp-w-6-of-12 bl-txt-dark-blue">
+<div class="bl-h4 sp-block bl-txt-blue sp-txt-truncate sp-txt-hover-underlined ng-binding" ng-bind="listing.listingName">Well-Established, Highly Profitable Fire Protection Company</div>
+<div class="bl-h6 sp-txt-truncate ng-binding" ng-bind="[{           show: listing.city,           label: listing.city          }, {           show: listing.zip,           label: listing.zip          }] | join:', '"></div>
+<div class="bl-h6 sp-txt-truncate ng-binding" ng-bind="[{           show: listing.county,           label: listing.county          }, {           show: listing.state,           label: listing.state          }] | join:', '">San Diego County, CA</div>
+</div>
+<div class="sp-w-6-of-12 bl-txt-dark-blue sp-txt-right">
+<div class="bl-h4"> <span class="ng-binding" ng-bind="listing.price | currency:'$':0"></span>
+</div>
+<!-- ngIf: !listing.overrideTotalSales &&          listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome --><div class="ng-scope" ng-if="!listing.overrideIncome" ng-switch="listing.profitability">
+<!-- ngSwitchWhen: Profitable -->
+<!-- ngSwitchDefault: true --><!-- ngIf: listing.profitability --><!-- end ngSwitchWhen: -->
+</div><!-- end ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome -->
+</div>
+<div class="sp-w-12-of-12 sp-p-top-xx-sm sp-grid sp-grid-align-bottom">
+<div class="sp-txt-all-caps sp-m-right-x-sm sp-invisible" ng-class="{'sp-invisible': !listing.actionPhrase}">
+<span class="sp-relative sp-inline-block sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white bl-tail bl-h6 ng-binding" ng-bind="listing.actionPhrase || '-'">-</span>
+</div>
+<div class="bl-flag bl-h7 bl-txt-white bl-round-md sp-txt-center sp-grid-item-align-right bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">
+									NDA
+								</div>
+</div>
+</div>
+</a><a class="sp-block bl-shadow-bottom-sm bl-shadow-hover-md bl-bck-white sp-m-right-lg ng-scope" href="/businesses-sold/outstanding-towing-company-2191" ng-href="/businesses-sold/outstanding-towing-company-2191" ng-repeat="listing in result.extraPage" ng-style="{'width':234,'min-width':234}" style="width: 234px; min-width: 234px;" target="_self">
+<div class="sp-relative sp-w-3-of-3">
+<div class="bl-media bl-media-md sp-overflow-hidden bl-bck-repeat-none bl-bck-dark-smoke">
+<!-- ngIf: listing.photos.length --><img alt="Outstanding Towing Company" class="bl-carousel-img ng-scope" ng-attr-alt="{{listing.headline}}" ng-if="listing.photos.length" ng-src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&amp;versionId=0681G00000EmqkwQAB" src="https://www.blbrokers.com/resources-assets/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&amp;versionId=0681G00000EmqkwQAB"/><!-- end ngIf: listing.photos.length -->
+<div class="sp-absolute sp-z-index-1 sp-w-6-of-6" ng-style="{left: 0, bottom: 0}" style="left: 0px; bottom: 0px;">
+<!-- ngIf: listing.status --><div class="sp-txt-truncate sp-p-vert-xx-sm sp-p-hor-sm bl-txt-white bl-h6 sp-float-left sp-clear-both ng-binding ng-scope" ng-bind="listing.status" ng-if="listing.status" ng-style="{'background-color':             listing.statusColor}" style="background-color: rgb(162, 26, 48);">Sold!</div><!-- end ngIf: listing.status -->
+</div>
+</div>
+</div>
+<div class="sp-w-3-of-3 sp-p-hor-x-sm sp-p-top-x-sm sp-p-bottom-md sp-grid">
+<div class="sp-w-6-of-12 bl-txt-dark-blue">
+<div class="bl-h4 sp-block bl-txt-blue sp-txt-truncate sp-txt-hover-underlined ng-binding" ng-bind="listing.listingName">Outstanding Towing Company</div>
+<div class="bl-h6 sp-txt-truncate ng-binding" ng-bind="[{           show: listing.city,           label: listing.city          }, {           show: listing.zip,           label: listing.zip          }] | join:', '"></div>
+<div class="bl-h6 sp-txt-truncate ng-binding" ng-bind="[{           show: listing.county,           label: listing.county          }, {           show: listing.state,           label: listing.state          }] | join:', '">Los Angeles County, CA</div>
+</div>
+<div class="sp-w-6-of-12 bl-txt-dark-blue sp-txt-right">
+<div class="bl-h4"> <span class="ng-binding" ng-bind="listing.price | currency:'$':0"></span>
+</div>
+<!-- ngIf: !listing.overrideTotalSales &&          listing.totalSales != null -->
+<!-- ngIf: listing.overrideTotalSales -->
+<!-- ngIf: !listing.overrideIncome --><div class="ng-scope" ng-if="!listing.overrideIncome" ng-switch="listing.profitability">
+<!-- ngSwitchWhen: Profitable -->
+<!-- ngSwitchDefault: true --><!-- ngIf: listing.profitability --><!-- end ngSwitchWhen: -->
+</div><!-- end ngIf: !listing.overrideIncome -->
+<!-- ngIf: listing.overrideIncome -->
+</div>
+<div class="sp-w-12-of-12 sp-p-top-xx-sm sp-grid sp-grid-align-bottom">
+<div class="sp-txt-all-caps sp-m-right-x-sm sp-invisible" ng-class="{'sp-invisible': !listing.actionPhrase}">
+<span class="sp-relative sp-inline-block sp-p-hor-x-sm sp-p-vert-xxx-sm bl-bck-dark-blue bl-txt-white bl-tail bl-h6 ng-binding" ng-bind="listing.actionPhrase || '-'">-</span>
+</div>
+<div class="bl-flag bl-h7 bl-txt-white bl-round-md sp-txt-center sp-grid-item-align-right bl-border-gray" ng-class="{           'bl-bck-light-green': listing.display == 'FULL',           'bl-border-gray': listing.display != 'FULL'          }">
+									NDA
+								</div>
+</div>
+</div>
+</a></div>

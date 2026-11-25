@@ -27,10 +27,10 @@ WHAT THIS EMITS (format_listing shape, one row per heading)
                (decisions 5/6), with this site's extra phrases below:
                  SOLD 2021 / Sold by 3rd Party 2025       -> sold
                  Has Accepted Offer 2024 / Under Deposit 2026 -> active + label
-                 OFF Market                                -> active + label (decision 6)
                  On Hold / Inactive / Not Available /
                  No Longer Available / Listing Cancelled /
-                 Temporarily Unavailable / Temporarily Off Market -> inactive
+                 Temporarily Unavailable / Off Market (any case, with or
+                 without "Temporarily") -> inactive
                No suffix -> active.
   broker_status_text  the suffix verbatim, so "SOLD 2021" keeps its year
   business_type  from the heading (Laundromat, Dry Cleaner, Restaurant ...)
@@ -83,7 +83,7 @@ _SITE_PHRASES = [
     (re.compile(r"temporarily", re.I), "inactive"),                # Temporarily Off Market / Unavailable
     (re.compile(r"listing cancell?ed|cancell?ed", re.I), "inactive"),
     (re.compile(r"on hold|inactive|not available|no longer available|withdrawn", re.I), "inactive"),
-    (re.compile(r"off\s*market", re.I), "active"),                 # decision 6: Off Market stays listed
+    (re.compile(r"off\s*market", re.I), "inactive"),               # Jeff 2026-11-23: any "Off Market", with or without "Temporarily"
     (re.compile(r"under contract|pending", re.I), "active"),
 ]
 
@@ -103,6 +103,10 @@ def status_of(suffix: Optional[str]) -> str:
     """'sold' | 'active' | 'inactive' for a heading's status suffix."""
     if not suffix:
         return "active"
+    if re.search(r"off[\s-]*market", suffix, re.I):
+        # The shared vocabulary keeps "Off Market" active (decision 6); on this
+        # broker it means withdrawn (Jeff 2026-11-23), so it is decided here.
+        return "inactive"
     if _shared_lookup is not None:
         hit = _shared_lookup(re.sub(r"\b(19|20)\d\d\b", "", suffix).strip(), DOMAIN)
         if hit and hit[0] in ("sold", "active", "inactive") and not re.search(r"temporarily", suffix, re.I):

@@ -2984,6 +2984,17 @@ def _wp_path(url: str) -> str:
 # One class, many brokers — registered as (domain, rest_base, account) tuples.
 # ============================================================================
 
+def wp_json_loads(raw):
+    """json.loads that tolerates the stray UTF-8 BOMs a PHP theme / plugin
+    file can print before the REST body (practicetransitionsgroup.com sends
+    four, so r.json() raised and the scrape kept 0 of 134 posts, 2026-11).
+    Only leading BOM / whitespace is stripped; any other garbage still raises."""
+    import json as _json
+    if isinstance(raw, (bytes, bytearray)):
+        raw = bytes(raw).decode("utf-8", "replace")
+    return _json.loads(raw.lstrip("\ufeff \t\r\n"))
+
+
 class WPRestScraper:
     """
     Generic WordPress REST scraper. Pulls a custom post type from
@@ -3245,8 +3256,12 @@ class WPRestScraper:
                     except ValueError:
                         total_pages = max_pages
                 try:
-                    items = r.json()
-                except Exception:
+                    items = wp_json_loads(r.content)
+                except Exception as e:
+                    # Never silent (principle 1): a body that is not JSON
+                    # closes the crawl as failed/EMPTY with nothing in the log.
+                    print(f"[WP:{self.domain}] page {page}: body is not JSON "
+                          f"({type(e).__name__}); first bytes {bytes(r.content[:24])!r}")
                     break
                 if not isinstance(items, list) or not items:
                     break
@@ -3589,6 +3604,9 @@ class WPRestScraper:
         """Follow each ACTIVE listing's detail page for price / revenue / cash
         flow when REST and the index card gave none (opt-in per broker:
         data/wp_rest_brokers.csv fetch_financials=yes — slow, one GET each)."""
+        import rv_detail as _rv_detail           # rv-detail: labelled-field map (laskacompany.com)
+        if _rv_detail.handles(self.domain):
+            return _rv_detail.enrich_wp(self, listings, verbose)
         todo = [r for r in listings if r.get("status") == "active" and not r.get("price")]
         got = failed = 0
         for i, rec in enumerate(todo):

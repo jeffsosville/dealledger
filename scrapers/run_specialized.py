@@ -795,6 +795,25 @@ DISPLAYED_INDEX_URLS = {
 }
 
 
+# Brokers whose stated count ("Showing 20 of 356 businesses") counts the sold
+# cards too: the grid lists every listing the broker ever posted and badges
+# each one (synergybb.com: 356 shown = 134 active + 222 sold REST posts).
+# Comparing only the active rows to that number reads INCOMPLETE_LOW on a
+# complete crawl. For these, compare active + sold, so a real truncation
+# still shows as a shortfall. Add a broker only after checking its page total
+# against the grid's own sold cards.
+STATED_COUNT_INCLUDES_SOLD = {"wp_synergybb_com"}
+
+
+def _compared_count(name: str, listings: list[dict]) -> tuple[int, str]:
+    """(count compared with the broker's stated number, note text)."""
+    active = sum(1 for l in listings if (l.get("status") or "active") == "active")
+    if name not in STATED_COUNT_INCLUDES_SOLD:
+        return active, ""
+    sold = sum(1 for l in listings if l.get("status") == "sold")
+    return active + sold, f"compared active {active} + sold {sold} (stated total includes sold)"
+
+
 def _index_url_for(name: str, broker_meta: dict) -> str | None:
     if name in DISPLAYED_INDEX_URLS:
         return DISPLAYED_INDEX_URLS[name]
@@ -844,16 +863,17 @@ def _displayed_count_for(name: str, broker_meta: dict, listings: list[dict]) -> 
         dc = parse_stated_count(r.text, seen=len(listings))   # seen: plausibility signal
         # Compare against what we would publish as for sale, not every REST
         # post: sold / inactive rows are not on the broker's for-sale page.
-        active = sum(1 for l in listings
-                     if (l.get("status") or "active") == "active")
+        active, cmp_note = _compared_count(name, listings)
         if not dc:
             log.info(f"[{name}] displayed count: none stated on {url}")
             return {"compared_count": active}
         log.info(f"[{name}] broker displays {dc['count']} (stated: '{dc['text']}'"
-                 f"{'; ' + dc['note'] if dc.get('note') else ''}) vs {active} active seen "
+                 f"{'; ' + dc['note'] if dc.get('note') else ''}) vs {active} "
+                 f"{'compared' if cmp_note else 'active'} seen "
                  f"of {len(listings)} -> {verdict_label(active, dc['count'])}")
         return {"displayed_count": dc["count"], "displayed_source": "stated",
-                "displayed_note": f"matched: {dc['text']}; {dc.get('note') or ''}; index {url}"[:500],
+                "displayed_note": (f"matched: {dc['text']}; {dc.get('note') or ''}; "
+                                   f"{cmp_note + '; ' if cmp_note else ''}index {url}")[:500],
                 "compared_count": active}
     except Exception as e:                                  # never raise
         log.warning(f"[{name}] displayed count failed: {e}")

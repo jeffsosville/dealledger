@@ -87,6 +87,12 @@ _TRACK_RECORD_BEFORE = re.compile(
     r"\b(?:sold|closed|helped|brokered|sell|served|represented)"
     r"(?:\s+(?:over|more|than|nearly|almost|about|approximately|a|total|of|the|"
     r"our|we|have|successfully|since|to|and))*\s*$", re.I)
+# Number glued to something that makes it not a count (2026-11-21):
+#   "Page 10 Listings"       pager's last page beside a heading (dellingco)
+#   "E-2 opportunities"      a visa class (lobobusinesssales)
+#   "Revenue(2 Businesses)"  part of one listing's title (loyaltybusinessbrokers)
+# The paren case needs a word touching it: "Florida (45 listings)" still counts.
+_NOT_A_COUNT_BEFORE = re.compile(r"(?:\bpage\s+|[A-Za-z]-|\w\()$", re.I)
 # The end of a phone number just before the count: "(925) 932-" / "925-932-" /
 # "925.932." + "2450 Listings" (lbaweb.com nav).
 _PHONE_TAIL = re.compile(r"(?:\(\d{3}\)\s*|\b\d{3}[\s.-])\d{3}[\s.-]$")
@@ -252,12 +258,20 @@ def _candidates(page_html: str) -> tuple[list[tuple[str, list]], str, dict]:
         n = _int(m.group(1))
         if n is not None:
             hits.append((n, m.group(0), ctx(m)))
+    # "Showing 12 of 221 properties": a page size and its total, no range. Needs
+    # the verb, so "page 1 of 19" and "1 of 3 photos" stay out (count readings,
+    # 2026-11-21: the "showing" level below read this as 12).
+    for m in re.finditer(r"\b(?:showing|displaying|viewing)\s+\d{1,5}\s+of\s+"
+                         + _NUM + r"(?:\s+" + _NOUN + r")?", flat, re.I):
+        n = _int(m.group(1))
+        if n is not None:
+            hits.append((n, m.group(0), ctx(m)))
     if hits:
         levels.append(("range_of", hits))
 
     # 3. "Showing N [items]" (not "Showing 1-12", handled above)
     hits = []
-    for m in re.finditer(r"\bshowing\s+(?:all\s+)?" + _NUM + r"(?!\s*(?:-|–|—|to)\s*\d)"
+    for m in re.finditer(r"\bshowing\s+(?:all\s+)?" + _NUM + r"(?!\s*(?:-|–|—|to|of)\s*\d)"
                          r"(?:\s+" + _NOUN + r")?", flat, re.I):
         n = _int(m.group(1))
         if n is not None:
@@ -288,6 +302,8 @@ def _candidates(page_html: str) -> tuple[list[tuple[str, list]], str, dict]:
         if _BEFORE_NOT_INVENTORY.search(before) or _NOT_INVENTORY.match(after):
             continue
         if re.search(r"\$\s*$|#\s*$", before) or _TRACK_RECORD_BEFORE.search(before):
+            continue
+        if _NOT_A_COUNT_BEFORE.search(before):
             continue
         n = _int(m.group(1))
         if n is None or _is_year(n) or _phone_tail(flat, m.start(1)):
@@ -389,6 +405,19 @@ def _priced_table_rows(page_html: str) -> int:
     return best
 
 
+_PAGER_MARKUP = re.compile(
+    r"""rel\s*=\s*["']?next\b|[?&;](?:page|paged|pg|dl_page|pagenum)=\d|/page/\d|"""
+    r"""\b(?:load|show|view)\s+more\b|class\s*=\s*["'][^"']*\bpagination\b|"""
+    r"""aria-label\s*=\s*["']?(?:next|pagination)""", re.I)
+
+
+def has_pager(page_html: str) -> bool:
+    """True if the page's markup (not its CSS/JS) has a pager or load-more."""
+    body = re.sub(r"(?is)<(script|style)\b[^>]*>.*?</\1>|<head\b.*?</head>", " ",
+                  page_html or "")
+    return bool(_PAGER_MARKUP.search(body))
+
+
 class DisplayedCountTracker:
     """Feed it every index page the crawler fetched; ask for the result.
 
@@ -411,6 +440,7 @@ class DisplayedCountTracker:
         self.link_total = 0          # distinct-page sum of link_signal()
         self.card_total = 0          # distinct-page sum of count_cards()
         self.dropped: str | None = None  # why a weak stated count was rejected
+        self.paged = False           # any fed page had a pager / load-more
 
     def add_page(self, page_html: str, count: bool = True) -> None:
         """count=False: look for a stated count only (a page that will be
@@ -431,6 +461,7 @@ class DisplayedCountTracker:
                 return
             self._seen.add(h)
             self.link_total += link_signal(page_html)
+            self.paged = self.paged or has_pager(page_html)
             c = count_cards(page_html)
             if c:
                 self.card_total += c["count"]
@@ -440,6 +471,25 @@ class DisplayedCountTracker:
         except Exception:            # never break a crawl over a count
             pass
 
+    def _overstated_single_page(self, seen: int | None) -> bool:
+        """A stated total above the cards of ONE page that has no pager, where
+        we saw those cards (zoombusinessbrokers.com: "returned 54 listings",
+        43 cards, no pagination). The number overcounts; the page is complete.
+        Narrow on purpose: a page-size phrase ("Showing 12 of 221") or any
+        pager/load-more markup keeps the stated count, so truncation still
+        shows. Cards must be >= 75% of stated and agree with `seen`."""
+        try:
+            s = self.stated
+            if (s.get("source") != "stated" or self.counted_pages != 1 or self.paged
+                    or re.search(r"\bof\b|\d\s*(?:-|–|—|to)\s*\d", s.get("text") or "", re.I)):
+                return False
+            n = self.card_total
+            if not (_MIN_CARDS <= n < s["count"] and n >= 0.75 * s["count"]):
+                return False
+            return seen is None or LOW_RATIO * n <= seen <= HIGH_RATIO * n
+        except Exception:
+            return False
+
     def result(self, seen: int | None = None) -> dict | None:
         """seen: listings the crawl emitted, as one more plausibility signal."""
         if self._cands is not None:
@@ -448,6 +498,11 @@ class DisplayedCountTracker:
                 self.stated, self.dropped = _choose(*self._cands, signal)
             except Exception:        # never break a crawl over a count
                 pass
+        if self.stated and self._overstated_single_page(seen):
+            n = self.card_total
+            return {"count": n, "source": "counted", "text": None,
+                    "note": f"stated {self.stated['count']} ('{self.stated.get('text')}') "
+                            f"but {n} cards on one unpaginated page; counted"}
         if self.stated:
             return dict(self.stated)
         if self.counted_pages:
