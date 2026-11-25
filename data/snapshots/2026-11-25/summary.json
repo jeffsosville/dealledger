@@ -1,0 +1,155 @@
+{
+  "started": "2026-11-25T10:25:50.758636+00:00",
+  "brokers_attempted": 714,
+  "brokers_success": 624,
+  "brokers_failed": 85,
+  "total_listings": 13867,
+  "listings_with_price": 12354,
+  "listings_with_cashflow": 5467,
+  "listings_with_state": 12060,
+  "detail_pages_fetched": 469,
+  "patterns_cached": 601,
+  "patterns_learned": 522,
+  "verticals": {
+    "restaurant": 3044,
+    "automotive": 1065,
+    "technology": 1642,
+    "other": 3072,
+    "manufacturing": 410,
+    "landscaping": 173,
+    "healthcare": 1179,
+    "retail": 1606,
+    "construction": 419,
+    "amusement": 7,
+    "roofing": 58,
+    "vending": 118,
+    "hvac": 253,
+    "plumbing": 154,
+    "electrical": 125,
+    "pest_control": 18,
+    "laundromat": 133,
+    "cleaning": 184,
+    "delivery_route": 92,
+    "atm": 46,
+    "dry_cleaner": 54,
+    "pool_service": 5,
+    "pressure_washing": 8,
+    "junk_removal": 2
+  },
+  "failure_types": {
+    "EMBED_BBS": 5,
+    "NO_PATTERN": 60,
+    "FETCH_ERROR": 6,
+    "HTTP_403": 12,
+    "TITLE_REPETITION_REJECT": 1
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "central coast business brokers",
+      "domain": "ccbusinessbrokers.com",
+      "event": "stale_cache",
+      "selector": "div.x-el.x-el-div.c1-1.c1-2.c1-9y.c1-a5.c1-a6.c1-cf.c1-14.c1-41.c1-a8.c1-1x.c1-a9.c1-15.c1-b.c1-c.c1-cg.c1-ch.c1-ad.c1-ae.c1-ci.c1-ag.c1-d.c1-cj.c1-ck.c1-e.c1-f.c1-g",
+      "rejected": "div.x-el.x-el-div.c1-1.c1-2.c1-9w.c1-a3.c1-a4.c1-dj.c1-14.c1-41.c1-a6.c1-1x.c1-a7.c1-15.c1-b.c1-c.c1-dk.c1-dl.c1-ab.c1-ac.c1-dm.c1-ae.c1-d.c1-dn.c1-do.c1-e.c1-f.c1-g: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    },
+    {
+      "broker": "terry espy",
+      "domain": "momentumprojects.com",
+      "event": "stale_cache",
+      "selector": "div.row.fl-post-image-beside-wrap",
+      "healed_to": "div.fl-post-text"
+    }
+  ],
+  "site_pages_dropped": 19,
+  "slowest_brokers": [
+    [
+      2335,
+      "energy-xchange.com",
+      7
+    ],
+    [
+      2320,
+      "mainstreetmain.com",
+      5
+    ],
+    [
+      2294,
+      "pacificrestaurantbrokers.com",
+      11
+    ],
+    [
+      942,
+      "rockwaterme.com",
+      1
+    ],
+    [
+      890,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      726,
+      "pacificrb.com",
+      7
+    ],
+    [
+      463,
+      "legacyadvisors.info",
+      3
+    ],
+    [
+      462,
+      "naz-business.com",
+      25
+    ],
+    [
+      458,
+      "americanbizbrokers.com",
+      2
+    ],
+    [
+      305,
+      "promed-financial.com",
+      4
+    ],
+    [
+      304,
+      "www.glovenco.com",
+      4
+    ],
+    [
+      296,
+      "therockbridge.group",
+      7
+    ],
+    [
+      295,
+      "newleafbrokerage.com",
+      2
+    ],
+    [
+      295,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      295,
+      "3cre.com",
+      3
+    ]
+  ],
+  "seconds_total": 39679,
+  "completed": "2026-11-25T13:43:15.165706+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
