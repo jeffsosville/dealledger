@@ -2532,6 +2532,32 @@ SPECIALIZED_DOMAINS = {
                                      # 'denverbbs'; CRM JSON feed, 2026-11-23)
     "sunbeltmidwest.com",            # SunbeltOfficeScraper (run_specialized key
                                      # 'sunbeltmidwest'; __NEXT_DATA__ feed, 2026-11-23)
+    # VR office sites (2026-11-25): VRScraper writes their listings per office domain
+    # from the VR corporate feed; V6 was crawling the same sites, giving two writers.
+    "bizbizbiz.com",
+    "midwestvr.com",
+    "vr-rva.com",
+    "vraspen.com",
+    "vrbiztriangle.com",
+    "vrbizworld.com",
+    "vrbocaraton.com",
+    "vrbuckscounty.com",
+    "vrcalgarybowvalley.com",
+    "vrcharlotte.com",
+    "vrgatewaystl.com",
+    "vrgreenville.com",
+    "vrheartland.com",
+    "vrlowcountry.com",
+    "vrmiamicenter.com",
+    "vrmilehigh.com",
+    "vrnutmeg.com",
+    "vrsanantonio.com",
+    "vrsavannah.com",
+    "vrsouthshore.com",
+    "vrspringfield-branson.com",
+    "vrtwincities.com",
+    "vrvgpi.com",
+    "vrwil.com",
 }
 
 
