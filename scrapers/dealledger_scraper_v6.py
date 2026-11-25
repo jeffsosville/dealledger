@@ -2505,6 +2505,8 @@ SPECIALIZED_DOMAINS = {
                                      # detail pages, new-build packages skipped)
     "feldmanbrokerage.com",          # FeldmanScraper (run_specialized key 'feldman';
                                      # text blocks ending "Selling price.")
+    "bma1.com",                      # Bma1Scraper (run_specialized key 'bma1';
+                                     # article.slw_business_listing cards)
     "carwashbrokers.com",            # CaffeineIcpListingsScraper (run_specialized key
                                      # 'carwashbrokers'; ICP canister query)
     "petroleumrealty.net",           # PetroleumRealtyScraper (run_specialized key
