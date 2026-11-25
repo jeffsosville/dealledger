@@ -18,6 +18,21 @@ on:
       new_broker_quota:
         description: "Never-scraped brokers to put at the front"
         default: "40"
+      # RESUME (2026-11-25, after run #234's shard 3 hung on one broker):
+      # rerun one shard of an earlier run, from where it stopped, against
+      # THAT run's plan, and merge with that run's other shard snapshots.
+      resume_run_id:
+        description: "Resume: run ID whose broker plan + shard snapshots to reuse (blank = normal run)"
+        default: ""
+      resume_shard:
+        description: "Resume: which shard (0-3) to rerun"
+        default: ""
+      resume_skip:
+        description: "Resume: brokers of that shard already done (skip this many)"
+        default: "0"
+      resume_date:
+        description: "Resume: snapshot date (YYYY-MM-DD) of the run being resumed"
+        default: ""
 
 # Layout (2026-09-24):
 #
@@ -45,6 +60,7 @@ on:
 
 permissions:
   contents: write
+  actions: read     # download artifacts from an earlier run (resume)
 
 jobs:
   plan:
@@ -58,7 +74,16 @@ jobs:
       - name: Install dependencies
         run: pip install curl_cffi==0.16.3 pandas beautifulsoup4 playwright requests supabase colorama
 
+      - name: Reuse plan from run ${{ inputs.resume_run_id }}
+        if: inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: broker-plan
+          run-id: ${{ inputs.resume_run_id }}
+          github-token: ${{ github.token }}
+
       - name: Check credentials
+        if: inputs.resume_run_id == ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -66,12 +91,14 @@ jobs:
         run: python3 scripts/check_credentials.py --need supabase,proxy
 
       - name: Build broker list from broker_sources
+        if: inputs.resume_run_id == ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python3 scripts/export_brokers_csv.py --out data/brokers_clean.csv
 
       - name: Order brokers (fatal on failure)
+        if: inputs.resume_run_id == ''
         env:
           PYTHONUNBUFFERED: "1"
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -110,7 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3]
+        shard: ${{ fromJSON(inputs.resume_run_id != '' && format('[{0}]', inputs.resume_shard) || '[0,1,2,3]') }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -150,12 +177,14 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
+          SNAPSHOT_DATE: ${{ inputs.resume_date }}
         run: |
           set +e
           timeout --signal=INT 285m \
           python3 -u scrapers/dealledger_scraper_v6.py \
             --brokers plan/ordered_brokers.csv \
             --shard ${{ matrix.shard }}/4 \
+            --skip ${{ inputs.resume_run_id != '' && inputs.resume_skip || '0' }} \
             --top-n ${{ inputs.top_n || '200' }} \
             --output out/snapshots
           CODE=$?
@@ -169,7 +198,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: snapshot-shard-${{ matrix.shard }}
+          # a resumed shard gets its own name so the merge keeps both halves
+          name: snapshot-shard-${{ matrix.shard }}${{ inputs.resume_run_id != '' && '-resume' || '' }}
           path: out/snapshots/
           retention-days: 30
           if-no-files-found: warn
@@ -196,6 +226,16 @@ jobs:
         with:
           pattern: snapshot-shard-*
           path: shards
+
+      # Resume: the earlier run's shards (incl. the partial one) go in too,
+      # so the day's merged snapshot is all of them, not just the rerun.
+      - uses: actions/download-artifact@v4
+        if: inputs.resume_run_id != ''
+        with:
+          pattern: snapshot-shard-*
+          path: shards
+          run-id: ${{ inputs.resume_run_id }}
+          github-token: ${{ github.token }}
 
       - name: Merge shard snapshots
         run: |

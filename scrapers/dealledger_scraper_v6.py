@@ -76,6 +76,7 @@ import math
 import os
 import random
 import re
+import signal
 import sys
 import time
 import traceback
@@ -2315,6 +2316,37 @@ SCROLL_MAX_ROUNDS = int(os.environ.get("SCROLL_MAX_ROUNDS", "30"))
 #   instead (the upsert writes every column, so they must be carried or they
 #   would be overwritten with card-only values).
 BROKER_TIME_BUDGET = int(os.environ.get("BROKER_TIME_BUDGET", "480"))
+
+# BROKER_HARD_TIMEOUT (2026-11-25, run #234): BROKER_TIME_BUDGET is only
+# checked between steps, so it can't stop a call that never returns. Shard 3
+# sat on nextwavecommercial.com for 4h20m (15:18 -> 19:39 UTC) after its list
+# page; a Playwright page.evaluate()/content() on a hung renderer has no
+# timeout. 153 of the shard's 176 brokers were never reached. This is a
+# SIGALRM watchdog around each whole broker: when it fires, BrokerTimeout
+# (a BaseException, so the many `except Exception` blocks inside the scrape
+# can't swallow it) unwinds the broker, the browsers are thrown away and
+# relaunched, and the run moves on. It re-fires every 60s in case a finally
+# block (page.close) hangs too. 0 disables it.
+BROKER_HARD_TIMEOUT = int(os.environ.get("BROKER_HARD_TIMEOUT", "900"))
+
+
+class BrokerTimeout(BaseException):
+    """One broker exceeded BROKER_HARD_TIMEOUT. BaseException on purpose."""
+
+
+def _on_broker_alarm(signum, frame):
+    raise BrokerTimeout(f"broker exceeded {BROKER_HARD_TIMEOUT}s hard timeout")
+
+
+def _arm_watchdog() -> None:
+    if BROKER_HARD_TIMEOUT > 0 and hasattr(signal, "SIGALRM"):
+        signal.signal(signal.SIGALRM, _on_broker_alarm)
+        signal.setitimer(signal.ITIMER_REAL, BROKER_HARD_TIMEOUT, 60)
+
+
+def _disarm_watchdog() -> None:
+    if hasattr(signal, "SIGALRM"):
+        signal.setitimer(signal.ITIMER_REAL, 0)
 # Index pages in a row that the site's own pager linked to but that added
 # nothing, before the walk stops (unionbaygroup.com: 2). Guessed URLs get none.
 PAGER_STALL_MAX = int(os.environ.get("PAGER_STALL_MAX", "2"))
@@ -4848,6 +4880,14 @@ class PageFetcher:
             return requests_html, "requests"
         return self._fetch_http(url, use_proxy=True), "requests"
 
+    def reset_browsers(self):
+        """Throw away Playwright and both browsers after a hung broker; the
+        next fetch_playwright() relaunches them via _get_browser()."""
+        self.close()
+        self.browser_plain = None
+        self.browser_proxy = None
+        self.playwright = None
+
     def close(self):
         # After the SIGINT from the 285-minute guard the Playwright driver is
         # often already gone, and close() raised "Connection closed while
@@ -5811,6 +5851,10 @@ class DealLedgerScraper:
         self._displayed = DisplayedCountTracker()
         try:
             listings = self._scrape_broker_inner(broker)
+        except BrokerTimeout:
+            _disarm_watchdog()          # finish_run is a network call; don't let it re-fire
+            finish_run(run_id, "failed", error="TIMEOUT")
+            raise
         except Exception as e:                       # inner shouldn't raise, but
             finish_run(run_id, "failed", error=str(e))
             raise
@@ -6665,7 +6709,25 @@ class DealLedgerScraper:
             for i, broker in enumerate(brokers, 1):
                 print(f"—— broker {i}/{total} —————————————————————————", flush=True)
                 t0 = time.monotonic()
-                listings = self.scrape_broker(broker)
+                _arm_watchdog()
+                try:
+                    listings = self.scrape_broker(broker)
+                except BrokerTimeout as e:
+                    _disarm_watchdog()
+                    print(f"   ⏰ TIMEOUT: {e} - abandoning {broker['domain']}, "
+                          f"restarting the browser", flush=True)
+                    self.failures.append({"broker": broker.get("name"), "url": broker.get("url"),
+                                          "error": str(e), "type": "TIMEOUT",
+                                          "traceback": ""})
+                    self.stats["brokers_failed"] += 1
+                    self.stats["failure_types"]["TIMEOUT"] += 1
+                    try:
+                        self.fetcher.reset_browsers()
+                    except Exception as re_e:
+                        print(f"   ⚠️  browser reset failed: {re_e}", flush=True)
+                    listings = []
+                finally:
+                    _disarm_watchdog()
                 secs = time.monotonic() - t0
                 timings.append((round(secs), broker["domain"], len(listings)))
                 print(f"   ⏱️  {secs:.0f}s, {len(listings)} listings", flush=True)
@@ -6711,7 +6773,9 @@ class DealLedgerScraper:
         self._print_summary()
 
     def _save_results(self):
-        today = datetime.now().strftime("%Y-%m-%d")
+        # SNAPSHOT_DATE: a resumed shard files under the original run's day
+        # even if it finishes after UTC midnight (workflow resume_date).
+        today = os.environ.get("SNAPSHOT_DATE") or datetime.now().strftime("%Y-%m-%d")
         snap  = os.path.join(self.output_dir, today)
         os.makedirs(snap, exist_ok=True)
 
@@ -6815,6 +6879,10 @@ def main():
                              "the ordered list BEFORE --top-n. Round-robin, so "
                              "each shard starts on the most-due brokers and a "
                              "shard dying early loses low-priority tail only.")
+    parser.add_argument("--skip",        type=int, default=0, metavar="K",
+                        help="Drop the first K brokers of the (sharded) list "
+                             "before --top-n. Resumes a shard that stopped "
+                             "early: --shard 3/4 --skip 23 starts at its 24th.")
     parser.add_argument("--plan-out",    metavar="CSV",
                         help="Order (+ --top-n), write the resulting broker list "
                              "to CSV and exit without scraping. The workflow's "
@@ -6894,6 +6962,10 @@ def main():
                     sys.exit(2)
                 brokers = brokers[i::n]
                 print(f"🧩 shard {i}/{n}: {len(brokers)} brokers")
+
+            if args.skip:
+                brokers = brokers[args.skip:]
+                print(f"⏭️  skipping first {args.skip}: {len(brokers)} brokers left")
 
             if args.test:
                 brokers = brokers[:5]
