@@ -56,6 +56,7 @@ FAILURE
   success (principle 17).
 """
 
+import os
 import re
 import time
 from typing import Dict, List, Optional, Tuple
@@ -340,6 +341,13 @@ class ApsScraper:
         ApsScraper.last_stats = None
         cards = self.crawl()
         rows, stats = to_rows(cards, account)
+        # Jeff, Nov 25: import active listings only for now. ~3,500 sold cards would all be
+        # stamped with the first crawl's date and distort the record start and listing age.
+        # Sold history can come in later, unpublished. Set APS_INCLUDE_SOLD=1 to keep them.
+        if os.environ.get("APS_INCLUDE_SOLD") != "1":
+            n_before = len(rows)
+            rows = [r for r in rows if r.get("status") != "sold"]
+            stats["sold_skipped"] = n_before - len(rows)
         stats["pages"] = self.pages
         bc = self.broker_count()
         ApsScraper.last_stats = stats

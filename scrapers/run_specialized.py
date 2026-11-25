@@ -312,7 +312,6 @@ BROKERS = {
         "fn": lambda: RouteWorldScraper().scrape("routeworldbrokers"),
         "displayed": lambda: RouteWorldScraper.last_displayed,
     },
-<<<<<<< ours
     # sunbeltmidwest.com: one Next.js page whose __NEXT_DATA__ holds all listings.
     # sunbeltsd.com serves the identical feed: NOT registered (owner decides
     # which domain owns it; adding it is one more entry with its domain).
@@ -348,7 +347,7 @@ BROKERS = {
         "display_name": "Business Brokerage Services",
         "fn": lambda: DenverBBSScraper().scrape("denverbbs"),
         "displayed": lambda: DenverBBSScraper.last_displayed,
-=======
+    },
     # bma1.com (2026-11-23, f2): Brandywine M&A. WordPress archive of 3 cards,
     # each with its own detail page; no asking price. V6 stored the teaser as
     # the title, the table's revenue as the asking price, one shared URL, and
@@ -359,7 +358,6 @@ BROKERS = {
         "display_name": "Brandywine Mergers & Acquisitions",
         "fn": lambda: Bma1Scraper().scrape("bma1"),
         "displayed": lambda: Bma1Scraper.last_displayed,
->>>>>>> theirs
     },
 }
 # routesforsale.net: no stated count; the scraper counts every route row across
