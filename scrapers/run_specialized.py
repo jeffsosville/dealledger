@@ -53,6 +53,10 @@ from globalpetro_scraper import GlobalPetroScraper
 from commercialroutes_scraper import CommercialRoutesScraper
 from routebrokers_scraper import RouteBrokersScraper
 from routeworld_scraper import RouteWorldScraper
+from sunbelt_office_scraper import SunbeltOfficeScraper
+from salehgroup_scraper import SalehGroupScraper
+from aps_scraper import ApsScraper
+from denverbbs_scraper import DenverBBSScraper
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -307,6 +311,42 @@ BROKERS = {
         "fn": lambda: RouteWorldScraper().scrape("routeworldbrokers"),
         "displayed": lambda: RouteWorldScraper.last_displayed,
     },
+    # sunbeltmidwest.com: one Next.js page whose __NEXT_DATA__ holds all listings.
+    # sunbeltsd.com serves the identical feed: NOT registered (owner decides
+    # which domain owns it; adding it is one more entry with its domain).
+    "sunbeltmidwest": {
+        "domain": "sunbeltmidwest.com",
+        "account": "sunbeltmidwest",
+        "display_name": "Sunbelt Business Advisors (Midwest)",
+        "fn": lambda: SunbeltOfficeScraper("sunbeltmidwest.com").scrape("sunbeltmidwest"),
+        "displayed": lambda: SunbeltOfficeScraper.last_displayed.get("sunbeltmidwest.com"),
+    },
+    # salehgroup.com (2026-11-23): Muzopilot page painted by JS from one public
+    # JSON call; cards have no <a>, V6 stored the directory URL for every row.
+    # Detail URL = /listing?id=<id>; identity = the SG number (listing_key).
+    "salehgroup": {
+        "domain": "salehgroup.com",
+        "account": "salehgroup",
+        "display_name": "The Saleh Group",
+        "fn": lambda: SalehGroupScraper().scrape("salehgroup"),
+        "displayed": lambda: SalehGroupScraper.last_displayed,
+    },
+    # accountingpracticesales.com: server-rendered card list, all statuses.
+    "aps": {
+        "domain": "accountingpracticesales.com",
+        "account": "aps",
+        "display_name": "Accounting Practice Sales (The Holmes Group)",
+        "fn": lambda: ApsScraper().scrape("aps"),
+        "displayed": lambda: ApsScraper.last_displayed,
+    },
+    # denverbbs.com: cards are built in the browser from the broker's CRM feed.
+    "denverbbs": {
+        "domain": "denverbbs.com",
+        "account": "denverbbs",
+        "display_name": "Business Brokerage Services",
+        "fn": lambda: DenverBBSScraper().scrape("denverbbs"),
+        "displayed": lambda: DenverBBSScraper.last_displayed,
+    },
 }
 # routesforsale.net: no stated count; the scraper counts every route row across
 # its route-type tables (any status) on each run.
@@ -504,6 +544,13 @@ def listing_key(url: str, broker_domain: str | None = None) -> str:
         if m:
             return f"carwashking:{m.group(1)}"
 
+    # accountingpracticesales: numeric internal id leads the slug; region/state
+    # segments change when a practice is re-filed.
+    if "accountingpracticesales.com" in host:
+        m = re.search(r"/(\d+)-[^/]*/?$", u)
+        if m:
+            return f"aps:{m.group(1)}"
+
     return u
 
 
@@ -548,6 +595,33 @@ def domain_breakdown(listings: list[dict]) -> dict:
         seen.add(k)
         out[d] = out.get(d, 0) + 1
     return out
+
+
+def status_breakdown(listings: list[dict]) -> tuple[dict, dict]:
+    """Pure. (totals, per_domain) of listings by status, deduped the way
+    upsert_listings dedupes (URL required, first row per listing_key wins,
+    status 'DROP' never written). totals = {"active", "sold", "other"};
+    per_domain = {broker_domain: (active, sold)}. A missing status is active
+    (upsert writes `status or 'active'`); 'other' is everything that is
+    neither (inactive, pending-variants a scraper maps elsewhere)."""
+    seen, tot, per = set(), {"active": 0, "sold": 0, "other": 0}, {}
+    for l in listings or []:
+        if (l.get("status") or "") == "DROP":
+            continue
+        url = l.get("listing_url") or l.get("url") or ""
+        if not url:
+            continue
+        d = derive_broker_domain(url)
+        k = listing_key(url, d)
+        if k in seen:
+            continue
+        seen.add(k)
+        st = l.get("status") or "active"
+        bucket = st if st in ("active", "sold") else "other"
+        tot[bucket] += 1
+        a, so = per.get(d, (0, 0))
+        per[d] = (a + (bucket == "active"), so + (bucket == "sold"))
+    return tot, per
 
 
 def upsert_listings(listings: list[dict], display_name: str | None = None,
@@ -1073,6 +1147,7 @@ def run(broker_filter: list[str] | None, dry_run: bool):
         run_id = None if dry_run else start_run("specialized", broker_meta.get("domain"))
         outcome = ("failed", 0, 0, "interrupted")
         dc_kw = {}
+        status_by_domain = {}
         try:
             listings = broker_meta["fn"]()
             # 2026-11-04: Transworld, Sunbelt, routesforsale and Vested come
@@ -1087,6 +1162,12 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             results[name] = len(listings)
             if listings:
                 dc_kw = _displayed_count_for(name, broker_meta, listings)
+                split, status_by_domain = status_breakdown(listings)
+                dc_kw["active_seen"] = split["active"]
+                dc_kw["sold_seen"] = split["sold"]
+                log.info(f"[{name}] {'would record' if dry_run else 'recording'} "
+                         f"active_seen={split['active']} sold_seen={split['sold']} "
+                         f"other={split['other']} of {len(listings)}")
 
             if dry_run:
                 if listings:
@@ -1125,7 +1206,8 @@ def run(broker_filter: list[str] | None, dry_run: bool):
             # v_dom_direct / absence_candidates join crawl_run on broker_domain.
             # The registry domain itself never gets a second row.
             ids, failed = record_domain_runs("specialized", broker_meta.get("domain"),
-                                             written_by_domain)
+                                             written_by_domain,
+                                             status_counts=status_by_domain)
             if ids:
                 per = domain_counts_excluding(written_by_domain, broker_meta.get("domain"))
                 log.info(f"[{name}] crawl_run domain rows: "

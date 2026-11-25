@@ -100,6 +100,8 @@ def finish_run(
     displayed_source: str | None = None,
     displayed_note: str | None = None,
     compared_count: int | None = None,
+    active_seen: int | None = None,
+    sold_seen: int | None = None,
 ) -> None:
     """Close a run row.
 
@@ -114,6 +116,11 @@ def finish_run(
     is rows upserted, sold ones included). An 'ok' crawl outside 90-110% of a
     STATED count closes 'partial' (an allowed status the absence rule and
     v_dom_direct already ignore); count_complete records the verdict either way.
+
+    active_seen / sold_seen (2026-11-25): listings_seen split by status, for
+    callers whose listings_seen counts sold rows too (specialized runner). Sent
+    only when given; if crawl_run lacks the columns the close is retried
+    without them (see sql/b-active-sold-proposed.sql).
     """
     key = _key()
     if run_id is None or not key:
@@ -139,14 +146,28 @@ def finish_run(
     }
     extra = _displayed_fields(displayed_count, displayed_source,
                               displayed_note, count_complete)
+    split = _seen_split_fields(active_seen, sold_seen)
     try:
         r = requests.patch(
             f"{_url()}/rest/v1/crawl_run",
             headers=_headers(key),
             params={"id": f"eq.{run_id}"},
-            json={**body, **extra},
+            json={**body, **extra, **split},
             timeout=15,
         )
+        if not r.ok and split:
+            # active_seen / sold_seen may not exist yet (separate SQL step).
+            # Drop only those, keep the displayed-count fields, and say so.
+            log.warning("crawl_run finish HTTP %s with active_seen/sold_seen for "
+                        "id=%s (%s); retrying without them",
+                        r.status_code, run_id, r.text[:200])
+            r = requests.patch(
+                f"{_url()}/rest/v1/crawl_run",
+                headers=_headers(key),
+                params={"id": f"eq.{run_id}"},
+                json={**body, **extra},
+                timeout=15,
+            )
         if not r.ok and extra:
             # The displayed-count columns may not exist yet (the SQL is a
             # separate, later step). A rejected PATCH would leave the row
@@ -167,6 +188,14 @@ def finish_run(
                         r.status_code, run_id, r.text[:200])
     except Exception as e:                                  # never raise
         log.warning("crawl_run finish failed: %s", e)
+
+
+def _seen_split_fields(active: int | None, sold: int | None) -> dict:
+    """crawl_run.active_seen / sold_seen (sql/b-active-sold-proposed.sql).
+    Empty when the caller has no split, so the PATCH/POST is unchanged."""
+    if active is None and sold is None:
+        return {}
+    return {"active_seen": int(active or 0), "sold_seen": int(sold or 0)}
 
 
 # Displayed-count completeness (2026-11-11, owner spec).
@@ -245,25 +274,26 @@ def _truncation_check(run_id: int, listings_seen: int, key: str,
     try:
         h = _headers(key)
         r = requests.get(f"{_url()}/rest/v1/crawl_run", headers=h,
-                         params={"id": f"eq.{run_id}", "select": "broker_domain"},
+                         params={"id": f"eq.{run_id}", "select": "broker_domain,source"},
                          timeout=15)
         rows = r.json() if r.ok else []
         dom = _norm_domain(rows[0].get("broker_domain") if rows else None)
         if not dom:
             return "ok", error
-        r = requests.get(
-            f"{_url()}/rest/v1/crawl_run", headers=h,
-            params={
-                "select": "listings_seen",
-                "status": "eq.ok",
-                "id": f"neq.{run_id}",
-                "broker_domain": f"in.({dom},www.{dom})",
-                "started_at": f"gt.{_lookback_iso()}",
-                "order": "started_at.desc",
-                "limit": "3",
-            },
-            timeout=15,
-        )
+        src = rows[0].get("source")
+        params = {
+            "select": "listings_seen",
+            "status": "eq.ok",
+            "id": f"neq.{run_id}",
+            "broker_domain": f"in.({dom},www.{dom})",
+            "started_at": f"gt.{_lookback_iso()}",
+            "order": "started_at.desc",
+            "limit": "3",
+        }
+        if src:                       # same-source baseline only (V6 junk != specialized)
+            params["source"] = f"eq.{src}"
+        r = requests.get(f"{_url()}/rest/v1/crawl_run", headers=h,
+                         params=params, timeout=15)
         if not r.ok:
             return "ok", error
         counts = [row.get("listings_seen") or 0 for row in r.json()]
@@ -335,21 +365,22 @@ def domain_counts_excluding(domain_counts: dict, registry_domain: str | None) ->
     return out
 
 
-def _recent_ok_counts(dom: str, key: str) -> list[int] | None:
-    """listings_seen of the last 3 'ok' runs for dom; None if unreadable."""
+def _recent_ok_counts(dom: str, key: str, source: str | None = None) -> list[int] | None:
+    """listings_seen of the last 3 'ok' runs for dom (same `source` only when
+    given); None if unreadable."""
     try:
-        r = requests.get(
-            f"{_url()}/rest/v1/crawl_run", headers=_headers(key),
-            params={
-                "select": "listings_seen",
-                "status": "eq.ok",
-                "broker_domain": f"in.({dom},www.{dom})",
-                "started_at": f"gt.{_lookback_iso()}",
-                "order": "started_at.desc",
-                "limit": "3",
-            },
-            timeout=15,
-        )
+        params = {
+            "select": "listings_seen",
+            "status": "eq.ok",
+            "broker_domain": f"in.({dom},www.{dom})",
+            "started_at": f"gt.{_lookback_iso()}",
+            "order": "started_at.desc",
+            "limit": "3",
+        }
+        if source:
+            params["source"] = f"eq.{source}"
+        r = requests.get(f"{_url()}/rest/v1/crawl_run", headers=_headers(key),
+                         params=params, timeout=15)
         if r.ok:
             return [row.get("listings_seen") or 0 for row in r.json()]
     except Exception as e:                                  # never raise
@@ -358,7 +389,9 @@ def _recent_ok_counts(dom: str, key: str) -> list[int] | None:
 
 
 def record_domain_run(source: str, broker_domain: str, listings_seen: int,
-                      urls_fetched: int | None = None) -> int | None:
+                      urls_fetched: int | None = None,
+                      active_seen: int | None = None,
+                      sold_seen: int | None = None) -> int | None:
     """Insert one already-closed crawl_run row for broker_domain.
 
     'ok', or 'partial' when the truncation rule says so. Returns the new id,
@@ -371,7 +404,7 @@ def record_domain_run(source: str, broker_domain: str, listings_seen: int,
     dom = _norm_domain(broker_domain)
     seen = int(listings_seen or 0)
     status, error = "ok", None
-    recent = _recent_ok_counts(dom, key)
+    recent = _recent_ok_counts(dom, key, source)
     if recent is not None:
         truncated, baseline = is_truncated(seen, recent)
         if truncated:
@@ -387,13 +420,26 @@ def record_domain_run(source: str, broker_domain: str, listings_seen: int,
         "listings_seen": seen,
         "error": error,
     }
+    split = _seen_split_fields(active_seen, sold_seen)
     try:
         r = requests.post(
             f"{_url()}/rest/v1/crawl_run",
             headers={**_headers(key), "Prefer": "return=representation"},
-            json=body,
+            json={**body, **split},
             timeout=15,
         )
+        if not r.ok and split:
+            # Columns not there yet: write the row without the split rather
+            # than lose the per-domain 'ok' row v_dom_direct joins on.
+            log.warning("crawl_run domain row HTTP %s with active_seen/sold_seen "
+                        "for %s (%s); retrying without them",
+                        r.status_code, dom, r.text[:200])
+            r = requests.post(
+                f"{_url()}/rest/v1/crawl_run",
+                headers={**_headers(key), "Prefer": "return=representation"},
+                json=body,
+                timeout=15,
+            )
         rows = r.json() if r.ok else None
         if rows and rows[0].get("id") is not None:
             return rows[0]["id"]
@@ -406,12 +452,20 @@ def record_domain_run(source: str, broker_domain: str, listings_seen: int,
 
 
 def record_domain_runs(source: str, registry_domain: str | None,
-                       domain_counts: dict) -> tuple[dict, list[str]]:
+                       domain_counts: dict,
+                       status_counts: dict | None = None) -> tuple[dict, list[str]]:
     """One closed row per non-registry domain in domain_counts.
+    status_counts: optional {domain: (active, sold)}; www./case variants merged.
     Returns ({domain: id}, [domains whose row failed]). Never raises."""
+    split: dict = {}
+    for d, (a, s_) in (status_counts or {}).items():
+        a0, s0 = split.get(_norm_domain(d), (0, 0))
+        split[_norm_domain(d)] = (a0 + int(a or 0), s0 + int(s_ or 0))
     written, failed = {}, []
     for dom, n in sorted(domain_counts_excluding(domain_counts, registry_domain).items()):
-        rid = record_domain_run(source, dom, n)
+        a_s = split.get(dom)
+        rid = (record_domain_run(source, dom, n, active_seen=a_s[0], sold_seen=a_s[1])
+               if a_s else record_domain_run(source, dom, n))
         if rid is None:
             failed.append(dom)
         else:

@@ -126,7 +126,7 @@ def runner(monkeypatch):
         return sum(bd.values())
     monkeypatch.setattr(rs, "upsert_listings", fake_upsert)
     monkeypatch.setattr(rs, "record_domain_runs",
-                        lambda src, reg, dc: calls["domain"].append((src, reg, dict(dc)))
+                        lambda src, reg, dc, **k: calls["domain"].append((src, reg, dict(dc)))
                         or ({d: 1 for d in rs.domain_counts_excluding(dc, reg)}, []))
     return calls
 
@@ -151,7 +151,7 @@ def test_dry_run_writes_no_rows(runner, monkeypatch, caplog):
 
 
 def test_runner_reports_failed_domain_rows(runner, monkeypatch, caplog):
-    monkeypatch.setattr(rs, "record_domain_runs", lambda src, reg, dc: ({}, ["execbb.com"]))
+    monkeypatch.setattr(rs, "record_domain_runs", lambda src, reg, dc, **k: ({}, ["execbb.com"]))
     with caplog.at_level(logging.ERROR):
         rs.run(["multi"], dry_run=False)
     assert any("NOT written" in r.message and "multi:execbb.com" in r.message

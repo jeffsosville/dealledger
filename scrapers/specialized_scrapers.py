@@ -1164,19 +1164,69 @@ class SunbeltScraper:
 # Standard URL pagination
 # ============================================================================
 
+# Most final wins when one office URL is seen twice (same order as
+# listing_status.STATUS_RANK, kept local so VR works without that module).
+_VR_RANK = {"active": 0, "inactive": 1, STATUS_DROP: 2, "sold": 3}
+
+
 class VRScraper:
     """
     VR Business Brokers
     https://www.vrbusinessbrokers.com
 
-    Simple URL-based pagination. ~408 listings across 17 pages (24 per page).
+    Simple URL-based pagination. ~385 distinct listings across 17 pages (24 per page).
+    Each card links to an OFFICE site (broker_domain = that host) and carries a
+    status badge (NEW / UNDER CONTRACT / SOLD / REDUCED PRICE / none).
     """
 
     BASE = "https://www.vrbusinessbrokers.com"
     LIST_URL = f"{BASE}/businesses-for-sale/"
 
+    # Office sites the index links to that are not ours to publish (2026-11-22,
+    # owner): vrdallas.com is off (franchise resales, rows held; broker_sources
+    # 0_unusable), vrcalgarybowvalley.com is Canada. Matched on the card's own
+    # host (www. stripped, subdomains included), the same domain the writer
+    # derives as broker_domain, so a skipped office is never written or given
+    # a crawl_run row.
+    SKIP_DOMAINS = frozenset({"vrdallas.com", "vrcalgarybowvalley.com"})
+
     def __init__(self):
         self.session = requests.Session(impersonate="chrome120")
+        self.last_stats: Dict = {}
+
+    @classmethod
+    def office_domain(cls, url: str) -> str:
+        from urllib.parse import urlparse
+        host = (urlparse(url or "").netloc or "").lower().split(":")[0]
+        return host[4:] if host.startswith("www.") else host
+
+    @classmethod
+    def is_skipped(cls, url: str) -> bool:
+        d = cls.office_domain(url)
+        return any(d == s or d.endswith("." + s) for s in cls.SKIP_DOMAINS)
+
+    @classmethod
+    def card_status(cls, box, domain=None) -> tuple:
+        """(status, broker_status_text, badge_texts) from a card's corner
+        badge(s): sold-button / under-contract-button / new-button /
+        reduced-price-button. The words are classified by
+        scrapers/listing_status.py (lookup_status_text); a badge it does not
+        know (REDUCED PRICE) leaves the card active, unlabelled. No badge ->
+        ('active', None, []). status may be STATUS_DROP (Coming Soon / For
+        Lease): the caller does not emit it."""
+        badges = []
+        for el in box.select('.image-holder [class$="-button"]'):
+            t = re.sub(r"\s+", " ", el.get_text(" ", strip=True)).strip()
+            if t:
+                badges.append(t)
+        best, label = "active", None
+        for t in badges:
+            hit = lookup_status_text(t, domain)
+            if hit is None:
+                continue
+            if _VR_RANK.get(hit[0], 0) >= _VR_RANK.get(best, 0):
+                best, label = hit[0], hit[1] or label
+        return best, label, badges
 
     def _fetch_page(self, page_num: int) -> str:
         params = {
@@ -1234,6 +1284,9 @@ class VRScraper:
                     else:
                         state = location.strip()
 
+                status, status_text, badges = self.card_status(
+                    box, self.office_domain(url))
+
                 listings.append({
                     'url': url,
                     'title': title,
@@ -1241,7 +1294,10 @@ class VRScraper:
                     'location': location,
                     'city': city,
                     'state': state,
-                    'industry': industry
+                    'industry': industry,
+                    'status': status,
+                    'status_text': status_text,
+                    'badges': badges,
                 })
             except:
                 continue
@@ -1256,15 +1312,27 @@ class VRScraper:
 
         all_items = []
         seen_urls = set()
+        cards = 0
 
         for page_num in range(1, max_pages + 1):
             try:
                 html = self._fetch_page(page_num)
                 page_items = self._parse_html(html)
 
-                new = [l for l in page_items if l['url'] not in seen_urls]
-                for l in new:
-                    seen_urls.add(l['url'])
+                cards += len(page_items)
+                # The same office URL can sit on two pages with different
+                # badges (vrbiztriangle 563832: no badge, then SOLD). One row
+                # per URL; the more final status wins.
+                by_url = {x['url']: x for x in all_items}
+                new = []
+                for l in page_items:
+                    prev = by_url.get(l['url'])
+                    if prev is None:
+                        by_url[l['url']] = l
+                        new.append(l)
+                    elif _VR_RANK.get(l['status'], 0) > _VR_RANK.get(prev['status'], 0):
+                        prev['status'], prev['status_text'] = l['status'], l['status_text']
+                seen_urls.update(l['url'] for l in new)
 
                 if verbose:
                     print(f"[VR] Page {page_num}: {len(page_items)} found, {len(new)} new | Total: {len(all_items) + len(new)}")
@@ -1282,8 +1350,21 @@ class VRScraper:
                 break
 
         listings = []
+        skipped: Dict[str, int] = {}
+        dropped: Dict[str, int] = {}
+        badge_counts: Dict[str, int] = {}
         for item in all_items:
-            listings.append(format_listing(
+            for b in item['badges']:
+                badge_counts[b] = badge_counts.get(b, 0) + 1
+            if self.is_skipped(item['url']):
+                d = self.office_domain(item['url'])
+                skipped[d] = skipped.get(d, 0) + 1
+                continue
+            if item['status'] == STATUS_DROP:
+                k = item['status_text'] or "?"
+                dropped[k] = dropped.get(k, 0) + 1
+                continue
+            rec = format_listing(
                 url=item['url'],
                 broker_account=broker_account,
                 title=item['title'],
@@ -1292,12 +1373,27 @@ class VRScraper:
                 location=item['location'],
                 city=item['city'],
                 state=item['state'],
-                business_type=item['industry']
-            ))
+                business_type=item['industry'],
+                status=item['status'],
+            )
+            if item['status_text']:
+                rec['broker_status_text'] = item['status_text']
+                rec['status_source'] = 'card_badge'
+            listings.append(rec)
+
+        by_status: Dict[str, int] = {}
+        for l in listings:
+            by_status[l['status']] = by_status.get(l['status'], 0) + 1
+        self.last_stats = {'cards': cards, 'distinct_urls': len(all_items),
+                           'skipped': skipped, 'dropped': dropped,
+                           'badges': badge_counts, 'by_status': by_status}
 
         if verbose:
+            _drop_log("VR", dropped)
             with_price = sum(1 for l in listings if l.get('price'))
-            print(f"\n✓ {len(listings)} VR listings ({with_price} with price)")
+            print(f"\n[VR] {cards} cards, {len(all_items)} distinct URLs; skipped offices {skipped}; "
+                  f"badges {badge_counts}")
+            print(f"✓ {len(listings)} VR listings ({with_price} with price) status={by_status}")
 
         return listings
 
@@ -3359,8 +3455,35 @@ class WPRestScraper:
                             and re.search(r"/page/\d+/?$|[?&](?:paged|page|pg)=\d+$", u)
                             and u not in seen):
                         queue.append(u)
+                for u in self._numeric_pager_links(body, url, base):
+                    if u not in seen and u not in queue:
+                        queue.append(u)
                 time.sleep(0.5)
         return pages
+
+    @staticmethod
+    def _numeric_pager_links(body, page_url, base):
+        """Pager links of the form <base>/<N>/ (N >= 2, no /page/ segment) —
+        dellingco.com: class="page-numbers" href=".../businesses-for-sale/2/".
+        They are rewritten to <base>/page/N/ because the numeric URL redirects
+        to page 1. Only anchors carrying class page-numbers count, and only base + exactly
+        one numeric segment, so numeric listing slugs are never followed."""
+        from urllib.parse import urljoin
+        out = []
+        for tag in re.findall(r"<a\b[^>]*>", body):
+            cls = re.search(r'class="([^"]*)"', tag)
+            href = re.search(r'href="([^"#]+)"', tag)
+            if not cls or not href or "page-numbers" not in cls.group(1).split():
+                continue
+            u = html_unescape(urljoin(page_url, href.group(1)))
+            m = re.fullmatch(re.escape(base) + r"/(\d+)/?", u.split("?")[0])
+            if m and int(m.group(1)) >= 2:
+                # The site's own <base>/N/ link 301s back to page 1 (checked on
+                # dellingco.com 2026-11-25); the page itself lives at /page/N/.
+                u = f"{base}/page/{int(m.group(1))}/"
+                if u not in out:
+                    out.append(u)
+        return out
 
     @staticmethod
     def _card_for(tag, max_up=8):

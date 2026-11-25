@@ -460,7 +460,7 @@ CRE_GATE_MODE = "narrow"              # "narrow" | "two_signal" | "legacy"
 
 # One phrase is enough: the listing IS a lease / per-SF rental offering.
 _CRE_STRONG_LEGACY_RE = re.compile(
-    r'\bfor\s+(?:sub)?lease\b|annual\s*/\s*sf|/\s*sf\s*/\s*(?:yr|year)|'
+    r'\bfor\s+lease\b|annual\s*/\s*sf|/\s*sf\s*/\s*(?:yr|year)|'
     r'rentable\s+(?:sf|area)',
     re.IGNORECASE,
 )
@@ -473,8 +473,11 @@ _CRE_STRONG_ONLY_RE = re.compile(
 # Lease FIGURES: a business quotes its own rent this way ("Monthly Lease Rate:
 # $4,200", "$3145 rent includes all NNN"). Property evidence only when the card
 # has no operating-business evidence.
+# "for sublease" joined them 2026-11-23: riverbrokers.com titles a business-only
+# gas station "Zero Goodwill! Absentee-Owned Branded Gas Station for Sublease"
+# (the buyer takes over the premises lease); 3 real listings died as strong CRE.
 _CRE_LEASE_FIGURE_RE = re.compile(
-    r'\$\s*[\d.,]+\s*/\s*sf|\bpsf\b|per\s+sf\b|price\s*/\s*sf|cap\s*rate|'
+    r'\bfor\s+sublease\b|\$\s*[\d.,]+\s*/\s*sf|\bpsf\b|per\s+sf\b|price\s*/\s*sf|cap\s*rate|'
     r'\bnnn\b|triple\s*net|lease\s*rate',
     re.IGNORECASE,
 )
@@ -2230,6 +2233,15 @@ CARD_LAYOUT_DOMAINS = {
     "baltimorebusinessbrokers.com": {
         "card": "a.business-listing-card--list",
     },
+    # riverbrokers.com (2026-11-23): each card prints its price in
+    # span.rem-price-amount. The largest-$ rule read the title/blurb instead
+    # ("$104K Sales Last Month" stored as the price of a $20,000 listing; 10 of
+    # 72 rows wrong). Same card selector as the cached pattern.
+    "riverbrokers.com": {
+        "card": "div.propery-style-6",
+        "fields": {"asking_price": "span.rem-price-amount"},
+        "skip": ("div.property-type", r"property-only"),
+    },
 }
 
 
@@ -2430,6 +2442,10 @@ BLOCKLIST_DOMAINS = {
     "vrsavannah.com",
     "vrsouthshore.com",
     "vrvgpi.com",
+    # Jeff, 2026-11-22: vrdallas is off (franchise resales), Calgary is non-US.
+    # VRScraper skips both; this stops the V6 path too. Existing rows are held.
+    "vrdallas.com",
+    "vrcalgarybowvalley.com",
 }
 
 
@@ -2507,6 +2523,13 @@ SPECIALIZED_DOMAINS = {
                                      # 'routebrokers'; Duda accordion, 2026-11-20)
     "routeworldbrokers.com",         # RouteWorldScraper (run_specialized key
                                      # 'routeworld'; <h1> blocks, 2026-11-20)
+    "salehgroup.com",                # SalehGroupScraper (run_specialized key
+                                     # 'salehgroup'; Muzopilot JSON, 2026-11-23)
+    "accountingpracticesales.com",   # ApsScraper (run_specialized key 'aps')
+    "denverbbs.com",                 # DenverBBSScraper (run_specialized key
+                                     # 'denverbbs'; CRM JSON feed, 2026-11-23)
+    "sunbeltmidwest.com",            # SunbeltOfficeScraper (run_specialized key
+                                     # 'sunbeltmidwest'; __NEXT_DATA__ feed, 2026-11-23)
 }
 
 
@@ -3476,6 +3499,14 @@ class ListingExtractor:
                 title = (t_txt if not is_junk_listing(t_txt, detail_url or base_url)
                          else (title_from_slug(detail_url) or t_txt))
 
+        # A layout card that labels itself out of scope (CARD_LAYOUT_DOMAINS
+        # "skip": (selector, full-text regex)), e.g. riverbrokers' "Property-only".
+        skip = (card_layout(domain) or {}).get("skip")
+        if skip:
+            s_el = element.select_one(skip[0])
+            if s_el and re.fullmatch(skip[1], s_el.get_text(" ", strip=True), re.I):
+                return None
+
         # Junk gate — nav fragment, price fragment, status badge, CTA, legal
         # page, CRE/land: never emit these as a listing.
         if is_junk_listing(title, detail_url or base_url):
@@ -4096,6 +4127,9 @@ import cr_w3_platforms as _cr_w3
 _cr_w3.install(API_HANDLERS, {"make": _make_api_listing, "status": _ls_lookup,
                               "needs_proxy": _needs_proxy, "user_agents": USER_AGENTS,
                               "stable_id": stable_listing_id})
+import cr_dealstudio as _cr_ds   # cr-dealstudio (2026-11-25): Deal Studio card sites, by page marker
+_cr_ds.install(API_HANDLERS, {"enrich": ListingExtractor.enrich_from_detail,
+                              "delay": DETAIL_DELAY, "max_details": MAX_DETAIL_PAGES})
 import rv_dealrelations as _rv_dr   # rv-dealrelations (2026-11-24): hosted DealRelations pages
 _rv_dr.install(API_HANDLERS)
 # rv_nodetail (2026-11-24): nerestaurantbrokers.com, newbizbrokers.com, marigoldresources.com

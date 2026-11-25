@@ -1,0 +1,296 @@
+{
+ "results": 10,
+ "business": [
+  {
+   "_id": "6973ea3e4244df185edf13b8",
+   "inventory": 0,
+   "cashFlow": 0,
+   "grossSales": 867185,
+   "industry": [],
+   "businessOpportunity": 4499995,
+   "order": 1,
+   "isFeatured": true,
+   "title": "Brewpub Restaurant/Casino with Real Estate and Parking in Central City",
+   "slug": "brewpub-restaurantcasino-with-real-estate-and-parking-in-central-city",
+   "broker": [],
+   "status": "active",
+   "category": [],
+   "city": [
+    "Central City"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "This casino is the oldest family-owned gaming operation in its market and uniquely combines full-scale gaming with the area\u2019s only on-site brewpub, creating a rare dual-revenue model.\n\nThis sale is for the casino brewpub restaurant business and the real estate which allows a buyer to have the proper",
+   "buildingSF": "",
+   "monthlyRent": 0,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 0
+  },
+  {
+   "_id": "69d953c5f243cb424f6c7870",
+   "inventory": 5000,
+   "cashFlow": 180000,
+   "grossSales": 717992,
+   "industry": [],
+   "businessOpportunity": 649995,
+   "order": 3,
+   "isFeatured": true,
+   "title": "Established and Profitable Bingo Hall",
+   "slug": "established-and-profitable-bingo-hall",
+   "broker": [],
+   "status": "active",
+   "category": [],
+   "city": [
+    "Longmont"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "This entertainment venue offers a thriving recreational gaming experience in a welcoming environment. It attracts a diverse audience, providing an engaging social space that fosters community connections. With positive trends in the recreational gaming industry, potential buyers can benefit from its",
+   "buildingSF": "",
+   "monthlyRent": 0,
+   "realEstate": 2399995,
+   "realEstatePrice": "$2,399,995",
+   "statusIndex": 0
+  },
+  {
+   "_id": "6ad18781de1d56bdde3fb622",
+   "inventory": 5000,
+   "cashFlow": 122058,
+   "grossSales": 779057,
+   "industry": [],
+   "businessOpportunity": 314499,
+   "order": 11,
+   "isFeatured": true,
+   "title": "Turnkey, Profitable Indian Restaurant for Sale with Strong Six-Figure Net",
+   "slug": "turnkey-profitable-indian-restaurant-for-sale-with-strong-six-figure-net",
+   "broker": [],
+   "status": "active",
+   "category": [],
+   "city": [
+    "Erie"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "This Indian restaurant presents an excellent investment opportunity within a bustling community. The establishment has developed a robust reputation for quality cuisine, supported by an efficient kitchen and a spacious setting. The location offers high visibility, attracting both locals and visitors",
+   "buildingSF": "",
+   "monthlyRent": 12000,
+   "realEstate": 1,
+   "realEstatePrice": "0",
+   "statusIndex": 0
+  },
+  {
+   "_id": "6a70da3a48ce3ab29e8dbccf",
+   "inventory": 0,
+   "cashFlow": 248618,
+   "grossSales": 1002556,
+   "industry": [],
+   "businessOpportunity": 599995,
+   "order": 3,
+   "isFeatured": false,
+   "title": "Fencing Company For Sale in The Denver Metro Area",
+   "slug": "fencing-company-for-sale-in-the-denver-metro-area",
+   "broker": [],
+   "status": "active",
+   "category": [],
+   "city": [],
+   "country": [],
+   "state": [],
+   "dummyDescription": "This well-established fencing company has been serving its market for 16 years and has built a strong reputation for quality workmanship, reliable service, and customer satisfaction. The business generates approximately $1,002,556 in annual revenue and $248,618 in cash flow/EBITDA, providing an attr",
+   "buildingSF": "Home Based/Relocatable",
+   "monthlyRent": 0,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 0
+  },
+  {
+   "_id": "6984fe4c73a32dbd7de831ab",
+   "inventory": 0,
+   "cashFlow": 0,
+   "grossSales": 0,
+   "industry": [],
+   "businessOpportunity": 0,
+   "order": 16,
+   "isFeatured": false,
+   "title": "Northern Colorado Income-Ready Industrial Real Estate with Seller Financing Available",
+   "slug": "northern-colorado-income-ready-industrial-real-estate-with-seller-financing-available",
+   "broker": [],
+   "status": "active",
+   "category": [],
+   "city": [
+    "Nunn"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "Discover an exceptional industrial real estate opportunity featuring a flexible layout across multiple buildings, ideal for various operational needs. With a strong emphasis on security and high-capacity electrical infrastructure, the property is positioned to support both heavy and light industrial",
+   "buildingSF": "",
+   "monthlyRent": 0,
+   "realEstate": 474995,
+   "realEstatePrice": "Total price $474,995",
+   "statusIndex": 0
+  },
+  {
+   "_id": "692f38a2b368fe715653c33a",
+   "inventory": 150000,
+   "cashFlow": 600000,
+   "grossSales": 5709000,
+   "industry": [],
+   "businessOpportunity": 1999995,
+   "order": 3,
+   "isFeatured": false,
+   "title": "Welding and Fabrication Service for Sale",
+   "slug": "welding-and-fabrication-service-for-sale",
+   "broker": [],
+   "status": "under LOI",
+   "category": [],
+   "city": [
+    "Denver",
+    "Denver"
+   ],
+   "country": [
+    "United States",
+    "United States"
+   ],
+   "state": [
+    "Colorado",
+    "Colorado"
+   ],
+   "dummyDescription": "Ron\u2019s Welding & Fabrication, Inc. is a well-established and highly respected welding and structural steel fabrication company founded in the early 1990s, with more than three decades of industry experience. Over that time, the company has built a strong reputation for quality craftsmanship, reliabil",
+   "buildingSF": "",
+   "monthlyRent": 0,
+   "realEstate": 2514000,
+   "realEstatePrice": "(2) Buildings 701 and 745 Decatur ~13k sf.  ",
+   "statusIndex": 1
+  },
+  {
+   "_id": "6a71371f48ce3ab29e8f2785",
+   "inventory": 2500,
+   "cashFlow": 38699,
+   "grossSales": 577818,
+   "industry": [],
+   "businessOpportunity": 64995,
+   "order": 9,
+   "isFeatured": false,
+   "title": "Downtown Denver Indian Restaurant with Own Parking",
+   "slug": "downtown-denver-indian-restaurant-with-own-parking",
+   "broker": [],
+   "status": "under-contract",
+   "category": [],
+   "city": [
+    "Denver"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "Located in a bustling downtown area, a unique restaurant presents an attractive opportunity for prospective buyers. The establishment is renowned for its convenient parking, a rare offering for its location. With a history of 11 years in business, strong goodwill, and semi-absentee management, it ha",
+   "buildingSF": "",
+   "monthlyRent": 8700,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 2
+  },
+  {
+   "_id": "6a63ec2040b5b171df268205",
+   "inventory": 6000,
+   "cashFlow": 67795,
+   "grossSales": 505988,
+   "industry": [],
+   "businessOpportunity": 74995,
+   "order": 1,
+   "isFeatured": false,
+   "title": "Absentee owner  Franchise Pizza for Sale",
+   "slug": "absentee-owner-franchise-pizza-for-sale",
+   "broker": [],
+   "status": "sold",
+   "category": [],
+   "city": [
+    "Aurora"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "This pizza franchise opportunity offers potential buyers a unique investment in a popular delivery-focused model, characterized by a signature flavored crust appeal and a deep connection to a growing community. Leveraging corporate support from an established franchise system, buyers can tap into a ",
+   "buildingSF": "",
+   "monthlyRent": 2854,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 3
+  },
+  {
+   "_id": "6a6a37a1320a3f8ba3081a37",
+   "inventory": 0,
+   "cashFlow": 0,
+   "grossSales": 0,
+   "industry": [],
+   "businessOpportunity": 0,
+   "order": 347,
+   "isFeatured": false,
+   "title": "Business Valuation for Flooring Company",
+   "slug": "business-valuation-for-flooring-company",
+   "broker": [],
+   "status": "sold",
+   "category": [],
+   "city": [],
+   "country": [],
+   "state": [],
+   "dummyDescription": "",
+   "buildingSF": "",
+   "monthlyRent": 0,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 3
+  },
+  {
+   "_id": "67c144e0dc50074931b9f5f2",
+   "inventory": 700000,
+   "cashFlow": 647704,
+   "grossSales": 5141574,
+   "industry": [],
+   "businessOpportunity": 2299995,
+   "order": 8,
+   "isFeatured": false,
+   "title": "Liquor License Renewal in Greeley",
+   "slug": "liquor-license-renewal-in-greeley",
+   "broker": [],
+   "status": "sold",
+   "category": [],
+   "city": [
+    "Greeley"
+   ],
+   "country": [
+    "United States"
+   ],
+   "state": [
+    "Colorado"
+   ],
+   "dummyDescription": "This well-established liquor store is a high-revenue operation generating approximately $5.2 million in annual sales. Located in a high-traffic retail area, this business benefits from consistent foot traffic, a loyal customer base, and a diverse selection of beer, wine, and spirits that drive repea",
+   "buildingSF": "",
+   "monthlyRent": 11244,
+   "realEstate": 0,
+   "realEstatePrice": "",
+   "statusIndex": 3
+  }
+ ]
+}
