@@ -449,5 +449,26 @@
     "error": "No listing pattern detected",
     "type": "NO_PATTERN",
     "html_size": 8037
+  },
+  {
+    "broker": "david costello",
+    "url": "https://rockwaterme.com",
+    "error": "broker exceeded 900s hard timeout",
+    "type": "TIMEOUT",
+    "traceback": ""
+  },
+  {
+    "broker": "joseph shemansky mcbi m&ami cm&ap",
+    "url": "https://wesellconstructionbusinesses.com/buy/active-listing",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 63783
+  },
+  {
+    "broker": "harold mcgee",
+    "url": "https://wesell.group/listings",
+    "error": "No listing pattern detected",
+    "type": "NO_PATTERN",
+    "html_size": 55444
   }
 ]

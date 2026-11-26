@@ -1,47 +1,48 @@
 {
   "started": "2026-11-25T14:54:24.249558+00:00",
-  "brokers_attempted": 551,
-  "brokers_success": 480,
-  "brokers_failed": 65,
-  "total_listings": 9892,
-  "listings_with_price": 8700,
-  "listings_with_cashflow": 4045,
-  "listings_with_state": 8739,
-  "detail_pages_fetched": 341,
+  "brokers_attempted": 697,
+  "brokers_success": 623,
+  "brokers_failed": 68,
+  "total_listings": 12883,
+  "listings_with_price": 11333,
+  "listings_with_cashflow": 5400,
+  "listings_with_state": 11300,
+  "detail_pages_fetched": 406,
   "patterns_cached": 601,
-  "patterns_learned": 385,
+  "patterns_learned": 497,
   "verticals": {
-    "restaurant": 2243,
-    "automotive": 765,
-    "technology": 1121,
-    "other": 2135,
-    "manufacturing": 295,
-    "landscaping": 113,
-    "healthcare": 734,
-    "delivery_route": 125,
-    "retail": 1214,
-    "pest_control": 16,
-    "hvac": 163,
-    "construction": 290,
-    "electrical": 90,
-    "roofing": 32,
-    "plumbing": 105,
-    "cleaning": 112,
-    "pressure_washing": 6,
-    "laundromat": 124,
-    "vending": 104,
-    "dry_cleaner": 48,
-    "amusement": 5,
-    "pool_service": 4,
+    "restaurant": 2885,
+    "automotive": 1033,
+    "technology": 1432,
+    "other": 2822,
+    "manufacturing": 360,
+    "landscaping": 167,
+    "healthcare": 1002,
+    "delivery_route": 158,
+    "retail": 1430,
+    "pest_control": 21,
+    "hvac": 234,
+    "construction": 415,
+    "electrical": 122,
+    "roofing": 56,
+    "plumbing": 145,
+    "cleaning": 150,
+    "pressure_washing": 10,
+    "laundromat": 134,
+    "vending": 183,
+    "dry_cleaner": 65,
+    "amusement": 6,
+    "pool_service": 5,
     "junk_removal": 2,
     "atm": 46
   },
   "failure_types": {
     "EMBED_BBS": 5,
-    "NO_PATTERN": 40,
+    "NO_PATTERN": 42,
     "HTTP_403": 13,
     "FETCH_ERROR": 7,
-    "TITLE_REPETITION_REJECT": 1
+    "TITLE_REPETITION_REJECT": 1,
+    "TIMEOUT": 1
   },
   "pattern_cache_events": [
     {
@@ -95,6 +96,16 @@
       1
     ],
     [
+      900,
+      "rockwaterme.com",
+      0
+    ],
+    [
+      866,
+      "www.gatewayma.com",
+      114
+    ],
+    [
       302,
       "promed-financial.com",
       4
@@ -108,6 +119,16 @@
       295,
       "griffinbusinessbrokers.com",
       4
+    ],
+    [
+      287,
+      "canzell.com",
+      7
+    ],
+    [
+      284,
+      "thatbusinessbroker.com",
+      3
     ],
     [
       283,
@@ -128,35 +149,16 @@
       282,
       "3cre.com",
       3
-    ],
-    [
-      281,
-      "cannabis-brokers.com",
-      1
-    ],
-    [
-      281,
-      "birminghambusinessbroker.com",
-      6
-    ],
-    [
-      280,
-      "lacountyrealestate.us",
-      2
-    ],
-    [
-      260,
-      "wncbusinessbrokerage.com",
-      1
     ]
   ],
-  "seconds_total": 30009,
-  "completed": "2026-11-25T19:39:43.589740+00:00",
+  "seconds_total": 37297,
+  "completed": "2026-11-26T00:53:34.738166+00:00",
   "interrupted": true,
   "shards": [
     "snapshot-shard-0",
     "snapshot-shard-1",
     "snapshot-shard-2",
-    "snapshot-shard-3"
+    "snapshot-shard-3",
+    "snapshot-shard-3-resume"
   ]
 }
