@@ -1,0 +1,149 @@
+{
+  "started": "2026-11-26T10:25:51.879911+00:00",
+  "brokers_attempted": 673,
+  "brokers_success": 600,
+  "brokers_failed": 68,
+  "total_listings": 13027,
+  "listings_with_price": 11435,
+  "listings_with_cashflow": 5521,
+  "listings_with_state": 11479,
+  "detail_pages_fetched": 381,
+  "patterns_cached": 587,
+  "patterns_learned": 466,
+  "verticals": {
+    "restaurant": 2973,
+    "automotive": 967,
+    "technology": 1458,
+    "other": 2828,
+    "manufacturing": 381,
+    "landscaping": 153,
+    "construction": 402,
+    "amusement": 6,
+    "healthcare": 1150,
+    "roofing": 57,
+    "hvac": 296,
+    "plumbing": 148,
+    "retail": 1398,
+    "cleaning": 177,
+    "electrical": 126,
+    "dry_cleaner": 53,
+    "laundromat": 133,
+    "vending": 109,
+    "delivery_route": 133,
+    "pool_service": 5,
+    "pest_control": 18,
+    "atm": 46,
+    "junk_removal": 3,
+    "pressure_washing": 7
+  },
+  "failure_types": {
+    "EMBED_BBS": 5,
+    "NO_PATTERN": 40,
+    "HTTP_403": 11,
+    "FETCH_ERROR": 5,
+    "TIMEOUT": 7
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "Diversified Business Advisors",
+      "domain": "businessadvisors.us",
+      "event": "stale_cache",
+      "selector": "article.bde-loop-item.ee-post",
+      "rejected": "div[class*=\"bde-column-1492\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "Lonestar Business Advisor",
+      "domain": "lonestarba.com",
+      "event": "stale_cache",
+      "selector": "div.listing-card",
+      "rejected": "div.listing-card: 0 distinct listing(s) on page 1"
+    }
+  ],
+  "site_pages_dropped": 18,
+  "slowest_brokers": [
+    [
+      912,
+      "metrocbb.com",
+      0
+    ],
+    [
+      900,
+      "thatbusinessbroker.com",
+      0
+    ],
+    [
+      900,
+      "rockwaterme.com",
+      0
+    ],
+    [
+      900,
+      "pinnaclepartnerservice.com",
+      0
+    ],
+    [
+      900,
+      "pacificrestaurantbrokers.com",
+      0
+    ],
+    [
+      900,
+      "commercialindustrialconsultants.com",
+      0
+    ],
+    [
+      900,
+      "birminghambusinessbroker.com",
+      0
+    ],
+    [
+      892,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      460,
+      "vistapoolroutes.com",
+      2
+    ],
+    [
+      460,
+      "naz-business.com",
+      25
+    ],
+    [
+      310,
+      "promed-financial.com",
+      4
+    ],
+    [
+      296,
+      "therockbridge.group",
+      7
+    ],
+    [
+      295,
+      "3cre.com",
+      3
+    ],
+    [
+      294,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      292,
+      "www.usbizsell.com",
+      3
+    ]
+  ],
+  "seconds_total": 32994,
+  "completed": "2026-11-26T13:13:32.720428+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
