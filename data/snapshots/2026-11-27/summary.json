@@ -1,0 +1,155 @@
+{
+  "started": "2026-11-27T10:25:52.323530+00:00",
+  "brokers_attempted": 679,
+  "brokers_success": 601,
+  "brokers_failed": 73,
+  "total_listings": 12953,
+  "listings_with_price": 11398,
+  "listings_with_cashflow": 5512,
+  "listings_with_state": 11407,
+  "detail_pages_fetched": 418,
+  "patterns_cached": 588,
+  "patterns_learned": 466,
+  "verticals": {
+    "restaurant": 2973,
+    "automotive": 962,
+    "technology": 1449,
+    "other": 2803,
+    "manufacturing": 381,
+    "landscaping": 152,
+    "construction": 397,
+    "amusement": 6,
+    "healthcare": 1126,
+    "retail": 1397,
+    "plumbing": 147,
+    "hvac": 295,
+    "dry_cleaner": 53,
+    "electrical": 124,
+    "laundromat": 134,
+    "cleaning": 175,
+    "roofing": 56,
+    "delivery_route": 135,
+    "vending": 109,
+    "pest_control": 18,
+    "pressure_washing": 7,
+    "junk_removal": 3,
+    "pool_service": 5,
+    "atm": 46
+  },
+  "failure_types": {
+    "EMBED_BBS": 5,
+    "NO_PATTERN": 45,
+    "HTTP_403": 11,
+    "FETCH_ERROR": 5,
+    "TIMEOUT": 7
+  },
+  "pattern_cache_events": [
+    {
+      "broker": "Diversified Business Advisors",
+      "domain": "businessadvisors.us",
+      "event": "stale_cache",
+      "selector": "article.bde-loop-item.ee-post",
+      "rejected": "div[class*=\"bde-column-1492\"]: 1 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "Lonestar Business Advisor",
+      "domain": "lonestarba.com",
+      "event": "stale_cache",
+      "selector": "div.listing-card",
+      "rejected": "div.listing-card: 0 distinct listing(s) on page 1"
+    },
+    {
+      "broker": "liliane tietjen",
+      "domain": "patriotbusinessadvisors.com",
+      "event": "twin_spelling",
+      "selector": "td[style*=\"1px inset #CC0000\"]"
+    }
+  ],
+  "site_pages_dropped": 8,
+  "slowest_brokers": [
+    [
+      915,
+      "rockwaterme.com",
+      0
+    ],
+    [
+      907,
+      "birminghambusinessbroker.com",
+      0
+    ],
+    [
+      906,
+      "pacificrb.com",
+      0
+    ],
+    [
+      900,
+      "promed-financial.com",
+      0
+    ],
+    [
+      900,
+      "pacificrestaurantbrokers.com",
+      0
+    ],
+    [
+      900,
+      "coinlaundrysales.com",
+      0
+    ],
+    [
+      900,
+      "beaconadvisors.com",
+      0
+    ],
+    [
+      893,
+      "www.gatewayma.com",
+      114
+    ],
+    [
+      727,
+      "ecbbrokers.com",
+      7
+    ],
+    [
+      296,
+      "therockbridge.group",
+      7
+    ],
+    [
+      292,
+      "3cre.com",
+      3
+    ],
+    [
+      291,
+      "griffinbusinessbrokers.com",
+      4
+    ],
+    [
+      285,
+      "canzell.com",
+      7
+    ],
+    [
+      282,
+      "cannabis-brokers.com",
+      1
+    ],
+    [
+      280,
+      "thatbusinessbroker.com",
+      3
+    ]
+  ],
+  "seconds_total": 33412,
+  "completed": "2026-11-27T13:13:31.415801+00:00",
+  "interrupted": false,
+  "shards": [
+    "snapshot-shard-0",
+    "snapshot-shard-1",
+    "snapshot-shard-2",
+    "snapshot-shard-3"
+  ]
+}
