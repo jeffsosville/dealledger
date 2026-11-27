@@ -9,7 +9,7 @@ import { goListing } from '../../lib/clickout';
 import { displayName, isMarketplaceDomain } from '../../lib/brokerRegistry';
 import AlertSignup from '../../components/AlertSignup';
 import { firstNiche } from '../../lib/niches';
-import { STATES, TYPES } from '../../lib/seo';
+import { STATES, TYPES, STATE_MIN, TYPE_MIN, COMBO_MIN, statePath, typePath, comboPath, displayTitle, fmtMoney } from '../../lib/seo';
 
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────
@@ -59,6 +59,20 @@ type PageProps = {
   registryBroker: { slug: string; name: string } | null;
   domPercentile: number | null;
   alert: { state: string | null; vertical: string | null; label: string } | null;
+  links: ListingLinks;
+};
+
+// Where this listing sits in the browse pages, and the market it sits in.
+// Listing pages used to name the state and type as plain text, so crawlers
+// had no path from ~20K listings to the state and type pages, and each
+// listing page was ~250 words of mostly shared boilerplate.
+type MarketStat = { label: string; href: string; listings: number; median_price: number | null; median_cash_flow: number | null };
+type RelatedRow = { listing_number: number; title: string; city: string | null; state_code: string | null; price: number | null };
+type ListingLinks = {
+  stateLink: { label: string; href: string } | null;
+  typeLink: { label: string; href: string } | null;
+  market: MarketStat | null;
+  related: RelatedRow[];
 };
 
 // ─── DATA FETCHING ─────────────────────────────────────────────────────────
@@ -138,6 +152,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
 
   // "More like this" alert: the listing's most specific niche (or broad type) in its state.
   let alert: PageProps['alert'] = null;
+  const links: ListingLinks = { stateLink: null, typeLink: null, market: null, related: [] };
   {
     const { data: seo } = await sb
       .from('mv_seo_listings_v2')
@@ -145,6 +160,52 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
       .eq('listing_number', listingNumber)
       .maybeSingle();
     if (seo) {
+      const st = seo.state_code && STATES[seo.state_code] ? (seo.state_code as string) : null;
+      const vt = seo.vertical && TYPES[seo.vertical] ? (seo.vertical as string) : null;
+      // Same thresholds the browse pages use to decide they exist, so every link resolves.
+      const { data: stats } = await sb
+        .from('mv_seo_page_stats')
+        .select('scope, page_state, page_vertical, listings, median_price, median_cash_flow')
+        .or(
+          [
+            st ? `and(scope.eq.state,page_state.eq.${st})` : null,
+            vt ? `and(scope.eq.vertical,page_vertical.eq.${vt})` : null,
+            st && vt ? `and(scope.eq.vertical_state,page_state.eq.${st},page_vertical.eq.${vt})` : null,
+          ].filter(Boolean).join(',') || 'scope.eq.__none__',
+        );
+      const find = (scope: string) => (stats || []).find((r: any) => r.scope === scope) as any;
+      const sState = find('state');
+      const sType = find('vertical');
+      const sCombo = find('vertical_state');
+      if (st && sState && sState.listings >= STATE_MIN)
+        links.stateLink = { label: `Businesses for sale in ${STATES[st]}`, href: statePath(st) };
+      if (vt && sType && sType.listings >= TYPE_MIN)
+        links.typeLink = { label: `${TYPES[vt].label} for sale`, href: typePath(vt) };
+      // Market context: the narrowest page that exists (type in state, then state).
+      if (st && vt && sCombo && sCombo.listings >= COMBO_MIN) {
+        links.market = { label: `${TYPES[vt].label} in ${STATES[st]}`, href: comboPath(st, vt), listings: sCombo.listings,
+          median_price: sCombo.median_price, median_cash_flow: sCombo.median_cash_flow };
+      } else if (links.stateLink && sState) {
+        links.market = { label: `businesses in ${STATES[st!]}`, href: links.stateLink.href, listings: sState.listings,
+          median_price: sState.median_price, median_cash_flow: sState.median_cash_flow };
+      }
+      if (st) {
+        let rq = sb
+          .from('mv_seo_listings_v2')
+          .select('listing_number, title, city, state_code, price')
+          .eq('state_code', st)
+          .neq('listing_number', listingNumber);
+        if (vt) rq = rq.eq('vertical', vt);
+        const { data: rel } = await rq.order('estimated_listed_date', { ascending: false, nullsFirst: false }).limit(6);
+        links.related = ((rel || []) as any[]).map((r) => ({
+          listing_number: r.listing_number,
+          title: displayTitle(r),
+          city: r.city,
+          state_code: r.state_code,
+          price: r.price,
+        }));
+      }
+
       const niche = firstNiche({ title: seo.title, vertical: seo.vertical });
       const key = niche ? niche.slug : (TYPES[seo.vertical] ? seo.vertical : null);
       const what = niche ? niche.label : key ? TYPES[key].label : 'Businesses';
@@ -182,7 +243,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({ params }) => {
   console.log('[listing] === SUCCESS ===');
 
   return {
-    props: { listing, priceChanges, registryBroker, domPercentile, alert },
+    props: { listing, priceChanges, registryBroker, domPercentile, alert, links },
     revalidate: 60 * 60 * 24,
   };
 };
@@ -224,6 +285,7 @@ export default function ListingPage({
   registryBroker,
   domPercentile,
   alert,
+  links,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!listing) return null;
 
@@ -370,6 +432,15 @@ export default function ListingPage({
           'asking price', 'cash flow', 'listing age (evidence basis)',
         ],
       },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { name: 'Businesses for sale', item: 'https://dealledger.org/businesses-for-sale' },
+          ...(links?.stateLink ? [{ name: links.stateLink.label.replace(/^Businesses for sale in /, ''), item: `https://dealledger.org${links.stateLink.href}` }] : []),
+          ...(links?.market && links.market.href !== links?.stateLink?.href ? [{ name: links.market.label, item: `https://dealledger.org${links.market.href}` }] : []),
+          { name: listing.header || padDLId(listing.id), item: canonical },
+        ].map((c, i) => ({ '@type': 'ListItem', position: i + 1, ...c })),
+      },
     ],
   };
 
@@ -384,7 +455,11 @@ export default function ListingPage({
         <meta property="og:description" content={metaDescription} />
         <meta property="og:url" content={canonical} />
         <meta property="og:site_name" content="DealLedger" />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content="https://dealledger.org/og-default.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://dealledger.org/og-default.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -443,7 +518,16 @@ export default function ListingPage({
         <main className="content">
           <div className="eyebrow">{padDLId(listing.id)}</div>
           <h1 className="headline">{listing.header}</h1>
-          <p className="subtitle">{subtitleParts.join(' · ')}</p>
+          <p className="subtitle">
+            {links?.stateLink && locationLine ? (
+              <>
+                <a href={links.stateLink.href}>{locationLine}</a>
+                {registryBroker ? ` · Listed by ${registryBroker.name}` : ''}
+              </>
+            ) : (
+              subtitleParts.join(' · ')
+            )}
+          </p>
 
           <div className="stats">
             <Stat
@@ -521,6 +605,53 @@ export default function ListingPage({
               </div>
             </Section>
           )}
+
+          {links?.market && (
+            <Section title="MARKET CONTEXT" subtitle={`How this compares with ${links.market.label}`}>
+              <div className="prose">
+                <p>
+                  DealLedger currently observes {links.market.listings.toLocaleString('en-US')} active listings for{' '}
+                  <a href={links.market.href}>{links.market.label}</a>
+                  {links.market.median_price ? <>, with a median asking price of {fmtMoney(links.market.median_price)}</> : null}
+                  {links.market.median_cash_flow ? <> and a median cash flow of {fmtMoney(links.market.median_cash_flow)}</> : null}.
+                  {listing.price != null && links.market.median_price ? (
+                    <>
+                      {' '}This listing&rsquo;s asking price is{' '}
+                      {Math.abs(Math.round(((listing.price - links.market.median_price) / links.market.median_price) * 100)) < 5
+                        ? 'close to the median'
+                        : `${Math.abs(Math.round(((listing.price - links.market.median_price) / links.market.median_price) * 100))}% ${listing.price > links.market.median_price ? 'above' : 'below'} the median`}
+                      .
+                    </>
+                  ) : null}
+                </p>
+              </div>
+            </Section>
+          )}
+
+          {(links?.related?.length || links?.stateLink || links?.typeLink) ? (
+            <Section title="MORE LIKE THIS" subtitle={links.market ? `Other ${links.market.label}` : 'Related listings'}>
+              {links.related.length > 0 && (
+                <div className="changelog">
+                  {links.related.map((r) => (
+                    <div key={r.listing_number} className="changelog-row">
+                      <div className="changelog-date">{fmtPrice(r.price)}</div>
+                      <div className="changelog-desc">
+                        <a href={`/listing/${r.listing_number}`}>{r.title}</a>
+                        {r.city ? ` · ${r.city}` : ''}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="browse-links">
+                {[links.market && links.market.href !== links.stateLink?.href ? links.market : null, links.stateLink, links.typeLink]
+                  .filter(Boolean)
+                  .map((l: any) => (
+                    <a key={l.href} href={l.href}>{l.label.charAt(0).toUpperCase() + l.label.slice(1)} →</a>
+                  ))}
+              </p>
+            </Section>
+          ) : null}
 
           {alert && (
             <AlertSignup
@@ -727,6 +858,14 @@ export default function ListingPage({
           margin-top: 20px;
           padding-top: 16px;
           border-top: 1px solid var(--rule);
+          font-size: 14px;
+        }
+
+        .browse-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 18px;
+          margin: 16px 0 0 0;
           font-size: 14px;
         }
 
